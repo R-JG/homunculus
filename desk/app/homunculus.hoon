@@ -5,7 +5,6 @@
 ::
 /+  default-agent
 |%
-+$  card  card:agent:gall
 +$  res
   $:  size=[w=@ud h=@ud]
       padd=[t=@ud r=@ud b=@ud l=@ud]
@@ -14,7 +13,7 @@
       flow=[d=?(%column %row) b=?(%wrap %clip)]
       look=fila
   ==
-+$  ens  (map rami [=cor =res =visa =vox =lar =avis])
++$  ens   (map rami [=cor =res =visa =vox =lar =avis])
 +$  rami  (list [=axis =ager])
 +$  visa  (map loci [=fila =vox ~])
 +$  cor
@@ -28,12 +27,8 @@
 +$  axis  ?(%xy %z)
 +$  ager  @ud
 +$  fila  [d=(set deco) b=tint f=tint]
-+$  arca  $~([50 10] [x=@ud y=@ud])
-+$  opus  [=ens =visa]
 ::
-+$  flex  [x=@ud y=@ud]
-+$  flow  [d=?(%column %row) b=?(%wrap %clip)]
-+$  as  $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
++$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  rei
   $:  size=[w=as h=as]
       padd=[t=as r=as b=as l=as]
@@ -42,13 +37,24 @@
       =flow
       look=fila
   ==
++$  flex  [x=@ud y=@ud]
++$  flow  [d=?(%column %row) b=?(%wrap %clip)]
 ::
-+$  ui-state
-  $:  =arca  display=visa
++$  arca  $~([50 10] [x=@ud y=@ud])
++$  vela  manx
++$  opus  [=ens =visa]
++$  ara
+  $:  =opus
+      =vela
   ==
+::  +$  arae  (map ara)
++$  civitas
+  $:  =arca  =ara
+  ==
++$  card  card:agent:gall
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-=|  ui-state
+=|  civitas
 =*  state  -
 ^-  agent:gall
 =<
@@ -57,87 +63,62 @@
     def   ~(. (default-agent this %.n) bowl)
 ++  on-init
   ^-  (quip card _this)
-  `this(state *ui-state)
+  [~ this(state *civitas)]
 ++  on-save
-  !>(arca.state)
+  ^-  vase
+  !>(~)
 ++  on-load
-  |=  old=vase
-  =/  arc  !<(^arca old)
+  |=  *
   ^-  (quip card _this)
-  :_  this(arca arc)
-  :~  [%pass /get-terminal %arvo %d %open %homunculus ~]
-      [%pass /get-terminal %arvo %d %flee ~]
-  ==
+  [~ this(state *civitas)]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
+  ^-  (quip card _this)
   ?+  mark  (on-poke:def mark vase)
-    %dill-poke
-      =/  blt=dill-belt:dill  +:!<(poke:dill vase)
-      ::  ~&  >  blt
-      ?:  =(%del -.blt)  ::  press the del key to exit the tui
-        :_  this
-        :~  [%pass /give-terminal %arvo %d %open %hood ~]
-            [%pass /give-terminal %arvo %d %flee ~]
-        ==
-      =?  arca  =(%rez -.blt)    ::  resize arca to new terminal dimensions
-        [(@ -.+.blt) (@ +.+.blt)]
-      =/  elem=manx
-        ;box(cb "white", w "100%", h "100%")
-          ;layer(fx "start", fy "center")
-            ;box(cb "magenta", cf "red", d "bold", p "1", m "1"): test
-            ;box(h "4", w "1", cb "yellow", m "1", d "blink"): test
-          ==
-          ;layer(fx "end", fy "end")
-            ;box(cb "black", w "60%", h "80%", px "1", fl "row-wrap")
-              ;div(mx "2", my "1")
-                ;box(cb "green", h "2", w "4");
-                ;box(cb "yellow", h "2", w "4");
-              ==
-              ;div(mx "2", my "1")
-                ;box(cb "blue", h "2", w "4");
-                ;box(cb "red", cf "black", h "2", w "4");
-              ==
-              ;div(cb "blue", mx "2", my "1", w "8", h "2")
-                ;box(cb "cyan", h "2", w "4", m "1");
-                ;box(cb "green", h "2", w "4", m "1");
-              ==
-              ;div(w "10", h "5", cb "yellow", fl "column-wrap")
-                ;box(w "2", h "1", cb "black", mt "1", ml "1");
-                ;box(w "2", h "1", cb "black", mt "1", ml "1");
-                ;box(w "2", h "1", cb "black", mt "1", ml "1");
-                ;box(w "2", h "1", cb "black", mt "1", ml "1");
-                ;box(w "2", h "1", cb "black", mt "1", ml "1");
-                ;box(w "2", h "1", cb "black", mt "1", ml "1");
-              ==
-              ;div(cb "magenta", mx "2", my "1", h "5")
-                ;box(cb "yellow", h "2", w "4"): test
-                ;box(cb "blue", h "2", w "4");
-              ==
-              ;div(mx "2", my "1")
-                ;box(cb "red", cf "black", h "2", w "4");
-                ;box(cb "cyan", h "2", w "4");
-                ;box(cb "yellow", h "2", w "4");
-              ==
-            ==
-          ==
-          ;layer
-            ;box(h "50%", w "50%", cb "blue", cf "cyan"): test
-          ==
-        ==
-      =/  prod=opus  (geno elem)
-      =/  pars=dill-blit:dill
-        (put-blit visa.prod)
+    ::
+      %noun
+    :_  this
+    :~  [%pass /get-terminal %arvo %d %open %homunculus ~]
+        [%pass /get-terminal %arvo %d %flee ~]
+    ==
+    ::
+      %elem
+    =/  elem=manx  !<(manx vase)
+    =/  prod=opus  (geno elem)
+    =/  pars=dill-blit:dill  (put-blit visa.prod)
+    :_  this(ara [prod elem])
+    :~  [%give %fact ~[/dill/$] %dill-blit !>(pars)]
+    ==
+    ::
+      %dill-poke
+    =/  blt=dill-belt:dill  +:!<(poke:dill vase)
+    ::  ~&  >  blt
+    ?:  =(%del -.blt)  ::  press the del key to exit the tui
       :_  this
+      :~  [%pass /give-terminal %arvo %d %open %hood ~]
+          [%pass /give-terminal %arvo %d %flee ~]
+      ==
+    ?:  =(%rez -.blt)    ::  resize arca to new terminal dimensions
+      =/  prod=opus  (geno vela.ara)
+      =/  pars=dill-blit:dill  (put-blit visa.prod)
+      :_  this(arca [(@ -.+.blt) (@ +.+.blt)], opus.ara prod)
       :~  [%give %fact ~[/dill/$] %dill-blit !>(pars)]
       ==
-    ==
+    [~ this]
+    ::
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-watch
   |=  =path
-  ~&  >>>  'WATCH'
-  ~&  >>>  path
-  `this
+  ?+  path  [~ this]
+      [%dill *]
+    =/  prod=opus  (geno vela.ara)
+    =/  pars=dill-blit:dill  (put-blit visa.prod)
+    :_  this
+    :~  [%give %fact ~[/dill/$] %dill-blit !>(pars)]
+    ==
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
