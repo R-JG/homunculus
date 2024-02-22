@@ -152,161 +152,169 @@
     ==
   ::
   ?:  =(%aro -.zona)                            ::  handle arrow key element navigation
+    |^
     ?~  ordo.ara  [~ aeon]
     ?~  rex.ara
+      =/  fake=dux  [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
+      =.  zona
+        ?:  =(%l +.zona)
+          [%aro %r]
+        ?:  =(%u +.zona)
+          [%aro %d]
+        zona
       =/  o=ordo
-        %+  sort
-          (sort ordo.ara |=([a=dux b=dux] (gth t.a t.b))) :: THIS doesn't work; instead, use pyth where the arca top left is rex
-        |=([a=dux b=dux] (lth l.a l.b))
+        %+  sort  ordo.ara
+        |=  [a=dux b=dux]
+        (lth (pyth a fake) (pyth b fake))
       [~ aeon(rex.ara ?~(o ~ i.o))]
     =/  o=ordo
-      |^
-      %+  sort
-        ^-  ordo
-        %+  skim  `ordo`ordo.ara
-        |=  =dux
-        ^-  bean
-        ?:  =(k.dux k.rex.ara)
-          |
-        ?-  (?(%d %l %r %u) +.zona)
-            %l
-          ?:  (lap dux)
-            ?:  =(l.dux l.rex.ara)
-              |((chil k.dux k.rex.ara) =(%b (abov k.rex.ara k.dux)))
-            (lth l.dux l.rex.ara)
-          ?.  =(~ (abov k.rex.ara k.dux))
-            (lth l.dux l.rex.ara)
-          (lth r.dux l.rex.ara)
-            %u
-          ?:  (lap dux)
-            ?:  =(t.dux t.rex.ara)
-              |((chil k.dux k.rex.ara) =(%b (abov k.rex.ara k.dux)))
-            (gth t.dux t.rex.ara)
-          ?.  =(~ (abov k.rex.ara k.dux))
-            (gth t.dux t.rex.ara)
-          (gth b.dux t.rex.ara)
-            %r
-          ?:  (lap dux)
-            ?:  =(l.dux l.rex.ara)
-              |((chil k.rex.ara k.dux) =(%a (abov k.rex.ara k.dux)))
-            (gth l.dux l.rex.ara)
-          ?.  =(~ (abov k.rex.ara k.dux))
-            (gth l.dux l.rex.ara)
-          (gth l.dux r.rex.ara)
-            %d
-          ?:  (lap dux)
-            ?:  =(t.dux t.rex.ara)
-              |((chil k.rex.ara k.dux) =(%a (abov k.rex.ara k.dux)))
-            (lth t.dux t.rex.ara)
-          ?.  =(~ (abov k.rex.ara k.dux))
-            (lth t.dux t.rex.ara)
-          (lth t.dux b.rex.ara)
-        ==
+      %+  sort  `ordo`(skim `ordo`ordo.ara (keep rex.ara))
       |=  [a=dux b=dux]
-      (lth (pyth a) (pyth b))
-      ++  chil
-        |=  [a=rami b=rami]
-        ^-  bean
-        ?:  =(a b)
-          |
-        |-
-        ?:  =(a b)
-          &
-        ?~  t.b
-          |
-        $(b t.b)
-      ++  abov
-        |=  [a=rami b=rami]
-        ^-  ?(%a %b %~)
-        =/  a  (flop a)
-        =/  b  (flop b)
-        |- 
-        ?~  a  ~
-        ?~  b  ~
-        ?~  t.a  ~
-        ?~  t.b  ~
-        ?:  !=(ager.i.t.a ager.i.t.b)
-          ?:  &(=(%z axis.i.t.a) =(%z axis.i.t.b))
-            ?:  (gth ager.i.t.a ager.i.t.b)
-              %b
-            %a
-          ~
-        $(a t.a, b t.b)
-      ++  lap
-        |=  =dux
-        ^-  bean
-        ?|  ?&  (lte l.dux l.rex.ara)  (gte r.dux l.rex.ara)
-                (gte t.dux t.rex.ara)  (lte b.dux t.rex.ara)
-            ==
-            ?&  (lte l.dux r.rex.ara)  (gte r.dux r.rex.ara)
-                (gte t.dux t.rex.ara)  (lte b.dux t.rex.ara)
-            ==
-            ?&  (lte l.dux l.rex.ara)  (gte r.dux l.rex.ara)
-                (gte t.dux b.rex.ara)  (lte b.dux b.rex.ara)
-            ==
-            ?&  (lte l.dux r.rex.ara)  (gte r.dux r.rex.ara)
-                (gte t.dux b.rex.ara)  (lte b.dux b.rex.ara)
-            ==
-            ::
-            ?&  (lte l.rex.ara l.dux)  (gte r.rex.ara l.dux)
-                (gte t.rex.ara t.dux)  (lte b.rex.ara t.dux)
-            ==
-            ?&  (lte l.rex.ara r.dux)  (gte r.rex.ara r.dux)
-                (gte t.rex.ara t.dux)  (lte b.rex.ara t.dux)
-            ==
-            ?&  (lte l.rex.ara l.dux)  (gte r.rex.ara l.dux)
-                (gte t.rex.ara b.dux)  (lte b.rex.ara b.dux)
-            ==
-            ?&  (lte l.rex.ara r.dux)  (gte r.rex.ara r.dux)
-                (gte t.rex.ara b.dux)  (lte b.rex.ara b.dux)
-            ==
-        ==
-      ++  pyth
-        |=  =dux
-        ^-  @ud
-        =<  -
-        ?-  (?(%d %l %r %u) +.zona)
-            %l
-          ?:  |((lap dux) !=(~ (abov k.rex.ara k.dux)))
-            %-  sqt  %+  add
-              (pow (sub l.rex.ara l.dux) 2)
-            (pow (mul ?:((gte t.rex.ara t.dux) (sub t.rex.ara t.dux) (sub t.dux t.rex.ara)) 6) 2)
-          %-  sqt  %+  add
-            (pow (sub l.rex.ara r.dux) 2)
-          (pow (mul ?:((gte t.rex.ara t.dux) (sub t.rex.ara t.dux) (sub t.dux t.rex.ara)) 6) 2)
-            %u
-          ?:  |((lap dux) !=(~ (abov k.rex.ara k.dux)))
-            %-  sqt  %+  add
-              (pow (mul ?:((gte l.dux l.rex.ara) (sub l.dux l.rex.ara) (sub l.rex.ara l.dux)) 3) 2)
-            (pow (mul (sub t.dux t.rex.ara) 2) 2)
-          %-  sqt  %+  add
-            (pow (mul ?:((gte l.dux l.rex.ara) (sub l.dux l.rex.ara) (sub l.rex.ara l.dux)) 3) 2)
-          (pow (mul (sub b.dux t.rex.ara) 2) 2)
-            %r
-          ?:  |((lap dux) !=(~ (abov k.rex.ara k.dux)))
-            %-  sqt  %+  add
-              (pow (sub l.dux l.rex.ara) 2)
-            (pow (mul ?:((gte t.dux t.rex.ara) (sub t.dux t.rex.ara) (sub t.rex.ara t.dux)) 6) 2)
-          %-  sqt  %+  add
-            (pow (sub l.dux r.rex.ara) 2)
-          (pow (mul ?:((gte t.dux t.rex.ara) (sub t.dux t.rex.ara) (sub t.rex.ara t.dux)) 6) 2)
-            %d
-          ?:  |((lap dux) !=(~ (abov k.rex.ara k.dux)))
-            %-  sqt  %+  add
-              (pow (mul ?:((gte l.rex.ara l.dux) (sub l.rex.ara l.dux) (sub l.dux l.rex.ara)) 3) 2)
-            (pow (mul (sub t.rex.ara t.dux) 2) 2)
-          %-  sqt  %+  add
-            (pow (mul ?:((gte l.rex.ara l.dux) (sub l.rex.ara l.dux) (sub l.dux l.rex.ara)) 3) 2)
-          (pow (mul (sub b.rex.ara t.dux) 2) 2)
-        ==
-      --
-      
+      (lth (pyth a rex.ara) (pyth b rex.ara))
+    
+    :: handle advanced parent selection method here
+    
     :: ~&  >  o
     ~&  >>  [%current k.rex.ara]
     ~&  >>  zona
     ~&  >>  [%selected ?~(o ~ i.o)]
 
     [~ aeon(rex.ara ?~(o rex.ara i.o))]
+    ::
+    ++  chil
+      |=  [a=rami b=rami]
+      ^-  bean
+      ?:  =(a b)
+        |
+      |-
+      ?:  =(a b)
+        &
+      ?~  t.b
+        |
+      $(b t.b)
+    ++  abov
+      |=  [a=rami b=rami]
+      ^-  ?(%a %b %~)
+      =/  a  (flop a)
+      =/  b  (flop b)
+      |- 
+      ?~  a  ~
+      ?~  b  ~
+      ?~  t.a  ~
+      ?~  t.b  ~
+      ?:  !=(ager.i.t.a ager.i.t.b)
+        ?:  &(=(%z axis.i.t.a) =(%z axis.i.t.b))
+          ?:  (gth ager.i.t.a ager.i.t.b)
+            %b
+          %a
+        ~
+      $(a t.a, b t.b)
+    ++  lap
+      |=  [=dux rex=dux]
+      ^-  bean
+      ?|  ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
+              (gte t.dux t.rex)  (lte b.dux t.rex)
+          ==
+          ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
+              (gte t.dux t.rex)  (lte b.dux t.rex)
+          ==
+          ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
+              (gte t.dux b.rex)  (lte b.dux b.rex)
+          ==
+          ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
+              (gte t.dux b.rex)  (lte b.dux b.rex)
+          ==
+          ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
+              (gte t.rex t.dux)  (lte b.rex t.dux)
+          ==
+          ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
+              (gte t.rex t.dux)  (lte b.rex t.dux)
+          ==
+          ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
+              (gte t.rex b.dux)  (lte b.rex b.dux)
+          ==
+          ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
+              (gte t.rex b.dux)  (lte b.rex b.dux)
+          ==
+      ==
+    ++  keep
+      |=  rex=dux
+      |=  =dux
+      ^-  bean
+      ?:  =(k.dux k.rex)  |
+      ?-  (?(%d %l %r %u) +.zona)
+          %l
+        ?:  (lap dux rex)
+          ?:  =(l.dux l.rex)
+            |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
+          (lth l.dux l.rex)
+        ?.  =(~ (abov k.rex k.dux))
+          (lth l.dux l.rex)
+        (lth r.dux l.rex)
+          %u
+        ?:  (lap dux rex)
+          ?:  =(t.dux t.rex)
+            |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
+          (gth t.dux t.rex)
+        ?.  =(~ (abov k.rex k.dux))
+          (gth t.dux t.rex)
+        (gth b.dux t.rex)
+          %r
+        ?:  (lap dux rex)
+          ?:  =(l.dux l.rex)
+            |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
+          (gth l.dux l.rex)
+        ?.  =(~ (abov k.rex k.dux))
+          (gth l.dux l.rex)
+        (gth l.dux r.rex)
+          %d
+        ?:  (lap dux rex)
+          ?:  =(t.dux t.rex)
+            |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
+          (lth t.dux t.rex)
+        ?.  =(~ (abov k.rex k.dux))
+          (lth t.dux t.rex)
+        (lth t.dux b.rex)
+      ==
+    ++  pyth
+      |=  [=dux rex=dux]
+      ^-  @ud
+      =<  -
+      ?-  (?(%d %l %r %u) +.zona)
+          %l
+        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
+          %-  sqt  %+  add
+            (pow (sub l.rex l.dux) 2)
+          (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
+        %-  sqt  %+  add
+          (pow (sub l.rex r.dux) 2)
+        (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
+          %u
+        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
+          %-  sqt  %+  add
+            (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 3) 2)
+          (pow (mul (sub t.dux t.rex) 2) 2)
+        %-  sqt  %+  add
+          (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 3) 2)
+        (pow (mul (sub b.dux t.rex) 2) 2)
+          %r
+        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
+          %-  sqt  %+  add
+            (pow (sub l.dux l.rex) 2)
+          (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
+        %-  sqt  %+  add
+          (pow (sub l.dux r.rex) 2)
+        (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
+          %d
+        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
+          %-  sqt  %+  add
+            (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 3) 2)
+          (pow (mul (sub t.rex t.dux) 2) 2)
+        %-  sqt  %+  add
+          (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 3) 2)
+        (pow (mul (sub b.rex t.dux) 2) 2)
+      ==
+    --
   ::
   [~ aeon]
 ::  ::  ::  ::  ::  ::  ::  ::
