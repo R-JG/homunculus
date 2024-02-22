@@ -153,59 +153,147 @@
   ::
   ?:  =(%aro -.zona)                            ::  handle arrow key element navigation
     ?~  ordo.ara  [~ aeon]
-    ?~  rex.ara  :: if rex is null, then any arrow just selects the lowest l and the highest t
+    ?~  rex.ara
       =/  o=ordo
         %+  sort
-          (sort ordo.ara |=([a=dux b=dux] (lth l.a l.b)))
-        |=([a=dux b=dux] (gth t.a t.b))
+          (sort ordo.ara |=([a=dux b=dux] (gth t.a t.b))) :: THIS doesn't work; instead, use pyth where the arca top left is rex
+        |=([a=dux b=dux] (lth l.a l.b))
       [~ aeon(rex.ara ?~(o ~ i.o))]
-    =/  o=ordo   :: else, implement Euclidean distance
+    =/  o=ordo
       |^
       %+  sort
+        ^-  ordo
         %+  skim  `ordo`ordo.ara
         |=  =dux
         ^-  bean
-        ?:  |(=(%l +.zona) =(%u +.zona))
-          =/  par=bean
-            |-
-            ?:  =(k.rex.ara k.dux)
-              %.y
-            ?~  t.k.rex.ara
-              %.n
-            $(k.rex.ara t.k.rex.ara)
-          ?:  par
-            %.y
-          ?:  =(%l +.zona)
-            (lth r.dux l.rex.ara)
-          ?:  =(%u +.zona)
-            (gth b.dux t.rex.ara)
-          %.n
-        =/  chi=bean
-          |-
-          ?:  =(k.dux k.rex.ara)
-            %.y
-          ?~  t.k.dux
-            %.n
-          $(k.dux t.k.dux)
-        ?:  chi
-          %.y
-        ?:  =(%r +.zona)
+        ?:  =(k.dux k.rex.ara)
+          |
+        ?-  (?(%d %l %r %u) +.zona)
+            %l
+          ?:  (lap dux)
+            ?:  =(l.dux l.rex.ara)
+              |((chil k.dux k.rex.ara) (abov k.rex.ara k.dux))
+            (lth l.dux l.rex.ara)
+          (lth r.dux l.rex.ara)
+            %u
+          ?:  (lap dux)
+            ?:  =(t.dux t.rex.ara)
+              |((chil k.dux k.rex.ara) (abov k.rex.ara k.dux))
+            (gth t.dux t.rex.ara)
+          (gth b.dux t.rex.ara)
+            %r
+          ?:  (lap dux)
+            ?:  =(l.dux l.rex.ara)
+              |((chil k.rex.ara k.dux) (abov k.dux k.rex.ara))
+            (gth l.dux l.rex.ara)
           (gth l.dux r.rex.ara)
-        ?:  =(%d +.zona)
+            %d
+          ?:  (lap dux)
+            ?:  =(t.dux t.rex.ara)
+              |((chil k.rex.ara k.dux) (abov k.dux k.rex.ara))
+            (lth t.dux t.rex.ara)
           (lth t.dux b.rex.ara)
-        %.n
+        ==
       |=  [a=dux b=dux]
+      :: ~&  >>>  [k.a (pyth a)]
+      :: ~&  >>>  [k.b (pyth b)]
       (lth (pyth a) (pyth b))
-      ++  pyth
+      ++  chil
+        |=  [p=rami q=rami]
+        |-  ^-  bean
+        ?:  =(p q)
+          &
+        ?~  t.q
+          |
+        $(q t.q)
+      ++  abov
+        |=  [p=rami q=rami]
+        ^-  bean
+        =/  p  (flop p)
+        =/  q  (flop q)
+        |- 
+        ?~  p  |
+        ?~  q  |
+        ?~  t.p  |
+        ?~  t.q  |
+        ?:  !=(ager.i.t.p ager.i.t.q)
+          ?&  =(%z axis.i.t.p)  =(%z axis.i.t.q)
+              (gth ager.i.t.p ager.i.t.q)
+          ==
+        $(p t.p, q t.q)
+      ++  lap
         |=  =dux
-        ^-  @ud
-        =<  -
-        %-  sqt  %+  add
-          (pow ?:((gth l.dux l.rex.ara) 0 (sub l.rex.ara l.dux)) 2)
-        (pow ?:((gth t.dux t.rex.ara) 0 (sub t.rex.ara t.dux)) 2)
+        ^-  bean
+        ?|  ?&  (lte l.dux l.rex.ara)  (gte r.dux l.rex.ara)
+                (gte t.dux t.rex.ara)  (lte b.dux t.rex.ara)
+            ==
+            ?&  (lte l.dux r.rex.ara)  (gte r.dux r.rex.ara)
+                (gte t.dux t.rex.ara)  (lte b.dux t.rex.ara)
+            ==
+            ?&  (lte l.dux l.rex.ara)  (gte r.dux l.rex.ara)
+                (gte t.dux b.rex.ara)  (lte b.dux b.rex.ara)
+            ==
+            ?&  (lte l.dux r.rex.ara)  (gte r.dux r.rex.ara)
+                (gte t.dux b.rex.ara)  (lte b.dux b.rex.ara)
+            ==
+            ::
+            ?&  (lte l.rex.ara l.dux)  (gte r.rex.ara l.dux)
+                (gte t.rex.ara t.dux)  (lte b.rex.ara t.dux)
+            ==
+            ?&  (lte l.rex.ara r.dux)  (gte r.rex.ara r.dux)
+                (gte t.rex.ara t.dux)  (lte b.rex.ara t.dux)
+            ==
+            ?&  (lte l.rex.ara l.dux)  (gte r.rex.ara l.dux)
+                (gte t.rex.ara b.dux)  (lte b.rex.ara b.dux)
+            ==
+            ?&  (lte l.rex.ara r.dux)  (gte r.rex.ara r.dux)
+                (gte t.rex.ara b.dux)  (lte b.rex.ara b.dux)
+            ==
+        ==
+      ++  pyth                :: rewrite pyth to conditionally compare nearest sides for adjactent elements (differently depending on aro direction), and lar to lar in cases of nesting or layers
+        |=  =dux              :: one more FIX: when the arrow is right the farthest out element will be the target element; when left, it will instead be the selected element - the subtraction needs to change depending on the arrow direction (but the subtraction order won't actually change depending on nesting or layering because this basic order will still be the same)
+        ^-  @ud               :: the subtraction order of the perpendicular axis to the direction of the arrow needs to be determined on the basis of whether the dux's or rex's is greater
+        =<  -                 :: also the x axis result gets multiplied by two to offset the visual difference in the character dimensions 
+        ?-  (?(%d %l %r %u) +.zona)
+            %l
+          ?:  (lap dux)          :: TO-DO: add weights against the aro direction
+            %-  sqt  %+  add
+              (pow (sub l.rex.ara l.dux) 2)
+            (pow (mul ?:((gte t.rex.ara t.dux) (sub t.rex.ara t.dux) (sub t.dux t.rex.ara)) 2) 2)
+          %-  sqt  %+  add
+            (pow (sub l.rex.ara r.dux) 2)
+          (pow (mul ?:((gte t.rex.ara t.dux) (sub t.rex.ara t.dux) (sub t.dux t.rex.ara)) 2) 2)
+            %u
+          ?:  (lap dux)
+            %-  sqt  %+  add
+              (pow ?:((gte l.dux l.rex.ara) (sub l.dux l.rex.ara) (sub l.rex.ara l.dux)) 2)
+            (pow (mul (sub t.dux t.rex.ara) 2) 2)
+          %-  sqt  %+  add
+            (pow ?:((gte l.dux l.rex.ara) (sub l.dux l.rex.ara) (sub l.rex.ara l.dux)) 2)
+          (pow (mul (sub b.dux t.rex.ara) 2) 2)
+            %r
+          ?:  (lap dux)
+            %-  sqt  %+  add
+              (pow (sub l.dux l.rex.ara) 2)
+            (pow (mul ?:((gte t.dux t.rex.ara) (sub t.dux t.rex.ara) (sub t.rex.ara t.dux)) 2) 2)
+          %-  sqt  %+  add
+            (pow (sub l.dux r.rex.ara) 2)
+          (pow (mul ?:((gte t.dux t.rex.ara) (sub t.dux t.rex.ara) (sub t.rex.ara t.dux)) 2) 2)
+            %d
+          ?:  (lap dux)
+            %-  sqt  %+  add
+              (pow ?:((gte l.rex.ara l.dux) (sub l.rex.ara l.dux) (sub l.dux l.rex.ara)) 2)
+            (pow (mul (sub t.rex.ara t.dux) 2) 2)
+          %-  sqt  %+  add
+            (pow ?:((gte l.rex.ara l.dux) (sub l.rex.ara l.dux) (sub l.dux l.rex.ara)) 2)
+          (pow (mul (sub b.rex.ara t.dux) 2) 2)
+        ==
       --
-    ~&  >>>  ?~(o ~ i.o)
-    [~ aeon(rex.ara ?~(o ~ i.o))]
+    ~&  >  o
+    ~&  >>  [%current k.rex.ara]
+    ~&  >>  zona
+    ~&  >>  [%selected ?~(o ~ i.o)]
+    [~ aeon(rex.ara ?~(o rex.ara i.o))]
   ::
   [~ aeon]
 ::  ::  ::  ::  ::  ::  ::  ::
