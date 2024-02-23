@@ -19,7 +19,7 @@
   $?  %border-top  %border-right  %border-bottom  %border-left 
       %layer  %scroll  %text  %input  %$
   ==
-+$  aves  (map lex @t)
++$  aves  (map ?(%sel %act) @t)
 +$  vox   @c
 +$  loci  [x=@ud y=@ud]
 +$  lar   [x=(unit @ud) y=(unit @ud)]
@@ -28,15 +28,14 @@
 +$  fila  [d=(set deco) b=tint f=tint]
 ::
 +$  omen  (map nota lex)
-+$  zona  dill-belt:dill
-+$  nota  @tas
-+$  lex   ?(%def %sel %act)
++$  nota  dill-belt:dill
++$  lex   ?(%nav-l %nav-r %nav-u %nav-d %act %def)
 +$  mus   (map loci rami)
 +$  dux   [l=@ud r=@ud t=@ud b=@ud k=rami]
 +$  rex   $@(~ dux)
 +$  ordo  (list dux)
 ::
-+$  cura  [=ordo =mus]
++$  cura  [=omen =ordo]
 +$  opus  [=ens =visa]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  rei
@@ -54,7 +53,7 @@
 +$  vela  manx
 +$  ara
   $:  =ens  =visa  =vela
-      =rex  =ordo
+      =omen  =rex  =ordo
   ==
 +$  arae  (map @tas ara)
 +$  aeon
@@ -75,11 +74,11 @@
   [~ hoc(aeon *^aeon)]
 ++  on-save
   ^-  vase
-  !>(~)
+  !>(arca)
 ++  on-load
-  |=  *
+  |=  old=vase
   ^-  (quip card _hoc)
-  [~ hoc(aeon *^aeon)]
+  [~ hoc(aeon =+(*^aeon -(arca !<(^^arca old))))]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -97,14 +96,35 @@
     =/  elem=manx  !<(manx vase)
     =/  gen=opus  (geno elem)
     =/  dic=cura  (dico ens.gen)
-    ~&  >  dic
-    [~ hoc(ara [ens.gen visa.gen elem ~ ordo.dic])]
+    [~ hoc(ara [ens.gen visa.gen elem omen.dic ~ ordo.dic])]
     ::
       %dill-poke
-    =/  =zona  +:!<(poke:dill vase)
-    ::  ~&  >  zona
+    =/  n=nota  +:!<(poke:dill vase)
+    ::
+    ?:  =(%del -.n)                            ::  press the del key to exit the tui
+      :_  hoc
+      :~  [%pass /give-terminal %arvo %d %open %hood ~]
+          [%pass /give-terminal %arvo %d %flee ~]
+      ==
+    ::
+    ?:  =(%rez -.n)                            ::  resize arca to new terminal dimensions
+      =/  gen=opus  (geno vela.ara)
+      =/  dic=cura  (dico ens.gen)
+      =/  vis=dill-blit:dill  (put-blit visa.gen)
+      :_  hoc(arca [(@ -.+.n) (@ +.+.n)], ara ara(ens ens.gen, visa visa.gen, ordo ordo.dic))
+      :~  [%give %fact ~[/dill/$] %dill-blit !>(vis)]
+      ==
+    ::
+    ~&  >>  n
+    =/  l=(unit lex)  (~(get by omen.ara) n)
+    ?~  l
+      ~&  >>>  'NO EVENT'
+      [~ hoc]
+    ~&  >>>  u.l
+    ~&  >>>  [%current-selection rex.ara]
     =^  cards  aeon
-      (novo zona)
+      (novo u.l)
+    ~&  >>>  [%new-selection rex.ara]
     [cards hoc]
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -134,42 +154,28 @@
 ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
 |%
 ++  novo
-  |=  =zona
+  |=  =lex
   ^-  (quip card ^aeon)
   ::
-  ?:  =(%del -.zona)                            ::  press the del key to exit the tui
-    :_  aeon
-    :~  [%pass /give-terminal %arvo %d %open %hood ~]
-        [%pass /give-terminal %arvo %d %flee ~]
-    ==
-  ::
-  ?:  =(%rez -.zona)                            ::  resize arca to new terminal dimensions
-    =/  gen=opus  (geno vela.ara)
-    =/  dic=cura  (dico ens.gen)
-    =/  vis=dill-blit:dill  (put-blit visa.gen)
-    :_  aeon(arca [(@ -.+.zona) (@ +.+.zona)], ara [ens.gen visa.gen vela.ara rex.ara ordo.dic])
-    :~  [%give %fact ~[/dill/$] %dill-blit !>(vis)]
-    ==
-  ::
-  ?:  =(%aro -.zona)                            ::  handle arrow key element navigation
+  ?:  |(=(%nav-l lex) =(%nav-r lex) =(%nav-u lex) =(%nav-d lex))
     |^
     ?~  ordo.ara  [~ aeon]
     ?~  rex.ara
       =/  fake=dux
         [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
-      =.  zona
-        ?:  =(%l +.zona)
-          [%aro %r]
-        ?:  =(%u +.zona)
-          [%aro %d]
-        zona
+      =.  lex
+        ?:  =(%nav-l lex)
+          %nav-r
+        ?:  =(%nav-u lex)
+          %nav-d
+        lex
       =/  i=ordo
         %+  sort  ordo.ara
         |=  [a=dux b=dux]
         (lth (pyth a fake) (pyth b fake))
       [~ aeon(rex.ara ?~(i ~ i.i))]
     =/  i=ordo
-      ?.  |(=(%r +.zona) =(%d +.zona))
+      ?.  |(=(%nav-r lex) =(%nav-d lex))
         ~
       %+  sort
         ^-  ordo
@@ -266,8 +272,8 @@
       |=  =dux
       ^-  bean
       ?:  =(k.dux k.rex)  |
-      ?-  (?(%d %l %r %u) +.zona)
-          %l
+      ?+  lex  |
+          %nav-l
         ?:  (lap dux rex)
           ?:  =(l.dux l.rex)
             |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
@@ -275,7 +281,7 @@
         ?.  =(~ (abov k.rex k.dux))
           (lth l.dux l.rex)
         (lth r.dux l.rex)
-          %u
+          %nav-u
         ?:  (lap dux rex)
           ?:  =(t.dux t.rex)
             |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
@@ -283,7 +289,7 @@
         ?.  =(~ (abov k.rex k.dux))
           (gth t.dux t.rex)
         (gth b.dux t.rex)
-          %r
+          %nav-r
         ?:  (lap dux rex)
           ?:  =(l.dux l.rex)
             |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
@@ -291,7 +297,7 @@
         ?.  =(~ (abov k.rex k.dux))
           (gth l.dux l.rex)
         (gth l.dux r.rex)
-          %d
+          %nav-d
         ?:  (lap dux rex)
           ?:  =(t.dux t.rex)
             |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
@@ -304,8 +310,8 @@
       |=  [=dux rex=dux]
       ^-  @ud
       =<  -
-      ?-  (?(%d %l %r %u) +.zona)
-          %l
+      ?+  lex  0
+          %nav-l
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (sub l.rex l.dux) 2)
@@ -313,7 +319,7 @@
         %-  sqt  %+  add
           (pow (sub l.rex r.dux) 2)
         (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
-          %u
+          %nav-u
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
@@ -321,7 +327,7 @@
         %-  sqt  %+  add
           (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
         (pow (mul (sub b.dux t.rex) 2) 2)
-          %r
+          %nav-r
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (sub l.dux l.rex) 2)
@@ -329,7 +335,7 @@
         %-  sqt  %+  add
           (pow (sub l.dux r.rex) 2)
         (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
-          %d
+          %nav-d
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
@@ -1272,6 +1278,11 @@
             ?:((gth h.size.res.u.el u.y.lar.u.el) 0 +((sub u.y.lar.u.el h.size.res.u.el)))
             k
         ==
+      =?  omen.acc  &(?=(^ sel) !(~(has by omen.acc) [%aro %l]))
+        %-  %~  gas
+              by
+            omen.acc
+        [[[%aro %l] %nav-l] [[%aro %r] %nav-r] [[%aro %u] %nav-u] [[%aro %d] %nav-d] ~]
       acc
       ::
     ==
