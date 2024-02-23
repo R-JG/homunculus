@@ -155,31 +155,55 @@
     |^
     ?~  ordo.ara  [~ aeon]
     ?~  rex.ara
-      =/  fake=dux  [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
+      =/  fake=dux
+        [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
       =.  zona
         ?:  =(%l +.zona)
           [%aro %r]
         ?:  =(%u +.zona)
           [%aro %d]
         zona
-      =/  o=ordo
+      =/  i=ordo
         %+  sort  ordo.ara
         |=  [a=dux b=dux]
         (lth (pyth a fake) (pyth b fake))
-      [~ aeon(rex.ara ?~(o ~ i.o))]
-    =/  o=ordo
+      [~ aeon(rex.ara ?~(i ~ i.i))]
+    =/  i=ordo
+      ?.  |(=(%r +.zona) =(%d +.zona))
+        ~
+      %+  sort
+        ^-  ordo
+        %+  skim  `ordo`ordo.ara
+        |=  =dux
+        (chil k.rex.ara k.dux)
+      |=  [a=dux b=dux]
+      (lth (pyth a rex.ara) (pyth b rex.ara))
+    ?:  ?=(^ i)
+      [~ aeon(rex.ara i.i)]
+    =/  ii=ordo
       %+  sort  `ordo`(skim `ordo`ordo.ara (keep rex.ara))
       |=  [a=dux b=dux]
       (lth (pyth a rex.ara) (pyth b rex.ara))
-    
-    :: handle advanced parent selection method here
-    
-    :: ~&  >  o
-    ~&  >>  [%current k.rex.ara]
-    ~&  >>  zona
-    ~&  >>  [%selected ?~(o ~ i.o)]
-
-    [~ aeon(rex.ara ?~(o rex.ara i.o))]
+    ?~  ii
+      [~ aeon]
+    =/  iii=ordo
+      %+  sort
+        ^-  ordo
+        %+  skim  `ordo`ordo.ara
+        |=  =dux
+        ^-  bean
+        ?:  =(k.dux k.rex.ara)
+          |
+        ?:  (chil k.dux k.i.ii)
+          !(chil k.dux k.rex.ara)
+        |
+      |=  [a=dux b=dux]
+      (lth (lent k.a) (lent k.b))
+    ?~  iii
+      [~ aeon(rex.ara i.ii)]
+    ?:  ((keep rex.ara) i.iii)
+      [~ aeon(rex.ara i.iii)]
+    [~ aeon]
     ::
     ++  chil
       |=  [a=rami b=rami]
@@ -292,10 +316,10 @@
           %u
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
-            (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 3) 2)
+            (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
           (pow (mul (sub t.dux t.rex) 2) 2)
         %-  sqt  %+  add
-          (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 3) 2)
+          (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
         (pow (mul (sub b.dux t.rex) 2) 2)
           %r
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
@@ -308,10 +332,10 @@
           %d
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
-            (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 3) 2)
+            (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
           (pow (mul (sub t.rex t.dux) 2) 2)
         %-  sqt  %+  add
-          (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 3) 2)
+          (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
         (pow (mul (sub b.rex t.dux) 2) 2)
       ==
     --
