@@ -4,7 +4,7 @@
 ::  ┴O┴ ┴└─┘┴ ┴└─┘┘└┘└─┘└─┘┴─┘└─┘└─┘
 ::
 |%
-+$  ens   (map rami [=cor =res =visa =vox =lar =aves])
++$  ens   (map rami [=res =visa =lar =aves =ars])
 +$  rami  (lest [=axis =ager])
 +$  res
   $:  size=[w=@ud h=@ud]
@@ -14,18 +14,19 @@
       flow=[d=?(%col %row) b=?(%wrap %clip)]
       look=fila
   ==
-+$  visa  (map loci [=fila =vox ~])
-+$  cor
-  $?  %border-top  %border-right  %border-bottom  %border-left 
-      %layer  %scroll  %text  %input  %$
-  ==
-+$  aves  (map ?(%sel %act) @t)
-+$  vox   @c
++$  visa  (map loci [=fila @c ~])
++$  vox   tape
 +$  loci  [x=@ud y=@ud]
 +$  lar   [x=(unit @ud) y=(unit @ud)]
 +$  axis  ?(%xy %z)
 +$  ager  @ud
 +$  fila  [d=(set deco) b=tint f=tint]
++$  aves  (map ?(%sel %act) @t)
++$  ars
+  $%  [%text =vox]  [%select =fila]
+      [%border-top ~]  [%border-left ~]  [%border-bottom ~]  [%border-right ~]
+      [%layer ~]  [%$ ~]
+  ==
 ::
 +$  omen  (map nota lex)
 +$  nota  dill-belt:dill
@@ -371,10 +372,10 @@
   =/  vlar=lar      [`0 `(dec y.arca)]
   |-
   ?~  m  a
-  =+  ^-  [=cor =rei =aves txt=tape]        ::  TODO expand this section
-      ?+  n.g.i.m  [%$ (get-rei %$) ~ ~]
-        %$         [%text (get-rei %text) ~ `tape`+.-.+.-.-.m]
-        %layer     [%layer (get-rei %layer) ~ ~]
+  =+  ^-  [=rei =aves =ars]
+      ?+  n.g.i.m  [(dolo %$) ~ [%$ ~]]
+        %$         [(dolo %text) ~ [%text `tape`+.-.+.-.-.m]]
+        %layer     [(dolo %layer) ~ [%layer ~]]
       ==
   |-
   ?:  ?=(^ a.g.i.m)
@@ -682,7 +683,7 @@
     |-
     =/  el  (~(get by ?:(|(repo wrim) ens.b ens.a)) [[%xy i] k])
     ?~  el  [bl br bt bb]
-    ?+  cor.u.el      $(i +(i))
+    ?+  -.ars.u.el      $(i +(i))
       %border-left    $(i +(i), bl w.size.res.u.el)
       %border-right   $(i +(i), br w.size.res.u.el)
       %border-top     $(i +(i), bt h.size.res.u.el)
@@ -804,7 +805,7 @@
         =(%i p.h.size.rei)
     ==
   =/  csiz=$@(~ [w=@ud h=@ud])
-    ?:  |(&(=(~ x.vlar) =(~ y.vlar)) !|(repo imp) =(%text cor))
+    ?:  |(&(=(~ x.vlar) =(~ y.vlar)) !|(repo imp) =(%text -.ars))
       ~
     =/  i=@ud    0
     =/  ax=axis  %xy
@@ -813,8 +814,8 @@
     |-
     =/  el  (~(get by ?:(|(repo wrim) ens.b ens.a)) [[ax i] k])
     ?:  ?&  ?=(^ el)  ?!  ?|
-            =(%border-left cor.u.el)  =(%border-right cor.u.el) :: change this to handle borders instead of excluding them
-            =(%border-top cor.u.el)  =(%border-bottom cor.u.el)
+            =(%border-left -.ars.u.el)  =(%border-right -.ars.u.el) :: change this to handle borders instead of excluding them
+            =(%border-top -.ars.u.el)  =(%border-bottom -.ars.u.el)
         ==  ==
       =/  el-r=@ud
         ?~  x.lar.u.el
@@ -1039,7 +1040,7 @@
     =.  visa.b  (muto movx movy ~(tap by visa.b))
     b
     ++  muto
-      |=  [movx=@ud movy=@ud v=(list [=loci =fila =vox ~])]
+      |=  [movx=@ud movy=@ud v=(list [=loci fila @c ~])]
       ^-  visa
       %-  %~  dif
           by
@@ -1059,7 +1060,7 @@
     :-  (~(uni by ens.b) ens.a)
     (~(uni by visa.b) visa.a)
   =/  ares=res
-    ?+  cor
+    ?+  -.ars
       :*  [q.w.size.rei q.h.size.rei]
           [q.t.padd.rei q.r.padd.rei q.b.padd.rei q.l.padd.rei]
           [q.t.marg.rei q.r.marg.rei q.b.marg.rei q.l.marg.rei]
@@ -1068,7 +1069,7 @@
           look.rei
       ==
         %text
-      =/  len  (lent txt)
+      =/  len  (lent `vox`?:(=(%text -.ars) vox.ars ~))
       =/  lim  (sub prx ?:(=(%row d.pow) n.vir o.vir))
       :*  :-  ?:((lth len lim) len lim)
             ?:  =(0 lim)  0
@@ -1081,21 +1082,17 @@
       ==
     ==
   =/  rend=visa
-    ?+  cor             (render-box alar plim ares)
-        %text           (render-text alar plim pl w.size.ares txt)
-        %layer          ~
-        :: %border-top     (render-border )
-        :: %border-right   (render-border )
-        :: %border-bottom  (render-border )
-        :: %border-left    (render-border )
+    ?+  -.ars     (rbox alar plim ares)
+        %text   (rtxt alar plim pl w.size.ares `vox`?:(=(%text -.ars) vox.ars ~))
+        %layer  ~
     ==
-  =?  rend  !=(%layer cor)  (~(dif by rend) visa.a)
+  =?  rend  !=(%layer -.ars)  (~(dif by rend) visa.a)
   =?  vir  
-      ?!  ?|  =(%layer cor)
-        =(%border-left cor)
-        =(%border-right cor)
-        =(%border-top cor)
-        =(%border-bottom cor)
+      ?!  ?|  =(%layer -.ars)
+        =(%border-left -.ars)
+        =(%border-right -.ars)
+        =(%border-top -.ars)
+        =(%border-bottom -.ars)
       ==
     =/  el-x  (add w.size.ares (add l.marg.ares r.marg.ares))
     =/  el-y  (add h.size.ares (add t.marg.ares b.marg.ares))
@@ -1129,7 +1126,7 @@
   %=  ^^$
     a  
       %=  a
-        ens   (~(put by ens.a) k [cor ares rend (@c (crip txt)) alar aves])
+        ens   (~(put by ens.a) k [ares rend alar aves ars])
         visa  (~(uni by rend) visa.a)
       ==
     m     t.m
@@ -1138,7 +1135,7 @@
     cl    +(cl)
   ==
 ::  ::  ::  ::  ::  ::  ::  ::
-++  render-box
+++  rbox
   |=  [=lar lim=loci =res]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
@@ -1160,12 +1157,12 @@
     a  (~(put by a) [x y] [look.res (@c ' ') ~])
   ==
 ::
-++  render-text
-  |=  [=lar lim=loci =fila cols=@ud txt=tape]
+++  rtxt
+  |=  [=lar lim=loci =fila cols=@ud =vox]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
   |-
-  ?~  txt    a
+  ?~  vox    a
   ?~  x.lar  a
   ?~  y.lar  a
   =/  x  (add u.x.lar w)
@@ -1176,22 +1173,18 @@
   ?:  (lth y y.lim)
     a
   ?:  |((gth +(x) x.arca) (gth x x.lim))
-    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h), txt t.txt)
+    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h), vox t.vox)
   %=  $
     w    ?:(nrow 0 +(w))
     h    ?:(nrow +(h) h)
-    a    (~(put by a) [x y] [fila (@c i.txt) ~])
-    txt  t.txt
+    a    (~(put by a) [x y] [fila (@c i.vox) ~])
+    vox  t.vox
   ==
 ::
-::  ++  render-border
-::  ++  render-scroll
-::
-::  ::  ::  ::  ::  ::  ::  ::
-++  get-rei
-  |=  =cor
+++  dolo
+  |=  el=@tas
   ^-  rei
-  ?+  cor
+  ?+  el
     ::
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1219,7 +1212,7 @@
         look=[~ ~ %w]
     ==
   ==
-::  ::  ::  ::  ::  ::  ::  ::
+::
 ++  pars
   |=  v=tape
   ^-  as
@@ -1263,7 +1256,7 @@
           pow  flow.res.u.el
     ==  ==
   =.  acc
-    ?+  cor.u.el  acc
+    ?+  -.ars.u.el  acc
       ::
         %$
       =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
