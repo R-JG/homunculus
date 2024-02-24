@@ -349,6 +349,264 @@
   ::
   [~ aeon]
 ::  ::  ::  ::  ::  ::  ::  ::
+++  dolo
+  |=  el=@tas
+  ^-  rei
+  ?+  el
+    ::
+    :*  size=[[%i 0] [%i 0]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %clip]
+        look=[~ ~ %w]
+    ==
+    ::
+      %text
+    :*  size=[[%i 0] [%i 0]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %wrap]
+        look=[~ ~ %w]
+    ==
+    ::
+      %layer
+    :*  size=[[%p 100] [%p 100]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %clip]
+        look=[~ ~ %w]
+    ==
+  ==
+::
+++  suo
+  |=  [n=mane a=mart]
+  ^-  [rei aves ars]
+  =+  ^-  [=rei =aves =ars]
+      ?+  n  [(dolo %$) ~ [%$ ~]]
+        %$         [(dolo %text) ~ [%text ?~(a ~ v.i.a)]]
+        %layer     [(dolo %layer) ~ [%layer ~]]
+        %select    [(dolo %$) ~ [%select [~ %w %k]]]
+      ==
+  |-
+  ?~  a  [rei aves ars]
+  ?+  n.i.a  $(a t.a)
+      %w
+    $(w.size.rei (pars v.i.a), a t.a)
+      %h
+    $(h.size.rei (pars v.i.a), a t.a)
+      %p
+    =/  v  (pars v.i.a)
+    $(padd.rei [v v v v], a t.a)
+      %px
+    =/  v  (pars v.i.a)
+    $(l.padd.rei v, r.padd.rei v, a t.a)
+      %py
+    =/  v  (pars v.i.a)
+    $(t.padd.rei v, b.padd.rei v, a t.a)
+      %pl
+    $(l.padd.rei (pars v.i.a), a t.a)
+      %pr
+    $(r.padd.rei (pars v.i.a), a t.a)
+      %pt
+    $(t.padd.rei (pars v.i.a), a t.a)
+      %pb
+    $(b.padd.rei (pars v.i.a), a t.a)
+      %m
+    =/  v  (pars v.i.a)
+    $(marg.rei [v v v v], a t.a)
+      %mx
+    =/  v  (pars v.i.a)
+    $(l.marg.rei v, r.marg.rei v, a t.a)
+      %my
+    =/  v  (pars v.i.a)
+    $(t.marg.rei v, b.marg.rei v, a t.a)
+      %ml
+    $(l.marg.rei (pars v.i.a), a t.a)
+      %mr
+    $(r.marg.rei (pars v.i.a), a t.a)
+      %mt
+    $(t.marg.rei (pars v.i.a), a t.a)
+      %mb
+    $(b.marg.rei (pars v.i.a), a t.a)
+      %fx
+    =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
+    ?:  ?=(^ num)
+      $(x.flex.rei ?:((lte u.num 100) u.num 100), a t.a)
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %start   $(x.flex.rei 0, a t.a)
+      %center  $(x.flex.rei 50, a t.a)
+      %end     $(x.flex.rei 100, a t.a)
+    ==
+      %fy
+    =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
+    ?:  ?=(^ num)
+      $(y.flex.rei ?:((lte u.num 100) u.num 100), a t.a)
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %start   $(y.flex.rei 0, a t.a)
+      %center  $(y.flex.rei 50, a t.a)
+      %end     $(y.flex.rei 100, a t.a)
+    ==
+      %fl
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %row          $(flow.rei [%row %clip], a t.a)
+      %row-clip     $(flow.rei [%row %clip], a t.a)
+      %row-wrap     $(flow.rei [%row %wrap], a t.a)
+      %column       $(flow.rei [%col %clip], a t.a)
+      %column-clip  $(flow.rei [%col %clip], a t.a)
+      %column-wrap  $(flow.rei [%col %wrap], a t.a)
+    ==
+      %cb
+    ?+  (@tas (crip v.i.a))  $(b.look.rei %~, a t.a)
+      %red      $(b.look.rei %r, a t.a)
+      %green    $(b.look.rei %g, a t.a)
+      %blue     $(b.look.rei %b, a t.a)
+      %cyan     $(b.look.rei %c, a t.a)
+      %magenta  $(b.look.rei %m, a t.a)
+      %yellow   $(b.look.rei %y, a t.a)
+      %black    $(b.look.rei %k, a t.a)
+      %white    $(b.look.rei %w, a t.a)
+    ==
+      %cf
+    ?+  (@tas (crip v.i.a))  $(f.look.rei %~, a t.a)
+      %red      $(f.look.rei %r, a t.a)
+      %green    $(f.look.rei %g, a t.a)
+      %blue     $(f.look.rei %b, a t.a)
+      %cyan     $(f.look.rei %c, a t.a)
+      %magenta  $(f.look.rei %m, a t.a)
+      %yellow   $(f.look.rei %y, a t.a)
+      %black    $(f.look.rei %k, a t.a)
+      %white    $(f.look.rei %w, a t.a)
+    ==
+      %d
+    ?+  (@tas (crip v.i.a))  $(d.look.rei ~, a t.a)
+      %bold       $(d.look.rei (silt ~[%br]), a t.a)
+      %blink      $(d.look.rei (silt ~[%bl]), a t.a)
+      %underline  $(d.look.rei (silt ~[%un]), a t.a)
+    ==
+      %sel
+    $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
+      %sel-cb
+    ?+  -.ars  $(a t.a)
+        %select
+      ?+  (@tas (crip v.i.a))  $(a t.a)
+        %red      $(b.fila.ars %r, a t.a)
+        %green    $(b.fila.ars %g, a t.a)
+        %blue     $(b.fila.ars %b, a t.a)
+        %cyan     $(b.fila.ars %c, a t.a)
+        %magenta  $(b.fila.ars %m, a t.a)
+        %yellow   $(b.fila.ars %y, a t.a)
+        %black    $(b.fila.ars %k, a t.a)
+        %white    $(b.fila.ars %w, a t.a)
+      ==
+    ==
+      %sel-cf
+    ?+  -.ars  $(a t.a)
+        %select
+      ?+  (@tas (crip v.i.a))  $(a t.a)
+        %red      $(f.fila.ars %r, a t.a)
+        %green    $(f.fila.ars %g, a t.a)
+        %blue     $(f.fila.ars %b, a t.a)
+        %cyan     $(f.fila.ars %c, a t.a)
+        %magenta  $(f.fila.ars %m, a t.a)
+        %yellow   $(f.fila.ars %y, a t.a)
+        %black    $(f.fila.ars %k, a t.a)
+        %white    $(f.fila.ars %w, a t.a)
+      ==
+    ==
+      %sel-d
+    ?+  -.ars  $(a t.a)
+        %select
+      ?+  (@tas (crip v.i.a))  $(a t.a)
+        %bold       $(d.fila.ars (silt ~[%br]), a t.a)
+        %blink      $(d.fila.ars (silt ~[%bl]), a t.a)
+        %underline  $(d.fila.ars (silt ~[%un]), a t.a)
+      ==
+    ==
+      %act
+    $(aves (~(put by aves) %act (crip v.i.a)), a t.a)
+  ==
+::
+++  pars
+  |=  v=tape
+  ^-  as
+  ?:  =(~ v)  [%c 0]
+  =/  r  (rear v)
+  ?:  =('%' r)
+    =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
+    ?~  n  [%c 0]
+    [%p ?:((gth u.n 100) 100 u.n)]
+  ?:  =('c' r)
+    =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
+    ?~  n  [%c 0]
+    [%c u.n]
+  =/  n=(unit @ud)  (slaw %ud (crip v))
+  ?~  n  [%c 0]
+  [%c u.n]
+::
+++  duco
+  |=  c=marl
+  ^-  [marl marl marl]
+  =|  [bor=marl lay=marl nor=marl]
+  |-
+  ?~  c
+    [bor (flop lay) (flop nor)]
+  ?+  n.g.i.c       $(nor [i.c nor], c t.c)
+    %border-left    $(bor [i.c bor], c t.c)
+    %border-right   $(bor [i.c bor], c t.c)
+    %border-top     $(bor [i.c bor], c t.c)
+    %border-bottom  $(bor [i.c bor], c t.c)
+    %layer          $(lay [i.c lay], c t.c)
+  ==
+::
+++  rbox
+  |=  [=lar lim=loci =res]
+  ^-  visa
+  =+  [w=0 h=0 *a=visa]
+  |-
+  ?~  x.lar  a
+  ?~  y.lar  a
+  =/  x  (add u.x.lar w)
+  ?:  (gth h u.y.lar)
+    a
+  =/  y  (sub u.y.lar h)
+  =/  nrow=bean  (gte +(w) w.size.res)
+  ?:  |((gte h h.size.res) (lth y y.lim))
+    a
+  ?:  |((gth +(x) x.arca) (gth x x.lim))
+    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
+  %=  $
+    w  ?:(nrow 0 +(w))
+    h  ?:(nrow +(h) h)
+    a  (~(put by a) [x y] [look.res (@c ' ') ~])
+  ==
+::
+++  rtxt
+  |=  [=lar lim=loci =fila cols=@ud =vox]
+  ^-  visa
+  =+  [w=0 h=0 *a=visa]
+  |-
+  ?~  vox    a
+  ?~  x.lar  a
+  ?~  y.lar  a
+  =/  x  (add u.x.lar w)
+  ?:  (gth h u.y.lar)
+    a
+  =/  y  (sub u.y.lar h)
+  =/  nrow=bean  (gte +(w) cols)
+  ?:  (lth y y.lim)
+    a
+  ?:  |((gth +(x) x.arca) (gth x x.lim))
+    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h), vox t.vox)
+  %=  $
+    w    ?:(nrow 0 +(w))
+    h    ?:(nrow +(h) h)
+    a    (~(put by a) [x y] [fila (@c i.vox) ~])
+    vox  t.vox
+  ==
+::
 ++  geno
   |=  x=manx
   ^-  opus
@@ -372,112 +630,7 @@
   =/  vlar=lar      [`0 `(dec y.arca)]
   |-
   ?~  m  a
-  =+  ^-  [=rei =aves =ars]
-      ?+  n.g.i.m  [(dolo %$) ~ [%$ ~]]
-        %$         [(dolo %text) ~ [%text `tape`+.-.+.-.-.m]]
-        %layer     [(dolo %layer) ~ [%layer ~]]
-      ==
-  |-
-  ?:  ?=(^ a.g.i.m)
-    ?+  n.i.a.g.i.m  $(a.g.i.m t.a.g.i.m)
-        %w
-      $(w.size.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %h
-      $(h.size.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %p
-      =/  v  (pars v.i.a.g.i.m)
-      $(padd.rei [v v v v], a.g.i.m t.a.g.i.m)
-        %px
-      =/  v  (pars v.i.a.g.i.m)
-      $(l.padd.rei v, r.padd.rei v, a.g.i.m t.a.g.i.m)
-        %py
-      =/  v  (pars v.i.a.g.i.m)
-      $(t.padd.rei v, b.padd.rei v, a.g.i.m t.a.g.i.m)
-        %pl
-      $(l.padd.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %pr
-      $(r.padd.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %pt
-      $(t.padd.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %pb
-      $(b.padd.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %m
-      =/  v  (pars v.i.a.g.i.m)
-      $(marg.rei [v v v v], a.g.i.m t.a.g.i.m)
-        %mx
-      =/  v  (pars v.i.a.g.i.m)
-      $(l.marg.rei v, r.marg.rei v, a.g.i.m t.a.g.i.m)
-        %my
-      =/  v  (pars v.i.a.g.i.m)
-      $(t.marg.rei v, b.marg.rei v, a.g.i.m t.a.g.i.m)
-        %ml
-      $(l.marg.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %mr
-      $(r.marg.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %mt
-      $(t.marg.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %mb
-      $(b.marg.rei (pars v.i.a.g.i.m), a.g.i.m t.a.g.i.m)
-        %fx
-      =/  num=(unit @ud)  (slaw %ud (crip v.i.a.g.i.m))
-      ?:  ?=(^ num)
-        $(x.flex.rei ?:((lte u.num 100) u.num 100), a.g.i.m t.a.g.i.m)
-      ?+  (@tas (crip v.i.a.g.i.m))  $(a.g.i.m t.a.g.i.m)
-        %start   $(x.flex.rei 0, a.g.i.m t.a.g.i.m)
-        %center  $(x.flex.rei 50, a.g.i.m t.a.g.i.m)
-        %end     $(x.flex.rei 100, a.g.i.m t.a.g.i.m)
-      ==
-        %fy
-      =/  num=(unit @ud)  (slaw %ud (crip v.i.a.g.i.m))
-      ?:  ?=(^ num)
-        $(y.flex.rei ?:((lte u.num 100) u.num 100), a.g.i.m t.a.g.i.m)
-      ?+  (@tas (crip v.i.a.g.i.m))  $(a.g.i.m t.a.g.i.m)
-        %start   $(y.flex.rei 0, a.g.i.m t.a.g.i.m)
-        %center  $(y.flex.rei 50, a.g.i.m t.a.g.i.m)
-        %end     $(y.flex.rei 100, a.g.i.m t.a.g.i.m)
-      ==
-        %fl
-      ?+  (@tas (crip v.i.a.g.i.m))  $(a.g.i.m t.a.g.i.m)
-        %row          $(flow.rei [%row %clip], a.g.i.m t.a.g.i.m)
-        %row-clip     $(flow.rei [%row %clip], a.g.i.m t.a.g.i.m)
-        %row-wrap     $(flow.rei [%row %wrap], a.g.i.m t.a.g.i.m)
-        %column       $(flow.rei [%col %clip], a.g.i.m t.a.g.i.m)
-        %column-clip  $(flow.rei [%col %clip], a.g.i.m t.a.g.i.m)
-        %column-wrap  $(flow.rei [%col %wrap], a.g.i.m t.a.g.i.m)
-      ==
-        %cb
-      ?+  (@tas (crip v.i.a.g.i.m))  $(b.look.rei %~, a.g.i.m t.a.g.i.m)
-        %red      $(b.look.rei %r, a.g.i.m t.a.g.i.m)
-        %green    $(b.look.rei %g, a.g.i.m t.a.g.i.m)
-        %blue     $(b.look.rei %b, a.g.i.m t.a.g.i.m)
-        %cyan     $(b.look.rei %c, a.g.i.m t.a.g.i.m)
-        %magenta  $(b.look.rei %m, a.g.i.m t.a.g.i.m)
-        %yellow   $(b.look.rei %y, a.g.i.m t.a.g.i.m)
-        %black    $(b.look.rei %k, a.g.i.m t.a.g.i.m)
-        %white    $(b.look.rei %w, a.g.i.m t.a.g.i.m)
-      ==
-        %cf
-      ?+  (@tas (crip v.i.a.g.i.m))  $(f.look.rei %~, a.g.i.m t.a.g.i.m)
-        %red      $(f.look.rei %r, a.g.i.m t.a.g.i.m)
-        %green    $(f.look.rei %g, a.g.i.m t.a.g.i.m)
-        %blue     $(f.look.rei %b, a.g.i.m t.a.g.i.m)
-        %cyan     $(f.look.rei %c, a.g.i.m t.a.g.i.m)
-        %magenta  $(f.look.rei %m, a.g.i.m t.a.g.i.m)
-        %yellow   $(f.look.rei %y, a.g.i.m t.a.g.i.m)
-        %black    $(f.look.rei %k, a.g.i.m t.a.g.i.m)
-        %white    $(f.look.rei %w, a.g.i.m t.a.g.i.m)
-      ==
-        %d
-      ?+  (@tas (crip v.i.a.g.i.m))  $(d.look.rei ~, a.g.i.m t.a.g.i.m)
-        %bold       $(d.look.rei (silt ~[%br]), a.g.i.m t.a.g.i.m)
-        %blink      $(d.look.rei (silt ~[%bl]), a.g.i.m t.a.g.i.m)
-        %underline  $(d.look.rei (silt ~[%un]), a.g.i.m t.a.g.i.m)
-      ==
-        %sel
-      $(aves (~(put by aves) %sel (crip v.i.a.g.i.m)), a.g.i.m t.a.g.i.m)
-        %act
-      $(aves (~(put by aves) %act (crip v.i.a.g.i.m)), a.g.i.m t.a.g.i.m)
-    ==
+  =+  ^-([=rei =aves =ars] (suo g.i.m))
   =/  wcen=bean  =(%p p.w.size.rei)
   =/  hcen=bean  =(%p p.h.size.rei)
   =?  w.size.rei  wcen
@@ -529,19 +682,7 @@
   =?  q.h.size.rei  &(hcen !=(%i p.h.size.rei))
     =/  m  (add q.t.marg.rei q.b.marg.rei)
     ?:  (gth m q.h.size.rei)  0  (sub q.h.size.rei m)
-  =|  [bor=marl lay=marl nor=marl]
-  |-
-  ?:  ?=(^ c.i.m)
-    ?+  n.g.i.c.i.m     $(nor [i.c.i.m nor], c.i.m t.c.i.m)
-      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
-    ==
-  =:  lay  (flop lay)
-      nor  (flop nor)
-    ==
+  =+  ^-([bor=marl lay=marl nor=marl] (duco c.i.m))
   =/  repo=bean
     ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
         &(!=(0 y.flex.rei) =(%c p.py))
@@ -642,7 +783,7 @@
     ?.  |(repo wrim)
       %_  .
         a
-          %_  ^^$
+          %_  $
             m     bor
             k     [[%xy 0] k]
             cc    0
@@ -660,7 +801,7 @@
       ==  ==
     %_  .
       b
-        %_  ^^$
+        %_  $
           a     *opus
           m     bor
           k     [[%xy 0] k]
@@ -725,7 +866,7 @@
     ?.  |(repo wrim)
       %_  .
         a
-          %_  ^^$
+          %_  $
             m     lay
             k     [[%z 0] k]
             cc    0
@@ -743,7 +884,7 @@
       ==  ==
     %_  .
       b
-        %_  ^^$
+        %_  $
           a     *opus
           m     lay
           k     [[%z 0] k]
@@ -765,7 +906,7 @@
     ?.  |(repo wrim)
       %_  .
         a
-          %_  ^^$
+          %_  $
             m     nor
             k     [[%xy ncc] k]
             cc    ncc
@@ -783,7 +924,7 @@
       ==  ==
     %_  .
       b
-        %_  ^^$
+        %_  $
           a     *opus
           m     nor
           k     [[%xy ncc] k]
@@ -1123,7 +1264,7 @@
     ?:  (lth y y.plim)
       ~
     `y
-  %=  ^^$
+  %=  $
     a  
       %=  a
         ens   (~(put by ens.a) k [ares rend alar aves ars])
@@ -1134,101 +1275,6 @@
     cc    +(cc)
     cl    +(cl)
   ==
-::  ::  ::  ::  ::  ::  ::  ::
-++  rbox
-  |=  [=lar lim=loci =res]
-  ^-  visa
-  =+  [w=0 h=0 *a=visa]
-  |-
-  ?~  x.lar  a
-  ?~  y.lar  a
-  =/  x  (add u.x.lar w)
-  ?:  (gth h u.y.lar)
-    a
-  =/  y  (sub u.y.lar h)
-  =/  nrow=bean  (gte +(w) w.size.res)
-  ?:  |((gte h h.size.res) (lth y y.lim))
-    a
-  ?:  |((gth +(x) x.arca) (gth x x.lim))
-    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
-  %=  $
-    w  ?:(nrow 0 +(w))
-    h  ?:(nrow +(h) h)
-    a  (~(put by a) [x y] [look.res (@c ' ') ~])
-  ==
-::
-++  rtxt
-  |=  [=lar lim=loci =fila cols=@ud =vox]
-  ^-  visa
-  =+  [w=0 h=0 *a=visa]
-  |-
-  ?~  vox    a
-  ?~  x.lar  a
-  ?~  y.lar  a
-  =/  x  (add u.x.lar w)
-  ?:  (gth h u.y.lar)
-    a
-  =/  y  (sub u.y.lar h)
-  =/  nrow=bean  (gte +(w) cols)
-  ?:  (lth y y.lim)
-    a
-  ?:  |((gth +(x) x.arca) (gth x x.lim))
-    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h), vox t.vox)
-  %=  $
-    w    ?:(nrow 0 +(w))
-    h    ?:(nrow +(h) h)
-    a    (~(put by a) [x y] [fila (@c i.vox) ~])
-    vox  t.vox
-  ==
-::
-++  dolo
-  |=  el=@tas
-  ^-  rei
-  ?+  el
-    ::
-    :*  size=[[%i 0] [%i 0]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ ~ %w]
-    ==
-    ::
-      %text
-    :*  size=[[%i 0] [%i 0]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %wrap]
-        look=[~ ~ %w]
-    ==
-    ::
-      %layer
-    :*  size=[[%p 100] [%p 100]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ ~ %w]
-    ==
-  ==
-::
-++  pars
-  |=  v=tape
-  ^-  as
-  ?:  =(~ v)  [%c 0]
-  =/  r  (rear v)
-  ?:  =('%' r)
-    =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
-    ?~  n  [%c 0]
-    [%p ?:((gth u.n 100) 100 u.n)]
-  ?:  =('c' r)
-    =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
-    ?~  n  [%c 0]
-    [%c u.n]
-  =/  n=(unit @ud)  (slaw %ud (crip v))
-  ?~  n  [%c 0]
-  [%c u.n]
 ::  ::  ::  ::  ::  ::  ::
 ++  dico
   |=  =ens
