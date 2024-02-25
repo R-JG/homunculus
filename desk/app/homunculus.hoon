@@ -116,7 +116,6 @@
       :~  [%give %fact ~[/dill/$] %dill-blit !>(vis)]
       ==
     ::
-    ~&  >>  n
     =/  l=(unit lex)  (~(get by omen.ara) n)
     ?~  l
       ~&  >>>  'NO EVENT'
@@ -161,56 +160,74 @@
   ?:  |(=(%nav-l lex) =(%nav-r lex) =(%nav-u lex) =(%nav-d lex))
     |^
     ?~  ordo.ara  [~ aeon]
-    ?~  rex.ara
-      =/  fake=dux
-        [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
-      =.  lex
-        ?:  =(%nav-l lex)
-          %nav-r
-        ?:  =(%nav-u lex)
-          %nav-d
-        lex
+    =/  new=rex
+      ?~  rex.ara
+        =/  fake=dux
+          [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
+        =.  lex
+          ?:  =(%nav-l lex)
+            %nav-r
+          ?:  =(%nav-u lex)
+            %nav-d
+          lex
+        =/  i=ordo
+          %+  sort  ordo.ara
+          |=  [a=dux b=dux]
+          (lth (pyth a fake) (pyth b fake))
+        ?~  i
+          rex.ara
+        i.i
       =/  i=ordo
-        %+  sort  ordo.ara
+        ?.  |(=(%nav-r lex) =(%nav-d lex))
+          ~
+        %+  sort
+          ^-  ordo
+          %+  skim  `ordo`ordo.ara
+          |=  =dux
+          (chil k.rex.ara k.dux)
         |=  [a=dux b=dux]
-        (lth (pyth a fake) (pyth b fake))
-      [~ aeon(rex.ara ?~(i ~ i.i))]
-    =/  i=ordo
-      ?.  |(=(%nav-r lex) =(%nav-d lex))
-        ~
-      %+  sort
-        ^-  ordo
-        %+  skim  `ordo`ordo.ara
-        |=  =dux
-        (chil k.rex.ara k.dux)
-      |=  [a=dux b=dux]
-      (lth (pyth a rex.ara) (pyth b rex.ara))
-    ?:  ?=(^ i)
-      [~ aeon(rex.ara i.i)]
-    =/  ii=ordo
-      %+  sort  `ordo`(skim `ordo`ordo.ara (keep rex.ara))
-      |=  [a=dux b=dux]
-      (lth (pyth a rex.ara) (pyth b rex.ara))
-    ?~  ii
-      [~ aeon]
-    =/  iii=ordo
-      %+  sort
-        ^-  ordo
-        %+  skim  `ordo`ordo.ara
-        |=  =dux
-        ^-  bean
-        ?:  =(k.dux k.rex.ara)
+        (lth (pyth a rex.ara) (pyth b rex.ara))
+      ?:  ?=(^ i)
+        i.i
+      =/  ii=ordo
+        %+  sort  `ordo`(skim `ordo`ordo.ara (keep rex.ara))
+        |=  [a=dux b=dux]
+        (lth (pyth a rex.ara) (pyth b rex.ara))
+      ?~  ii
+        rex.ara
+      =/  iii=ordo
+        %+  sort
+          ^-  ordo
+          %+  skim  `ordo`ordo.ara
+          |=  =dux
+          ^-  bean
+          ?:  =(k.dux k.rex.ara)
+            |
+          ?:  (chil k.dux k.i.ii)
+            !(chil k.dux k.rex.ara)
           |
-        ?:  (chil k.dux k.i.ii)
-          !(chil k.dux k.rex.ara)
-        |
-      |=  [a=dux b=dux]
-      (lth (lent k.a) (lent k.b))
-    ?~  iii
-      [~ aeon(rex.ara i.ii)]
-    ?:  ((keep rex.ara) i.iii)
-      [~ aeon(rex.ara i.iii)]
-    [~ aeon]
+        |=  [a=dux b=dux]
+        (lth (lent k.a) (lent k.b))
+      ?~  iii
+        i.ii
+      ?:  ((keep rex.ara) i.iii)
+        i.iii
+      rex.ara
+    ?:  =(rex.ara new)
+      [~ aeon]
+    =/  prae=opus
+      ?:  ?=(~ rex.ara)
+        [~ ~]
+      (duco ens.ara k.rex.ara new)
+    =.  rex.ara  new
+    =/  post=opus
+      ?:  ?=(~ new)
+        [~ ~]
+      (duco ens.ara k.new rex.ara)
+    =.  ens.ara  (~(uni by ens.ara) (~(uni by ens.prae) ens.post))
+    =.  visa.ara  (~(uni by visa.ara) (~(uni by visa.prae) visa.post))
+    :_  aeon
+    [[%give %fact ~[/dill/$] %dill-blit !>((put-blit visa.ara))] ~] :: TODO: after implementing the blit diff, only send if not null
     ::
     ++  chil
       |=  [a=rami b=rami]
@@ -388,7 +405,7 @@
       ?+  n  [(dolo %$) ~ [%$ ~]]
         %$         [(dolo %text) ~ [%text ?~(a ~ v.i.a)]]
         %layer     [(dolo %layer) ~ [%layer ~]]
-        %select    [(dolo %$) ~ [%select [~ %w %k]]]
+        %select    [(dolo %$) ~ [%select [~ %w %k]]] :: change this style default to null when I implement cursor hop as the select default
       ==
   |-
   ?~  a  [rei aves ars]
@@ -546,20 +563,39 @@
   ?~  n  [%c 0]
   [%c u.n]
 ::
-++  duco
-  |=  c=marl
-  ^-  [marl marl marl]
-  =|  [bor=marl lay=marl nor=marl]
+++  duco                    :: render a navigation update
+  |=  [e=ens k=rami r=rex]  :: return just the ens and visa of the updated elements
+  ^-  opus
+  ?~  r  [~ ~]
+  =/  sel  (~(get by e) k)
+  ?~  sel  [~ ~]
+  ?.  ?=(%select -.ars.u.sel)
+    [~ ~]
+  =/  v=visa  (fuco visa.u.sel ?:(=(k k.r) fila.ars.u.sel look.res.u.sel))
+  =.  visa.u.sel  v
+  =:  e  (~(put by e) k u.sel)
+      k  [[%xy 0] k]
+    ==
   |-
-  ?~  c
-    [bor (flop lay) (flop nor)]
-  ?+  n.g.i.c       $(nor [i.c nor], c t.c)
-    %border-left    $(bor [i.c bor], c t.c)
-    %border-right   $(bor [i.c bor], c t.c)
-    %border-top     $(bor [i.c bor], c t.c)
-    %border-bottom  $(bor [i.c bor], c t.c)
-    %layer          $(lay [i.c lay], c t.c)
+  =/  el  (~(get by e) k)
+  ?~  el  [e v]
+  ?.  ?|  =(%border-left -.ars.u.el)  =(%border-right -.ars.u.el)
+          =(%border-top -.ars.u.el)  =(%border-bottom -.ars.u.el)
+          =(%text -.ars.u.el)
+      ==
+    $(ager.i.k +(ager.i.k))
+  =.  visa.u.el
+    (fuco visa.u.el ?:(=(k k.r) fila.ars.u.sel look.res.u.el))
+  %=  $
+    e  (~(put by e) k u.el)
+    v  (~(uni by v) visa.u.el)
+    ager.i.k  +(ager.i.k)
   ==
+::
+++  fuco
+  |=  [vi=visa fi=fila]
+  ^-  visa
+  (~(urn by vi) |=([* va=[fila @c ~]] [fi +.va]))
 ::
 ++  rbox
   |=  [=lar lim=loci =res]
@@ -682,7 +718,17 @@
   =?  q.h.size.rei  &(hcen !=(%i p.h.size.rei))
     =/  m  (add q.t.marg.rei q.b.marg.rei)
     ?:  (gth m q.h.size.rei)  0  (sub q.h.size.rei m)
-  =+  ^-([bor=marl lay=marl nor=marl] (duco c.i.m))
+  =+  ^-  [bor=marl lay=marl nor=marl]
+    =|  [bor=marl lay=marl nor=marl]
+    |-
+    ?~  c.i.m  [bor (flop lay) (flop nor)]
+    ?+  n.g.i.c.i.m   $(nor [i.c.i.m nor], c.i.m t.c.i.m)
+      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
+    ==
   =/  repo=bean
     ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
         &(!=(0 y.flex.rei) =(%c p.py))
@@ -1302,29 +1348,27 @@
           pow  flow.res.u.el
     ==  ==
   =.  acc
-    ?+  -.ars.u.el  acc
-      ::
-        %$
-      =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
-      =/  act=(unit @t)  (~(get by aves.u.el) %act)
-      =?  ordo.acc  ?=(^ sel)
-        ?~  x.lar.u.el  ordo.acc
-        ?~  y.lar.u.el  ordo.acc
-        :_  ordo.acc
-        :*  u.x.lar.u.el
-            (add u.x.lar.u.el ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el)))
-            u.y.lar.u.el
-            ?:((gth h.size.res.u.el u.y.lar.u.el) 0 +((sub u.y.lar.u.el h.size.res.u.el)))
-            k
-        ==
-      =?  omen.acc  &(?=(^ sel) !(~(has by omen.acc) [%aro %l]))
-        %-  %~  gas
-              by
-            omen.acc
-        [[[%aro %l] %nav-l] [[%aro %r] %nav-r] [[%aro %u] %nav-u] [[%aro %d] %nav-d] ~]
-      acc
-      ::
-    ==
+    =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
+    =/  nav=bean
+      ?|  &(?=(^ sel) !?=(%layer -.ars.u.el))
+          ?=(%select -.ars.u.el)
+      ==
+    =?  ordo.acc  nav
+      ?~  x.lar.u.el  ordo.acc
+      ?~  y.lar.u.el  ordo.acc
+      :_  ordo.acc
+      :*  u.x.lar.u.el
+          (add u.x.lar.u.el ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el)))
+          u.y.lar.u.el
+          ?:((gth h.size.res.u.el u.y.lar.u.el) 0 +((sub u.y.lar.u.el h.size.res.u.el)))
+          k
+      ==
+    =?  omen.acc  &(nav !(~(has by omen.acc) [%aro %l]))
+      %-  %~  gas
+            by
+          omen.acc
+      [[[%aro %l] %nav-l] [[%aro %r] %nav-r] [[%aro %u] %nav-u] [[%aro %d] %nav-d] ~]
+    acc
   %=  $
     i  +(i)
     k  k(ager.i +(ager.i.k))
