@@ -23,7 +23,7 @@
 +$  fila  [d=(set deco) b=tint f=tint]
 +$  aves  (map ?(%sel %act) @t)
 +$  ars
-  $%  [%text =vox]  [%select =fila]
+  $%  [%text =vox]  [%select d=(unit (set deco)) b=(unit tint) f=(unit tint)]
       [%border-top ~]  [%border-left ~]  [%border-bottom ~]  [%border-right ~]
       [%layer ~]  [%$ ~]
   ==
@@ -47,6 +47,7 @@
       =flow
       look=fila
   ==
++$  lux   dill-blit:dill
 +$  flex  [x=@ud y=@ud]
 +$  flow  [d=?(%col %row) b=?(%wrap %clip)]
 ::
@@ -111,20 +112,20 @@
     ?:  =(%rez -.n)                            ::  resize arca to new terminal dimensions
       =/  gen=opus  (geno vela.ara)
       =/  dic=cura  (dico ens.gen)
-      =/  vis=dill-blit:dill  (put-blit visa.gen)
+      =/  =lux  (put-blit visa.gen)
       :_  hoc(arca [(@ -.+.n) (@ +.+.n)], ara ara(ens ens.gen, visa visa.gen, ordo ordo.dic))
-      :~  [%give %fact ~[/dill/$] %dill-blit !>(vis)]
+      :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
       ==
     ::
     =/  l=(unit lex)  (~(get by omen.ara) n)
     ?~  l
       ~&  >>>  'NO EVENT'
       [~ hoc]
-    ~&  >>>  u.l
-    ~&  >>>  [%current-selection rex.ara]
+    :: ~&  >>>  u.l
+    :: ~&  >>>  [%current-selection rex.ara]
     =^  cards  aeon
       (novo u.l)
-    ~&  >>>  [%new-selection rex.ara]
+    :: ~&  >>>  [%new-selection rex.ara]
     [cards hoc]
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -132,9 +133,9 @@
   |=  =path
   ?+  path  [~ hoc]
       [%dill *]
-    =/  vis=dill-blit:dill  (put-blit visa.ara)
+    =/  =lux  (put-blit visa.ara)
     :_  hoc
-    :~  [%give %fact ~[/dill/$] %dill-blit !>(vis)]
+    :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
     ==
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -160,7 +161,7 @@
   ?:  |(=(%nav-l lex) =(%nav-r lex) =(%nav-u lex) =(%nav-d lex))
     |^
     ?~  ordo.ara  [~ aeon]
-    =/  new=rex
+    =/  next=rex
       ?~  rex.ara
         =/  fake=dux
           [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
@@ -213,21 +214,29 @@
       ?:  ((keep rex.ara) i.iii)
         i.iii
       rex.ara
-    ?:  =(rex.ara new)
+    ?:  =(rex.ara next)
       [~ aeon]
     =/  prae=opus
       ?:  ?=(~ rex.ara)
         [~ ~]
-      (duco ens.ara k.rex.ara new)
-    =.  rex.ara  new
+      (duco ens.ara k.rex.ara next)
+    =.  rex.ara  next
     =/  post=opus
-      ?:  ?=(~ new)
+      ?:  ?=(~ next)
         [~ ~]
-      (duco ens.ara k.new rex.ara)
+      (duco ens.ara k.next rex.ara)
     =.  ens.ara  (~(uni by ens.ara) (~(uni by ens.prae) ens.post))
     =.  visa.ara  (~(uni by visa.ara) (~(uni by visa.prae) visa.post))
+    =/  =lux
+      :-  %mor
+      :~  (blit:dill (put-blit visa.ara))
+          :-  %hop
+          ?~  rex.ara
+            [0 0]
+          [l.rex.ara ?:((gte +(t.rex.ara) y.arca) 0 (sub y.arca +(t.rex.ara)))]
+      ==
     :_  aeon
-    [[%give %fact ~[/dill/$] %dill-blit !>((put-blit visa.ara))] ~] :: TODO: after implementing the blit diff, only send if not null
+    [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
     ::
     ++  chil
       |=  [a=rami b=rami]
@@ -405,7 +414,7 @@
       ?+  n  [(dolo %$) ~ [%$ ~]]
         %$         [(dolo %text) ~ [%text ?~(a ~ v.i.a)]]
         %layer     [(dolo %layer) ~ [%layer ~]]
-        %select    [(dolo %$) ~ [%select [~ %w %k]]] :: change this style default to null when I implement cursor hop as the select default
+        %select    [(dolo %$) ~ [%select ~ ~ ~]]
       ==
   |-
   ?~  a  [rei aves ars]
@@ -509,37 +518,37 @@
     ?+  -.ars  $(a t.a)
         %select
       ?+  (@tas (crip v.i.a))  $(a t.a)
-        %red      $(b.fila.ars %r, a t.a)
-        %green    $(b.fila.ars %g, a t.a)
-        %blue     $(b.fila.ars %b, a t.a)
-        %cyan     $(b.fila.ars %c, a t.a)
-        %magenta  $(b.fila.ars %m, a t.a)
-        %yellow   $(b.fila.ars %y, a t.a)
-        %black    $(b.fila.ars %k, a t.a)
-        %white    $(b.fila.ars %w, a t.a)
+        %red      $(b.ars [~ %r], a t.a)
+        %green    $(b.ars [~ %g], a t.a)
+        %blue     $(b.ars [~ %b], a t.a)
+        %cyan     $(b.ars [~ %c], a t.a)
+        %magenta  $(b.ars [~ %m], a t.a)
+        %yellow   $(b.ars [~ %y], a t.a)
+        %black    $(b.ars [~ %k], a t.a)
+        %white    $(b.ars [~ %w], a t.a)
       ==
     ==
       %sel-cf
     ?+  -.ars  $(a t.a)
         %select
       ?+  (@tas (crip v.i.a))  $(a t.a)
-        %red      $(f.fila.ars %r, a t.a)
-        %green    $(f.fila.ars %g, a t.a)
-        %blue     $(f.fila.ars %b, a t.a)
-        %cyan     $(f.fila.ars %c, a t.a)
-        %magenta  $(f.fila.ars %m, a t.a)
-        %yellow   $(f.fila.ars %y, a t.a)
-        %black    $(f.fila.ars %k, a t.a)
-        %white    $(f.fila.ars %w, a t.a)
+        %red      $(f.ars [~ %r], a t.a)
+        %green    $(f.ars [~ %g], a t.a)
+        %blue     $(f.ars [~ %b], a t.a)
+        %cyan     $(f.ars [~ %c], a t.a)
+        %magenta  $(f.ars [~ %m], a t.a)
+        %yellow   $(f.ars [~ %y], a t.a)
+        %black    $(f.ars [~ %k], a t.a)
+        %white    $(f.ars [~ %w], a t.a)
       ==
     ==
       %sel-d
     ?+  -.ars  $(a t.a)
         %select
       ?+  (@tas (crip v.i.a))  $(a t.a)
-        %bold       $(d.fila.ars (silt ~[%br]), a t.a)
-        %blink      $(d.fila.ars (silt ~[%bl]), a t.a)
-        %underline  $(d.fila.ars (silt ~[%un]), a t.a)
+        %bold       $(d.ars [~ (silt ~[%br])], a t.a)
+        %blink      $(d.ars [~ (silt ~[%bl])], a t.a)
+        %underline  $(d.ars [~ (silt ~[%un])], a t.a)
       ==
     ==
       %act
@@ -567,13 +576,20 @@
   |=  [e=ens k=rami r=rex]  :: return just the ens and visa of the updated elements
   ^-  opus
   ?~  r  [~ ~]
-  =/  sel  (~(get by e) k)
-  ?~  sel  [~ ~]
-  ?.  ?=(%select -.ars.u.sel)
+  =/  tar  (~(get by e) k)
+  ?~  tar  [~ ~]
+  ?.  ?=(%select -.ars.u.tar)
     [~ ~]
-  =/  v=visa  (fuco visa.u.sel ?:(=(k k.r) fila.ars.u.sel look.res.u.sel))
-  =.  visa.u.sel  v
-  =:  e  (~(put by e) k u.sel)
+  =/  sel=bean  =(k k.r)
+  =/  v=visa
+    %+  fuco  visa.u.tar
+    ?.  sel
+      look.res.u.tar
+    :+  ?~(d.ars.u.tar d.look.res.u.tar u.d.ars.u.tar)
+      ?~(b.ars.u.tar b.look.res.u.tar u.b.ars.u.tar)
+    ?~(f.ars.u.tar f.look.res.u.tar u.f.ars.u.tar)
+  =.  visa.u.tar  v
+  =:  e  (~(put by e) k u.tar)
       k  [[%xy 0] k]
     ==
   |-
@@ -585,7 +601,12 @@
       ==
     $(ager.i.k +(ager.i.k))
   =.  visa.u.el
-    (fuco visa.u.el ?:(=(k k.r) fila.ars.u.sel look.res.u.el))
+    %+  fuco  visa.u.el
+    ?.  sel
+      look.res.u.tar
+    :+  ?~(d.ars.u.tar d.look.res.u.el u.d.ars.u.tar)
+      ?~(b.ars.u.tar b.look.res.u.el u.b.ars.u.tar)
+    ?~(f.ars.u.tar f.look.res.u.el u.f.ars.u.tar)
   %=  $
     e  (~(put by e) k u.el)
     v  (~(uni by v) visa.u.el)
@@ -1386,7 +1407,7 @@
 ::  
 ++  push-blit
   |=  v=visa
-  ^-  dill-blit:dill
+  ^-  lux
   =/  y=@ud  (dec y.arca)
   :-  %mor
   ^-  (list blit:dill)
@@ -1400,7 +1421,7 @@
 ::
 ++  put-blit
   |=  v=visa
-  ^-  dill-blit:dill
+  ^-  lux
   =/  y=@ud  0
   :-  %mor
   ^-  (list blit:dill)
@@ -1420,4 +1441,19 @@
   =/  char=(pair stye (list @c))
     ?~(val [[~ ~ ~] ~[(@c 'x')]] u.val)
   [char $(x +(x))]
+::
+++  viso                   :: display update diff
+  |=  [old=visa new=visa]
+  ^-  lux
+  =/  n=(list [=loci [fila @c ~]])  ~(tap by new)
+  :-  %mor
+  |-
+  ?~  n  ~
+  =/  v  (~(get by old) loci.i.n)
+  =/  hop
+    :-  x.loci.i.n
+    ?:((gth +(y.loci.i.n) y.arca) 0 (sub y.arca +(y.loci.i.n)))
+  ?.  |(&(?=(^ v) !=(u.v +.i.n)) ?=(~ v))
+    $(n t.n)
+  [[%hop hop] [%klr ~[+.i.n]] $(n t.n)]
 --
