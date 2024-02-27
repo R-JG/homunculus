@@ -45,7 +45,7 @@
       marg=[t=as r=as b=as l=as]
       =flex
       =flow
-      look=fila
+      look=[d=(unit (set deco)) b=(unit tint) f=(unit tint)]
   ==
 +$  lux   dill-blit:dill
 +$  flex  [x=@ud y=@ud]
@@ -385,7 +385,7 @@
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
         flow=[%row %clip]
-        look=[~ ~ %w]
+        look=[~ ~ ~]
     ==
     ::
       %text
@@ -394,7 +394,7 @@
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
         flow=[%row %wrap]
-        look=[~ ~ %w]
+        look=[~ ~ ~]
     ==
     ::
       %layer
@@ -403,7 +403,7 @@
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
         flow=[%row %clip]
-        look=[~ ~ %w]
+        look=[~ ~ ~]
     ==
   ==
 ::
@@ -485,32 +485,32 @@
       %column-wrap  $(flow.rei [%col %wrap], a t.a)
     ==
       %cb
-    ?+  (@tas (crip v.i.a))  $(b.look.rei %~, a t.a)
-      %red      $(b.look.rei %r, a t.a)
-      %green    $(b.look.rei %g, a t.a)
-      %blue     $(b.look.rei %b, a t.a)
-      %cyan     $(b.look.rei %c, a t.a)
-      %magenta  $(b.look.rei %m, a t.a)
-      %yellow   $(b.look.rei %y, a t.a)
-      %black    $(b.look.rei %k, a t.a)
-      %white    $(b.look.rei %w, a t.a)
+    ?+  (@tas (crip v.i.a))  $(b.look.rei ~, a t.a)
+      %red      $(b.look.rei [~ %r], a t.a)
+      %green    $(b.look.rei [~ %g], a t.a)
+      %blue     $(b.look.rei [~ %b], a t.a)
+      %cyan     $(b.look.rei [~ %c], a t.a)
+      %magenta  $(b.look.rei [~ %m], a t.a)
+      %yellow   $(b.look.rei [~ %y], a t.a)
+      %black    $(b.look.rei [~ %k], a t.a)
+      %white    $(b.look.rei [~ %w], a t.a)
     ==
       %cf
-    ?+  (@tas (crip v.i.a))  $(f.look.rei %~, a t.a)
-      %red      $(f.look.rei %r, a t.a)
-      %green    $(f.look.rei %g, a t.a)
-      %blue     $(f.look.rei %b, a t.a)
-      %cyan     $(f.look.rei %c, a t.a)
-      %magenta  $(f.look.rei %m, a t.a)
-      %yellow   $(f.look.rei %y, a t.a)
-      %black    $(f.look.rei %k, a t.a)
-      %white    $(f.look.rei %w, a t.a)
+    ?+  (@tas (crip v.i.a))  $(f.look.rei ~, a t.a)
+      %red      $(f.look.rei [~ %r], a t.a)
+      %green    $(f.look.rei [~ %g], a t.a)
+      %blue     $(f.look.rei [~ %b], a t.a)
+      %cyan     $(f.look.rei [~ %c], a t.a)
+      %magenta  $(f.look.rei [~ %m], a t.a)
+      %yellow   $(f.look.rei [~ %y], a t.a)
+      %black    $(f.look.rei [~ %k], a t.a)
+      %white    $(f.look.rei [~ %w], a t.a)
     ==
       %d
     ?+  (@tas (crip v.i.a))  $(d.look.rei ~, a t.a)
-      %bold       $(d.look.rei (silt ~[%br]), a t.a)
-      %blink      $(d.look.rei (silt ~[%bl]), a t.a)
-      %underline  $(d.look.rei (silt ~[%un]), a t.a)
+      %bold       $(d.look.rei [~ (silt ~[%br])], a t.a)
+      %blink      $(d.look.rei [~ (silt ~[%bl])], a t.a)
+      %underline  $(d.look.rei [~ (silt ~[%un])], a t.a)
     ==
       %sel
     $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
@@ -635,7 +635,7 @@
   %=  $
     w  ?:(nrow 0 +(w))
     h  ?:(nrow +(h) h)
-    a  (~(put by a) [x y] [look.res (@c ' ') ~])
+    a  (~(put by a) [x y] [[~ +.look.res] (@c ' ') ~])
   ==
 ::
 ++  rtxt
@@ -833,6 +833,10 @@
     ?:  (gth y y.plim)
       y.plim
     y
+  =/  fi=fila
+    :+  ?~(d.look.rei d.pl u.d.look.rei)
+      ?~(b.look.rei b.pl u.b.look.rei)
+    ?~(f.look.rei f.pl u.f.look.rei)
   =/  b  *opus
   =>  ?.  ?=(^ bor)
       .
@@ -846,7 +850,7 @@
             cl    0
             px    w.size.rei
             py    h.size.rei
-            pl    look.rei
+            pl    fi
             pex   flex.rei
             pow   flow.rei
             prx   arx
@@ -865,7 +869,7 @@
           cl    0
           px    w.size.rei
           py    h.size.rei
-          pl    look.rei
+          pl    fi
           pex   flex.rei
           pow   flow.rei
           prx   arx
@@ -924,7 +928,7 @@
             cl    0
             px    w.size.rei
             py    h.size.rei
-            pl    look.rei
+            pl    fi
             pex   flex.rei
             pow   flow.rei
             prx   arx
@@ -943,7 +947,7 @@
           cl    0
           px    w.size.rei
           py    h.size.rei
-          pl    look.rei
+          pl    fi
           pex   flex.rei
           pow   flow.rei
           prx   arx
@@ -964,7 +968,7 @@
             cl    0
             px    w.size.rei
             py    h.size.rei
-            pl    look.rei
+            pl    fi
             pex   flex.rei
             pow   flow.rei
             prx   arx
@@ -983,7 +987,7 @@
           cl    0
           px    w.size.rei
           py    h.size.rei
-          pl    look.rei
+          pl    fi
           pex   flex.rei
           pow   flow.rei
           prx   arx
@@ -1242,7 +1246,7 @@
           [q.t.marg.rei q.r.marg.rei q.b.marg.rei q.l.marg.rei]
           flex.rei
           flow.rei
-          look.rei
+          fi
       ==
         %text
       =/  len  (lent `vox`?:(=(%text -.ars) vox.ars ~))
