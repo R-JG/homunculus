@@ -164,7 +164,7 @@
     =/  next=rex
       ?~  rex.ara
         =/  fake=dux
-          [0 (dec x.arca) (dec y.arca) 0 `rami`[(rear k.i.ordo.ara) ~]]
+          [0 (dec x.arca) 0 (dec y.arca) `rami`[(rear k.i.ordo.ara) ~]]
         =.  lex
           ?:  =(%nav-l lex)
             %nav-r
@@ -233,7 +233,7 @@
           :-  %hop
           ?~  rex.ara
             [0 0]
-          [l.rex.ara ?:((gte +(t.rex.ara) y.arca) 0 (sub y.arca +(t.rex.ara)))]
+          [l.rex.ara t.rex.ara]
       ==
     :_  aeon
     [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
@@ -270,28 +270,28 @@
       |=  [=dux rex=dux]
       ^-  bean
       ?|  ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
-              (gte t.dux t.rex)  (lte b.dux t.rex)
+              (lte t.dux t.rex)  (gte b.dux t.rex)
           ==
           ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
-              (gte t.dux t.rex)  (lte b.dux t.rex)
+              (lte t.dux t.rex)  (gte b.dux t.rex)
           ==
           ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
-              (gte t.dux b.rex)  (lte b.dux b.rex)
+              (lte t.dux b.rex)  (gte b.dux b.rex)
           ==
           ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
-              (gte t.dux b.rex)  (lte b.dux b.rex)
+              (lte t.dux b.rex)  (gte b.dux b.rex)
           ==
           ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
-              (gte t.rex t.dux)  (lte b.rex t.dux)
+              (lte t.rex t.dux)  (gte b.rex t.dux)
           ==
           ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
-              (gte t.rex t.dux)  (lte b.rex t.dux)
+              (lte t.rex t.dux)  (gte b.rex t.dux)
           ==
           ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
-              (gte t.rex b.dux)  (lte b.rex b.dux)
+              (lte t.rex b.dux)  (gte b.rex b.dux)
           ==
           ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
-              (gte t.rex b.dux)  (lte b.rex b.dux)
+              (lte t.rex b.dux)  (gte b.rex b.dux)
           ==
       ==
     ++  keep
@@ -312,10 +312,10 @@
         ?:  (lap dux rex)
           ?:  =(t.dux t.rex)
             |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
-          (gth t.dux t.rex)
+          (lth t.dux t.rex)
         ?.  =(~ (abov k.rex k.dux))
-          (gth t.dux t.rex)
-        (gth b.dux t.rex)
+          (lth t.dux t.rex)
+        (lth b.dux t.rex)
           %nav-r
         ?:  (lap dux rex)
           ?:  =(l.dux l.rex)
@@ -328,10 +328,10 @@
         ?:  (lap dux rex)
           ?:  =(t.dux t.rex)
             |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
-          (lth t.dux t.rex)
+          (gth t.dux t.rex)
         ?.  =(~ (abov k.rex k.dux))
-          (lth t.dux t.rex)
-        (lth t.dux b.rex)
+          (gth t.dux t.rex)
+        (gth t.dux b.rex)
       ==
     ++  pyth
       |=  [=dux rex=dux]
@@ -350,10 +350,10 @@
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
-          (pow (mul (sub t.dux t.rex) 2) 2)
+          (pow (mul (sub t.rex t.dux) 2) 2)
         %-  sqt  %+  add
           (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
-        (pow (mul (sub b.dux t.rex) 2) 2)
+        (pow (mul (sub t.rex b.dux) 2) 2)
           %nav-r
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
@@ -366,10 +366,10 @@
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
-          (pow (mul (sub t.rex t.dux) 2) 2)
+          (pow (mul (sub t.dux t.rex) 2) 2)
         %-  sqt  %+  add
           (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
-        (pow (mul (sub b.rex t.dux) 2) 2)
+        (pow (mul (sub t.dux b.rex) 2) 2)
       ==
     --
   ::
@@ -626,11 +626,9 @@
   ?~  x.lar  a
   ?~  y.lar  a
   =/  x  (add u.x.lar w)
-  ?:  (gth h u.y.lar)
-    a
-  =/  y  (sub u.y.lar h)
+  =/  y  (add u.y.lar h)
   =/  nrow=bean  (gte +(w) w.size.res)
-  ?:  |((gte h h.size.res) (lth y y.lim))
+  ?:  |((gte h h.size.res) (gth y y.lim))
     a
   ?:  |((gth +(x) x.arca) (gth x x.lim))
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
@@ -649,11 +647,9 @@
   ?~  x.lar  a
   ?~  y.lar  a
   =/  x  (add u.x.lar w)
-  ?:  (gth h u.y.lar)
-    a
-  =/  y  (sub u.y.lar h)
+  =/  y  (add u.y.lar h)
   =/  nrow=bean  (gte +(w) cols)
-  ?:  (lth y y.lim)
+  ?:  (gth y y.lim)
     a
   ?:  |((gth +(x) x.arca) (gth x x.lim))
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h), vox t.vox)
@@ -681,10 +677,10 @@
   =/  pow=flow      [%row %clip]
   =/  prx=@ud       x.arca
   =/  pry=@ud       y.arca
-  =/  plar=lar      [`0 `(dec y.arca)]
-  =/  plim=loci     [(dec x.arca) 0]
+  =/  plar=lar      [`0 `0]
+  =/  plim=loci     [(dec x.arca) (dec y.arca)]
+  =/  vlar=lar      [`0 `0]
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
-  =/  vlar=lar      [`0 `(dec y.arca)]
   |-
   ?~  m  a
   =+  ^-([=rei =aves =ars] (suo g.i.m))
@@ -698,7 +694,6 @@
     ?:  |(=(%i p.py) =(%p p.py))
       [%i 0]
     [%c (div (mul q.h.size.rei q.py) 100)]
-  ::
   =?  t.marg.rei  =(%p p.t.marg.rei)
     ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
       [%c 0]
@@ -715,7 +710,6 @@
     ?:  |(=(%i p.w.size.rei) =(%p p.w.size.rei))
       [%c 0]
     [%c (div (mul q.l.marg.rei q.w.size.rei) 100)]
-  ::
   =?  t.padd.rei  =(%p p.t.padd.rei)
     ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
       [%c 0]
@@ -732,7 +726,6 @@
     ?:  |(=(%i p.w.size.rei) =(%p p.w.size.rei))
       [%c 0]
     [%c (div (mul q.l.padd.rei q.w.size.rei) 100)]
-  ::
   =?  q.w.size.rei  &(wcen !=(%i p.w.size.rei))
     =/  m  (add q.l.marg.rei q.r.marg.rei)
     ?:  (gth m q.w.size.rei)  0  (sub q.w.size.rei m)
@@ -797,7 +790,7 @@
         :-  x.plar
         ?~  y.plar
           ~
-        `(sub u.y.plar o.vir)
+        `(add u.y.plar o.vir)
           %col
         :_  y.plar
         ?~  x.plar
@@ -807,15 +800,13 @@
     :-  ?~  x.vlar
           ~
         =/  x  (add u.x.vlar q.l.marg.rei)
-        ?:  |((gth +(x) x.arca) (gth x x.plim))
+        ?:  (gth x x.plim)
           ~
         `x
     ?~  y.vlar
       ~
-    ?:  (gth q.t.marg.rei u.y.vlar)
-      ~
-    =/  y  (sub u.y.vlar q.t.marg.rei)
-    ?:  (lth y y.plim)
+    =/  y  (add u.y.vlar q.t.marg.rei)
+    ?:  (gth y y.plim)
       ~
     `y
   =/  alar=lar  vlar
@@ -833,15 +824,13 @@
     :-  ?~  x.vlar
           x.plim
         =/  x  (add u.x.vlar ?:(=(0 arx) 0 (dec arx)))
-        ?:  |((gth +(x) x.arca) (gth x x.plim))
+        ?:  (gth x x.plim)
           x.plim
         x
     ?~  y.vlar
       y.plim
-    ?:  (gth ary u.y.vlar)
-      y.plim
-    =/  y  +((sub u.y.vlar ary))  :: add condition: if ary=0 then y lim is y lar...
-    ?:  (lth y y.plim)
+    =/  y  (add u.y.vlar ?:(=(0 ary) 0 (dec ary)))
+    ?:  (gth y y.plim)
       y.plim
     y
   =/  b  *opus
@@ -908,25 +897,20 @@
     :-  ?~  x.vlar
           ~
         =/  x  ;:(add bl q.l.padd.rei u.x.vlar)
-        ?:  |((gth +(x) x.arca) (gth x x.plim))
+        ?:  (gth x x.plim)
           ~
         `x
-    =/  btpt  (add bt q.t.padd.rei)
     ?~  y.vlar
       ~
-    ?:  (gth btpt u.y.vlar)
-      ~
-    =/  y  (sub u.y.vlar btpt)
-    ?:  (lth y y.plim)
+    =/  y  ;:(add bt q.t.padd.rei u.y.vlar)
+    ?:  (gth y y.plim)
       ~
     `y
   =.  alim
     :-  =/  r  (add br q.r.padd.rei)
         ?:((gth r x.alim) 0 (sub x.alim r))
-    =/  y  (add y.alim (add bt q.b.padd.rei))
-    ?:  (gth +(y) y.arca)
-      (dec y.arca)
-    y
+    =/  b  (add bb q.b.padd.rei)
+    ?:((gth b y.alim) 0 (sub y.alim b))
   =/  ncc  (lent bor)
   =>  ?.  ?=(^ lay)
       .
@@ -1029,21 +1013,21 @@
         ?~  x.lar.u.el
           x.alim
         %+  add  u.x.lar.u.el
-          %+  add  r.marg.res.u.el
-            ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el))
+        %+  add  r.marg.res.u.el
+        ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el))
       =/  el-b=@ud
         ?~  y.lar.u.el
           y.alim
-        =/  b  %+  add  b.marg.res.u.el
-          ?:(=(0 h.size.res.u.el) 0 (dec h.size.res.u.el))
-        ?:((gth b u.y.lar.u.el) 0 (sub u.y.lar.u.el b))
+        %+  add  u.y.lar.u.el
+        %+  add  b.marg.res.u.el
+        ?:(=(0 h.size.res.u.el) 0 (dec h.size.res.u.el))
       =?  rig  (gth el-r rig)  el-r
-      =?  bot  (lth el-b bot)  el-b
+      =?  bot  (gth el-b bot)  el-b
       $(i +(i))
     ?:  =(%xy ax)
       $(ax %z, i 0)
     =?  rig  (gth rig x.alim)  x.alim
-    =?  bot  (lth bot y.alim)  y.alim
+    =?  bot  (gth bot y.alim)  y.alim
     :-  ?~  x.vlar
           0
         ?:  (gth u.x.vlar +(rig))
@@ -1051,9 +1035,9 @@
         (sub +(rig) u.x.vlar)
     ?~  y.vlar
       0
-    ?:  (gth bot +(u.y.vlar))
+    ?:  (gth u.y.vlar +(bot))
       0
-    (sub +(u.y.vlar) bot)
+    (sub +(bot) u.y.vlar)
   =?  size.rei  &(imp ?=(^ csiz))
     :-  ?:  =(%i p.w.size.rei)  
           [%c ;:(add bl br q.l.padd.rei q.r.padd.rei ?:((gth w.csiz arx) arx w.csiz))]  
@@ -1091,10 +1075,7 @@
         :-  x.vlar
         ?~  y.vlar
           ~
-        =/  rh  (sub i.tvir o.tvir)
-        ?:  (gth rh u.y.vlar)
-          ~
-        [~ (sub u.y.vlar rh)]
+        [~ (add u.y.vlar (sub i.tvir o.tvir))]
           %col
         :_  y.vlar
         ?~  x.vlar
@@ -1111,9 +1092,7 @@
       :-  x.vlar
       ?~  y.vlar
         ~
-      ?:  (gth n.tvir u.y.vlar)
-        ~
-      [~ (sub u.y.vlar n.tvir)]
+      [~ (add u.y.vlar n.tvir)]
     ==
   =?  alar  wrim
     ?:  wris
@@ -1122,10 +1101,7 @@
         :-  x.alar
         ?~  y.alar
           ~
-        =/  rh  (sub i.tvir o.tvir)
-        ?:  (gth rh u.y.alar)
-          ~
-        [~ (sub u.y.alar rh)]
+        [~ (add u.y.alar (sub i.tvir o.tvir))]
           %col
         :_  y.alar
         ?~  x.alar
@@ -1142,9 +1118,7 @@
       :-  x.alar
       ?~  y.alar
         ~
-      ?:  (gth n.tvir u.y.alar)
-        ~
-      [~ (sub u.y.alar n.tvir)]
+      [~ (add u.y.alar n.tvir)]
     ==
   =?  arx  wrim
     =/  bp  ;:(add bl br q.l.padd.rei q.r.padd.rei)
@@ -1160,15 +1134,13 @@
     :-  ?~  x.vlar
           x.plim
         =/  x  (add u.x.vlar ?:(=(0 arx) 0 (dec arx)))
-        ?:  |((gth +(x) x.arca) (gth x x.plim))
+        ?:  (gth x x.plim)
           x.plim
         x
     ?~  y.vlar
       y.plim
-    ?:  (gth ary u.y.vlar)
-      y.plim
-    =/  y  +((sub u.y.vlar ary))
-    ?:  (lth y y.plim)
+    =/  y  (add u.y.vlar ?:(=(0 ary) 0 (dec ary)))
+    ?:  (gth y y.plim)
       y.plim
     y
   =?  b  &(|(repo wrim) ?=(^ csiz))
@@ -1238,10 +1210,8 @@
           ~
         `x
       =?  y.lar.u.el  ?=(^ y.lar.u.el)
-        ?:  (gth movy u.y.lar.u.el)
-          ~
-        =/  y  (sub u.y.lar.u.el movy)
-        ?:  (lth y y.alim)
+        =/  y  (add u.y.lar.u.el movy)
+        ?:  (gth y y.alim)
           ~
         `y
       $(ens.b (~(put by ens.b) [[ax i] k] u.el), i +(i))
@@ -1256,10 +1226,8 @@
         |-
         ?~  v  ~
         =/  x  (add x.loci.i.v movx)
-        ?:  |((gth +(x) x.arca) (gth movy y.loci.i.v))
-          $(v t.v)
-        =/  y  (sub y.loci.i.v movy)
-        ?:  |((gth x x.alim) (lth y y.alim))
+        =/  y  (add y.loci.i.v movy)
+        ?:  |((gth x x.alim) (gth y y.alim))
           $(v t.v)
         [[[x y] +.i.v] $(v t.v)]
       visa.a
@@ -1290,7 +1258,7 @@
       ==
     ==
   =/  rend=visa
-    ?+  -.ars     (rbox alar plim ares)
+    ?+  -.ars   (rbox alar plim ares)
         %text   (rtxt alar plim pl w.size.ares `vox`?:(=(%text -.ars) vox.ars ~))
         %layer  ~
     ==
@@ -1320,15 +1288,13 @@
     :-  ?~  x.plar
           ~
         =/  x  (add u.x.plar vx)
-        ?:  |((gth +(x) x.arca) (gth x x.plim))
+        ?:  (gth x x.plim)
           ~
         `x
     ?~  y.plar
       ~
-    ?:  (gth vy u.y.plar)
-      ~
-    =/  y  (sub u.y.plar vy)
-    ?:  (lth y y.plim)
+    =/  y  (add u.y.plar vy)
+    ?:  (gth y y.plim)
       ~
     `y
   %=  $
@@ -1381,7 +1347,7 @@
       :*  u.x.lar.u.el
           (add u.x.lar.u.el ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el)))
           u.y.lar.u.el
-          ?:((gth h.size.res.u.el u.y.lar.u.el) 0 +((sub u.y.lar.u.el h.size.res.u.el)))
+          (add u.y.lar.u.el ?:(=(0 h.size.res.u.el) 0 (dec h.size.res.u.el)))
           k
       ==
     =?  omen.acc  &(nav !(~(has by omen.acc) [%aro %l]))
@@ -1408,16 +1374,16 @@
 ++  push-blit
   |=  v=visa
   ^-  lux
-  =/  y=@ud  (dec y.arca)
+  =/  y=@ud  0
   :-  %mor
   ^-  (list blit:dill)
   :-  [%clr ~]
   :-  [%nel ~]
   |-
-  ?:  =(0 y)
+  ?:  =(+(y) y.arca)
     [[%klr (make-stub y v)] ~]
   :-  [%klr (make-stub y v)]
-  [[%nel ~] $(y (dec y))]
+  [[%nel ~] $(y +(y))]
 ::
 ++  put-blit
   |=  v=visa
@@ -1427,8 +1393,8 @@
   ^-  (list blit:dill)
   |-
   :-  [%hop 0 y]
-  :-  [%klr (make-stub (sub y.arca +(y)) v)] 
-  ?:(=(y.arca +(y)) ~ $(y +(y)))
+  :-  [%klr (make-stub y v)] 
+  ?:(=(+(y) y.arca) ~ $(y +(y)))
 ::
 ++  make-stub
   |=  [y=@ud v=visa]
@@ -1450,10 +1416,7 @@
   |-
   ?~  n  ~
   =/  v  (~(get by old) loci.i.n)
-  =/  hop
-    :-  x.loci.i.n
-    ?:((gth +(y.loci.i.n) y.arca) 0 (sub y.arca +(y.loci.i.n)))
   ?.  |(&(?=(^ v) !=(u.v +.i.n)) ?=(~ v))
     $(n t.n)
-  [[%hop hop] [%klr ~[+.i.n]] $(n t.n)]
+  [[%hop loci.i.n] [%klr ~[+.i.n]] $(n t.n)]
 --
