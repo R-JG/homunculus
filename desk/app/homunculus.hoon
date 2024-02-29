@@ -22,10 +22,11 @@
 +$  ager  @ud
 +$  fila  [d=(set deco) b=tint f=tint]
 +$  aves  (map ?(%sel %act) @t)
++$  ad    ?(%left %right %top %bottom)
++$  acia  ?(%light %heavy %double %blank %~)
 +$  ars
   $%  [%text =vox]  [%select d=(unit (set deco)) b=(unit tint) f=(unit tint)]
-      [%border-top ~]  [%border-left ~]  [%border-bottom ~]  [%border-right ~]
-      [%layer ~]  [%$ ~]
+      [%border =ad =acia]  [%layer ~]  [%$ ~]
   ==
 ::
 +$  omen  (map nota lex)
@@ -35,6 +36,7 @@
 +$  dux   [l=@ud r=@ud t=@ud b=@ud k=rami]
 +$  rex   $@(~ dux)
 +$  ordo  (list dux)
++$  gens  (map @t rami) :: todo: element id to ens key
 ::
 +$  cura  [=omen =ordo]
 +$  opus  [=ens =visa]
@@ -58,29 +60,29 @@
       =omen  =rex  =ordo
   ==
 +$  arae  (map @tas ara)
-+$  aeon
++$  ego
   $:  =arca  =ara
   ==
 ::
 +$  card  card:agent:gall
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-=|  aeon
-=*  aeon  -
+=|  ego
+=*  ego  -
 ^-  agent:gall
 =<
 |_  =bowl:gall
 +*  hoc  .
 ++  on-init
   ^-  (quip card _hoc)
-  [~ hoc(aeon *^aeon)]
+  [~ hoc(ego *^ego)]
 ++  on-save
   ^-  vase
   !>(arca)
 ++  on-load
   |=  old=vase
   ^-  (quip card _hoc)
-  [~ hoc(aeon =+(*^aeon -(arca !<(^^arca old))))]
+  [~ hoc(ego =+(*^ego -(arca !<(^^arca old))))]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -123,7 +125,7 @@
       [~ hoc]
     :: ~&  >>>  u.l
     :: ~&  >>>  [%current-selection rex.ara]
-    =^  cards  aeon
+    =^  cards  ego
       (novo u.l)
     :: ~&  >>>  [%new-selection rex.ara]
     [cards hoc]
@@ -156,11 +158,11 @@
 |%
 ++  novo
   |=  =lex
-  ^-  (quip card ^aeon)
+  ^-  (quip card ^ego)
   ::
   ?:  |(=(%nav-l lex) =(%nav-r lex) =(%nav-u lex) =(%nav-d lex))
     |^
-    ?~  ordo.ara  [~ aeon]
+    ?~  ordo.ara  [~ ego]
     =/  next=rex
       ?~  rex.ara
         =/  fake=dux
@@ -215,7 +217,7 @@
         i.iii
       rex.ara
     ?:  =(rex.ara next)
-      [~ aeon]
+      [~ ego]
     =/  prae=opus
       ?:  ?=(~ rex.ara)
         [~ ~]
@@ -235,7 +237,7 @@
             [0 0]
           [l.rex.ara t.rex.ara]
       ==
-    :_  aeon
+    :_  ego
     [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
     ::
     ++  chil
@@ -373,13 +375,12 @@
       ==
     --
   ::
-  [~ aeon]
+  [~ ego]
 ::  ::  ::  ::  ::  ::  ::  ::
 ++  dolo
   |=  el=@tas
   ^-  rei
   ?+  el
-    ::
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -387,7 +388,6 @@
         flow=[%row %clip]
         look=[~ ~ ~]
     ==
-    ::
       %text
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -396,9 +396,40 @@
         flow=[%row %wrap]
         look=[~ ~ ~]
     ==
-    ::
       %layer
     :*  size=[[%p 100] [%p 100]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %clip]
+        look=[~ ~ ~]
+    ==
+      %border-left
+    :*  size=[[%c 1] [%p 100]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%col %clip]
+        look=[~ ~ ~]
+    ==
+      %border-right
+    :*  size=[[%c 1] [%p 100]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%col %clip]
+        look=[~ ~ ~]
+    ==
+      %border-top
+    :*  size=[[%p 100] [%c 1]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %clip]
+        look=[~ ~ ~]
+    ==
+      %border-bottom
+    :*  size=[[%p 100] [%c 1]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
@@ -409,19 +440,27 @@
 ::
 ++  suo
   |=  [n=mane a=mart]
-  ^-  [rei aves ars]
-  =+  ^-  [=rei =aves =ars]
-      ?+  n  [(dolo %$) ~ [%$ ~]]
-        %$         [(dolo %text) ~ [%text ?~(a ~ v.i.a)]]
-        %layer     [(dolo %layer) ~ [%layer ~]]
-        %select    [(dolo %$) ~ [%select ~ ~ ~]]
+  ^-  [rei aves ars acia]
+  =+  ^-  [=rei =aves =ars =acia]
+      ?+  n  [(dolo %$) ~ [%$ ~] ~]
+        %$         [(dolo %text) ~ [%text ?~(a ~ v.i.a)] ~]
+        %layer     [(dolo %layer) ~ [%layer ~] ~]
+        %select    [(dolo %$) ~ [%select ~ ~ ~] ~]
+        %border-left    [(dolo %border-left) ~ [%border %left %~] ~]
+        %border-right   [(dolo %border-right) ~ [%border %right %~] ~]
+        %border-top     [(dolo %border-top) ~ [%border %top %~] ~]
+        %border-bottom  [(dolo %border-bottom) ~ [%border %bottom %~] ~]
       ==
   |-
-  ?~  a  [rei aves ars]
+  ?~  a  [rei aves ars acia]
   ?+  n.i.a  $(a t.a)
       %w
+    ?:  &(?=(%border -.ars) |(?=(%top ad.ars) ?=(%bottom ad.ars)))
+      $(a t.a)
     $(w.size.rei (pars v.i.a), a t.a)
       %h
+    ?:  &(?=(%border -.ars) |(?=(%left ad.ars) ?=(%right ad.ars)))
+      $(a t.a)
     $(h.size.rei (pars v.i.a), a t.a)
       %p
     =/  v  (pars v.i.a)
@@ -441,21 +480,35 @@
       %pb
     $(b.padd.rei (pars v.i.a), a t.a)
       %m
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     =/  v  (pars v.i.a)
     $(marg.rei [v v v v], a t.a)
       %mx
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     =/  v  (pars v.i.a)
     $(l.marg.rei v, r.marg.rei v, a t.a)
       %my
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     =/  v  (pars v.i.a)
     $(t.marg.rei v, b.marg.rei v, a t.a)
       %ml
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     $(l.marg.rei (pars v.i.a), a t.a)
       %mr
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     $(r.marg.rei (pars v.i.a), a t.a)
       %mt
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     $(t.marg.rei (pars v.i.a), a t.a)
       %mb
+    ?:  ?=(%border -.ars)
+      $(a t.a)
     $(b.marg.rei (pars v.i.a), a t.a)
       %fx
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
@@ -512,6 +565,20 @@
       %blink      $(d.look.rei [~ (silt ~[%bl])], a t.a)
       %underline  $(d.look.rei [~ (silt ~[%un])], a t.a)
     ==
+      %b
+    ?:  ?=(%border -.ars)
+      ?+  (@tas (crip v.i.a))  $(a t.a)
+        %light  $(acia.ars %light, a t.a)
+        %heavy    $(acia.ars %heavy, a t.a)
+        %double  $(acia.ars %double, a t.a)
+        %blank   $(acia.ars %blank, a t.a)
+      ==
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %light  $(acia %light, a t.a)
+      %heavy    $(acia %heavy, a t.a)
+      %double  $(acia %double, a t.a)
+      %blank   $(acia %blank, a t.a)
+    ==
       %sel
     $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
       %sel-cb
@@ -559,18 +626,62 @@
   |=  v=tape
   ^-  as
   ?:  =(~ v)  [%c 0]
-  =/  r  (rear v)
-  ?:  =('%' r)
+  ?:  =('%' (rear v))
     =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
     ?~  n  [%c 0]
     [%p ?:((gth u.n 100) 100 u.n)]
-  ?:  =('c' r)
-    =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
-    ?~  n  [%c 0]
-    [%c u.n]
   =/  n=(unit @ud)  (slaw %ud (crip v))
   ?~  n  [%c 0]
   [%c u.n]
+::
+++  obeo                    :: get border sizes from the border element list
+  |=  bor=marl              :: defaults to 1 if an element is found and no valid size is specified
+  ^-  [bl=@ud br=@ud bt=@ud bb=@ud]
+  =+  [i=0 bl=0 br=0 bt=0 bb=0]
+  |-
+  ?~  bor  [bl br bt bb]
+  ?+  n.g.i.bor  $(bor t.bor)
+      %border-left
+    ?~  a.g.i.bor
+      $(bor t.bor, bl ?:(=(0 bl) 1 bl))
+    ?:  =(%w n.i.a.g.i.bor)
+      =/  n=(unit @ud)  (slaw %ud (crip v.i.a.g.i.bor))
+      %=  $
+        bor  t.bor
+        bl   ?~(n ?:(=(0 bl) 1 bl) ?:((gth u.n bl) u.n bl))
+      ==
+    $(a.g.i.bor t.a.g.i.bor)
+      %border-right
+    ?~  a.g.i.bor
+      $(bor t.bor, br ?:(=(0 br) 1 br))
+    ?:  =(%w n.i.a.g.i.bor)
+      =/  n=(unit @ud)  (slaw %ud (crip v.i.a.g.i.bor))
+      %=  $
+        bor  t.bor
+        br   ?~(n ?:(=(0 br) 1 br) ?:((gth u.n br) u.n br))
+      ==
+    $(a.g.i.bor t.a.g.i.bor)
+      %border-top
+    ?~  a.g.i.bor
+      $(bor t.bor, bt ?:(=(0 bt) 1 bt))
+    ?:  =(%h n.i.a.g.i.bor)
+      =/  n=(unit @ud)  (slaw %ud (crip v.i.a.g.i.bor))
+      %=  $
+        bor  t.bor
+        bt   ?~(n ?:(=(0 bt) 1 bt) ?:((gth u.n bt) u.n bt))
+      ==
+    $(a.g.i.bor t.a.g.i.bor)
+      %border-bottom
+    ?~  a.g.i.bor
+      $(bor t.bor, bb ?:(=(0 bb) 1 bb))
+    ?:  =(%h n.i.a.g.i.bor)
+      =/  n=(unit @ud)  (slaw %ud (crip v.i.a.g.i.bor))
+      %=  $
+        bor  t.bor
+        bb   ?~(n ?:(=(0 bb) 1 bb) ?:((gth u.n bb) u.n bb))
+      ==
+    $(a.g.i.bor t.a.g.i.bor)
+  ==
 ::
 ++  duco                    :: render a navigation update
   |=  [e=ens k=rami r=rex]  :: return just the ens and visa of the updated elements
@@ -595,10 +706,7 @@
   |-
   =/  el  (~(get by e) k)
   ?~  el  [e v]
-  ?.  ?|  =(%border-left -.ars.u.el)  =(%border-right -.ars.u.el)
-          =(%border-top -.ars.u.el)  =(%border-bottom -.ars.u.el)
-          =(%text -.ars.u.el)
-      ==
+  ?.  |(?=(%border -.ars.u.el) ?=(%text -.ars.u.el))
     $(ager.i.k +(ager.i.k))
   =.  visa.u.el
     %+  fuco  visa.u.el
@@ -622,9 +730,9 @@
   |=  [=lar lim=loci =res]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
-  |-
   ?~  x.lar  a
   ?~  y.lar  a
+  |-
   =/  x  (add u.x.lar w)
   =/  y  (add u.y.lar h)
   =/  nrow=bean  (gte +(w) w.size.res)
@@ -642,10 +750,10 @@
   |=  [=lar lim=loci =fila cols=@ud =vox]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
-  |-
-  ?~  vox    a
   ?~  x.lar  a
   ?~  y.lar  a
+  |-
+  ?~  vox    a
   =/  x  (add u.x.lar w)
   =/  y  (add u.y.lar h)
   =/  nrow=bean  (gte +(w) cols)
@@ -658,6 +766,65 @@
     h    ?:(nrow +(h) h)
     a    (~(put by a) [x y] [fila (@c i.vox) ~])
     vox  t.vox
+  ==
+::
+++  rbor
+  |=  [=lar lim=loci =res =ad =acia]
+  ^-  visa
+  =+  [w=0 h=0 *a=visa]
+  ?~  x.lar  a
+  ?~  y.lar  a
+  ?:  ?=(%~ acia)  a
+  |-
+  =/  x  (add u.x.lar w)
+  =/  y  (add u.y.lar h)
+  =/  nrow=bean  (gte +(w) w.size.res)
+  ?:  |((gte h h.size.res) (gth y y.lim))
+    a
+  ?:  |((gth +(x) x.arca) (gth x x.lim))
+    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
+  =/  c=@c
+    %-  @c
+    ?:  ?=(%blank acia)
+      ' '
+    ?-  ad
+        %left
+      ?:  =(0 w)
+        ?:  =(0 h)
+          ?-(acia %light '┌', %heavy '┏', %double '╔')
+        ?:  =(h.size.res +(h))
+          ?-(acia %light '└', %heavy '┗', %double '╚')
+        ?-(acia %light '│', %heavy '┃', %double '║')
+      ' '
+        %right
+      ?:  nrow
+        ?:  =(0 h)
+          ?-(acia %light '┐', %heavy '┓', %double '╗')
+        ?:  =(h.size.res +(h))
+          ?-(acia %light '┘', %heavy '┛', %double '╝')
+        ?-(acia %light '│', %heavy '┃', %double '║')
+      ' '
+        %top
+      ?:  =(0 h)
+        ?:  =(0 w)
+          ?-(acia %light '┌', %heavy '┏', %double '╔')
+        ?:  nrow
+          ?-(acia %light '┐', %heavy '┓', %double '╗')
+        ?-(acia %light '─', %heavy '━', %double '═')
+      ' '
+        %bottom
+      ?:  =(h.size.res +(h))
+        ?:  =(0 w)
+          ?-(acia %light '└', %heavy '┗', %double '╚')
+        ?:  nrow
+          ?-(acia %light '┘', %heavy '┛', %double '╝')
+        ?-(acia %light '─', %heavy '━', %double '═')
+      ' '
+    ==
+  %=  $
+    w  ?:(nrow 0 +(w))
+    h  ?:(nrow +(h) h)
+    a  (~(put by a) [x y] [[~ +.look.res] c ~])
   ==
 ::
 ++  geno
@@ -683,7 +850,30 @@
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
   |-
   ?~  m  a
-  =+  ^-([=rei =aves =ars] (suo g.i.m))
+  =+  ^-  [=rei =aves =ars =acia]
+    (suo g.i.m)
+  =+  ^-  [bor=marl lay=marl nor=marl]
+    =|  [bor=marl lay=marl nor=marl]
+    |-
+    ?~  c.i.m  [bor (flop lay) (flop nor)]
+    ?+  n.g.i.c.i.m   $(nor [i.c.i.m nor], c.i.m t.c.i.m)
+      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
+    ==
+  =?  bor  !=(%~ acia)
+    =/  v  (trip acia)
+    %+  weld  bor
+    ^-  marl
+    ;=  ;border-left(b v);
+        ;border-right(b v);
+        ;border-top(b v);
+        ;border-bottom(b v);
+    ==
+  =+  ^-  [bl=@ud br=@ud bt=@ud bb=@ud]
+    (obeo bor)
   =/  wcen=bean  =(%p p.w.size.rei)
   =/  hcen=bean  =(%p p.h.size.rei)
   =?  w.size.rei  wcen
@@ -732,33 +922,24 @@
   =?  q.h.size.rei  &(hcen !=(%i p.h.size.rei))
     =/  m  (add q.t.marg.rei q.b.marg.rei)
     ?:  (gth m q.h.size.rei)  0  (sub q.h.size.rei m)
-  =+  ^-  [bor=marl lay=marl nor=marl]
-    =|  [bor=marl lay=marl nor=marl]
-    |-
-    ?~  c.i.m  [bor (flop lay) (flop nor)]
-    ?+  n.g.i.c.i.m   $(nor [i.c.i.m nor], c.i.m t.c.i.m)
-      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
-    ==
   =/  repo=bean
-    ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
-        &(!=(0 y.flex.rei) =(%c p.py))
-    ==
+    ?&  !?=(%border -.ars)
+        ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
+            &(!=(0 y.flex.rei) =(%c p.py))
+    ==  ==
   =/  wrap=bean
-    ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.rei)
-            (gth (add q.w.size.rei (add q.l.marg.rei q.r.marg.rei)) (sub prx n.vir))
-        ==
-        ?&  =([%col %wrap] pow)  =(%c p.h.size.rei)
-            (gth (add q.h.size.rei (add q.t.marg.rei q.b.marg.rei)) (sub pry n.vir))
-        ==
-    ==
+    ?&  !?=(%border -.ars)
+        ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.rei)
+                (gth (add q.w.size.rei (add q.l.marg.rei q.r.marg.rei)) (sub prx n.vir))
+            ==
+            ?&  =([%col %wrap] pow)  =(%c p.h.size.rei)
+                (gth (add q.h.size.rei (add q.t.marg.rei q.b.marg.rei)) (sub pry n.vir))
+    ==  ==  ==
   =/  wrim=bean
-    ?|  &(=([%row %wrap] pow) =(%i p.w.size.rei))
-        &(=([%col %wrap] pow) =(%i p.h.size.rei))
-    ==
+    ?&  !?=(%border -.ars)
+        ?|  &(=([%row %wrap] pow) =(%i p.w.size.rei))
+            &(=([%col %wrap] pow) =(%i p.h.size.rei))
+    ==  ==
   =/  tvir  vir
   =?  vir  |(wrap wrim)
     ?-  d.pow
@@ -784,6 +965,33 @@
       vir
     ==
   =.  vlar
+    ?:  ?=(%border -.ars)
+      ?-  ad.ars
+          %left
+        vlar
+          %right
+        :_  y.vlar
+        ?~  x.vlar  ~
+        =/  x  (add u.x.vlar ?:(=(0 q.px) 0 (dec q.px)))
+        =.  x
+          =/  w  ?:(=(0 q.w.size.rei) 0 (dec q.w.size.rei))
+          ?:((gth w x) 0 (sub x w))
+        ?:  (gth x x.plim)
+          ~
+        `x
+          %top
+        vlar
+          %bottom
+        :-  x.vlar
+        ?~  y.vlar  ~
+        =/  y  (add u.y.vlar ?:(=(0 q.py) 0 (dec q.py)))
+        =.  y
+          =/  h  ?:(=(0 q.h.size.rei) 0 (dec q.h.size.rei))
+          ?:((gth h y) 0 (sub y h))
+        ?:  (gth y y.plim)
+          ~
+        `y
+      ==
     =?  vlar  |(wrap wrim)
       ?-  d.pow
           %row
@@ -810,26 +1018,55 @@
       ~
     `y
   =/  alar=lar  vlar
+  =.  vlar
+  :-  ?~  x.vlar
+        ~
+      =/  x  ;:(add bl q.l.padd.rei u.x.vlar)
+      ?:  (gth x x.plim)
+        ~
+      `x
+  ?~  y.vlar
+    ~
+  =/  y  ;:(add bt q.t.padd.rei u.y.vlar)
+  ?:  (gth y y.plim)
+    ~
+  `y
   =/  arx=@ud
-    ?:  =(%c p.w.size.rei)
-      q.w.size.rei
-    =/  w  (add q.l.marg.rei ?:(=(%row d.pow) n.vir o.vir))
-    ?:  (gth w prx)  0  (sub prx w)
+    ?+  p.w.size.rei  0
+        %c
+      =/  w  ;:(add bl br q.l.padd.rei q.r.padd.rei)
+      ?:((gth w q.w.size.rei) 0 (sub q.w.size.rei w))
+        %i
+      =/  w
+        ;:  add
+          q.l.marg.rei  ?:(=(%row d.pow) n.vir o.vir)
+          bl  br  q.l.padd.rei  q.r.padd.rei
+        ==
+      ?:((gth w prx) 0 (sub prx w))
+    ==
   =/  ary=@ud
-    ?:  =(%c p.h.size.rei)  
-      q.h.size.rei
-    =/  h  (add q.t.marg.rei ?:(=(%row d.pow) o.vir n.vir))
-    ?:  (gth h pry)  0  (sub pry h)
+    ?+  p.h.size.rei  0
+        %c
+      =/  h  ;:(add bt bb q.t.padd.rei q.b.padd.rei)
+      ?:((gth h q.h.size.rei) 0 (sub q.h.size.rei h))
+        %i
+      =/  h
+        ;:  add 
+          q.t.marg.rei  ?:(=(%row d.pow) o.vir n.vir)
+          bt  bb  q.t.padd.rei  q.b.padd.rei
+        ==
+      ?:((gth h pry) 0 (sub pry h))
+    ==
   =/  alim=loci
-    :-  ?~  x.vlar
+    :-  ?~  x.alar
           x.plim
-        =/  x  (add u.x.vlar ?:(=(0 arx) 0 (dec arx)))
+        =/  x  (add u.x.alar ?:(=(0 arx) 0 (dec arx)))
         ?:  (gth x x.plim)
           x.plim
         x
-    ?~  y.vlar
+    ?~  y.alar
       y.plim
-    =/  y  (add u.y.vlar ?:(=(0 ary) 0 (dec ary)))
+    =/  y  (add u.y.alar ?:(=(0 ary) 0 (dec ary)))
     ?:  (gth y y.plim)
       y.plim
     y
@@ -837,85 +1074,8 @@
     :+  ?~(d.look.rei d.pl u.d.look.rei)
       ?~(b.look.rei b.pl u.b.look.rei)
     ?~(f.look.rei f.pl u.f.look.rei)
-  =/  b  *opus
-  =>  ?.  ?=(^ bor)
-      .
-    ?.  |(repo wrim)
-      %_  .
-        a
-          %_  $
-            m     bor
-            k     [[%xy 0] k]
-            cc    0
-            cl    0
-            px    w.size.rei
-            py    h.size.rei
-            pl    fi
-            pex   flex.rei
-            pow   flow.rei
-            prx   arx
-            pry   ary
-            plar  vlar
-            plim  alim
-            vir   [0 0 0]
-      ==  ==
-    %_  .
-      b
-        %_  $
-          a     *opus
-          m     bor
-          k     [[%xy 0] k]
-          cc    0
-          cl    0
-          px    w.size.rei
-          py    h.size.rei
-          pl    fi
-          pex   flex.rei
-          pow   flow.rei
-          prx   arx
-          pry   ary
-          plar  vlar
-          plim  alim
-          vir   [0 0 0]
-    ==  ==
-  =+  ^-  [bl=@ud br=@ud bt=@ud bb=@ud]
-    ?~  bor  [0 0 0 0]
-    =+  [i=0 bl=0 br=0 bt=0 bb=0]
-    |-
-    =/  el  (~(get by ?:(|(repo wrim) ens.b ens.a)) [[%xy i] k])
-    ?~  el  [bl br bt bb]
-    ?+  -.ars.u.el      $(i +(i))
-      %border-left    $(i +(i), bl w.size.res.u.el)
-      %border-right   $(i +(i), br w.size.res.u.el)
-      %border-top     $(i +(i), bt h.size.res.u.el)
-      %border-bottom  $(i +(i), bb h.size.res.u.el)
-    ==
-  =:  arx
-        =/  w  ;:(add bl br q.l.padd.rei q.r.padd.rei)
-        ?:  (gth w arx)  0  (sub arx w)
-      ary
-        =/  h  ;:(add bt bb q.t.padd.rei q.b.padd.rei)
-        ?:  (gth h ary)  0  (sub ary h)
-    ==
-  =.  vlar
-    :-  ?~  x.vlar
-          ~
-        =/  x  ;:(add bl q.l.padd.rei u.x.vlar)
-        ?:  (gth x x.plim)
-          ~
-        `x
-    ?~  y.vlar
-      ~
-    =/  y  ;:(add bt q.t.padd.rei u.y.vlar)
-    ?:  (gth y y.plim)
-      ~
-    `y
-  =.  alim
-    :-  =/  r  (add br q.r.padd.rei)
-        ?:((gth r x.alim) 0 (sub x.alim r))
-    =/  b  (add bb q.b.padd.rei)
-    ?:((gth b y.alim) 0 (sub y.alim b))
   =/  ncc  (lent bor)
+  =/  b  *opus
   =>  ?.  ?=(^ lay)
       .
     ?.  |(repo wrim)
@@ -1001,7 +1161,7 @@
         =(%i p.h.size.rei)
     ==
   =/  csiz=$@(~ [w=@ud h=@ud])
-    ?:  |(&(=(~ x.vlar) =(~ y.vlar)) !|(repo imp) =(%text -.ars))
+    ?:  |(&(=(~ x.vlar) =(~ y.vlar)) !|(repo imp) ?=(%text -.ars))
       ~
     =/  i=@ud    0
     =/  ax=axis  %xy
@@ -1009,10 +1169,7 @@
     =/  bot=@ud  ?~(y.vlar y.alim u.y.vlar)
     |-
     =/  el  (~(get by ?:(|(repo wrim) ens.b ens.a)) [[ax i] k])
-    ?:  ?&  ?=(^ el)  ?!  ?|
-            =(%border-left -.ars.u.el)  =(%border-right -.ars.u.el) :: change this to handle borders instead of excluding them
-            =(%border-top -.ars.u.el)  =(%border-bottom -.ars.u.el)
-        ==  ==
+    ?:  &(?=(^ el) !?=(%border -.ars.u.el))
       =/  el-r=@ud
         ?~  x.lar.u.el
           x.alim
@@ -1249,8 +1406,8 @@
           fi
       ==
         %text
-      =/  len  (lent `vox`?:(=(%text -.ars) vox.ars ~))
-      =/  lim  (sub prx ?:(=(%row d.pow) n.vir o.vir))
+      =/  len  (lent vox.ars)
+      =/  lim  (sub prx ?:(?=(%row d.pow) n.vir o.vir))
       :*  :-  ?:((lth len lim) len lim)
             ?:  =(0 lim)  0
             ?:(=(0 (mod len lim)) (div len lim) +((div len lim)))
@@ -1261,19 +1418,38 @@
           pl
       ==
     ==
-  =/  rend=visa
-    ?+  -.ars   (rbox alar plim ares)
-        %text   (rtxt alar plim pl w.size.ares `vox`?:(=(%text -.ars) vox.ars ~))
-        %layer  ~
+  =?  a  ?=(^ bor)
+    %_  $
+      m     bor
+      k     [[%xy 0] k]
+      cc    0
+      cl    0
+      px    w.size.rei
+      py    h.size.rei
+      pl    fi
+      pex   flex.ares
+      pow   flow.ares
+      prx   w.size.ares
+      pry   h.size.ares
+      plar  alar
+      plim  :-  =/  x  (add x.alim ;:(add bl br l.padd.ares r.padd.ares))
+                ?:((gth x x.plim) x.plim x)
+            =/  y  (add y.alim ;:(add bt bb t.padd.ares b.padd.ares))
+            ?:((gth y y.plim) y.plim y)
+      vlar  alar
+      vir   [0 0 0]
     ==
-  =?  rend  !=(%layer -.ars)  (~(dif by rend) visa.a)
-  =?  vir  
-      ?!  ?|  =(%layer -.ars)
-        =(%border-left -.ars)
-        =(%border-right -.ars)
-        =(%border-top -.ars)
-        =(%border-bottom -.ars)
-      ==
+  =/  rend=visa
+    ?+  -.ars    (rbox alar plim ares)
+        %text    (rtxt alar plim pl w.size.ares vox.ars)
+        %layer   ~
+        %border  (rbor alar plim ares +.ars)
+    ==
+  =?  rend  !?=(%layer -.ars)
+    (~(dif by rend) visa.a)
+  =?  vir  !?=(%layer -.ars)
+    ?:  ?=(%border -.ars)
+      [0 0 0]
     =/  el-x  (add w.size.ares (add l.marg.ares r.marg.ares))
     =/  el-y  (add h.size.ares (add t.marg.ares b.marg.ares))
     ?-  d.pow
@@ -1286,7 +1462,9 @@
         [(add n.vir el-y) o.vir ?:((gth el-x (sub i.vir o.vir)) (add o.vir el-x) i.vir)]
       [?:((gth n.vir pry) pry n.vir) ?:((gth o.vir prx) prx o.vir) ?:((gth i.vir prx) prx i.vir)]
     ==
-  =.  vlar
+  =?  vlar  !?=(%layer -.ars)
+    ?:  ?=(%border -.ars)
+      plar
     =/  vx  ?-(d.pow %row n.vir, %col o.vir)
     =/  vy  ?-(d.pow %row o.vir, %col n.vir)
     :-  ?~  x.plar
