@@ -20,13 +20,14 @@
 +$  lar   [x=(unit @ud) y=(unit @ud)]
 +$  axis  ?(%xy %z)
 +$  ager  @ud
-+$  fila  [d=(set deco) b=tint f=tint]
 +$  aves  (map ?(%sel %act) @t)
++$  fila  [d=(set deco) b=tint f=tint]
++$  acia  [d=(unit (set deco)) b=(unit tint) f=(unit tint)]
 +$  ad    ?(%left %right %top %bottom)
-+$  acia  ?(%light %heavy %double %blank %~)
++$  pila  ?(%light %heavy %double %blank %~)
 +$  ars
-  $%  [%text =vox]  [%select d=(unit (set deco)) b=(unit tint) f=(unit tint)]
-      [%border =ad =acia]  [%layer ~]  [%$ ~]
+  $%  [%text =vox]  [%select =acia]
+      [%border =ad =pila]  [%layer ~]  [%$ ~]
   ==
 ::
 +$  omen  (map nota lex)
@@ -47,7 +48,7 @@
       marg=[t=as r=as b=as l=as]
       =flex
       =flow
-      look=[d=(unit (set deco)) b=(unit tint) f=(unit tint)]
+      look=acia
   ==
 +$  lux   dill-blit:dill
 +$  flex  [x=@ud y=@ud]
@@ -156,7 +157,7 @@
 ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
 ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
 |%
-++  novo
+++  novo                    :: handle an event from the hotkey context
   |=  =lex
   ^-  (quip card ^ego)
   ::
@@ -376,8 +377,8 @@
     --
   ::
   [~ ego]
-::  ::  ::  ::  ::  ::  ::  ::
-++  dolo
+::  ::  ::  ::  ::  ::  ::
+++  dolo                    :: get default styles for a semantic element
   |=  el=@tas
   ^-  rei
   ?+  el
@@ -438,21 +439,21 @@
     ==
   ==
 ::
-++  suo
+++  suo                     :: process a sail element's name and attribute list for geno
   |=  [n=mane a=mart]
-  ^-  [rei aves ars acia]
-  =+  ^-  [=rei =aves =ars =acia]
-      ?+  n  [(dolo %$) ~ [%$ ~] ~]
-        %$         [(dolo %text) ~ [%text ?~(a ~ v.i.a)] ~]
-        %layer     [(dolo %layer) ~ [%layer ~] ~]
-        %select    [(dolo %$) ~ [%select ~ ~ ~] ~]
+  ^-  [rei aves ars mart]
+  =+  ^-  [=rei =aves =ars velo=mart]
+      ?+  n             [(dolo %$) ~ [%$ ~] ~]
+        %$              [(dolo %text) ~ [%text ?~(a ~ v.i.a)] ~]
+        %layer          [(dolo %layer) ~ [%layer ~] ~]
+        %select         [(dolo %$) ~ [%select ~ ~ ~] ~]
         %border-left    [(dolo %border-left) ~ [%border %left %~] ~]
         %border-right   [(dolo %border-right) ~ [%border %right %~] ~]
         %border-top     [(dolo %border-top) ~ [%border %top %~] ~]
         %border-bottom  [(dolo %border-bottom) ~ [%border %bottom %~] ~]
       ==
   |-
-  ?~  a  [rei aves ars acia]
+  ?~  a  [rei aves ars velo]
   ?+  n.i.a  $(a t.a)
       %w
     ?:  &(?=(%border -.ars) |(?=(%top ad.ars) ?=(%bottom ad.ars)))
@@ -566,18 +567,47 @@
       %underline  $(d.look.rei [~ (silt ~[%un])], a t.a)
     ==
       %b
-    ?:  ?=(%border -.ars)
-      ?+  (@tas (crip v.i.a))  $(a t.a)
-        %light  $(acia.ars %light, a t.a)
-        %heavy    $(acia.ars %heavy, a t.a)
-        %double  $(acia.ars %double, a t.a)
-        %blank   $(acia.ars %blank, a t.a)
-      ==
+    ?.  ?=(%border -.ars)
+      $(velo [i.a velo], a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %light  $(acia %light, a t.a)
-      %heavy    $(acia %heavy, a t.a)
-      %double  $(acia %double, a t.a)
-      %blank   $(acia %blank, a t.a)
+      %light   $(pila.ars %light, a t.a)
+      %heavy   $(pila.ars %heavy, a t.a)
+      %double  $(pila.ars %double, a t.a)
+      %blank   $(pila.ars %blank, a t.a)
+    ==
+      %b-cb
+    ?.  ?=(%border -.ars)
+      $(velo [i.a velo], a t.a)
+    ?+  (@tas (crip v.i.a))  $(b.look.rei ~, a t.a)
+      %red      $(b.look.rei [~ %r], a t.a)
+      %green    $(b.look.rei [~ %g], a t.a)
+      %blue     $(b.look.rei [~ %b], a t.a)
+      %cyan     $(b.look.rei [~ %c], a t.a)
+      %magenta  $(b.look.rei [~ %m], a t.a)
+      %yellow   $(b.look.rei [~ %y], a t.a)
+      %black    $(b.look.rei [~ %k], a t.a)
+      %white    $(b.look.rei [~ %w], a t.a)
+    ==
+      %b-cf
+    ?.  ?=(%border -.ars)
+      $(velo [i.a velo], a t.a)
+    ?+  (@tas (crip v.i.a))  $(f.look.rei ~, a t.a)
+      %red      $(f.look.rei [~ %r], a t.a)
+      %green    $(f.look.rei [~ %g], a t.a)
+      %blue     $(f.look.rei [~ %b], a t.a)
+      %cyan     $(f.look.rei [~ %c], a t.a)
+      %magenta  $(f.look.rei [~ %m], a t.a)
+      %yellow   $(f.look.rei [~ %y], a t.a)
+      %black    $(f.look.rei [~ %k], a t.a)
+      %white    $(f.look.rei [~ %w], a t.a)
+    ==
+      %b-d
+    ?.  ?=(%border -.ars)
+      $(velo [i.a velo], a t.a)
+    ?+  (@tas (crip v.i.a))  $(d.look.rei ~, a t.a)
+      %bold       $(d.look.rei [~ (silt ~[%br])], a t.a)
+      %blink      $(d.look.rei [~ (silt ~[%bl])], a t.a)
+      %underline  $(d.look.rei [~ (silt ~[%un])], a t.a)
     ==
       %sel
     $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
@@ -585,44 +615,44 @@
     ?+  -.ars  $(a t.a)
         %select
       ?+  (@tas (crip v.i.a))  $(a t.a)
-        %red      $(b.ars [~ %r], a t.a)
-        %green    $(b.ars [~ %g], a t.a)
-        %blue     $(b.ars [~ %b], a t.a)
-        %cyan     $(b.ars [~ %c], a t.a)
-        %magenta  $(b.ars [~ %m], a t.a)
-        %yellow   $(b.ars [~ %y], a t.a)
-        %black    $(b.ars [~ %k], a t.a)
-        %white    $(b.ars [~ %w], a t.a)
+        %red      $(b.acia.ars [~ %r], a t.a)
+        %green    $(b.acia.ars [~ %g], a t.a)
+        %blue     $(b.acia.ars [~ %b], a t.a)
+        %cyan     $(b.acia.ars [~ %c], a t.a)
+        %magenta  $(b.acia.ars [~ %m], a t.a)
+        %yellow   $(b.acia.ars [~ %y], a t.a)
+        %black    $(b.acia.ars [~ %k], a t.a)
+        %white    $(b.acia.ars [~ %w], a t.a)
       ==
     ==
       %sel-cf
     ?+  -.ars  $(a t.a)
         %select
       ?+  (@tas (crip v.i.a))  $(a t.a)
-        %red      $(f.ars [~ %r], a t.a)
-        %green    $(f.ars [~ %g], a t.a)
-        %blue     $(f.ars [~ %b], a t.a)
-        %cyan     $(f.ars [~ %c], a t.a)
-        %magenta  $(f.ars [~ %m], a t.a)
-        %yellow   $(f.ars [~ %y], a t.a)
-        %black    $(f.ars [~ %k], a t.a)
-        %white    $(f.ars [~ %w], a t.a)
+        %red      $(f.acia.ars [~ %r], a t.a)
+        %green    $(f.acia.ars [~ %g], a t.a)
+        %blue     $(f.acia.ars [~ %b], a t.a)
+        %cyan     $(f.acia.ars [~ %c], a t.a)
+        %magenta  $(f.acia.ars [~ %m], a t.a)
+        %yellow   $(f.acia.ars [~ %y], a t.a)
+        %black    $(f.acia.ars [~ %k], a t.a)
+        %white    $(f.acia.ars [~ %w], a t.a)
       ==
     ==
       %sel-d
     ?+  -.ars  $(a t.a)
         %select
       ?+  (@tas (crip v.i.a))  $(a t.a)
-        %bold       $(d.ars [~ (silt ~[%br])], a t.a)
-        %blink      $(d.ars [~ (silt ~[%bl])], a t.a)
-        %underline  $(d.ars [~ (silt ~[%un])], a t.a)
+        %bold       $(d.acia.ars [~ (silt ~[%br])], a t.a)
+        %blink      $(d.acia.ars [~ (silt ~[%bl])], a t.a)
+        %underline  $(d.acia.ars [~ (silt ~[%un])], a t.a)
       ==
     ==
       %act
     $(aves (~(put by aves) %act (crip v.i.a)), a t.a)
   ==
 ::
-++  pars
+++  pars                    :: parse a tape to a sizing unit
   |=  v=tape
   ^-  as
   ?:  =(~ v)  [%c 0]
@@ -634,7 +664,7 @@
   ?~  n  [%c 0]
   [%c u.n]
 ::
-++  obeo                    :: get border sizes from the border element list
+++  obeo                    :: get border sizes from a list of border elements
   |=  bor=marl              :: defaults to 1 if an element is found and no valid size is specified
   ^-  [bl=@ud br=@ud bt=@ud bb=@ud]
   =+  [i=0 bl=0 br=0 bt=0 bb=0]
@@ -683,50 +713,50 @@
     $(a.g.i.bor t.a.g.i.bor)
   ==
 ::
-++  duco                    :: render a navigation update
-  |=  [e=ens k=rami r=rex]  :: return just the ens and visa of the updated elements
+++  duco                    :: render a navigation style change update
+  |=  [e=ens k=rami r=rex]  :: returns just the ens and visa of the updated elements
   ^-  opus
   ?~  r  [~ ~]
-  =/  tar  (~(get by e) k)
-  ?~  tar  [~ ~]
-  ?.  ?=(%select -.ars.u.tar)
+  =/  par  (~(get by e) k)
+  ?~  par  [~ ~]
+  ?.  ?=(%select -.ars.u.par)
     [~ ~]
   =/  sel=bean  =(k k.r)
   =/  v=visa
-    %+  fuco  visa.u.tar
+    %+  fuco  visa.u.par
     ?.  sel
-      look.res.u.tar
-    :+  ?~(d.ars.u.tar d.look.res.u.tar u.d.ars.u.tar)
-      ?~(b.ars.u.tar b.look.res.u.tar u.b.ars.u.tar)
-    ?~(f.ars.u.tar f.look.res.u.tar u.f.ars.u.tar)
-  =.  visa.u.tar  v
-  =:  e  (~(put by e) k u.tar)
+      look.res.u.par
+    :+  ?~(d.acia.ars.u.par d.look.res.u.par u.d.acia.ars.u.par)
+      ?~(b.acia.ars.u.par b.look.res.u.par u.b.acia.ars.u.par)
+    ?~(f.acia.ars.u.par f.look.res.u.par u.f.acia.ars.u.par)
+  =.  visa.u.par  v
+  =:  e  (~(put by e) k u.par)
       k  [[%xy 0] k]
     ==
   |-
-  =/  el  (~(get by e) k)
-  ?~  el  [e v]
-  ?.  |(?=(%border -.ars.u.el) ?=(%text -.ars.u.el))
+  =/  chi  (~(get by e) k)
+  ?~  chi  [e v]
+  ?.  |(?=(%border -.ars.u.chi) ?=(%text -.ars.u.chi))
     $(ager.i.k +(ager.i.k))
-  =.  visa.u.el
-    %+  fuco  visa.u.el
+  =.  visa.u.chi
+    %+  fuco  visa.u.chi
     ?.  sel
-      look.res.u.tar
-    :+  ?~(d.ars.u.tar d.look.res.u.el u.d.ars.u.tar)
-      ?~(b.ars.u.tar b.look.res.u.el u.b.ars.u.tar)
-    ?~(f.ars.u.tar f.look.res.u.el u.f.ars.u.tar)
+      look.res.u.par
+    :+  ?~(d.acia.ars.u.par d.look.res.u.chi u.d.acia.ars.u.par)
+      ?~(b.acia.ars.u.par b.look.res.u.chi u.b.acia.ars.u.par)
+    ?~(f.acia.ars.u.par f.look.res.u.chi u.f.acia.ars.u.par)
   %=  $
-    e  (~(put by e) k u.el)
-    v  (~(uni by v) visa.u.el)
+    e  (~(put by e) k u.chi)
+    v  (~(uni by v) visa.u.chi)
     ager.i.k  +(ager.i.k)
   ==
 ::
-++  fuco
+++  fuco                    :: change the style of a set of characters
   |=  [vi=visa fi=fila]
   ^-  visa
   (~(urn by vi) |=([* va=[fila @c ~]] [fi +.va]))
 ::
-++  rbox
+++  rbox                    :: render a generic box
   |=  [=lar lim=loci =res]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
@@ -746,7 +776,7 @@
     a  (~(put by a) [x y] [[~ +.look.res] (@c ' ') ~])
   ==
 ::
-++  rtxt
+++  rtxt                    :: render a text element
   |=  [=lar lim=loci =fila cols=@ud =vox]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
@@ -768,13 +798,13 @@
     vox  t.vox
   ==
 ::
-++  rbor
-  |=  [=lar lim=loci =res =ad =acia]
+++  rbor                    :: render a border element
+  |=  [=lar lim=loci =res =ad =pila]
   ^-  visa
   =+  [w=0 h=0 *a=visa]
   ?~  x.lar  a
   ?~  y.lar  a
-  ?:  ?=(%~ acia)  a
+  ?:  ?=(%~ pila)  a
   |-
   =/  x  (add u.x.lar w)
   =/  y  (add u.y.lar h)
@@ -785,40 +815,40 @@
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
   =/  c=@c
     %-  @c
-    ?:  ?=(%blank acia)
+    ?:  ?=(%blank pila)
       ' '
     ?-  ad
         %left
       ?:  =(0 w)
         ?:  =(0 h)
-          ?-(acia %light '┌', %heavy '┏', %double '╔')
+          ?-(pila %light '┌', %heavy '┏', %double '╔')
         ?:  =(h.size.res +(h))
-          ?-(acia %light '└', %heavy '┗', %double '╚')
-        ?-(acia %light '│', %heavy '┃', %double '║')
+          ?-(pila %light '└', %heavy '┗', %double '╚')
+        ?-(pila %light '│', %heavy '┃', %double '║')
       ' '
         %right
       ?:  nrow
         ?:  =(0 h)
-          ?-(acia %light '┐', %heavy '┓', %double '╗')
+          ?-(pila %light '┐', %heavy '┓', %double '╗')
         ?:  =(h.size.res +(h))
-          ?-(acia %light '┘', %heavy '┛', %double '╝')
-        ?-(acia %light '│', %heavy '┃', %double '║')
+          ?-(pila %light '┘', %heavy '┛', %double '╝')
+        ?-(pila %light '│', %heavy '┃', %double '║')
       ' '
         %top
       ?:  =(0 h)
         ?:  =(0 w)
-          ?-(acia %light '┌', %heavy '┏', %double '╔')
+          ?-(pila %light '┌', %heavy '┏', %double '╔')
         ?:  nrow
-          ?-(acia %light '┐', %heavy '┓', %double '╗')
-        ?-(acia %light '─', %heavy '━', %double '═')
+          ?-(pila %light '┐', %heavy '┓', %double '╗')
+        ?-(pila %light '─', %heavy '━', %double '═')
       ' '
         %bottom
       ?:  =(h.size.res +(h))
         ?:  =(0 w)
-          ?-(acia %light '└', %heavy '┗', %double '╚')
+          ?-(pila %light '└', %heavy '┗', %double '╚')
         ?:  nrow
-          ?-(acia %light '┘', %heavy '┛', %double '╝')
-        ?-(acia %light '─', %heavy '━', %double '═')
+          ?-(pila %light '┘', %heavy '┛', %double '╝')
+        ?-(pila %light '─', %heavy '━', %double '═')
       ' '
     ==
   %=  $
@@ -827,7 +857,7 @@
     a  (~(put by a) [x y] [[~ +.look.res] c ~])
   ==
 ::
-++  geno
+++  geno                    :: turn sail into session display state
   |=  x=manx
   ^-  opus
   ?:  |(=(0 x.arca) =(0 y.arca))
@@ -850,7 +880,7 @@
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
   |-
   ?~  m  a
-  =+  ^-  [=rei =aves =ars =acia]
+  =+  ^-  [=rei =aves =ars velo=mart]
     (suo g.i.m)
   =+  ^-  [bor=marl lay=marl nor=marl]
     =|  [bor=marl lay=marl nor=marl]
@@ -863,14 +893,13 @@
       %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
       %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
     ==
-  =?  bor  !=(%~ acia)
-    =/  v  (trip acia)
+  =?  bor  ?=(^ velo)
     %+  weld  bor
     ^-  marl
-    ;=  ;border-left(b v);
-        ;border-right(b v);
-        ;border-top(b v);
-        ;border-bottom(b v);
+    :~  [[%border-left velo] ~]
+        [[%border-right velo] ~]
+        [[%border-top velo] ~]
+        [[%border-bottom velo] ~]
     ==
   =+  ^-  [bl=@ud br=@ud bt=@ud bb=@ud]
     (obeo bor)
@@ -1491,7 +1520,7 @@
     cl    +(cl)
   ==
 ::  ::  ::  ::  ::  ::  ::
-++  dico
+++  dico                    :: derive hotkey and navigation context from display state
   |=  =ens
   ^-  cura
   =/  i=@ud   0
