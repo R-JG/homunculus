@@ -948,10 +948,9 @@
     =/  m  (add q.t.marg.rei q.b.marg.rei)
     ?:  (gth m q.h.size.rei)  0  (sub q.h.size.rei m)
   =/  repo=bean
-    ?&  !?=(%border -.ars)
-        ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
-            &(!=(0 y.flex.rei) =(%c p.py))
-    ==  ==
+    ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
+        &(!=(0 y.flex.rei) =(%c p.py))
+    ==
   =/  wrap=bean
     ?&  !?=(%border -.ars)
         ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.rei)
@@ -1085,13 +1084,13 @@
   =/  alim=loci
     :-  ?~  x.alar
           x.plim
-        =/  x  (add u.x.alar ?:(=(0 arx) 0 (dec arx)))
+        =/  x  ;:(add u.x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
         ?:  (gth x x.plim)
           x.plim
         x
     ?~  y.alar
       y.plim
-    =/  y  (add u.y.alar ?:(=(0 ary) 0 (dec ary)))
+    =/  y  ;:(add u.y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
     ?:  (gth y y.plim)
       y.plim
     y
