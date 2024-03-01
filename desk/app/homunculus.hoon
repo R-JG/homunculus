@@ -124,11 +124,8 @@
     ?~  l
       ~&  >>>  'NO EVENT'
       [~ hoc]
-    :: ~&  >>>  u.l
-    :: ~&  >>>  [%current-selection rex.ara]
     =^  cards  ego
       (novo u.l)
-    :: ~&  >>>  [%new-selection rex.ara]
     [cards hoc]
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -773,7 +770,7 @@
   %=  $
     w  ?:(nrow 0 +(w))
     h  ?:(nrow +(h) h)
-    a  (~(put by a) [x y] [[~ +.look.res] (@c ' ') ~])
+    a  (~(put by a) [x y] [[~ +.look.res] ~-. ~])
   ==
 ::
 ++  rtxt                    :: render a text element
@@ -814,47 +811,46 @@
   ?:  |((gth +(x) x.arca) (gth x x.lim))
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
   =/  c=@c
-    %-  @c
     ?:  ?=(%blank pila)
-      ' '
+      ~-.
     ?-  ad
         %left
       ?:  =(0 w)
         ?:  =(0 h)
-          ?-(pila %light '┌', %heavy '┏', %double '╔')
+          ?-(pila %light ~-~250c., %heavy ~-~250f., %double ~-~2554.)  ::  ┌  ┏  ╔
         ?:  =(h.size.res +(h))
-          ?-(pila %light '└', %heavy '┗', %double '╚')
-        ?-(pila %light '│', %heavy '┃', %double '║')
-      ' '
+          ?-(pila %light ~-~2514., %heavy ~-~2517., %double ~-~255a.)  ::  └  ┗  ╚
+        ?-(pila %light ~-~2502., %heavy ~-~2503., %double ~-~2551.)    ::  │  ┃  ║
+      ~-.
         %right
       ?:  nrow
         ?:  =(0 h)
-          ?-(pila %light '┐', %heavy '┓', %double '╗')
+          ?-(pila %light ~-~2510., %heavy ~-~2513., %double ~-~2557.)  ::  ┐  ┓  ╗
         ?:  =(h.size.res +(h))
-          ?-(pila %light '┘', %heavy '┛', %double '╝')
-        ?-(pila %light '│', %heavy '┃', %double '║')
-      ' '
+          ?-(pila %light ~-~2518., %heavy ~-~251b., %double ~-~255d.)  ::  ┘  ┛  ╝
+        ?-(pila %light ~-~2502., %heavy ~-~2503., %double ~-~2551.)    ::  │  ┃  ║
+      ~-.
         %top
       ?:  =(0 h)
         ?:  =(0 w)
-          ?-(pila %light '┌', %heavy '┏', %double '╔')
+          ?-(pila %light ~-~250c., %heavy ~-~250f., %double ~-~2554.)  ::  ┌  ┏  ╔
         ?:  nrow
-          ?-(pila %light '┐', %heavy '┓', %double '╗')
-        ?-(pila %light '─', %heavy '━', %double '═')
-      ' '
+          ?-(pila %light ~-~2510., %heavy ~-~2513., %double ~-~2557.)  ::  ┐  ┓  ╗
+        ?-(pila %light ~-~2500., %heavy ~-~2501., %double ~-~2550.)    ::  ─  ━  ═
+      ~-.
         %bottom
       ?:  =(h.size.res +(h))
         ?:  =(0 w)
-          ?-(pila %light '└', %heavy '┗', %double '╚')
+          ?-(pila %light ~-~2514., %heavy ~-~2517., %double ~-~255a.)  ::  └  ┗  ╚
         ?:  nrow
-          ?-(pila %light '┘', %heavy '┛', %double '╝')
-        ?-(pila %light '─', %heavy '━', %double '═')
-      ' '
+          ?-(pila %light ~-~2518., %heavy ~-~251b., %double ~-~255d.)  ::  ┘  ┛  ╝
+        ?-(pila %light ~-~2500., %heavy ~-~2501., %double ~-~2550.)    ::  ─  ━  ═
+      ~-.
     ==
   %=  $
     w  ?:(nrow 0 +(w))
     h  ?:(nrow +(h) h)
-    a  (~(put by a) [x y] [[~ +.look.res] c ~])
+    a  (~(put by a) [x y] [look.res c ~])
   ==
 ::
 ++  geno                    :: turn sail into session display state
@@ -1103,7 +1099,6 @@
     :+  ?~(d.look.rei d.pl u.d.look.rei)
       ?~(b.look.rei b.pl u.b.look.rei)
     ?~(f.look.rei f.pl u.f.look.rei)
-  =/  ncc  (lent bor)
   =/  b  *opus
   =>  ?.  ?=(^ lay)
       .
@@ -1152,8 +1147,8 @@
         a
           %_  $
             m     nor
-            k     [[%xy ncc] k]
-            cc    ncc
+            k     [[%xy 0] k]
+            cc    0
             cl    0
             px    w.size.rei
             py    h.size.rei
@@ -1171,8 +1166,8 @@
         %_  $
           a     *opus
           m     nor
-          k     [[%xy ncc] k]
-          cc    ncc
+          k     [[%xy 0] k]
+          cc    0
           cl    0
           px    w.size.rei
           py    h.size.rei
@@ -1198,7 +1193,9 @@
     =/  bot=@ud  ?~(y.vlar y.alim u.y.vlar)
     |-
     =/  el  (~(get by ?:(|(repo wrim) ens.b ens.a)) [[ax i] k])
-    ?:  &(?=(^ el) !?=(%border -.ars.u.el))
+    ?:  ?=(^ el)
+      ?:  ?=(%border -.ars.u.el)
+        $(i +(i))
       =/  el-r=@ud
         ?~  x.lar.u.el
           x.alim
@@ -1447,11 +1444,12 @@
           pl
       ==
     ==
+  =/  ncc  (lent nor)
   =?  a  ?=(^ bor)
     %_  $
       m     bor
-      k     [[%xy 0] k]
-      cc    0
+      k     [[%xy ncc] k]
+      cc    ncc
       cl    0
       px    w.size.rei
       py    h.size.rei
