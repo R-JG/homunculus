@@ -26,13 +26,22 @@
 +$  ad    ?(%left %right %top %bottom)
 +$  pila  ?(%light %heavy %double %blank %~)
 +$  ars
-  $%  [%text =vox]  [%select =acia]
-      [%border =ad =pila]  [%layer ~]  [%$ ~]
+  $%  [%text =vox]  [%layer ~]  [%border =ad =pila]
+      [%select =acia]  [%input i=@ud ab=@ud =vox]
+      [%$ ~]
   ==
 ::
 +$  omen  (map nota lex)
-+$  nota  dill-belt:dill
-+$  lex   ?(%nav-l %nav-r %nav-u %nav-d %act %def)
++$  zona  dill-belt:dill
++$  nota
+  $%  [%mod ?(%ctl %met %hyp) bolt:dill]  [%aro ?(%d %l %r %u)]
+      [%txt ~]  [%bac ~]  [%hit ~]  [%ret ~]
+  ==
++$  lex
+  $?  %nav-l  %nav-r  %nav-u  %nav-d
+      %cur-l  %cur-r  %cur-u  %cur-d
+      %inp  %del  %tog  %act  %def
+  ==
 +$  mus   (map loci rami)
 +$  dux   [l=@ud r=@ud t=@ud b=@ud k=rami]
 +$  rex   $@(~ dux)
@@ -104,29 +113,35 @@
     [~ hoc(ara [ens.gen visa.gen elem omen.dic ~ ordo.dic])]
     ::
       %dill-poke
-    =/  n=nota  +:!<(poke:dill vase)
+    =/  z=zona  +:!<(poke:dill vase)
     ::
-    ?:  =(%del -.n)                            ::  press the del key to exit the tui
+    ?:  ?=(%del -.z)                        ::  press the del key to exit the tui
       :_  hoc
       :~  [%pass /give-terminal %arvo %d %open %hood ~]
           [%pass /give-terminal %arvo %d %flee ~]
       ==
     ::
-    ?:  =(%rez -.n)                            ::  resize arca to new terminal dimensions
+    ?:  ?=(%rez -.z)                        ::  resize arca to new terminal dimensions
       =/  gen=opus  (geno vela.ara)
       =/  dic=cura  (dico ens.gen)
       =/  =lux  (put-blit visa.gen)
-      :_  hoc(arca [(@ -.+.n) (@ +.+.n)], ara ara(ens ens.gen, visa visa.gen, ordo ordo.dic))
+      :_  hoc(arca [(@ -.+.z) (@ +.+.z)], ara ara(ens ens.gen, visa visa.gen, ordo ordo.dic))
       :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
       ==
     ::
-    =/  l=(unit lex)  (~(get by omen.ara) n)
-    ?~  l
-      ~&  >>>  'NO EVENT'
-      [~ hoc]
-    =^  cards  ego
-      (novo u.l)
-    [cards hoc]
+    ?:  ?|  ?=(%mod -.z)  ?=(%aro -.z)  ?=(%txt -.z)
+            ?=(%bac -.z)  ?=(%ret -.z)  ?=(%hit -.z)
+        ==
+      =/  n=nota  ?:(?=(%txt -.z) [-.z ~] ?:(?=(%hit -.z) [-.z ~] ?:(?=(%mod -.z) z ?:(?=(%aro -.z) z ?:(?=(%bac -.z) z ?:(?=(%ret -.z) z !!))))))
+      =/  l=(unit lex)  (~(get by omen.ara) n)
+      ?~  l
+        ~&  >>>  [z 'NO EVENT']
+        [~ hoc]
+      =^  cards  ego
+        (novo u.l z)
+      [cards hoc]
+    ::
+    [~ hoc]
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-watch
@@ -154,11 +169,35 @@
 ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
 ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
 |%
+++  hnav                    :: hotkey context group for navigation
+  ^-  omen
+  %-  malt
+  ^-  (list [nota lex])
+  :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
+      [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
+  ==
+::
+++  htog                    :: hotkey context group for toggling between nav and element interaction
+  ^-  omen
+  %-  malt
+  ^-  (list [nota lex])
+  :~  [[%mod mod=%ctl key=~-i] %tog]
+  ==
+::
+++  hinp                    :: hotkey context group for an input element
+  ^-  omen
+  %-  malt
+  ^-  (list [nota lex])
+  :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
+      [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
+      [[%txt ~] %inp]  [[%bac ~] %del]
+  ==
+::  ::  ::
 ++  novo                    :: handle an event from the hotkey context
-  |=  =lex
+  |=  [=lex =zona]
   ^-  (quip card ^ego)
   ::
-  ?:  |(=(%nav-l lex) =(%nav-r lex) =(%nav-u lex) =(%nav-d lex))
+  ?:  |(?=(%nav-l lex) ?=(%nav-r lex) ?=(%nav-u lex) ?=(%nav-d lex))
     |^
     ?~  ordo.ara  [~ ego]
     =/  next=rex
@@ -373,7 +412,169 @@
       ==
     --
   ::
+  ?:  ?=(%tog lex)
+    ?~  rex.ara  [~ ego]
+    =/  el  (~(get by ens.ara) k.rex.ara)
+    ?~  el  [~ ego]
+    =/  ev  (~(get by omen.ara) [%aro %l])
+    ?~  ev  [~ ego]
+    ?+  -.ars.u.el  [~ ego]
+        %input
+      ?.  ?=(%nav-l u.ev)
+        :_  ego(omen.ara (~(uni by (~(dif by omen.ara) hinp)) hnav))
+        ?:  |(?=(~ x.lar.u.el) ?=(~ y.lar.u.el))
+          ~
+        [[%give %fact ~[/dill/$] %dill-blit !>([%hop u.x.lar.u.el u.y.lar.u.el])] ~]
+      :_  ego(omen.ara (~(uni by omen.ara) hinp))
+      ?:  |(?=(~ x.lar.u.el) ?=(~ y.lar.u.el))
+        ~
+      :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
+        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el u.x.lar.u.el u.y.lar.u.el))
+      ==  ==
+    ==
+  ::
+  ?:  ?=(%inp lex)
+    ?.  ?=(%txt -.zona)  [~ ego]
+    ?~  p.zona  [~ ego]
+    ?~  rex.ara  [~ ego]
+    =/  el  (~(get by ens.ara) k.rex.ara)
+    ?~  el  [~ ego]
+    ?:  |(?=(~ x.lar.u.el) ?=(~ y.lar.u.el))  [~ ego]
+    ?.  ?=(%input -.ars.u.el)  [~ ego]
+    =:  vox.ars.u.el
+          ?~  t.p.zona
+            (into vox.ars.u.el i.ars.u.el (tuft i.p.zona))
+          %+  weld  (weld (scag +(i.ars.u.el) vox.ars.u.el) (tufa p.zona))
+          (slag +(i.ars.u.el) vox.ars.u.el)
+        i.ars.u.el
+          (add i.ars.u.el (lent p.zona))
+      ==
+    =.  ab.ars.u.el
+      ?:  (gte (sub i.ars.u.el ab.ars.u.el) (mul w.size.res.u.el h.size.res.u.el))
+        ?:  =(1 h.size.res.u.el)
+          +(ab.ars.u.el)
+        (add ab.ars.u.el w.size.res.u.el)
+      ab.ars.u.el
+    =/  lim  [(add u.x.lar.u.el w.size.res.u.el) (add u.y.lar.u.el h.size.res.u.el)]
+    =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
+    =.  vi  (~(int by visa.u.el) vi)
+    =.  visa.u.el  vi
+    :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
+    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+      !>  :-  %mor
+      :~  (viso visa.ara vi)
+      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el u.x.lar.u.el u.y.lar.u.el)
+    ==  ==  ==
+  ::
+  ?:  ?=(%del lex)
+    ?~  rex.ara  [~ ego]
+    =/  el  (~(get by ens.ara) k.rex.ara)
+    ?~  el  [~ ego]
+    ?:  |(?=(~ x.lar.u.el) ?=(~ y.lar.u.el))  [~ ego]
+    ?.  ?=(%input -.ars.u.el)  [~ ego]
+    =.  i.ars.u.el  ?:(=(0 i.ars.u.el) 0 (dec i.ars.u.el))
+    =.  vox.ars.u.el  (oust [i.ars.u.el 1] vox.ars.u.el)
+    =.  ab.ars.u.el
+      ?:  &((lte i.ars.u.el ab.ars.u.el) !=(0 ab.ars.u.el))
+        ?:  =(1 h.size.res.u.el)
+          ?:((gth w.size.res.u.el ab.ars.u.el) 0 +((sub ab.ars.u.el w.size.res.u.el)))
+        ?:((gth w.size.res.u.el ab.ars.u.el) 0 (sub ab.ars.u.el w.size.res.u.el))
+      ab.ars.u.el
+    =/  lim  [(add u.x.lar.u.el w.size.res.u.el) (add u.y.lar.u.el h.size.res.u.el)]
+    =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
+    =.  vi  (~(int by visa.u.el) vi)
+    =.  visa.u.el  vi
+    :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
+    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+      !>  :-  %mor
+      :~  (viso visa.ara vi)
+      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el u.x.lar.u.el u.y.lar.u.el)
+    ==  ==  ==
+  ::
+  ?:  |(?=(%cur-l lex) ?=(%cur-r lex) ?=(%cur-u lex) ?=(%cur-d lex))
+    ?~  rex.ara  [~ ego]
+    =/  el  (~(get by ens.ara) k.rex.ara)
+    ?~  el  [~ ego]
+    ?:  |(?=(~ x.lar.u.el) ?=(~ y.lar.u.el))  [~ ego]
+    ?.  ?=(%input -.ars.u.el)  [~ ego]
+    =.  i.ars.u.el
+      ?+  lex  i.ars.u.el
+          %cur-l
+        ?:(=(0 i.ars.u.el) 0 (dec i.ars.u.el))
+          %cur-r
+        =/  i  +(i.ars.u.el)
+        ?:  (gth i (lent vox.ars.u.el))
+          i.ars.u.el
+        i
+          %cur-u
+        ?:  =(1 h.size.res.u.el)
+          0
+        ?:  (lth i.ars.u.el w.size.res.u.el)
+          0
+        (sub i.ars.u.el w.size.res.u.el)
+          %cur-d
+        ?:  =(1 h.size.res.u.el)
+          (lent vox.ars.u.el)
+        =/  i  (add i.ars.u.el w.size.res.u.el)
+        =/  l  (lent vox.ars.u.el)
+        ?:  (gth i l)
+          l
+        i
+      ==
+    =/  nab
+      ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
+        ?:  &(?=(%cur-u lex) =(1 h.size.res.u.el))
+          0
+        ?:  &(!=(0 ab.ars.u.el) (lte i.ars.u.el ab.ars.u.el))
+          ?:  =(1 h.size.res.u.el)
+            (dec ab.ars.u.el)
+          ?:((gth w.size.res.u.el ab.ars.u.el) 0 (sub ab.ars.u.el w.size.res.u.el))
+        ab.ars.u.el
+      ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
+        ?:  &(?=(%cur-d lex) =(1 h.size.res.u.el))
+          ?.  (gte (sub i.ars.u.el ab.ars.u.el) w.size.res.u.el)
+            ab.ars.u.el
+          =/  m  (mod i.ars.u.el w.size.res.u.el)
+          =/  l  (lent vox.ars.u.el)
+          ?:((gth m l) 0 (sub l m))
+        ?:  (gte (sub i.ars.u.el ab.ars.u.el) (mul w.size.res.u.el h.size.res.u.el))
+          ?:  =(1 h.size.res.u.el)
+            +(ab.ars.u.el)
+          (add ab.ars.u.el w.size.res.u.el)
+        ab.ars.u.el
+      ab.ars.u.el
+    ?:  =(ab.ars.u.el nab)
+      :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el))
+      :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
+        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el u.x.lar.u.el u.y.lar.u.el))
+      ==  ==
+    =.  ab.ars.u.el  nab
+    =/  lim  [(add u.x.lar.u.el w.size.res.u.el) (add u.y.lar.u.el h.size.res.u.el)]
+    =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
+    =.  vi  (~(int by visa.u.el) vi)
+    =.  visa.u.el  vi
+    :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
+    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+      !>  :-  %mor
+      :~  (viso visa.ara vi)
+      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el u.x.lar.u.el u.y.lar.u.el)
+    ==  ==  ==
+  ::
   [~ ego]
+::
+++  vado                    :: move the cursor to a given input character index
+  |=  [ab=@ud i=@ud w=@ud xlar=@ud ylar=@ud]
+  ^-  lux
+  =/  n=@ud  (sub i ab)
+  =/  col=@ud  (mod n w)
+  =/  row=@ud
+    ?:  =(0 w)
+      0
+    ?:  =(0 (mod +(n) w))
+      (div +(n) w)
+    +((div +(n) w))
+  =.  row  ?:(=(0 row) 0 (dec row))
+  [%hop (add xlar col) (add ylar row)]
 ::  ::  ::  ::  ::  ::  ::
 ++  dolo                    :: get default styles for a semantic element
   |=  el=@tas
@@ -434,6 +635,14 @@
         flow=[%row %clip]
         look=[~ ~ ~]
     ==
+      %input
+    :*  size=[[%c 10] [%c 1]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %clip]
+        look=[~ [~ %w] [~ %k]]
+    ==
   ==
 ::
 ++  suo                     :: process a sail element's name and attribute list for geno
@@ -448,6 +657,7 @@
         %border-right   [(dolo %border-right) ~ [%border %right %~] ~]
         %border-top     [(dolo %border-top) ~ [%border %top %~] ~]
         %border-bottom  [(dolo %border-bottom) ~ [%border %bottom %~] ~]
+        %input          [(dolo %input) ~ [%input 0 0 ~] ~]
       ==
   |-
   ?~  a  [rei aves ars velo]
@@ -795,6 +1005,20 @@
     vox  t.vox
   ==
 ::
+++  rinp                    :: render an input element
+  |=  [=lar lim=loci =res ab=@ud =vox]
+  ^-  visa
+  =.  vox
+    |-
+    ?~  vox  ~
+    ?:  =(0 ab)
+      vox
+    $(vox t.vox, ab (dec ab))
+  %-  %~  uni
+        by
+      (rbox lar lim res)
+  (rtxt lar lim look.res w.size.res vox)
+::
 ++  rbor                    :: render a border element
   |=  [=lar lim=loci =res =ad =pila]
   ^-  visa
@@ -879,6 +1103,8 @@
   =+  ^-  [=rei =aves =ars velo=mart]
     (suo g.i.m)
   =+  ^-  [bor=marl lay=marl nor=marl]
+    ?:  ?=(%input -.ars)
+      [~ ~ ~]
     =|  [bor=marl lay=marl nor=marl]
     |-
     ?~  c.i.m  [bor (flop lay) (flop nor)]
@@ -889,7 +1115,7 @@
       %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
       %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
     ==
-  =?  bor  ?=(^ velo)
+  =?  bor  &(?=(^ velo) !?=(%input -.ars))
     %+  weld  bor
     ^-  marl
     :~  [[%border-left velo] ~]
@@ -1470,6 +1696,7 @@
         %text    (rtxt alar plim pl w.size.ares vox.ars)
         %layer   ~
         %border  (rbor alar plim ares +.ars)
+        %input   (rinp alar plim ares ab.ars vox.ars)
     ==
   =?  rend  !?=(%layer -.ars)
     (~(dif by rend) visa.a)
@@ -1547,6 +1774,7 @@
     =/  nav=bean
       ?|  &(?=(^ sel) !?=(%layer -.ars.u.el))
           ?=(%select -.ars.u.el)
+          ?=(%input -.ars.u.el)
       ==
     =?  ordo.acc  nav
       ?~  x.lar.u.el  ordo.acc
@@ -1559,10 +1787,9 @@
           k
       ==
     =?  omen.acc  &(nav !(~(has by omen.acc) [%aro %l]))
-      %-  %~  gas
-            by
-          omen.acc
-      [[[%aro %l] %nav-l] [[%aro %r] %nav-r] [[%aro %u] %nav-u] [[%aro %d] %nav-d] ~]
+      (~(uni by omen.acc) hnav)
+    =?  omen.acc  ?=(%input -.ars.u.el)
+      (~(uni by omen.acc) htog)
     acc
   %=  $
     i  +(i)
