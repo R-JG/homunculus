@@ -746,6 +746,8 @@
       %column-wrap  $(flow.rei [%col %wrap], a t.a)
     ==
       %cb
+    ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
+      $(b.look.rei [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(b.look.rei ~, a t.a)
       %red      $(b.look.rei [~ %r], a t.a)
       %green    $(b.look.rei [~ %g], a t.a)
@@ -757,6 +759,8 @@
       %white    $(b.look.rei [~ %w], a t.a)
     ==
       %cf
+    ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
+      $(f.look.rei [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(f.look.rei ~, a t.a)
       %red      $(f.look.rei [~ %r], a t.a)
       %green    $(f.look.rei [~ %g], a t.a)
@@ -785,6 +789,8 @@
       %b-cb
     ?.  ?=(%border -.ars)
       $(velo [i.a velo], a t.a)
+    ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
+      $(b.look.rei [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(b.look.rei ~, a t.a)
       %red      $(b.look.rei [~ %r], a t.a)
       %green    $(b.look.rei [~ %g], a t.a)
@@ -798,6 +804,8 @@
       %b-cf
     ?.  ?=(%border -.ars)
       $(velo [i.a velo], a t.a)
+    ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
+      $(f.look.rei [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(f.look.rei ~, a t.a)
       %red      $(f.look.rei [~ %r], a t.a)
       %green    $(f.look.rei [~ %g], a t.a)
@@ -819,41 +827,42 @@
       %sel
     $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
       %sel-cb
-    ?+  -.ars  $(a t.a)
-        %select
-      ?+  (@tas (crip v.i.a))  $(a t.a)
-        %red      $(b.acia.ars [~ %r], a t.a)
-        %green    $(b.acia.ars [~ %g], a t.a)
-        %blue     $(b.acia.ars [~ %b], a t.a)
-        %cyan     $(b.acia.ars [~ %c], a t.a)
-        %magenta  $(b.acia.ars [~ %m], a t.a)
-        %yellow   $(b.acia.ars [~ %y], a t.a)
-        %black    $(b.acia.ars [~ %k], a t.a)
-        %white    $(b.acia.ars [~ %w], a t.a)
-      ==
+    ?.  ?=(%select -.ars)
+      $(a t.a)
+    ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
+      $(b.acia.ars [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %red      $(b.acia.ars [~ %r], a t.a)
+      %green    $(b.acia.ars [~ %g], a t.a)
+      %blue     $(b.acia.ars [~ %b], a t.a)
+      %cyan     $(b.acia.ars [~ %c], a t.a)
+      %magenta  $(b.acia.ars [~ %m], a t.a)
+      %yellow   $(b.acia.ars [~ %y], a t.a)
+      %black    $(b.acia.ars [~ %k], a t.a)
+      %white    $(b.acia.ars [~ %w], a t.a)
     ==
       %sel-cf
-    ?+  -.ars  $(a t.a)
-        %select
-      ?+  (@tas (crip v.i.a))  $(a t.a)
-        %red      $(f.acia.ars [~ %r], a t.a)
-        %green    $(f.acia.ars [~ %g], a t.a)
-        %blue     $(f.acia.ars [~ %b], a t.a)
-        %cyan     $(f.acia.ars [~ %c], a t.a)
-        %magenta  $(f.acia.ars [~ %m], a t.a)
-        %yellow   $(f.acia.ars [~ %y], a t.a)
-        %black    $(f.acia.ars [~ %k], a t.a)
-        %white    $(f.acia.ars [~ %w], a t.a)
-      ==
+    ?.  ?=(%select -.ars)
+      $(a t.a)
+    ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
+      $(f.acia.ars [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %red      $(f.acia.ars [~ %r], a t.a)
+      %green    $(f.acia.ars [~ %g], a t.a)
+      %blue     $(f.acia.ars [~ %b], a t.a)
+      %cyan     $(f.acia.ars [~ %c], a t.a)
+      %magenta  $(f.acia.ars [~ %m], a t.a)
+      %yellow   $(f.acia.ars [~ %y], a t.a)
+      %black    $(f.acia.ars [~ %k], a t.a)
+      %white    $(f.acia.ars [~ %w], a t.a)
     ==
       %sel-d
-    ?+  -.ars  $(a t.a)
-        %select
-      ?+  (@tas (crip v.i.a))  $(a t.a)
-        %bold       $(d.acia.ars [~ (silt ~[%br])], a t.a)
-        %blink      $(d.acia.ars [~ (silt ~[%bl])], a t.a)
-        %underline  $(d.acia.ars [~ (silt ~[%un])], a t.a)
-      ==
+    ?.  ?=(%select -.ars)
+      $(a t.a)
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %bold       $(d.acia.ars [~ (silt ~[%br])], a t.a)
+      %blink      $(d.acia.ars [~ (silt ~[%bl])], a t.a)
+      %underline  $(d.acia.ars [~ (silt ~[%un])], a t.a)
     ==
       %act
     $(aves (~(put by aves) %act (crip v.i.a)), a t.a)
@@ -870,6 +879,41 @@
   =/  n=(unit @ud)  (slaw %ud (crip v))
   ?~  n  [%c 0]
   [%c u.n]
+::
+++  seco                    :: parse a tape to a hex color
+  |=  v=tape
+  ^-  [r=@uxD g=@uxD b=@uxD]
+  ?.  ?&  ?=(^ v)  ?=(^ t.v)  ?=(^ t.t.v)  ?=(^ t.t.t.v)
+          ?=(^ t.t.t.t.v)  ?=(^ t.t.t.t.t.v)  ?=(^ t.t.t.t.t.t.v)
+      ==
+    [0x0 0x0 0x0]
+  =/  r=(unit @uxD)
+    %+  slaw  %ux
+    %-  crip
+    :+  '0'  'x'
+    %-  cass
+    ?:  =('0' i.t.v)
+      [i.t.t.v ~]
+    [i.t.v i.t.t.v ~]
+  =/  g=(unit @uxD)
+    %+  slaw  %ux
+    %-  crip
+    :+  '0'  'x'
+    %-  cass
+    ?:  =('0' i.t.t.t.v)
+      [i.t.t.t.t.v ~]
+    [i.t.t.t.v i.t.t.t.t.v ~]
+  =/  b=(unit @uxD)
+    %+  slaw  %ux
+    %-  crip
+    :+  '0'  'x'
+    %-  cass
+    ?:  =('0' i.t.t.t.t.t.v)
+      [i.t.t.t.t.t.t.v ~]
+    [i.t.t.t.t.t.v i.t.t.t.t.t.t.v ~]
+  ?.  &(?=(^ r) ?=(^ g) ?=(^ b))
+    [0x0 0x0 0x0]
+  [u.r u.g u.b]
 ::
 ++  obeo                    :: get border sizes from a list of border elements
   |=  bor=marl              :: defaults to 1 if an element is found and no valid size is specified
