@@ -4,7 +4,7 @@
 ::  ┴O┴ ┴└─┘┴ ┴└─┘┘└┘└─┘└─┘┴─┘└─┘└─┘
 ::
 |%
-+$  ens   (map rami [=res =visa =lar =modi =aves =ars])
++$  ens   (map rami [=res =visa =lar =modi =iter =aves =ars])
 +$  rami  (lest [=axis =ager])
 +$  res
   $:  size=[w=@ud h=@ud]
@@ -1241,17 +1241,15 @@
   =/  a=opus        [~ ~]
   =/  m=marl        ~[x]
   =/  k=rami        ~[[%xy 0]]
-  =/  cc=@ud        0
-  =/  cl=@ud        0
   =/  pl=fila       [~ ~ %w]
   =/  px=as         [%c x.arca]
   =/  py=as         [%c y.arca]
-  =/  pex=flex      [0 0]
   =/  pow=flow      [%row %clip]
   =/  prx=@ud       x.arca
   =/  pry=@ud       y.arca
   =/  plar=lar      [0 0]
   =/  plim=modi     [(dec x.arca) (dec y.arca)]
+  =/  pitr=iter     [0 0]
   =/  pscr=[x=bean y=bean]  [%.n %.n]
   =/  slim=$@(~ loci)  ~
   =/  vlar=lar      [0 0]
@@ -1473,12 +1471,9 @@
           %_  $
             m     lay
             k     [[%z 0] k]
-            cc    0
-            cl    0
             px    w.size.rei
             py    h.size.rei
             pl    fi
-            pex   flex.rei
             pow   flow.rei
             prx   arx
             pry   ary
@@ -1494,12 +1489,9 @@
           a     *opus
           m     lay
           k     [[%z 0] k]
-          cc    0
-          cl    0
           px    w.size.rei
           py    h.size.rei
           pl    fi
-          pex   flex.rei
           pow   flow.rei
           prx   arx
           pry   ary
@@ -1517,12 +1509,9 @@
           %_  $
             m     nor
             k     [[%xy 0] k]
-            cc    0
-            cl    0
             px    w.size.rei
             py    h.size.rei
             pl    fi
-            pex   flex.rei
             pow   flow.rei
             prx   arx
             pry   ary
@@ -1538,12 +1527,9 @@
           a     *opus
           m     nor
           k     [[%xy 0] k]
-          cc    0
-          cl    0
           px    w.size.rei
           py    h.size.rei
           pl    fi
-          pex   flex.rei
           pow   flow.rei
           prx   arx
           pry   ary
@@ -1787,17 +1773,13 @@
   =?  alim  &(|(x.pscr y.pscr) ?=(%text -.ars))
     :-  ?:(x.pscr (add x.alar ?:(=(0 w.size.ares) 0 (dec w.size.ares))) x.alim)
     ?:(y.pscr (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares))) y.alim)
-  =/  ncc  (lent nor)
   =?  a  ?=(^ bor)
     %_  $
       m     bor
-      k     [[%xy ncc] k]
-      cc    ncc
-      cl    0
+      k     [[%xy (lent nor)] k]
       px    w.size.rei
       py    h.size.rei
       pl    fi
-      pex   flex.ares
       pow   flow.ares
       prx   w.size.ares
       pry   h.size.ares
@@ -1822,6 +1804,10 @@
     ==
   =?  rend  !?=(%layer -.ars)
     (~(dif by rend) visa.a)
+  
+  :: =?  ars  |(?=(%input -.ars) ?=(%scroll -.ars))
+  ::  
+
   =?  vir  !?=(%layer -.ars)
     ?:  ?=(%border -.ars)
       [0 0 0]
@@ -1853,13 +1839,11 @@
     a  
       %=  a
         ens   =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
-              (~(put by ens.a) k [ares rend alar plim aves ars])
+              (~(put by ens.a) k [ares rend alar plim pitr aves ars])
         visa  (~(uni by rend) visa.a)
       ==
     m     t.m
     k     [[axis.i.k +(ager.i.k)] t.k]
-    cc    +(cc)
-    cl    +(cl)
   ==
 ::  ::  ::  ::  ::  ::  ::
 ++  dico                    :: derive hotkey and navigation context from display state
