@@ -1135,7 +1135,7 @@
   =/  nrow=bean  (gte +(w) w.size.res)
   ?:  |((gte h h.size.res) (gth y y.lim))
     a
-  ?:  |((gth +(x) x.arca) (gth x x.lim))
+  ?:  (gth x x.lim)
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
   %=  $
     w  ?:(nrow 0 +(w))
@@ -1154,7 +1154,7 @@
   =/  nrow=bean  (gte +(w) cols)
   ?:  (gth y y.lim)
     a
-  ?:  |((gth +(x) x.arca) (gth x x.lim))
+  ?:  (gth x x.lim)
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h), vox t.vox)
   %=  $
     w    ?:(nrow 0 +(w))
@@ -1188,7 +1188,7 @@
   =/  nrow=bean  (gte +(w) w.size.res)
   ?:  |((gte h h.size.res) (gth y y.lim))
     a
-  ?:  |((gth +(x) x.arca) (gth x x.lim))
+  ?:  (gth x x.lim)
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
   =/  c=@c
     ?:  ?=(%blank pila)
@@ -1450,7 +1450,6 @@
     ?:  (gth y y.plim)
       y.plim
     y
-  =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
   =/  nscr=[x=bean y=bean]
     :-  |(?=(%scroll -.ars) &(x.pscr ?=(%i p.w.size.rei)))
     |(?=(%scroll -.ars) &(y.pscr ?=(%i p.h.size.rei)))
@@ -1676,7 +1675,6 @@
         y.plim
       y
     y.alim
-  =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
   =?  b  &(|(repo wrim) ?=(^ csiz))
     |^
     =/  movx=@ud
@@ -1740,10 +1738,8 @@
       =:  visa.u.el   (muto movx movy ~(tap by visa.u.el))
           x.lar.u.el  (add x.lar.u.el movx)
           y.lar.u.el  (add y.lar.u.el movy)
-          x.modi.u.el
-            =/(x (add x.modi.u.el movx) ?:(&(!?=(%scroll -.ars) (gth x x.alim)) x.alim x))
-          y.modi.u.el
-            =/(y (add y.modi.u.el movy) ?:(&(!?=(%scroll -.ars) (gth y y.alim)) y.alim y))
+          x.modi.u.el  (add x.modi.u.el movx)
+          y.modi.u.el  (add y.modi.u.el movy)
         ==
       $(ens.b (~(put by ens.b) [[ax i] k] u.el), i +(i))
     =.  visa.b  (muto movx movy ~(tap by visa.b))
@@ -1791,7 +1787,6 @@
   =?  alim  &(|(x.pscr y.pscr) ?=(%text -.ars))
     :-  ?:(x.pscr (add x.alar ?:(=(0 w.size.ares) 0 (dec w.size.ares))) x.alim)
     ?:(y.pscr (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares))) y.alim)
-  =?  plim  &(|(x.pscr y.pscr) ?=(%text -.ars))  alim
   =/  ncc  (lent nor)
   =?  a  ?=(^ bor)
     %_  $
@@ -1807,7 +1802,8 @@
       prx   w.size.ares
       pry   h.size.ares
       plar  alar
-      plim  :-  =/  x  (add x.alim ;:(add bl br l.padd.ares r.padd.ares))
+      plim  =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
+            :-  =/  x  (add x.alim ;:(add bl br l.padd.ares r.padd.ares))
                 ?:((gth x x.plim) x.plim x)
             =/  y  (add y.alim ;:(add bt bb t.padd.ares b.padd.ares))
             ?:((gth y y.plim) y.plim y)
@@ -1819,6 +1815,7 @@
       alar
       ares
       ars
+      =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
       ?:  ?=(~ slim)
         plim
       [?:((lth x.slim x.plim) x.slim x.plim) ?:((lth y.slim y.plim) y.slim y.plim)]
@@ -1855,7 +1852,8 @@
   %=  $
     a  
       %=  a
-        ens   (~(put by ens.a) k [ares rend alar plim aves ars])
+        ens   =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
+              (~(put by ens.a) k [ares rend alar plim aves ars])
         visa  (~(uni by rend) visa.a)
       ==
     m     t.m
