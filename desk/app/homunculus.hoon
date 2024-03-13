@@ -117,7 +117,16 @@
     =/  elem=manx  !<(manx vase)
     =/  gen=opus  (geno elem)
     =/  dic=cura  (dico ens.gen)
-    [~ hoc(ara [ens.gen visa.gen elem omen.dic ~ ordo.dic ~ urbs [0 0]])]
+    :-  ~
+    %=  hoc
+      ens.ara   ens.gen
+      visa.ara  visa.gen
+      vela.ara  elem
+      omen.ara  omen.dic
+      ordo.ara  ordo.dic
+      arx.ara   urbs
+      lar.ara   [0 0]
+    ==
     ::
       %dill-poke
     =/  z=zona  +:!<(poke:dill vase)
@@ -155,7 +164,14 @@
   |=  =path
   ?+  path  [~ hoc]
       [%dill *]
-    =/  =lux  (put-blit visa.ara)
+    =/  =lux
+      :-  %mor
+      :~  (blit:dill (put-blit visa.ara))
+          :-  %hop
+          ?~  rex.ara
+            [0 0]
+          [l.rex.ara t.rex.ara]
+      ==
     :_  hoc
     :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
     ==
@@ -216,22 +232,7 @@
     |^
     ?~  ordo.ara  [~ ego]
     =/  next=rex
-      ?~  rex.ara
-        =/  fake=dux
-          [0 (dec x.arx.ara) 0 (dec y.arx.ara) `rami`[(rear k.i.ordo.ara) ~]]
-        =.  lex
-          ?:  =(%nav-l lex)
-            %nav-r
-          ?:  =(%nav-u lex)
-            %nav-d
-          lex
-        =/  i=ordo
-          %+  sort  ordo.ara
-          |=  [a=dux b=dux]
-          (lth (pyth a fake) (pyth b fake))
-        ?~  i
-          rex.ara
-        i.i
+      ?~  rex.ara  (rear ordo.ara)
       =/  i=ordo
         ?.  |(=(%nav-r lex) =(%nav-d lex))
           ~
@@ -1082,10 +1083,10 @@
   ==
 ::
 ++  duco                    :: render a navigation style change update
-  |=  [e=ens k=rami r=rex]  :: returns just the ens and visa of the updated elements
+  |=  [o=ens k=rami r=rex]  :: returns just the ens and visa of the updated elements
   ^-  opus
   ?~  r  [~ ~]
-  =/  par  (~(get by e) k)
+  =/  par  (~(get by o) k)
   ?~  par  [~ ~]
   ?.  ?=(%select -.ars.u.par)
     [~ ~]
@@ -1097,12 +1098,10 @@
     :+  ?~(d.acia.ars.u.par d.look.res.u.par u.d.acia.ars.u.par)
       ?~(b.acia.ars.u.par b.look.res.u.par u.b.acia.ars.u.par)
     ?~(f.acia.ars.u.par f.look.res.u.par u.f.acia.ars.u.par)
-  =.  visa.u.par  v
-  =:  e  (~(put by e) k u.par)
-      k  [[%xy 0] k]
-    ==
+  =/  e=ens  (malt ~[[k u.par(visa v)]])
+  =.  k  [[%xy 0] k]
   |-
-  =/  chi  (~(get by e) k)
+  =/  chi  (~(get by o) k)
   ?~  chi  [e v]
   ?.  |(?=(%border -.ars.u.chi) ?=(%text -.ars.u.chi))
     $(ager.i.k +(ager.i.k))
@@ -1911,13 +1910,15 @@
     =/  vx  ?-(d.pow %row n.vir, %col o.vir)
     =/  vy  ?-(d.pow %row o.vir, %col n.vir)
     [(add x.plar vx) (add y.plar vy)]
+  =>  %_  .
+    ens.a   =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
+          (~(put by ens.a) k [ares rend alar plim pitr aves ars])
+    visa.a  (~(uni by rend) visa.a)
+  ==
+  =?  a  &(?=(%select -.ars) ?=(^ rex.ara) =(k k.rex.ara))
+    =/  opu=opus  (duco ens.a k rex.ara)
+    a(ens (~(uni by ens.a) ens.opu), visa (~(uni by visa.a) visa.opu))
   %=  $
-    a  
-      %=  a
-        ens   =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
-              (~(put by ens.a) k [ares rend alar plim pitr aves ars])
-        visa  (~(uni by rend) visa.a)
-      ==
     m     t.m
     k     [[axis.i.k +(ager.i.k)] t.k]
   ==
@@ -1925,25 +1926,30 @@
 ++  dico                    :: derive hotkey and navigation context from display state
   |=  =ens
   ^-  cura
-  =/  k=rami  [[%z 0] ~]
-  =/  pow=flow  [%row %clip]
-  =/  oob=bean  %.n
-  =|  acc=cura
+  ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
+    [~ ~]
+  =/  k=rami     [[%z 0] ~]
+  =/  acc=cura   [~ ~]
+  =/  pow=flow   [%row %clip]
+  =/  plim=modi  [(dec x.arx.ara) (dec y.arx.ara)]  :: THE PROBLEM HERE IS THAT IT NEEDS TO COMPOUND!
+  =/  oob=bean   %.n
   |-
   =/  el  (~(get by ens) k)
   ?~  el
     ?:  =(%xy axis.i.k)
       acc
     $(k [[%xy 0] t.k])
-  =/  boo  |(oob (gth x.lar.u.el x.modi.u.el) (gth y.lar.u.el y.modi.u.el))
+  =/  boo  |(oob (gth x.lar.u.el x.plim) (gth y.lar.u.el y.plim))
   ?:  |(boo ?=(%z axis.i.k))
     %=  $
       ager.i.k  +(ager.i.k)
       acc
         %=  $
-          k    [[%z 0] k]
-          pow  flow.res.u.el
-          oob  boo
+          k     [[%z 0] k]
+          pow   flow.res.u.el
+          plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
+                ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
+          oob   boo
     ==  ==
   =.  acc
     =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
@@ -1970,9 +1976,11 @@
     ager.i.k  +(ager.i.k)
     acc
       %=  $
-        k    [[%z 0] k]
-        pow  flow.res.u.el
-        oob  boo
+        k     [[%z 0] k]
+        pow   flow.res.u.el
+        plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
+              ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
+        oob   boo
   ==  ==
 ::  ::  ::  ::  ::  ::  ::  ::
 ::  ::  ::  ::  ::  ::  ::  ::
