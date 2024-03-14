@@ -116,7 +116,7 @@
     ~&  >  'element received'
     =/  elem=manx  !<(manx vase)
     =/  gen=opus  (geno elem)
-    =/  dic=cura  (dico ens.gen)
+    =/  dic=cura  (dico ens.gen ~ ~)
     :-  ~
     %=  hoc
       ens.ara   ens.gen
@@ -139,7 +139,7 @@
     ::
     ?:  ?=(%rez -.z)                        ::  resize urbs to new terminal dimensions
       =/  gen=opus  (geno vela.ara)
-      =/  dic=cura  (dico ens.gen)
+      =/  dic=cura  (dico ens.gen ~ ~)
       =/  =lux  (put-blit visa.gen)
       :_  hoc(urbs [(@ -.+.z) (@ +.+.z)], ara ara(ens ens.gen, visa visa.gen, ordo ordo.dic, arx [(@ -.+.z) (@ +.+.z)]))
       :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
@@ -188,9 +188,7 @@
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-fail   |=([term tang] ^-((quip card _hoc) !!))
 --
-::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
-::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
-::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::    ::  ::  ::  ::  ::  ::  ::
+::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 |%
 ++  hnav                    :: hotkey context group for navigation
   ^-  omen
@@ -631,16 +629,13 @@
         ==
       =/  crig  (add x.lar.u.chi ?:(=(0 w.size.res.u.chi) 0 (dec w.size.res.u.chi)))
       =/  cbot  (add y.lar.u.chi ?:(=(0 h.size.res.u.chi) 0 (dec h.size.res.u.chi)))
-      ?:  ?|  ?&  |(?=(%scr-u lex) ?=(%scr-d lex))
-                  ?|  (gth y.iter.u.chi cbot)
-                      (lth (sub cbot y.iter.u.chi) ptop)
-                      &((lte y.iter.u.chi y.lar.u.chi) (gth (sub y.lar.u.chi y.iter.u.chi) pbot))
-              ==  ==
-              ?&  |(?=(%scr-l lex) ?=(%scr-r lex))
-                  ?|  (gth x.iter.u.chi crig)
-                      (lth (sub crig x.iter.u.chi) plef)
-                      &((lte x.iter.u.chi x.lar.u.chi) (gth (sub x.lar.u.chi x.iter.u.chi) prig))
-          ==  ==  ==
+      ?:  ?|  (gth y.iter.u.chi cbot)
+              (lth (sub cbot y.iter.u.chi) ptop)
+              &((lte y.iter.u.chi y.lar.u.chi) (gth (sub y.lar.u.chi y.iter.u.chi) pbot))
+              (gth x.iter.u.chi crig)
+              (lth (sub crig x.iter.u.chi) plef)
+              &((lte x.iter.u.chi x.lar.u.chi) (gth (sub x.lar.u.chi x.iter.u.chi) prig))
+          ==
         =.  ens.a  (~(put by ens.a) k u.chi(visa ~))
         $(ager.i.k +(ager.i.k))
       =/  vi=visa  (viso lar.u.chi res.u.chi ars.u.chi modi.u.chi)
@@ -664,10 +659,19 @@
     =:  visa.op  (~(uni by pvi) visa.op)
         ens.op   (~(put by ens.op) k.rex.ara u.par)
       ==
-    :_  ego(ens.ara (~(uni by ens.ara) ens.op), visa.ara (~(uni by visa.ara) visa.op))
+    :_  %_  ego
+          ens.ara   (~(uni by ens.ara) ens.op)
+          visa.ara  (~(uni by visa.ara) visa.op)
+          ordo.ara  ^-  ordo  %+  weld  ^-  ordo  +:(dico ens.op k.rex.ara [prig pbot])
+                    ^-  ordo  %+  skip  ordo.ara
+                    |=(d=dux |-(?:(=(k.d k.rex.ara) & ?~(t.k.d | $(k.d t.k.d)))))
+        ==
     :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
-            !>([%mor ~[(dono visa.ara visa.op) [%hop plef prig]]])
-    ==  ==
+      !>  :-  %mor
+      :~  (dono visa.ara visa.op)
+      :+  %hop  ?:((gth x.iter.u.par x.lar.u.par) 0 (sub x.lar.u.par x.iter.u.par))
+      ?:((gth y.iter.u.par y.lar.u.par) 0 (sub y.lar.u.par y.iter.u.par))
+    ==  ==  ==
   ::
   [~ ego]
 ::
@@ -1924,34 +1928,31 @@
   ==
 ::  ::  ::  ::  ::  ::  ::
 ++  dico                    :: derive hotkey and navigation context from display state
-  |=  =ens
+  |=  [e=ens r=$@(~ rami) l=$@(~ modi)]
   ^-  cura
   ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
     [~ ~]
-  =/  k=rami     [[%z 0] ~]
-  =/  acc=cura   [~ ~]
-  =/  pow=flow   [%row %clip]
-  =/  plim=modi  [(dec x.arx.ara) (dec y.arx.ara)]  :: THE PROBLEM HERE IS THAT IT NEEDS TO COMPOUND!
-  =/  oob=bean   %.n
-  |-
-  =/  el  (~(get by ens) k)
+  =/  k=rami     ?~(r [[%z 0] ~] r)
+  =/  plim=modi  ?~(l [(dec x.arx.ara) (dec y.arx.ara)] l)
+  =/  acc=[rend=bean cura]   [%.n ~ ~]
+  =<  +
+  |-  ^-  [bean cura]
+  =/  el  (~(get by e) k)
   ?~  el
     ?:  =(%xy axis.i.k)
       acc
     $(k [[%xy 0] t.k])
-  =/  boo  |(oob (gth x.lar.u.el x.plim) (gth y.lar.u.el y.plim))
-  ?:  |(boo ?=(%z axis.i.k))
-    %=  $
-      ager.i.k  +(ager.i.k)
-      acc
-        %=  $
-          k     [[%z 0] k]
-          pow   flow.res.u.el
-          plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
-                ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
-          oob   boo
-    ==  ==
-  =.  acc
+  =/  nacc=[rend=bean cura]
+    %_  $
+      k     [[%z 0] k]
+      plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
+            ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
+      rend.acc  %.n
+    ==
+  =.  rend.nacc  |(?=(^ visa.u.el) rend.nacc)
+  ?:  |(!rend.nacc ?=(%z axis.i.k))
+    $(ager.i.k +(ager.i.k), acc nacc(rend |(rend.acc rend.nacc)))
+  =.  nacc
     =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
     =/  nav=bean
       ?|  &(?=(^ sel) !?=(%layer -.ars.u.el))
@@ -1959,29 +1960,22 @@
           ?=(%input -.ars.u.el)
           ?=(%scroll -.ars.u.el)
       ==
-    =?  ordo.acc  nav
-      :_  ordo.acc
-      :*  x.lar.u.el
-          (add x.lar.u.el ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el)))
-          y.lar.u.el
-          (add y.lar.u.el ?:(=(0 h.size.res.u.el) 0 (dec h.size.res.u.el)))
+    =?  ordo.nacc  nav
+      :_  ordo.nacc
+      :*  ?:((gth x.iter.u.el x.lar.u.el) 0 (sub x.lar.u.el x.iter.u.el))
+          =/  r  (add x.lar.u.el ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el)))
+          ?:((gth x.iter.u.el r) 0 (sub r x.iter.u.el))
+          ?:((gth y.iter.u.el y.lar.u.el) 0 (sub y.lar.u.el y.iter.u.el))
+          =/  b  (add y.lar.u.el ?:(=(0 h.size.res.u.el) 0 (dec h.size.res.u.el)))
+          ?:((gth y.iter.u.el b) 0 (sub b y.iter.u.el))
           k
       ==
-    =?  omen.acc  &(nav !(~(has by omen.acc) [%aro %l]))
-      (~(uni by omen.acc) hnav)
-    =?  omen.acc  |(?=(%input -.ars.u.el) ?=(%scroll -.ars.u.el))
-      (~(uni by omen.acc) htog)
-    acc
-  %=  $
-    ager.i.k  +(ager.i.k)
-    acc
-      %=  $
-        k     [[%z 0] k]
-        pow   flow.res.u.el
-        plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
-              ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
-        oob   boo
-  ==  ==
+    =?  omen.nacc  &(nav !(~(has by omen.nacc) [%aro %l]))
+      (~(uni by omen.nacc) hnav)
+    =?  omen.nacc  |(?=(%input -.ars.u.el) ?=(%scroll -.ars.u.el))
+      (~(uni by omen.nacc) htog)
+    nacc
+  $(ager.i.k +(ager.i.k), acc nacc(rend |(rend.acc rend.nacc)))
 ::  ::  ::  ::  ::  ::  ::  ::
 ::  ::  ::  ::  ::  ::  ::  ::
 ::  ::  ::  ::  ::  ::  ::  ::
