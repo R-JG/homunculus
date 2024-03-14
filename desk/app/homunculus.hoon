@@ -389,40 +389,41 @@
     ++  pyth
       |=  [=dux rex=dux]
       ^-  @ud
-      =<  -
-      ?+  lex  0
+      =;  pyt=(pair @ud @ud)
+        (add (mul 10 p.pyt) q.pyt)
+      ?+  lex  [0 0]
           %nav-l
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
-            (pow (sub l.rex l.dux) 2)
+            (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
           (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
         %-  sqt  %+  add
-          (pow (sub l.rex r.dux) 2)
+          (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
         (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
           %nav-u
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
-          (pow (mul (sub t.rex t.dux) 2) 2)
+          (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
         %-  sqt  %+  add
           (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
-        (pow (mul (sub t.rex b.dux) 2) 2)
+        (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
           %nav-r
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
-            (pow (sub l.dux l.rex) 2)
+            (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
           (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
         %-  sqt  %+  add
-          (pow (sub l.dux r.rex) 2)
+          (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
         (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
           %nav-d
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
-          (pow (mul (sub t.dux t.rex) 2) 2)
+          (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
         %-  sqt  %+  add
           (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
-        (pow (mul (sub t.dux b.rex) 2) 2)
+        (pow (mul ?:((lte b.rex t.dux) (sub t.dux b.rex) (sub b.rex t.dux)) 2) 2)
       ==
     --
   ::
