@@ -256,18 +256,24 @@
         %nav-u  %scr-u
         %nav-d  %scr-d
       ==
-    =?  rex.ara  ?=(^ upd)  rex.upd
+    =?  ara  ?=(^ upd)
+      %_  ara
+        rex   rex.upd
+        ordo  ordo.upd
+        omen  omen.upd
+        ens   ens.upd
+      ==
     =?  next  ?=(^ upd)
       ?~  scro  ~
       =<  ?~(. ~ i)
       %+  skim  `ordo`(navi rex.ara ordo.upd)
       |=  =dux
       (chil scro k.dux)
-    =/  oel  ?~(rex.ara ~ (~(get by ?~(upd ens.ara ens.upd)) k.rex.ara))
-    =/  nel  ?~(next ~ (~(get by ?~(upd ens.ara ens.upd)) k.next))
+    =/  oel  ?~(rex.ara ~ (~(get by ens.ara) k.rex.ara))
+    =/  nel  ?~(next ~ (~(get by ens.ara) k.next))
     =/  prae=opus
       ?~  rex.ara  [~ ~]
-      (duco ?~(upd ens.ara ens.upd) k.rex.ara next)
+      (duco ens.ara k.rex.ara next)
     =.  rex.ara
       ?:  ?=(^ next)
         next
@@ -283,9 +289,9 @@
       ==
     =/  post=opus
       ?:  ?=(^ next)
-        (duco ?~(upd ens.ara ens.upd) k.next rex.ara)
+        (duco ens.ara k.next rex.ara)
       ?:  ?=(^ rex.ara)
-        (duco ?~(upd ens.ara ens.upd) k.rex.ara rex.ara)
+        (duco ens.ara k.rex.ara rex.ara)
       [~ ~]
     =.  omen.ara
       ?~  oel  omen.ara
@@ -299,13 +305,13 @@
         %input   (~(uni by omen.ara) hinp)
         :: %scroll  (~(uni by omen.ara) hscr) --- REMOVED
       ==
-    =.  ens.ara  (~(uni by ?~(upd ens.ara ens.upd)) (~(uni by ens.prae) ens.post))
+    =.  ens.ara  (~(uni by ens.ara) (~(uni by ens.prae) ens.post))
     =.  visa.ara  (~(uni by ?~(upd visa.ara visa.upd)) (~(uni by visa.prae) visa.post))
     =/  =lux
       :-  %mor
       :~  (put-blit visa.ara)  :: change to dono 
           ?:  &(?=(^ nel) ?=(%input -.ars.u.nel))
-            (vado ab.ars.u.nel i.ars.u.nel w.size.res.u.nel lar.u.nel)
+            (vado ab.ars.u.nel i.ars.u.nel w.size.res.u.nel lar.u.nel iter.u.nel)
           :-  %hop
           ?~  rex.ara
             [0 0]
@@ -314,7 +320,7 @@
           :-  ?:((lth l.rex.ara x.lar.u.spar) x.lar.u.spar l.rex.ara)
           ?:((lth t.rex.ara y.lar.u.spar) y.lar.u.spar t.rex.ara)
       ==
-    :_  ego(ordo.ara ?~(upd ordo.ara ordo.upd))
+    :_  ego
     [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
     ::
     ++  navi
@@ -507,7 +513,7 @@
         [[%give %fact ~[/dill/$] %dill-blit !>([%hop x.lar.u.el y.lar.u.el])] ~]
       :_  ego(omen.ara (~(uni by omen.ara) hinp))
       :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
-        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el))
+        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
       ==  ==
       ::   %scroll
       :: ?.  ?=(%nav-l u.ev)
@@ -538,13 +544,21 @@
       ab.ars.u.el
     =/  lim  [(add x.lar.u.el w.size.res.u.el) (add y.lar.u.el h.size.res.u.el)]
     =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
+    =?  vi  !&(=(0 x.iter.u.el) =(0 y.iter.u.el))
+      %-  %~  rep
+            by
+          vi
+      |=  [[l=loci c=[fila @c ~]] acc=visa]
+      ?:  |((gth x.iter.u.el x.l) (gth y.iter.u.el y.l))
+        acc
+      (~(put by acc) [(sub x.l x.iter.u.el) (sub y.l y.iter.u.el)] c)
     =.  vi  (~(int by visa.u.el) vi)
     =.  visa.u.el  vi
     :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
     :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
       !>  :-  %mor
       :~  (dono visa.ara vi)
-      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el)
+      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
     ==  ==  ==
   ::
   ?:  ?=(%del lex)
@@ -562,13 +576,21 @@
       ab.ars.u.el
     =/  lim  [(add x.lar.u.el w.size.res.u.el) (add y.lar.u.el h.size.res.u.el)]
     =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
+    =?  vi  !&(=(0 x.iter.u.el) =(0 y.iter.u.el))
+      %-  %~  rep
+            by
+          vi
+      |=  [[l=loci c=[fila @c ~]] acc=visa]
+      ?:  |((gth x.iter.u.el x.l) (gth y.iter.u.el y.l))
+        acc
+      (~(put by acc) [(sub x.l x.iter.u.el) (sub y.l y.iter.u.el)] c)
     =.  vi  (~(int by visa.u.el) vi)
     =.  visa.u.el  vi
     :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
     :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
       !>  :-  %mor
       :~  (dono visa.ara vi)
-      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el)
+      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
     ==  ==  ==
   ::
   ?:  |(?=(%cur-l lex) ?=(%cur-r lex) ?=(%cur-u lex) ?=(%cur-d lex))
@@ -633,18 +655,26 @@
     ?:  =(ab.ars.u.el nab)
       :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el))
       :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
-        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el))
+        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
       ==  ==
     =.  ab.ars.u.el  nab
     =/  lim  [(add x.lar.u.el w.size.res.u.el) (add y.lar.u.el h.size.res.u.el)]
     =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
+    =?  vi  !&(=(0 x.iter.u.el) =(0 y.iter.u.el))
+      %-  %~  rep
+            by
+          vi
+      |=  [[l=loci c=[fila @c ~]] acc=visa]
+      ?:  |((gth x.iter.u.el x.l) (gth y.iter.u.el y.l))
+        acc
+      (~(put by acc) [(sub x.l x.iter.u.el) (sub y.l y.iter.u.el)] c)
     =.  vi  (~(int by visa.u.el) vi)
     =.  visa.u.el  vi
     :_  ego(ens.ara (~(put by ens.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
     :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
       !>  :-  %mor
       :~  (dono visa.ara vi)
-      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el)
+      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
     ==  ==  ==
   ::
   ?:  |(?=(%scr-l lex) ?=(%scr-r lex) ?=(%scr-u lex) ?=(%scr-d lex))
@@ -757,7 +787,7 @@
   [opu (dico ens.opu ~ ~)]
 ::
 ++  vado                    :: move the cursor to a given input character index
-  |=  [ab=@ud i=@ud w=@ud =lar]
+  |=  [ab=@ud i=@ud w=@ud =lar =iter]
   ^-  lux
   =/  n=@ud  (sub i ab)
   =/  col=@ud  (mod n w)
@@ -768,7 +798,10 @@
       (div +(n) w)
     +((div +(n) w))
   =.  row  ?:(=(0 row) 0 (dec row))
-  [%hop (add x.lar col) (add y.lar row)]
+  =/  [x=@ud y=@ud]  [(add x.lar col) (add y.lar row)]
+  :+  %hop
+    ?:((lte x.iter x) (sub x x.iter) 0)
+  ?:((lte y.iter y) (sub y y.iter) 0)
 ::  ::  ::  ::  ::  ::  ::
 ++  dolo                    :: get default styles for a semantic element
   |=  el=@tas
