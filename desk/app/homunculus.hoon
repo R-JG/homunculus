@@ -18,7 +18,7 @@
 +$  loci  [x=@ud y=@ud]
 +$  lar   loci
 +$  modi  loci
-+$  axis  ?(%xy %z)
++$  axis  ?(%b %l %~)
 +$  ager  @ud
 +$  aves  (map ?(%sel %act) @t)
 +$  iter  [x=@ud y=@ud]
@@ -70,7 +70,7 @@
 +$  flow  [d=?(%col %row) b=?(%wrap %clip)]
 ::
 +$  vela  manx
-+$  urbs  [x=@ud y=@ud]
++$  urbs  $~([50 25] [x=@ud y=@ud])
 +$  arx   [x=@ud y=@ud]
 +$  ara
   $:  =ens  =visa  =vela
@@ -101,7 +101,9 @@
 ++  on-load
   |=  old=vase
   ^-  (quip card _hoc)
-  [~ hoc(ego =+(*^ego -(urbs !<(^^urbs old), arx.ara !<(^^urbs old))))]
+  =/  ol  !<(^urbs old)
+  =/  term=^urbs  ?:(=([0 0] ol) [75 25] ol)
+  [~ hoc(ego =+(*^ego -(urbs term, arx.ara term)))]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -118,7 +120,7 @@
     ~&  >  'element received'
     =/  elem=manx  !<(manx vase)
     =/  gen=opus  (geno elem)
-    =/  dic=cura  (dico ens.gen ~ ~)
+    =/  dic=cura  (dico ens.gen)
     :-  ~
     %=  hoc
       ens.ara   ens.gen
@@ -142,7 +144,7 @@
     ::
     ?:  ?=(%rez -.z)                        ::  resize urbs to new terminal dimensions
       =/  gen=opus  (geno vela.ara)
-      =/  dic=cura  (dico ens.gen ~ ~)
+      =/  dic=cura  (dico ens.gen)
       =/  =lux  (put-blit visa.gen)
       :_  hoc(urbs [(@ -.+.z) (@ +.+.z)], ara ara(ens ens.gen, visa visa.gen, ordo ordo.dic, arx [(@ -.+.z) (@ +.+.z)]))
       :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
@@ -249,7 +251,7 @@
     =/  upd=$@(~ [opus cura])
       ?~  scro  ~
       ?:  ?=(^ snav)  ~
-      %+  eo  scro
+      %+  abeo  scro
       ?+  lex   lex
         %nav-l  %scr-l
         %nav-r  %scr-r
@@ -386,7 +388,7 @@
       ?~  t.a  ~
       ?~  t.b  ~
       ?:  !=(ager.i.t.a ager.i.t.b)
-        ?:  &(=(%z axis.i.t.a) =(%z axis.i.t.b))
+        ?:  &(?=(%l axis.i.t.a) ?=(%l axis.i.t.b))
           ?:  (gth ager.i.t.a ager.i.t.b)
             %b
           %a
@@ -679,7 +681,7 @@
   ::
   ?:  |(?=(%scr-l lex) ?=(%scr-r lex) ?=(%scr-u lex) ?=(%scr-d lex))
     ?~  rex.ara  [~ ego]
-    =/  upd=$@(~ [opus cura])  (eo k.rex.ara lex)
+    =/  upd=$@(~ [opus cura])  (abeo k.rex.ara lex)
     ?~  upd  [~ ego]
     :_  %_  ego
           ens.ara   ens.upd
@@ -693,7 +695,7 @@
   ::
   [~ ego]
 ::
-++  eo                      :: perform a scroll on a scroll element by key
+++  abeo                    :: handle a scroll event for a scroll element by key
   |=  [pk=rami =lex]
   ^-  $@(~ [opus cura])
   =/  par  (~(get by ens.ara) pk)
@@ -712,79 +714,111 @@
       %scr-u  ?:(=(0 y.iter.ars.u.par) iter.ars.u.par [x.iter.ars.u.par (dec y.iter.ars.u.par)])
       %scr-d  [x.iter.ars.u.par +(y.iter.ars.u.par)]
     ==
-  =/  plef  ;:(add x.lar.u.par l.muri.ars.u.par l.padd.res.u.par)
-  =/  prig
+  =/  prl  ;:(add x.lar.u.par l.muri.ars.u.par l.padd.res.u.par)
+  =/  prr
     =/  r  ;:(add 1 r.muri.ars.u.par r.padd.res.u.par)
     (add x.lar.u.par ?:((gth r w.size.res.u.par) 0 (sub w.size.res.u.par r)))
-  =/  ptop  ;:(add y.lar.u.par t.muri.ars.u.par t.padd.res.u.par)
-  =/  pbot
+  =/  prt  ;:(add y.lar.u.par t.muri.ars.u.par t.padd.res.u.par)
+  =/  prb
     =/  b  ;:(add 1 b.muri.ars.u.par b.padd.res.u.par)
     (add y.lar.u.par ?:((gth b h.size.res.u.par) 0 (sub h.size.res.u.par b)))
-  =/  olv=visa
-    =/  k=rami  [[%z 0] pk]
-    =/  a=visa  visa.u.par
-    |-
-    =/  chi  (~(get by ens.ara) k)
-    ?~  chi
-      ?:  ?=(%xy axis.i.k)
-        a
-      $(k [[%xy 0] t.k])
-    ?:  &(?=(%border -.ars.u.chi) =(t.k pk))
-      $(ager.i.k +(ager.i.k))
-    =.  a  (~(uni by a) visa.u.chi)
-    $(ager.i.k +(ager.i.k), a $(k [[%z 0] k]))
-  =/  opu=opus
-    =/  k=rami  [[%z 0] pk]
-    =/  a=opus  [~ ~]
-    |-
-    =/  chi  (~(get by ens.ara) k)
-    ?~  chi
-      ?:  ?=(%xy axis.i.k)
-        a
-      $(k [[%xy 0] t.k])
-    ?:  &(?=(%border -.ars.u.chi) =(t.k pk))
-      $(ager.i.k +(ager.i.k))
-    =.  a  $(k [[%z 0] k])
-    =.  iter.u.chi
-      ?+  lex  iter.u.chi
-        %scr-l  ?:(=(0 x.iter.u.chi) iter.u.chi [(dec x.iter.u.chi) y.iter.u.chi])
-        %scr-r  [+(x.iter.u.chi) y.iter.u.chi]  
-        %scr-u  ?:(=(0 y.iter.u.chi) iter.u.chi [x.iter.u.chi (dec y.iter.u.chi)])
-        %scr-d  [x.iter.u.chi +(y.iter.u.chi)]
-      ==
-    =/  crig  (add x.lar.u.chi ?:(=(0 w.size.res.u.chi) 0 (dec w.size.res.u.chi)))
-    =/  cbot  (add y.lar.u.chi ?:(=(0 h.size.res.u.chi) 0 (dec h.size.res.u.chi)))
-    ?:  ?|  (gth y.iter.u.chi cbot)
-            (lth (sub cbot y.iter.u.chi) ptop)
-            &((lte y.iter.u.chi y.lar.u.chi) (gth (sub y.lar.u.chi y.iter.u.chi) pbot))
-            (gth x.iter.u.chi crig)
-            (lth (sub crig x.iter.u.chi) plef)
-            &((lte x.iter.u.chi x.lar.u.chi) (gth (sub x.lar.u.chi x.iter.u.chi) prig))
-        ==
-      =.  ens.a  (~(put by ens.a) k u.chi(visa ~))
-      $(ager.i.k +(ager.i.k))
-    =/  vi=visa  (viso lar.u.chi res.u.chi ars.u.chi modi.u.chi)
-    =.  vi
-      %-  %~  rep
-            by
-          vi
-      |=  [[l=loci c=[fila @c ~]] acc=visa]
-      ?:  |((gth x.iter.u.chi x.l) (gth y.iter.u.chi y.l))
-        acc
-      =.  l  [(sub x.l x.iter.u.chi) (sub y.l y.iter.u.chi)]
-      ?:  |((lth y.l ptop) (gth y.l pbot) (lth x.l plef) (gth x.l prig))
-        acc
-      (~(put by acc) l c)
-    =.  vi  (~(int by olv) (~(dif by vi) visa.a))
-    =.  ens.a  (~(put by ens.a) k u.chi(visa vi))
-    =.  visa.a  (~(uni by visa.a) vi)
-    $(ager.i.k +(ager.i.k))
-  =/  pvi  (~(dif by (~(int by olv) (rbox [plef ptop] [prig pbot] res.u.par))) visa.opu)
+  =/  opu=opus  (eo ens.ara visa.ara lex ~ pk visa.u.par prl prt prr prb)
+  =/  pvi=visa
+    (~(dif by (rbox lar.u.par [(add x.lar.u.par w.size.res.u.par) (add y.lar.u.par h.size.res.u.par)] res.u.par)) visa.opu)
   =.  visa.u.par  pvi
-  =:  ens.opu   (~(uni by ens.ara) (~(put by ens.opu) pk u.par))
-      visa.opu  (~(uni by visa.ara) (~(uni by pvi) visa.opu))
+  =:  ens.opu   (~(put by ens.opu) pk u.par)
+      visa.opu  (~(uni by visa.opu) visa.u.par)
     ==
-  [opu (dico ens.opu ~ ~)]
+  [opu (dico ens.opu)]
+::
+++  eo                      :: perform a scroll on the elements within a scroll element
+  |=  $:  e=ens  v=visa  lx=$@(~ lex)
+          nitr=$@(~ loci)  pk=rami  pv=visa
+          prl=@ud  prt=@ud  prr=@ud  prb=@ud
+      ==
+  ^-  opus
+  =/  olv=visa
+    =/  k=rami  [[%l 0] pk]
+    =/  a=visa  pv
+    |-
+    =/  chi  (~(get by e) k)
+    ?~  chi
+      ?:  ?=(%b axis.i.k)  $(k [[%l 0] t.k])
+      ?:  ?=(%l axis.i.k)  $(k [[%~ 0] t.k])
+      a
+    =.  a  (~(uni by a) visa.u.chi)
+    $(ager.i.k +(ager.i.k), a $(k [[%b 0] k]))
+  =;  opu=opus
+    %_  opu
+      ens   (~(uni by e) ens.opu)
+      visa  (~(uni by (~(dif by v) olv)) visa.opu)  :: note: adding dif by olv from the other one, and here we are rendering and adding the parent which was not in the other one
+    ==
+  =/  k=rami           [[%l 0] pk]
+  =/  a=opus           [~ ~]
+  =/  slar=$@(~ modi)  ~
+  =/  slim=$@(~ modi)  ~
+  |-  ^-  opus
+  =/  chi  (~(get by e) k)
+  ?~  chi
+    ?:  ?=(%b axis.i.k)  $(k [[%l 0] t.k])
+    ?:  ?=(%l axis.i.k)  $(k [[%~ 0] t.k])
+    a
+  =.  iter.u.chi
+    ?:  ?=(^ nitr)
+      [(add x.iter.u.chi x.nitr) (add y.iter.u.chi y.nitr)]
+    ?+  lx  iter.u.chi
+      %scr-l  ?:(=(0 x.iter.u.chi) iter.u.chi [(dec x.iter.u.chi) y.iter.u.chi])
+      %scr-r  [+(x.iter.u.chi) y.iter.u.chi]  
+      %scr-u  ?:(=(0 y.iter.u.chi) iter.u.chi [x.iter.u.chi (dec y.iter.u.chi)])
+      %scr-d  [x.iter.u.chi +(y.iter.u.chi)]
+    ==
+  =.  a
+    %=  $
+      k     [[%b 0] k]
+      slar  ?:  ?=(^ slar)  slar
+            ?.  ?=(%scroll -.ars.u.chi)  ~
+            =/  [x=@ud y=@ud]
+              :-  (add x.lar.u.chi (add l.padd.res.u.chi l.muri.ars.u.chi))
+              (add y.lar.u.chi (add t.padd.res.u.chi t.muri.ars.u.chi))
+            :-  ?:((lte x.iter.u.chi x) (sub x x.iter.u.chi) 0)
+            ?:((lte y.iter.u.chi y) (sub y y.iter.u.chi) 0)
+      slim  ?:  ?=(^ slim)  slim
+            ?.  ?=(%scroll -.ars.u.chi)  ~
+            :-  ?:((lte x.iter.u.chi x.modi.u.chi) (sub x.modi.u.chi x.iter.u.chi) 0)
+            ?:((lte y.iter.u.chi y.modi.u.chi) (sub y.modi.u.chi y.iter.u.chi) 0)
+    ==
+  =?  slar  ?=(%border -.ars.u.chi)  ~
+  =/  crig  (add x.lar.u.chi ?:(=(0 w.size.res.u.chi) 0 (dec w.size.res.u.chi)))
+  =/  cbot  (add y.lar.u.chi ?:(=(0 h.size.res.u.chi) 0 (dec h.size.res.u.chi)))
+  ?:  ?|  (gth y.iter.u.chi cbot)
+          (lth (sub cbot y.iter.u.chi) prt)
+          &((lte y.iter.u.chi y.lar.u.chi) (gth (sub y.lar.u.chi y.iter.u.chi) prb))
+          (gth x.iter.u.chi crig)
+          (lth (sub crig x.iter.u.chi) prl)
+          &((lte x.iter.u.chi x.lar.u.chi) (gth (sub x.lar.u.chi x.iter.u.chi) prr))
+      ==
+    =.  ens.a  (~(put by ens.a) k u.chi(visa ~))
+    $(ager.i.k +(ager.i.k))
+  =/  vi=visa  (viso lar.u.chi res.u.chi ars.u.chi modi.u.chi)
+  =.  vi
+    %-  %~  rep
+          by
+        vi
+    |=  [[l=loci c=[fila @c ~]] acc=visa]
+    ?:  |((gth x.iter.u.chi x.l) (gth y.iter.u.chi y.l))
+      acc
+    =.  l  [(sub x.l x.iter.u.chi) (sub y.l y.iter.u.chi)]
+    ?:  |((lth y.l prt) (gth y.l prb) (lth x.l prl) (gth x.l prr))
+      acc
+    ?:  ?|  &(?=(^ slim) |((gth y.l y.slim) (gth x.l x.slim)))
+            &(?=(^ slar) |((lth x.l x.slar) (lth y.l y.slar)))
+        ==
+      acc
+    (~(put by acc) l c)
+  =.  vi  (~(int by olv) (~(dif by vi) visa.a))
+  =.  ens.a  (~(put by ens.a) k u.chi(visa vi))
+  =.  visa.a  (~(uni by visa.a) vi)
+  $(ager.i.k +(ager.i.k))
 ::
 ++  vado                    :: move the cursor to a given input character index
   |=  [ab=@ud i=@ud w=@ud =lar =iter]
@@ -1217,10 +1251,12 @@
       ?~(b.acia.ars.u.par b.look.res.u.par u.b.acia.ars.u.par)
     ?~(f.acia.ars.u.par f.look.res.u.par u.f.acia.ars.u.par)
   =/  e=ens  (malt ~[[k u.par(visa v)]])
-  =.  k  [[%xy 0] k]
+  =.  k  [[%b 0] k]
   |-
   =/  chi  (~(get by o) k)
-  ?~  chi  [e v]
+  ?~  chi
+    ?:  ?=(%b axis.i.k)  $(k [[%~ 0] t.k])
+    [e v]
   ?.  |(?=(%border -.ars.u.chi) ?=(%text -.ars.u.chi))
     $(ager.i.k +(ager.i.k))
   =.  visa.u.chi
@@ -1366,7 +1402,7 @@
     [~ ~]
   =/  a=opus        [~ ~]
   =/  m=marl        ~[x]
-  =/  k=rami        ~[[%xy 0]]
+  =/  k=rami        ~[[%~ 0]]
   =/  pl=fila       [~ ~ %w]
   =/  px=as         [%c x.arx.ara]
   =/  py=as         [%c y.arx.ara]
@@ -1594,9 +1630,9 @@
     ?.  |(repo wrim)
       %_  .
         a
-          %_  $
+          %=  $
             m     lay
-            k     [[%z 0] k]
+            k     [[%l 0] k]
             px    w.size.rei
             py    h.size.rei
             pl    fi
@@ -1611,10 +1647,10 @@
       ==  ==
     %_  .
       b
-        %_  $
+        %=  $
           a     *opus
           m     lay
-          k     [[%z 0] k]
+          k     [[%l 0] k]
           px    w.size.rei
           py    h.size.rei
           pl    fi
@@ -1632,9 +1668,9 @@
     ?.  |(repo wrim)
       %_  .
         a
-          %_  $
+          %=  $
             m     nor
-            k     [[%xy 0] k]
+            k     [[%~ 0] k]
             px    w.size.rei
             py    h.size.rei
             pl    fi
@@ -1649,10 +1685,10 @@
       ==  ==
     %_  .
       b
-        %_  $
+        %=  $
           a     *opus
           m     nor
-          k     [[%xy 0] k]
+          k     [[%~ 0] k]
           px    w.size.rei
           py    h.size.rei
           pl    fi
@@ -1669,14 +1705,12 @@
     ?.  |(repo imp ?=(%scroll -.ars))
       ~
     =/  i=@ud    0
-    =/  ax=axis  %xy
+    =/  ax=axis  %l
     =/  rig=@ud  x.vlar
     =/  bot=@ud  y.vlar
     |-
     =/  el  (~(get by ?:(|(repo wrim) ens.b ens.a)) [[ax i] k])
     ?:  ?=(^ el)
-      ?:  ?=(%border -.ars.u.el)
-        $(i +(i))
       =/  el-r=@ud
         %+  add  x.lar.u.el
         %+  add  r.marg.res.u.el
@@ -1688,8 +1722,8 @@
       =?  rig  (gth el-r rig)  el-r
       =?  bot  (gth el-b bot)  el-b
       $(i +(i))
-    ?:  =(%xy ax)
-      $(ax %z, i 0)
+    ?:  ?=(%l ax)
+      $(ax %~, i 0)
     :-  ?:  (gth x.vlar +(rig))
           0
         (sub +(rig) x.vlar)
@@ -1838,18 +1872,18 @@
     ?:  &(=(0 movx) =(0 movy))
       b
     =.  ens.b
-      =/  ax=axis  %xy
-      =/  i=@ud  0
+      =/  ax=axis  %b
+      =/  i=@ud    0
       |-
       =/  el  (~(get by ens.b) [[ax i] k])
       ?~  el
-        ?:  =(%xy ax)
-          $(ax %z, i 0)
+        ?:  ?=(%b ax)  $(ax %l, i 0)
+        ?:  ?=(%l ax)  $(ax %~, i 0)
         ens.b
-      =.  ens.b  $(ax %xy, i 0, k [[ax i] k])
-      =:  visa.u.el   (muto movx movy ~(tap by visa.u.el))
-          x.lar.u.el  (add x.lar.u.el movx)
-          y.lar.u.el  (add y.lar.u.el movy)
+      =.  ens.b  $(ax %b, i 0, k [[ax i] k])
+      =:  visa.u.el    (muto movx movy ~(tap by visa.u.el))
+          x.lar.u.el   (add x.lar.u.el movx)
+          y.lar.u.el   (add y.lar.u.el movy)
           x.modi.u.el  (add x.modi.u.el movx)
           y.modi.u.el  (add y.modi.u.el movy)
         ==
@@ -1900,9 +1934,9 @@
     :-  ?:(x.pscr (add x.alar ?:(=(0 w.size.ares) 0 (dec w.size.ares))) x.alim)
     ?:(y.pscr (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares))) y.alim)
   =?  a  ?=(^ bor)
-    %_  $
+    %=  $
       m     bor
-      k     [[%xy (lent nor)] k]
+      k     [[%b 0] k]
       px    w.size.rei
       py    h.size.rei
       pl    fi
@@ -1941,63 +1975,13 @@
       [%scroll itr [bl br bt bb] sol]
     ars
   =?  a  &(?=(%scroll -.ars) !&(=(0 x.iter.ars) =(0 y.iter.ars)))
-    =/  olv=visa
-      =/  key=rami  [[%z 0] k]
-      =/  acc=visa  (~(dif by (rbox alar plim ares)) visa.a)
-      |-
-      =/  chi  (~(get by ens.a) key)
-      ?~  chi
-        ?:  ?=(%xy axis.i.key)
-          acc
-        $(key [[%xy 0] t.key])
-      ?:  &(?=(%border -.ars.u.chi) =(t.key k))
-        $(ager.i.key +(ager.i.key))
-      =.  acc  (~(uni by acc) visa.u.chi)
-      $(ager.i.key +(ager.i.key), acc $(key [[%z 0] key]))
+    =/  pv=visa  (~(dif by (rbox alar plim ares)) visa.a)
     =/  opu=opus
-      =/  key=rami  [[%z 0] k]
-      =/  acc=opus  [~ ~]
-      |-
-      =/  chi  (~(get by ens.a) key)
-      ?~  chi
-        ?:  ?=(%xy axis.i.key)
-          acc
-        $(key [[%xy 0] t.key])
-      ?:  &(?=(%border -.ars.u.chi) =(t.key k))
-        $(ager.i.key +(ager.i.key))
-      =.  acc  $(key [[%z 0] key])
-      =.  iter.u.chi  [(add x.iter.u.chi x.iter.ars) (add y.iter.u.chi y.iter.ars)]
-      =/  crig  (add x.lar.u.chi ?:(=(0 w.size.res.u.chi) 0 (dec w.size.res.u.chi)))
-      =/  cbot  (add y.lar.u.chi ?:(=(0 h.size.res.u.chi) 0 (dec h.size.res.u.chi)))
-      ?:  ?|  (gth y.iter.u.chi cbot)
-              (lth (sub cbot y.iter.u.chi) y.vlar)
-              &((lte y.iter.u.chi y.lar.u.chi) (gth (sub y.lar.u.chi y.iter.u.chi) y.alim))
-              (gth x.iter.u.chi crig)
-              (lth (sub crig x.iter.u.chi) x.vlar)
-              &((lte x.iter.u.chi x.lar.u.chi) (gth (sub x.lar.u.chi x.iter.u.chi) x.alim))
-          ==
-        =.  ens.acc  (~(put by ens.acc) key u.chi(visa ~))
-        $(ager.i.key +(ager.i.key))
-      =/  vi=visa  (viso lar.u.chi res.u.chi ars.u.chi modi.u.chi)
-      =.  vi
-        %-  %~  rep
-              by
-            vi
-        |=  [[l=loci c=[fila @c ~]] acc=visa]
-        ?:  |((gth x.iter.u.chi x.l) (gth y.iter.u.chi y.l))
-          acc
-        =.  l  [(sub x.l x.iter.u.chi) (sub y.l y.iter.u.chi)]
-        ?:  |((lth y.l y.vlar) (gth y.l y.alim) (lth x.l x.vlar) (gth x.l x.alim))
-          acc
-        (~(put by acc) l c)
-      =.  vi  (~(int by olv) (~(dif by vi) visa.acc))
-      =.  ens.acc  (~(put by ens.acc) key u.chi(visa vi))
-      =.  visa.acc  (~(uni by visa.acc) vi)
-      $(ager.i.key +(ager.i.key))
+      (eo ens.a visa.a ~ iter.ars k pv x.vlar y.vlar x.alim y.alim)
     =?  opu  ?=(^ rex.ara)
       =/  duc=opus  (duco ens.opu k.rex.ara rex.ara)
       [(~(uni by ens.opu) ens.duc) (~(uni by visa.opu) visa.duc)]
-    a(ens (~(uni by ens.a) ens.opu), visa (~(uni by (~(dif by visa.a) olv)) visa.opu))
+    opu
   =/  rend=visa
     %:  viso
       alar
@@ -2031,11 +2015,10 @@
     =/  vx  ?-(d.pow %row n.vir, %col o.vir)
     =/  vy  ?-(d.pow %row o.vir, %col n.vir)
     [(add x.plar vx) (add y.plar vy)]
-  =>  %_  .
-    ens.a   =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
-          (~(put by ens.a) k [ares rend alar plim pitr aves ars])
-    visa.a  (~(uni by rend) visa.a)
-  ==
+  =.  a
+    =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
+    :-  (~(put by ens.a) k [ares rend alar plim pitr aves ars])
+    (~(uni by visa.a) rend)
   =?  a  &(?=(%select -.ars) ?=(^ rex.ara) =(k k.rex.ara))
     =/  opu=opus  (duco ens.a k rex.ara)
     a(ens (~(uni by ens.a) ens.opu), visa (~(uni by visa.a) visa.opu))
@@ -2045,30 +2028,30 @@
   ==
 ::  ::  ::  ::  ::  ::  ::
 ++  dico                    :: derive hotkey and navigation context from display state
-  |=  [e=ens r=$@(~ rami) l=$@(~ modi)]
+  |=  e=ens
   ^-  cura
   ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
     [~ ~ ~ rex.ara]
-  =/  k=rami     ?~(r [[%z 0] ~] r)
-  =/  rk=$@(~ rami)  ?~(rex.ara ~ k.rex.ara)
-  =/  plim=modi  ?~(l [(dec x.arx.ara) (dec y.arx.ara)] l)
-  =/  acc=[rend=bean cura]   [%.n ~ ~ ~ rex.ara]
+  =/  k=rami                [[%~ 0] ~]
+  =/  rk=$@(~ rami)         ?~(rex.ara ~ k.rex.ara)
+  =/  plim=modi             [(dec x.arx.ara) (dec y.arx.ara)]
+  =/  acc=[rend=bean cura]  [%.n ~ ~ ~ rex.ara]
   =<  +
   |-  ^-  [bean cura]
   =/  el  (~(get by e) k)
   ?~  el
-    ?:  =(%xy axis.i.k)
+    ?:  ?=(%b axis.i.k)  $(k [[%l 0] t.k])
+    ?:  ?=(%l axis.i.k)  $(k [[%~ 0] t.k])
       acc
-    $(k [[%xy 0] t.k])
   =/  nacc=[rend=bean cura]
-    %_  $
-      k     [[%z 0] k]
-      plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
-            ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
+    %=  $
+      k         [[%b 0] k]
       rend.acc  %.n
+      plim      :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
+                ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
     ==
   =.  rend.nacc  |(?=(^ visa.u.el) rend.nacc)
-  ?:  |(!rend.nacc ?=(%z axis.i.k))
+  ?:  !rend.nacc
     $(ager.i.k +(ager.i.k), acc nacc(rend |(rend.acc rend.nacc)))
   =.  nacc
     =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
