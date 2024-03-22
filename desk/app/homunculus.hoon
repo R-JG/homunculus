@@ -219,14 +219,6 @@
       [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
       [[%txt ~] %inp]  [[%bac ~] %del]
   ==
-::
-:: ++  hscr                    :: hotkey context group for a scroll element ---- REMOVED
-::   ^-  omen
-::   %-  malt
-::   ^-  (list [nota lex])
-::   :~  [[%aro %l] %scr-l]  [[%aro %r] %scr-r]
-::       [[%aro %u] %scr-u]  [[%aro %d] %scr-d]
-::   ==
 ::  ::  ::
 ++  novo                    :: handle an event from the hotkey context
   |=  [=lex =zona]
@@ -300,13 +292,11 @@
       ?~  oel  omen.ara
       ?+  -.ars.u.oel  omen.ara
         %input   (~(uni by (~(dif by omen.ara) hinp)) hnav)
-        :: %scroll  (~(uni by omen.ara) hnav) --- REMOVED
       ==
     =.  omen.ara
       ?~  nel  omen.ara
       ?+  -.ars.u.nel  omen.ara
         %input   (~(uni by omen.ara) hinp)
-        :: %scroll  (~(uni by omen.ara) hscr) --- REMOVED
       ==
     =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
     =.  visa.ara  (~(uni by ?~(upd visa.ara visa.upd)) (~(uni by visa.prae) visa.post))
@@ -518,10 +508,6 @@
       :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
         !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
       ==  ==
-      ::   %scroll
-      :: ?.  ?=(%nav-l u.ev)
-      ::   [~ ego(omen.ara (~(uni by omen.ara) hnav))] ------- REMOVED
-      :: [~ ego(omen.ara (~(uni by omen.ara) hscr))]
     ==
   ::
   ?:  ?=(%inp lex)
@@ -733,6 +719,9 @@
   =/  pvi=visa
     %-  %~  dif
           by
+        =.  lar.u.par
+          :-  ?:((lte x.iter.u.par x.lar.u.par) (sub x.lar.u.par x.iter.u.par) 0)
+          ?:((lte y.iter.u.par y.lar.u.par) (sub y.lar.u.par y.iter.u.par) 0)
         %^  rbox  lar.u.par
           [(add x.lar.u.par w.size.res.u.par) (add y.lar.u.par h.size.res.u.par)]
         res.u.par
@@ -772,7 +761,8 @@
   |-  ^-  opus
   =/  chi=(unit ens)  (~(get by e) k)
   ?~  chi
-    ?:  ?=(%b axis.i.k)  $(k [[%l 0] t.k])
+    ?:  ?=(%b axis.i.k)
+      a
     ?:  ?=(%l axis.i.k)  $(k [[%~ 0] t.k])
     a
   =.  iter.u.chi
@@ -784,9 +774,10 @@
       %scr-u  ?:(=(0 y.iter.u.chi) iter.u.chi [x.iter.u.chi (dec y.iter.u.chi)])
       %scr-d  [x.iter.u.chi +(y.iter.u.chi)]
     ==
+  =.  a  $(k [[%b 0] k])
   =.  a
     %=  $
-      k     [[%b 0] k]
+      k     [[%l 0] k]
       slar  ?.  ?=(%scroll -.ars.u.chi)  slar
             =/  [x=@ud y=@ud]
               :-  (add x.lar.u.chi (add l.padd.res.u.chi l.muri.ars.u.chi))
@@ -794,9 +785,12 @@
             :-  ?:((lte x.iter.u.chi x) (sub x x.iter.u.chi) 0)
             ?:((lte y.iter.u.chi y) (sub y y.iter.u.chi) 0)
       slim  ?.  ?=(%scroll -.ars.u.chi)  slim
+            =/  [xmov=@ud ymov=@ud]
+              :-  ;:(add r.padd.res.u.chi r.muri.ars.u.chi x.iter.u.chi)
+              ;:(add b.padd.res.u.chi b.muri.ars.u.chi y.iter.u.chi)
             =/  [x=@ud y=@ud]
-              :-  ?:((lte x.iter.u.chi x.modi.u.chi) (sub x.modi.u.chi x.iter.u.chi) 0)
-              ?:((lte y.iter.u.chi y.modi.u.chi) (sub y.modi.u.chi y.iter.u.chi) 0)
+              :-  ?:((lte xmov x.modi.u.chi) (sub x.modi.u.chi xmov) 0)
+              ?:((lte ymov y.modi.u.chi) (sub y.modi.u.chi ymov) 0)
             ?~  slim  [x y]
             [?:((lth x x.slim) x x.slim) ?:((lth y y.slim) y y.slim)]
     ==
@@ -823,7 +817,7 @@
     ?:  |((lth y.l prt) (gth y.l prb) (lth x.l prl) (gth x.l prr))
       acc
     ?:  ?|  &(?=(^ slim) |((gth y.l y.slim) (gth x.l x.slim)))
-            &(?=(^ slar) !?=(%border -.ars.u.chi) |((lth x.l x.slar) (lth y.l y.slar)))
+            &(?=(^ slar) |((lth x.l x.slar) (lth y.l y.slar)))
         ==
       acc
     (~(put by acc) l c)
@@ -1609,16 +1603,12 @@
     ==
   =/  alim=loci
     :-  ?:  &(x.pscr ?=(%c p.w.size.rei))
-          :: =/  r=@ud  +((add br q.r.padd.rei))
-          :: ;:(add x.alar bl q.l.padd.rei ?:((gth r q.w.size.rei) 0 (sub q.w.size.rei r)))  :: this causes border overflow...
           ;:(add x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
         =/  x=@ud  ;:(add x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
         ?:  (gth x x.plim)
           x.plim
         x
     ?:  &(y.pscr ?=(%c p.h.size.rei))
-      :: =/  b=@ud  +((add bb q.b.padd.rei))
-      :: ;:(add y.alar bt q.t.padd.rei ?:((gth b q.h.size.rei) 0 (sub q.h.size.rei b)))
       ;:(add y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
     =/  y=@ud  ;:(add y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
     ?:  (gth y y.plim)
@@ -1818,7 +1808,7 @@
     ?:((gth bp q.h.size.rei) 0 (sub q.h.size.rei bp))
   =?  alim  |(wrim x.pscr y.pscr)
     :-  ?:  x.pscr
-          =/  r=@ud  ;:(add 1 br q.r.padd.rei)
+          =/  r=@ud  +((add br q.r.padd.rei))
           ;:(add x.alar bl q.l.padd.rei ?:((gth r q.w.size.rei) 0 (sub q.w.size.rei r)))
         ?:  wrim
           =/  x=@ud  (add x.vlar ?:(=(0 arx) 0 (dec arx)))
@@ -1827,7 +1817,7 @@
           x
         x.alim
     ?:  y.pscr
-      =/  b=@ud  ;:(add 1 bb q.b.padd.rei)
+      =/  b=@ud  +((add bb q.b.padd.rei))
       ;:(add y.alar bt q.t.padd.rei ?:((gth b q.h.size.rei) 0 (sub q.h.size.rei b)))
     ?:  wrim
       =/  y=@ud  (add y.vlar ?:(=(0 ary) 0 (dec ary)))
@@ -2003,7 +1993,6 @@
       alar
       ares
       ars
-      :: =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]  :: this is unnecessary
       ?~  slim  plim
       [?:((lth x.slim x.plim) x.slim x.plim) ?:((lth y.slim y.plim) y.slim y.plim)]
     ==
@@ -2031,15 +2020,19 @@
     =/  vy=@ud  ?-(d.pow %row o.vir, %col n.vir)
     [(add x.plar vx) (add y.plar vy)]
   =.  a
-    =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
-    :-  (~(put by esse.a) k [ares rend alar plim pitr aves ars])
+    =/  [mox=@ud moy=@ud]
+      :-  (add x.alar ?:(=(0 w.size.ares) 0 (dec w.size.ares)))
+      (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares)))
+    =?  mox  &(!x.pscr (lth x.plim mox))  x.plim
+    =?  moy  &(!y.pscr (lth y.plim moy))  y.plim
+    :-  (~(put by esse.a) k ^-(ens [ares rend alar [mox moy] pitr aves ars]))
     (~(uni by visa.a) rend)
   =?  a  &(?=(%select -.ars) ?=(^ rex.ara) =(k k.rex.ara))
     =/  opu=opus  (duco esse.a k rex.ara)
     a(esse (~(uni by esse.a) esse.opu), visa (~(uni by visa.a) visa.opu))
   %=  $
-    m     t.m
-    k     [[axis.i.k +(ager.i.k)] t.k]
+    m  t.m
+    k  [[axis.i.k +(ager.i.k)] t.k]
   ==
 ::  ::  ::  ::  ::  ::  ::
 ++  dico                    :: derive hotkey and navigation context from display state
