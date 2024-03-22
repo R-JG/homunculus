@@ -715,14 +715,20 @@
       %scr-u  ?:(=(0 y.iter.ars.u.par) iter.ars.u.par [x.iter.ars.u.par (dec y.iter.ars.u.par)])
       %scr-d  [x.iter.ars.u.par +(y.iter.ars.u.par)]
     ==
-  =/  prl=@ud  ;:(add x.lar.u.par l.muri.ars.u.par l.padd.res.u.par)
+  =/  prl=@ud
+    =/  l=@ud  ;:(add x.lar.u.par l.muri.ars.u.par l.padd.res.u.par)
+    ?:((lte x.iter.u.par l) (sub l x.iter.u.par) 0)
   =/  prr=@ud
-    =/  r=@ud  ;:(add 1 r.muri.ars.u.par r.padd.res.u.par)
-    (add x.lar.u.par ?:((gth r w.size.res.u.par) 0 (sub w.size.res.u.par r)))
-  =/  prt=@ud  ;:(add y.lar.u.par t.muri.ars.u.par t.padd.res.u.par)
+    =/  r=@ud  +((add r.muri.ars.u.par r.padd.res.u.par))
+    =.  r  (add x.lar.u.par ?:((gth r w.size.res.u.par) 0 (sub w.size.res.u.par r)))
+    ?:((lte x.iter.u.par r) (sub r x.iter.u.par) 0)
+  =/  prt=@ud
+    =/  t=@ud  ;:(add y.lar.u.par t.muri.ars.u.par t.padd.res.u.par)
+    ?:((lte y.iter.u.par t) (sub t y.iter.u.par) 0)
   =/  prb=@ud
-    =/  b=@ud  ;:(add 1 b.muri.ars.u.par b.padd.res.u.par)
-    (add y.lar.u.par ?:((gth b h.size.res.u.par) 0 (sub h.size.res.u.par b)))
+    =/  b=@ud  +((add b.muri.ars.u.par b.padd.res.u.par))
+    =.  b  (add y.lar.u.par ?:((gth b h.size.res.u.par) 0 (sub h.size.res.u.par b)))
+    ?:((lte y.iter.u.par b) (sub b y.iter.u.par) 0)
   =/  opu=opus  (eo esse.ara visa.ara lex ~ pk visa.u.par prl prt prr prb)
   =/  pvi=visa
     %-  %~  dif
@@ -781,19 +787,19 @@
   =.  a
     %=  $
       k     [[%b 0] k]
-      slar  ?:  ?=(^ slar)  slar
-            ?.  ?=(%scroll -.ars.u.chi)  ~
+      slar  ?.  ?=(%scroll -.ars.u.chi)  slar
             =/  [x=@ud y=@ud]
               :-  (add x.lar.u.chi (add l.padd.res.u.chi l.muri.ars.u.chi))
               (add y.lar.u.chi (add t.padd.res.u.chi t.muri.ars.u.chi))
             :-  ?:((lte x.iter.u.chi x) (sub x x.iter.u.chi) 0)
             ?:((lte y.iter.u.chi y) (sub y y.iter.u.chi) 0)
-      slim  ?:  ?=(^ slim)  slim
-            ?.  ?=(%scroll -.ars.u.chi)  ~
-            :-  ?:((lte x.iter.u.chi x.modi.u.chi) (sub x.modi.u.chi x.iter.u.chi) 0)
-            ?:((lte y.iter.u.chi y.modi.u.chi) (sub y.modi.u.chi y.iter.u.chi) 0)
+      slim  ?.  ?=(%scroll -.ars.u.chi)  slim
+            =/  [x=@ud y=@ud]
+              :-  ?:((lte x.iter.u.chi x.modi.u.chi) (sub x.modi.u.chi x.iter.u.chi) 0)
+              ?:((lte y.iter.u.chi y.modi.u.chi) (sub y.modi.u.chi y.iter.u.chi) 0)
+            ?~  slim  [x y]
+            [?:((lth x x.slim) x x.slim) ?:((lth y y.slim) y y.slim)]
     ==
-  =?  slar  ?=(%border -.ars.u.chi)  ~
   =/  crig=@ud  (add x.lar.u.chi ?:(=(0 w.size.res.u.chi) 0 (dec w.size.res.u.chi)))
   =/  cbot=@ud  (add y.lar.u.chi ?:(=(0 h.size.res.u.chi) 0 (dec h.size.res.u.chi)))
   ?:  ?|  (gth y.iter.u.chi cbot)
@@ -817,7 +823,7 @@
     ?:  |((lth y.l prt) (gth y.l prb) (lth x.l prl) (gth x.l prr))
       acc
     ?:  ?|  &(?=(^ slim) |((gth y.l y.slim) (gth x.l x.slim)))
-            &(?=(^ slar) |((lth x.l x.slar) (lth y.l y.slar)))
+            &(?=(^ slar) !?=(%border -.ars.u.chi) |((lth x.l x.slar) (lth y.l y.slar)))
         ==
       acc
     (~(put by acc) l c)
@@ -1603,15 +1609,17 @@
     ==
   =/  alim=loci
     :-  ?:  &(x.pscr ?=(%c p.w.size.rei))
-          =/  r=@ud  ;:(add 1 br q.r.padd.rei)
-          ;:(add x.alar bl q.l.padd.rei ?:((gth r q.w.size.rei) 0 (sub q.w.size.rei r)))
+          :: =/  r=@ud  +((add br q.r.padd.rei))
+          :: ;:(add x.alar bl q.l.padd.rei ?:((gth r q.w.size.rei) 0 (sub q.w.size.rei r)))  :: this causes border overflow...
+          ;:(add x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
         =/  x=@ud  ;:(add x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
         ?:  (gth x x.plim)
           x.plim
         x
     ?:  &(y.pscr ?=(%c p.h.size.rei))
-      =/  b=@ud  ;:(add 1 bb q.b.padd.rei)
-      ;:(add y.alar bt q.t.padd.rei ?:((gth b q.h.size.rei) 0 (sub q.h.size.rei b)))
+      :: =/  b=@ud  +((add bb q.b.padd.rei))
+      :: ;:(add y.alar bt q.t.padd.rei ?:((gth b q.h.size.rei) 0 (sub q.h.size.rei b)))
+      ;:(add y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
     =/  y=@ud  ;:(add y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
     ?:  (gth y y.plim)
       y.plim
@@ -1950,10 +1958,12 @@
       prx   w.size.ares
       pry   h.size.ares
       plar  alar
-      plim  =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
-            :-  =/  x=@ud  (add x.alim ;:(add bl br l.padd.ares r.padd.ares))
+      plim  =?  plim  |(x.pscr y.pscr)
+              :-  ?:(x.pscr (add x.alar ?:(=(0 w.size.ares) 0 (dec w.size.ares))) x.plim)
+              ?:(y.pscr (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares))) y.plim)
+            :-  =/  x=@ud  ;:(add x.alim bl br l.padd.ares r.padd.ares)
                 ?:((gth x x.plim) x.plim x)
-            =/  y=@ud  (add y.alim ;:(add bt bb t.padd.ares b.padd.ares))
+            =/  y=@ud  ;:(add y.alim bt bb t.padd.ares b.padd.ares)
             ?:((gth y y.plim) y.plim y)
       vlar  alar
       vir   [0 0 0]
@@ -1993,9 +2003,8 @@
       alar
       ares
       ars
-      =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]
-      ?:  ?=(~ slim)
-        plim
+      :: =?  plim  |(x.pscr y.pscr)  [?:(x.pscr x.alim x.plim) ?:(y.pscr y.alim y.plim)]  :: this is unnecessary
+      ?~  slim  plim
       [?:((lth x.slim x.plim) x.slim x.plim) ?:((lth y.slim y.plim) y.slim y.plim)]
     ==
   =?  rend  !?=(%layer -.ars)
