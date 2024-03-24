@@ -173,10 +173,19 @@
     =/  =lux
       :-  %mor
       :~  (put-blit visa.ara)
-          :-  %hop
-          ?~  rex.ara
-            [0 0]
-          [l.rex.ara t.rex.ara]
+          ^-  lux
+          ?~  rex.ara  [%hop [0 0]]
+          =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+          ?~  el  [%hop [0 0]]
+          ?:  ?=(%input -.ars.u.el)
+            (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
+          ?:  &(=(0 x.iter.u.el) =(0 y.iter.u.el))
+            [%hop [l.rex.ara t.rex.ara]]
+          =/  sk=$@(~ rami)  (ligo k.rex.ara)
+          ?~  sk  [%hop [l.rex.ara t.rex.ara]]
+          =/  spar=(unit ens)  (~(get by esse.ara) sk)
+          ?~  spar  [%hop [l.rex.ara t.rex.ara]]
+          (cedo rex.ara sk u.spar)
       ==
     :_  hoc
     :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
@@ -220,7 +229,7 @@
   ::
   ?:  |(?=(%nav-l lex) ?=(%nav-r lex) ?=(%nav-u lex) ?=(%nav-d lex))
     |^
-    =/  scr=$@(~ rami)  ?~(rex.ara ~ (scro k.rex.ara))
+    =/  scr=$@(~ rami)  ?~(rex.ara ~ (ligo k.rex.ara))
     =/  spar=(unit ens)  ?~(scr ~ (~(get by esse.ara) scr))
     =/  navs=ordo  (navi rex.ara ordo.ara)
     =/  snav=ordo
@@ -236,7 +245,7 @@
               &(?=(%nav-u lex) =(0 y.iter.ars.u.spar))
               &(?=(%nav-d lex) =(y.sola.ars.u.spar y.iter.ars.u.spar))
       ==  ==
-    =?  scr  &(send ?=(^ scr) ?=(^ t.scr))  (scro t.scr)
+    =?  scr  &(send ?=(^ scr) ?=(^ t.scr))  (ligo t.scr)
     =?  spar  &(send ?=(^ scr))  (~(get by esse.ara) scr)
     =?  next  &(send ?=(~ scr) ?=(^ navs))  i.navs
     =?  snav  &(send ?=(^ scr))
@@ -293,28 +302,13 @@
     =/  =lux
       :-  %mor
       :~  (dono visa.ara ?~(upd (~(uni by visa.prae) visa.post) visa.upd))
+          ^-  lux
           ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
             (vado ab.ars.u.sel i.ars.u.sel w.size.res.u.sel lar.u.sel iter.u.sel)
-          :-  %hop
-          ?~  rex.ara
-            [0 0]
+          ?~  rex.ara  [%hop [0 0]]
           ?:  |(?=(~ spar) &(?=(~ upd) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
-            [l.rex.ara t.rex.ara]
-          =/  loc=loci
-            ?:  |-  ^-  bean
-                ?:  &(?=(%b axis.i.k.rex.ara) =(scr t.k.rex.ara))
-                  &
-                ?~(t.k.rex.ara | $(k.rex.ara t.k.rex.ara))
-              lar.u.spar
-            ?.  ?=(%scroll -.ars.u.spar)
-              lar.u.spar
-            :-  (add x.lar.u.spar (add l.muri.ars.u.spar l.padd.res.u.spar))
-            (add y.lar.u.spar (add t.muri.ars.u.spar t.padd.res.u.spar))
-          =.  loc
-            :-  ?:((lte x.iter.u.spar x.loc) (sub x.loc x.iter.u.spar) 0)
-            ?:((lte y.iter.u.spar y.loc) (sub y.loc y.iter.u.spar) 0)
-          :-  ?:((lth l.rex.ara x.loc) x.loc l.rex.ara)
-          ?:((lth t.rex.ara y.loc) y.loc t.rex.ara)
+            [%hop [l.rex.ara t.rex.ara]]
+          (cedo rex.ara scr u.spar)
       ==
     :_  ego(visa.ara (~(uni by visa.ara) ?~(upd (~(uni by visa.prae) visa.post) visa.upd)))
     [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
@@ -359,14 +353,6 @@
       ?:  ((keep r) i.pars)
         pars
       ~
-    ::
-    ++  scro
-      |=  r=rami
-      ^-  $@(~ rami)
-      ?:  (~(has in equi.ara) r)
-        r
-      ?~  t.r  ~
-      $(r t.r)
     ::
     ++  frex
       |=  [k=rami o=ordo]
@@ -848,7 +834,37 @@
   =.  visa.a  (~(uni by visa.a) vi)
   $(ager.i.k +(ager.i.k))
 ::
-++  vado                    :: move the cursor to a given input character index
+++  ligo                    :: find the key of a potential scroll parent by child key
+  |=  r=rami
+  ^-  $@(~ rami)
+  ?:  (~(has in equi.ara) r)
+    r
+  ?~  t.r  ~
+  $(r t.r)
+::
+++  cedo                    :: move the cursor within a scroll element
+  |=  [=rex sk=$@(~ rami) spar=ens]
+  ^-  lux
+  :-  %hop
+  ?~  rex
+    [0 0]
+  =/  loc=loci
+    ?:  |-  ^-  bean
+        ?:  &(?=(%b axis.i.k.rex) =(sk t.k.rex))
+          &
+        ?~(t.k.rex | $(k.rex t.k.rex))
+      lar.spar
+    ?.  ?=(%scroll -.ars.spar)
+      lar.spar
+    :-  (add x.lar.spar (add l.muri.ars.spar l.padd.res.spar))
+    (add y.lar.spar (add t.muri.ars.spar t.padd.res.spar))
+  =.  loc
+    :-  ?:((lte x.iter.spar x.loc) (sub x.loc x.iter.spar) 0)
+    ?:((lte y.iter.spar y.loc) (sub y.loc y.iter.spar) 0)
+  :-  ?:((lth l.rex x.loc) x.loc l.rex)
+  ?:((lth t.rex y.loc) y.loc t.rex)
+::
+++  vado                    :: move the cursor to an input character index
   |=  [ab=@ud i=@ud w=@ud =lar =iter]
   ^-  lux
   =/  n=@ud  (sub i ab)
