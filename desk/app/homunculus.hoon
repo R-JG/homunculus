@@ -204,13 +204,6 @@
       [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
   ==
 ::
-++  htog                    :: hotkey context group for toggling between nav and element interaction
-  ^-  omen
-  %-  malt
-  ^-  (list [nota lex])
-  :~  [[%mod mod=%ctl key=~-i] %tog]
-  ==
-::
 ++  hinp                    :: hotkey context group for an input element
   ^-  omen
   %-  malt
@@ -218,6 +211,7 @@
   :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
       [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
       [[%txt ~] %inp]  [[%bac ~] %del]
+      [[%mod mod=%ctl key=~-i] %tog]
   ==
 ::  ::  ::
 ++  novo                    :: handle an event from the hotkey context
@@ -288,19 +282,19 @@
       ?:  ?=(^ rex.ara)
         (duco esse.ara k.rex.ara rex.ara)
       [~ ~]
-    =/  nel=(unit ens)  ?~(next ~ (~(get by esse.ara) k.next))
+    =/  sel=(unit ens)  ?~(rex.ara ~ (~(get by esse.ara) k.rex.ara))
     =.  omen.ara
-      ?~  nel  omen.ara
-      ?+  -.ars.u.nel  (~(uni by omen.ara) hnav)
+      ?~  sel  omen.ara
+      ?+  -.ars.u.sel  (~(uni by omen.ara) hnav)
         %input         (~(uni by omen.ara) hinp)
       ==
     =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
-    =.  visa.ara  (~(uni by ?~(upd visa.ara visa.upd)) (~(uni by visa.prae) visa.post))
+    =?  upd  ?=(^ upd)  upd(visa (~(uni by visa.upd) (~(uni by visa.prae) visa.post)))
     =/  =lux
       :-  %mor
-      :~  (put-blit visa.ara)  :: change to dono 
-          ?:  &(?=(^ nel) ?=(%input -.ars.u.nel))
-            (vado ab.ars.u.nel i.ars.u.nel w.size.res.u.nel lar.u.nel iter.u.nel)
+      :~  (dono visa.ara ?~(upd (~(uni by visa.prae) visa.post) visa.upd))
+          ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
+            (vado ab.ars.u.sel i.ars.u.sel w.size.res.u.sel lar.u.sel iter.u.sel)
           :-  %hop
           ?~  rex.ara
             [0 0]
@@ -322,7 +316,7 @@
           :-  ?:((lth l.rex.ara x.loc) x.loc l.rex.ara)
           ?:((lth t.rex.ara y.loc) y.loc t.rex.ara)
       ==
-    :_  ego
+    :_  ego(visa.ara (~(uni by visa.ara) ?~(upd (~(uni by visa.prae) visa.post) visa.upd)))
     [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
     ::
     ++  navi
@@ -2067,7 +2061,17 @@
   =/  rk=$@(~ rami)         ?~(rex.ara ~ k.rex.ara)
   =/  plim=modi             [(dec x.arx.ara) (dec y.arx.ara)]
   =/  acc=[rend=bean cura]  [%.n ~ ~ ~ rex.ara]
-  =<  +
+  =;  dic=[bean cura]
+    =.  omen.dic
+      ?:  ?=(^ rex.dic)
+        =/  el=(unit ens)  (~(get by e) k.rex.dic)
+        ?:  &(?=(^ el) ?=(%input -.ars.u.el))
+          hinp
+        hnav
+      ?:  ?=(^ ordo.dic)
+        hnav
+      ~
+    +.dic
   |-  ^-  [bean cura]
   =/  el=(unit ens)  (~(get by e) k)
   ?~  el
@@ -2106,10 +2110,6 @@
       i.ordo.nacc
     =?  equi.nacc  ?=(%scroll -.ars.u.el)
       (~(put in equi.nacc) k)
-    =?  omen.nacc  &(nav !(~(has by omen.nacc) [%aro %l]))
-      (~(uni by omen.nacc) hnav)
-    =?  omen.nacc  |(?=(%input -.ars.u.el) ?=(%scroll -.ars.u.el))
-      (~(uni by omen.nacc) htog)
     nacc
   $(ager.i.k +(ager.i.k), acc nacc(rend |(rend.acc rend.nacc)))
 ::  ::  ::  ::  ::  ::  ::  ::
