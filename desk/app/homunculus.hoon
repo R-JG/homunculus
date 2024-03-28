@@ -37,7 +37,7 @@
   ==
 ::
 +$  omen  (map nota lex)
-+$  zona  dill-belt:dill
++$  zona  belt:dill
 +$  nota
   $%  [%mod ?(%ctl %met %hyp) bolt:dill]  [%aro ?(%d %l %r %u)]
       [%txt ~]  [%bac ~]  [%hit ~]  [%ret ~]
@@ -111,14 +111,13 @@
   ^-  (quip card _hoc)
   ?+  mark  ~|("homunculus poke failed with mark: {<mark>}" !!)
     ::
-      %noun
-    :_  hoc
-    :~  [%pass /get-terminal %arvo %d %open %homunculus ~]
-        [%pass /get-terminal %arvo %d %flee ~]
-    ==
+    ::   %noun
+    :: :_  hoc
+    :: :~  [%pass /get-terminal %arvo %d %open %homunculus ~]
+    ::     [%pass /get-terminal %arvo %d %flee ~]
+    :: ==
     ::
       %elem
-    ~&  >  'element received'
     =/  elem=manx  !<(manx vase)
     =/  gen=opus  (geno elem)
     =/  dic=cura  (dico esse.gen)
@@ -131,65 +130,134 @@
       ordo.ara  ordo.dic
       equi.ara  equi.dic
       arx.ara   urbs
-      lar.ara   [0 0]
+      lar.ara   [1 1]
     ==
     ::
-      %dill-poke
-    =/  z=zona  +:!<(poke:dill vase)
+    ::   %dill-poke
+    :: =/  z=dill-belt:dill  +:!<(poke:dill vase)
+    :: ::
+    :: ?:  ?=(%del -.z)                        ::  press the del key to exit the tui
+    ::   :_  hoc
+    ::   :~  [%pass /give-terminal %arvo %d %open %hood ~]
+    ::       [%pass /give-terminal %arvo %d %flee ~]
+    ::   ==
+    :: ::
+    :: ?:  ?=(%rez -.z)                        ::  resize urbs to new terminal dimensions
+    ::   =/  gen=opus  (geno vela.ara)
+    ::   =/  dic=cura  (dico esse.gen)
+    ::   =/  =lux  (supo visa.gen)
+    ::   :_  hoc(urbs [(@ -.+.z) (@ +.+.z)], ara ara(esse esse.gen, visa visa.gen, ordo ordo.dic, arx [(@ -.+.z) (@ +.+.z)]))
+    ::   :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
+    ::   ==
+    :: ::
+    :: ?.  |(?=(%yow -.z) ?=(%cru -.z) ?=(%hey -.z))
+    ::   =/  n=nota  (noto z)
+    ::   =/  l=(unit lex)  (~(get by omen.ara) n)
+    ::   ?~  l
+    ::     ~&  >>>  [z 'NO EVENT']
+    ::     [~ hoc]
+    ::   =^  cards  ego
+    ::     (novo u.l z)
+    ::   [cards hoc]
+    :: ::
+    :: [~ hoc]
     ::
-    ?:  ?=(%del -.z)                        ::  press the del key to exit the tui
-      :_  hoc
-      :~  [%pass /give-terminal %arvo %d %open %hood ~]
-          [%pass /give-terminal %arvo %d %flee ~]
-      ==
+      %json
+    =/  jsn  !<(json vase)
+    ?.  ?=(%s -.jsn)  [~ hoc]
+    =/  inp=tape  (trip p.jsn)
+    =;  z=(unit zona)
+      ?~  z  [~ hoc]
+      =/  l=(unit lex)  (~(get by omen.ara) (noto u.z))
+      ?~  l  [~ hoc]
+      =^  crds  ego
+        (novo u.l u.z)
+      [crds hoc]
+    ?~  inp  ~
+    ?.  =('\\' i.inp)     [~ [%txt (tuba inp)]]
+    ?~  t.inp             [~ [%txt ~[~-~5c.]]]
+    ?~  t.t.inp
+      ?:  =('t' i.t.inp)  [~ [%mod %ctl ~-i]]
+      ?:  =('n' i.t.inp)  [~ [%ret ~]]
+      ~
+    ?~  t.t.t.inp  ~
+    ?:  =(['1' '7' '7' ~] t.inp)  [~ [%bac ~]]
+    =/  seq=tape
+      ?:  ?|  &(=('e' i.t.inp) =('[' i.t.t.inp))
+              &(=('E' i.t.inp) =('[' i.t.t.inp))
+          ==
+        t.t.t.inp 
+      ?:  ?&  ?=(^ t.t.t.t.inp)
+              ?|  ?&  =('0' i.t.inp)  =('3' i.t.t.inp) 
+                      =('3' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
+                  ==
+                  ?&  =('x' i.t.inp)  =('1' i.t.t.inp) 
+                      =('B' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
+                  ==
+                  ?&  =('x' i.t.inp)  =('9' i.t.t.inp) 
+                      =('B' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
+          ==  ==  ==
+        t.t.t.t.inp
+      ~
+    ?~  seq  ~
+    ?~  t.seq
+      ?:  =('A' i.seq)  [~ [%aro %u]]
+      ?:  =('B' i.seq)  [~ [%aro %d]]
+      ?:  =('C' i.seq)  [~ [%aro %r]]
+      ?:  =('D' i.seq)  [~ [%aro %l]]
+      ~
+    ?~  t.t.seq
+      ?:  =(['3' '~' ~] seq)  [~ [%del ~]]
+      ~
+    :: TODO: add mod+arrow and click
+    ~
     ::
-    ?:  ?=(%rez -.z)                        ::  resize urbs to new terminal dimensions
-      =/  gen=opus  (geno vela.ara)
-      =/  dic=cura  (dico esse.gen)
-      =/  =lux  (put-blit visa.gen)
-      :_  hoc(urbs [(@ -.+.z) (@ +.+.z)], ara ara(esse esse.gen, visa visa.gen, ordo ordo.dic, arx [(@ -.+.z) (@ +.+.z)]))
-      :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
-      ==
-    ::
-    ?:  ?|  ?=(%mod -.z)  ?=(%aro -.z)  ?=(%txt -.z)
-            ?=(%bac -.z)  ?=(%ret -.z)  ?=(%hit -.z)
-        ==
-      =/  n=nota  ?:(?=(%txt -.z) [-.z ~] ?:(?=(%hit -.z) [-.z ~] ?:(?=(%mod -.z) z ?:(?=(%aro -.z) z ?:(?=(%bac -.z) z ?:(?=(%ret -.z) z !!))))))
-      =/  l=(unit lex)  (~(get by omen.ara) n)
-      ?~  l
-        ~&  >>>  [z 'NO EVENT']
-        [~ hoc]
-      =^  cards  ego
-        (novo u.l z)
-      [cards hoc]
-    ::
-    [~ hoc]
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-watch
   |=  =path
   ?+  path  [~ hoc]
-      [%dill *]
-    =/  =lux
-      :-  %mor
-      :~  (put-blit visa.ara)
-          ^-  lux
-          ?~  rex.ara  [%hop [0 0]]
-          =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
-          ?~  el  [%hop [0 0]]
-          ?:  ?=(%input -.ars.u.el)
-            (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
-          ?:  &(=(0 x.iter.u.el) =(0 y.iter.u.el))
-            [%hop [l.rex.ara t.rex.ara]]
-          =/  sk=$@(~ rami)  (ligo k.rex.ara)
-          ?~  sk  [%hop [l.rex.ara t.rex.ara]]
-          =/  spar=(unit ens)  (~(get by esse.ara) sk)
-          ?~  spar  [%hop [l.rex.ara t.rex.ara]]
-          (cedo rex.ara sk u.spar)
-      ==
+    ::
+      [%homunculus-http ~]
+    =/  hop=lux
+      ?~  rex.ara  [%hop [0 0]]
+      =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+      ?~  el  [%hop [0 0]]
+      ?:  ?=(%input -.ars.u.el)
+        (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
+      ?:  &(=(0 x.iter.u.el) =(0 y.iter.u.el))
+        [%hop [l.rex.ara t.rex.ara]]
+      =/  sk=$@(~ rami)  (ligo k.rex.ara)
+      ?~  sk  [%hop [l.rex.ara t.rex.ara]]
+      =/  spar=(unit ens)  (~(get by esse.ara) sk)
+      ?~  spar  [%hop [l.rex.ara t.rex.ara]]
+      (cedo rex.ara sk u.spar)
+    =/  ansi=@t  (crip ^-(tape ['\\e[1;1H\\e[3J\\e[0J' (weld (volo (supo visa.ara)) (volo hop))]))
     :_  hoc
-    :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
     ==
+    ::
+    ::   [%dill *]
+    :: =/  =lux
+    ::   :-  %mor
+    ::   :~  (supo visa.ara)
+    ::       ^-  lux
+    ::       ?~  rex.ara  [%hop [0 0]]
+    ::       =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+    ::       ?~  el  [%hop [0 0]]
+    ::       ?:  ?=(%input -.ars.u.el)
+    ::         (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
+    ::       ?:  &(=(0 x.iter.u.el) =(0 y.iter.u.el))
+    ::         [%hop [l.rex.ara t.rex.ara]]
+    ::       =/  sk=$@(~ rami)  (ligo k.rex.ara)
+    ::       ?~  sk  [%hop [l.rex.ara t.rex.ara]]
+    ::       =/  spar=(unit ens)  (~(get by esse.ara) sk)
+    ::       ?~  spar  [%hop [l.rex.ara t.rex.ara]]
+    ::       (cedo rex.ara sk u.spar)
+    ::   ==
+    :: :_  hoc
+    :: :~  [%give %fact ~[/dill/$] %dill-blit !>(lux)]
+    :: ==
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-leave  |=(path ^-((quip card _hoc) !!))
@@ -299,19 +367,30 @@
       ==
     =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
     =?  upd  ?=(^ upd)  upd(visa (~(uni by visa.upd) (~(uni by visa.prae) visa.post)))
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara ?~(upd (~(uni by visa.prae) visa.post) visa.upd))
-          ^-  lux
-          ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
-            (vado ab.ars.u.sel i.ars.u.sel w.size.res.u.sel lar.u.sel iter.u.sel)
-          ?~  rex.ara  [%hop [0 0]]
-          ?:  |(?=(~ spar) &(?=(~ upd) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
-            [%hop [l.rex.ara t.rex.ara]]
-          (cedo rex.ara scr u.spar)
-      ==
+    :: =/  =lux
+    ::   :-  %mor
+    ::   :~  (dono visa.ara ?~(upd (~(uni by visa.prae) visa.post) visa.upd))
+    ::       ^-  lux
+    ::       ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
+    ::         (vado ab.ars.u.sel i.ars.u.sel w.size.res.u.sel lar.u.sel iter.u.sel)
+    ::       ?~  rex.ara  [%hop [0 0]]
+    ::       ?:  |(?=(~ spar) &(?=(~ upd) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
+    ::         [%hop [l.rex.ara t.rex.ara]]
+    ::       (cedo rex.ara scr u.spar)
+    ::   ==
+    :: :_  ego(visa.ara (~(uni by visa.ara) ?~(upd (~(uni by visa.prae) visa.post) visa.upd)))
+    :: [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
+    =/  hop=lux
+      ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
+        (vado ab.ars.u.sel i.ars.u.sel w.size.res.u.sel lar.u.sel iter.u.sel)
+      ?~  rex.ara  [%hop [0 0]]
+      ?:  |(?=(~ spar) &(?=(~ upd) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
+        [%hop [l.rex.ara t.rex.ara]]
+      (cedo rex.ara scr u.spar)
+    =/  ansi=@t  (crip (weld (volo (dono visa.ara ?~(upd (~(uni by visa.prae) visa.post) visa.upd))) (volo hop)))
     :_  ego(visa.ara (~(uni by visa.ara) ?~(upd (~(uni by visa.prae) visa.post) visa.upd)))
-    [[%give %fact ~[/dill/$] %dill-blit !>(lux)] ~]
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
+    ==
     ::
     ++  navi
       |=  [r=rex o=ordo]
@@ -497,22 +576,22 @@
       ==
     --
   ::
-  ?:  ?=(%tog lex)
-    ?~  rex.ara  [~ ego]
-    =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
-    ?~  el  [~ ego]
-    =/  ev=(unit ^lex)  (~(get by omen.ara) [%aro %l])
-    ?~  ev  [~ ego]
-    ?+  -.ars.u.el  [~ ego]
-        %input
-      ?.  ?=(%nav-l u.ev)
-        :_  ego(omen.ara (~(uni by (~(dif by omen.ara) hinp)) hnav))
-        [[%give %fact ~[/dill/$] %dill-blit !>([%hop x.lar.u.el y.lar.u.el])] ~]
-      :_  ego(omen.ara (~(uni by omen.ara) hinp))
-      :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
-        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
-      ==  ==
-    ==
+  :: ?:  ?=(%tog lex)                                :: temporarily removed
+  ::   ?~  rex.ara  [~ ego]
+  ::   =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+  ::   ?~  el  [~ ego]
+  ::   =/  ev=(unit ^lex)  (~(get by omen.ara) [%aro %l])
+  ::   ?~  ev  [~ ego]
+  ::   ?+  -.ars.u.el  [~ ego]
+  ::       %input
+  ::     ?.  ?=(%nav-l u.ev)
+  ::       :_  ego(omen.ara (~(uni by (~(dif by omen.ara) hinp)) hnav))
+  ::       [[%give %fact ~[/dill/$] %dill-blit !>([%hop x.lar.u.el y.lar.u.el])] ~]
+  ::     :_  ego(omen.ara (~(uni by omen.ara) hinp))
+  ::     :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
+  ::       !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
+  ::     ==  ==
+  ::   ==
   ::
   ?:  ?=(%inp lex)
     ?.  ?=(%txt -.zona)  [~ ego]
@@ -548,12 +627,16 @@
       (~(put by acc) [(sub x.l x.iter.u.el) (sub y.l y.iter.u.el)] c)
     =.  vi  (~(int by visa.u.el) vi)
     =.  visa.u.el  vi
+    :: :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
+    :: :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+    ::   !>  :-  %mor
+    ::   :~  (dono visa.ara vi)
+    ::   (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
+    :: ==  ==  ==
+    =/  ansi=@t  (crip (weld (volo (dono visa.ara vi)) (volo (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))))
     :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
-    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
-      !>  :-  %mor
-      :~  (dono visa.ara vi)
-      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
-    ==  ==  ==
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
+    ==
   ::
   ?:  ?=(%del lex)
     ?~  rex.ara  [~ ego]
@@ -581,12 +664,16 @@
       (~(put by acc) [(sub x.l x.iter.u.el) (sub y.l y.iter.u.el)] c)
     =.  vi  (~(int by visa.u.el) vi)
     =.  visa.u.el  vi
+    :: :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
+    :: :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+    ::   !>  :-  %mor
+    ::   :~  (dono visa.ara vi)
+    ::   (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
+    :: ==  ==  ==
+    =/  ansi=@t  (crip (weld (volo (dono visa.ara vi)) (volo (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))))
     :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
-    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
-      !>  :-  %mor
-      :~  (dono visa.ara vi)
-      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
-    ==  ==  ==
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
+    ==
   ::
   ?:  |(?=(%cur-l lex) ?=(%cur-r lex) ?=(%cur-u lex) ?=(%cur-d lex))
     ?~  rex.ara  [~ ego]
@@ -648,10 +735,14 @@
         ab.ars.u.el
       ab.ars.u.el
     ?:  =(ab.ars.u.el nab)
+      :: :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el))
+      :: :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
+      ::   !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
+      :: ==  ==
+      =/  ansi=@t  (crip (volo (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)))
       :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el))
-      :~  :*  %give  %fact  ~[/dill/$]  %dill-blit  
-        !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
-      ==  ==
+      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
+      ==
     =.  ab.ars.u.el  nab
     =/  lim=modi  [(add x.lar.u.el w.size.res.u.el) (add y.lar.u.el h.size.res.u.el)]
     =/  vi=visa  (rinp lar.u.el lim res.u.el ab.ars.u.el vox.ars.u.el)
@@ -666,26 +757,30 @@
       (~(put by acc) [(sub x.l x.iter.u.el) (sub y.l y.iter.u.el)] c)
     =.  vi  (~(int by visa.u.el) vi)
     =.  visa.u.el  vi
+    :: :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
+    :: :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+    ::   !>  :-  %mor
+    ::   :~  (dono visa.ara vi)
+    ::   (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
+    :: ==  ==  ==
+    =/  ansi=@t  (crip (weld (volo (dono visa.ara vi)) (volo (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))))
     :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
-    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
-      !>  :-  %mor
-      :~  (dono visa.ara vi)
-      (vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el)
-    ==  ==  ==
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
+    ==
   ::
-  ?:  |(?=(%scr-l lex) ?=(%scr-r lex) ?=(%scr-u lex) ?=(%scr-d lex))
-    ?~  rex.ara  [~ ego]
-    =/  upd=$@(~ [opus cura])  (abeo k.rex.ara lex)
-    ?~  upd  [~ ego]
-    :_  %_  ego
-          esse.ara  esse.upd
-          visa.ara  visa.upd
-          ordo.ara  ordo.upd
-          rex.ara   ?~(rex.upd rex.ara rex.upd)
-        ==
-    :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
-      !>([%mor ~[(dono visa.ara visa.upd) [%hop [l.rex.ara t.rex.ara]]]])
-    ==  ==
+  :: ?:  |(?=(%scr-l lex) ?=(%scr-r lex) ?=(%scr-u lex) ?=(%scr-d lex))  :: temporarily removed
+  ::   ?~  rex.ara  [~ ego]
+  ::   =/  upd=$@(~ [opus cura])  (abeo k.rex.ara lex)
+  ::   ?~  upd  [~ ego]
+  ::   :_  %_  ego
+  ::         esse.ara  esse.upd
+  ::         visa.ara  visa.upd
+  ::         ordo.ara  ordo.upd
+  ::         rex.ara   ?~(rex.upd rex.ara rex.upd)
+  ::       ==
+  ::   :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
+  ::     !>([%mor ~[(dono visa.ara visa.upd) [%hop [l.rex.ara t.rex.ara]]]])
+  ::   ==  ==
   ::
   [~ ego]
 ::
@@ -878,8 +973,19 @@
   =.  row  ?:(=(0 row) 0 (dec row))
   =/  [x=@ud y=@ud]  [(add x.lar col) (add y.lar row)]
   :+  %hop
-    ?:((lte x.iter x) (sub x x.iter) 0)
-  ?:((lte y.iter y) (sub y y.iter) 0)
+    ?:((lth x.iter x) (sub x x.iter) 1)
+  ?:((lth y.iter y) (sub y y.iter) 1)
+::
+++  noto
+  |=  z=zona
+  ^-  nota
+  ?:  ?=(%txt -.z)  [-.z ~]
+  ?:  ?=(%hit -.z)  [-.z ~]
+  ?:  ?=(%mod -.z)  z
+  ?:  ?=(%aro -.z)  z
+  ?:  ?=(%bac -.z)  z
+  ?:  ?=(%ret -.z)  z
+  !!
 ::  ::  ::  ::  ::  ::  ::
 ++  dolo                    :: get default styles for a semantic element
   |=  el=@tas
@@ -2129,45 +2235,50 @@
     nacc
   $(ager.i.k +(ager.i.k), acc nacc(rend |(rend.acc rend.nacc)))
 ::  ::  ::  ::  ::  ::  ::  ::
-::  ::  ::  ::  ::  ::  ::  ::
-::  ::  ::  ::  ::  ::  ::  ::
-::  dill test:
-::  
-++  push-blit
+:: ++  push-blit
+::   |=  v=visa
+::   ^-  lux
+::   =/  y=@ud  0
+::   :-  %mor
+::   :-  [%clr ~]
+::   :-  [%nel ~]
+::   |-  ^-  (list lux)
+::   ?:  =(+(y) y.urbs)
+::     [[%klr (make-stub y v)] ~]
+::   :-  [%klr (make-stub y v)]
+::   [[%nel ~] $(y +(y))]
+:: ::
+:: ++  make-stub
+::   |=  [y=@ud v=visa]
+::   =/  x=@ud  0
+::   |-  ^-  stub
+::   ?:  (gte x x.urbs)
+::     ~
+::   =/  val=(unit [fila @c ~])  (~(get by v) [x y])
+::   =/  char=(pair stye (list @c))
+::     ?~(val [[~ ~ ~] ~[(@c 'x')]] u.val)
+::   [char $(x +(x))]
+::
+++  supo                    :: make a full display update
   |=  v=visa
   ^-  lux
-  =/  y=@ud  0
-  :-  %mor
-  :-  [%clr ~]
-  :-  [%nel ~]
-  |-  ^-  (list lux)
-  ?:  =(+(y) y.urbs)
-    [[%klr (make-stub y v)] ~]
-  :-  [%klr (make-stub y v)]
-  [[%nel ~] $(y +(y))]
-::
-++  put-blit
-  |=  v=visa
-  ^-  lux
-  =/  y=@ud  0
+  =/  y=@ud  1
   :-  %mor
   |-  ^-  (list lux)
-  :-  [%hop 0 y]
-  :-  [%klr (make-stub y v)] 
-  ?:(=(+(y) y.urbs) ~ $(y +(y)))
+  =/  s=stub
+    =/  x=@ud  1
+    |-  ^-  stub
+    ?:  (gte x x.urbs)
+      ~
+    =/  val=(unit [fila @c ~])  (~(get by v) [x y])
+    =/  char=(pair stye (list @c))
+      ?~(val [[~ ~ ~] ~[(@c 'x')]] u.val)
+    [char $(x +(x))]
+  :+  [%hop 1 y]
+    [%klr s] 
+  ?:(=(y y.urbs) ~ $(y +(y))) :: should the conditional here inc y?
 ::
-++  make-stub
-  |=  [y=@ud v=visa]
-  =/  x=@ud  0
-  |-  ^-  stub
-  ?:  (gte x x.urbs)
-    ~
-  =/  val=(unit [fila @c ~])  (~(get by v) [x y])
-  =/  char=(pair stye (list @c))
-    ?~(val [[~ ~ ~] ~[(@c 'x')]] u.val)
-  [char $(x +(x))]
-::
-++  dono                   :: display update diff
+++  dono                    :: make a display update diff
   |=  [old=visa new=visa]
   ^-  lux
   =/  n=(list [=loci [fila @c ~]])  ~(tap by new)
@@ -2178,4 +2289,86 @@
   ?.  |(&(?=(^ v) !=(u.v +.i.n)) ?=(~ v))
     $(n t.n)
   [[%hop loci.i.n] [%klr ~[+.i.n]] $(n t.n)]
+::
+++  volo                    :: turn a cursor hop or display render blit into ansi sequences
+  |=  =lux
+  ^-  tape
+  ?:  ?=(%hop -.lux)
+    ?@  p.lux  ~
+    ['\\' 'e' '[' (scot %ud y.p.lux) ';' (scot %ud x.p.lux) 'H' ~]
+  ?.  ?=(%mor -.lux)  ~
+  =/  prev=stye  [~ ~ ~]
+  |-  ^-  tape
+  ?~  p.lux
+    ?.  =([~ ~ ~] prev)
+      :^  '\\'  'e'  '['
+      :+  '0'  'm'  ~
+    ~
+  ?:  ?=(%hop -.i.p.lux)
+    ?@  p.i.p.lux  $(p.lux t.p.lux)
+    :*  '\\'  'e'  '['
+        (scot %ud y.p.i.p.lux)  ';'
+        (scot %ud x.p.i.p.lux)  'H'
+        $(p.lux t.p.lux)
+    ==
+  ?:  ?=(%klr -.i.p.lux)
+    |-  ^-  tape
+    ?~  p.i.p.lux  ^$(p.lux t.p.lux)
+    =/  newb=(unit tint)  ?:(=(p.q.prev p.q.p.i.p.i.p.lux) ~ [~ p.q.p.i.p.i.p.lux])
+    =/  newf=(unit tint)  ?:(=(q.q.prev q.q.p.i.p.i.p.lux) ~ [~ q.q.p.i.p.i.p.lux])
+    =/  oldd=(list deco)  ~(tap in (~(dif in p.prev) p.p.i.p.i.p.lux))
+    =/  newd=(list deco)  ~(tap in (~(dif in p.p.i.p.i.p.lux) p.prev))
+    =/  newc=tape  (tufa q.i.p.i.p.lux)
+    |-  ^-  tape
+    ?^  newb
+      :^  '\\'  'e'  '['
+      ?@  u.newb
+        :^    '4'
+            ?-  u.newb
+              %r  '1'  %g  '2'  %b  '4'
+              %c  '6'  %m  '5'  %y  '3'
+              %k  '0'  %w  '7'  %~  '9'
+            ==
+          'm'
+        $(newb ~)
+      :^  '4'  '8'  ';'
+      :+  '2'  ';'
+      :+  (scot %ud (@ r.u.newb))  ';'
+      :+  (scot %ud (@ g.u.newb))  ';'
+      :+  (scot %ud (@ b.u.newb))  'm'
+      $(newb ~)
+    ?^  newf
+      :^  '\\'  'e'  '['
+      ?@  u.newf
+        :^    '3'
+            ?-  u.newf
+              %r  '1'  %g  '2'  %b  '4'
+              %c  '6'  %m  '5'  %y  '3'
+              %k  '0'  %w  '7'  %~  '9'
+            ==
+          'm'
+        $(newf ~)
+      :^  '3'  '8'  ';'
+      :+  '2'  ';'
+      :+  (scot %ud (@ r.u.newf))  ';'
+      :+  (scot %ud (@ g.u.newf))  ';'
+      :+  (scot %ud (@ b.u.newf))  'm'
+      $(newf ~)
+    ?^  oldd
+      ?:  ?=(~ i.oldd)  $(oldd t.oldd)
+      :^  '\\'  'e'  '['
+      :+  ?-(i.oldd %bl '25', %br '22', %un '24')
+        'm'
+      $(oldd t.oldd)
+    ?^  newd
+      ?:  ?=(~ i.newd)  $(newd t.newd)
+      :^  '\\'  'e'  '['
+      :+  ?-(i.newd %bl '5', %br '1', %un '4')
+        'm'
+      $(newd t.newd)
+    ?^  newc
+      :-  i.newc
+      $(newc t.newc)
+    ^$(p.i.p.lux t.p.i.p.lux, prev p.i.p.i.p.lux)
+  $(p.lux t.p.lux)
 --
