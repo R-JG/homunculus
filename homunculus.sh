@@ -6,16 +6,12 @@ BASE_URL="localhost:8081"
 
 auth_res=$(curl -i -X POST --silent -d "password=$CODE" "$BASE_URL/~/login")
 cookie_header="$(echo "$auth_res" | grep -i 'set-cookie:' | awk '{print $2}' | sed 's/.$//')"
+channel_id="$(date +'%Y%m%d')$RANDOM"
 message_id=0
+sub_id=0
 
-subscribe() {
-    curl -X PUT \
-         --cookie "$cookie_header" \
-         -d "[{
-             \"id\":$message_id,
-             \"action\":\"delete\"
-             }]" \
-         "$BASE_URL/~/channel/homunculus"
+start_connection() {
+    sub_id=$message_id
     curl -X PUT \
          --cookie "$cookie_header" \
          -d "[{
@@ -25,7 +21,33 @@ subscribe() {
              \"app\":\"homunculus\",
              \"path\":\"/homunculus-http\"
              }]" \
-         "$BASE_URL/~/channel/homunculus"
+         "$BASE_URL/~/channel/$channel_id" \
+    > /dev/null 2>&1
+}
+
+end_connection() {
+    ((message_id++))
+    curl -X PUT \
+         --cookie "$cookie_header" \
+         -d "[{
+             \"id\":$message_id,
+             \"action\":\"unsubscribe\"
+             \"subscription\":$sub_id
+             }]" \
+         "$BASE_URL/~/channel/$channel_id" \
+    > /dev/null 2>&1
+    ((message_id++))
+    curl -X PUT \
+         --cookie "$cookie_header" \
+         -d "[{
+             \"id\":$message_id,
+             \"action\":\"delete\"
+             }]" \
+         "$BASE_URL/~/channel/$channel_id" \
+    > /dev/null 2>&1
+    clear
+    #stty echo
+    exit 0
 }
 
 poke() {
@@ -38,9 +60,10 @@ poke() {
              \"ship\":\"$SHIP\",
              \"app\":\"homunculus\",
              \"mark\":\"json\",
-             \"json\":\"$1\"
+             \"json\":$1
              }]" \
-         "$BASE_URL/~/channel/homunculus"
+         "$BASE_URL/~/channel/$channel_id" \
+    > /dev/null 2>&1
 }
 
 ack() {
@@ -52,7 +75,8 @@ ack() {
              \"action\":\"ack\",
              \"event-id\":$1
              }]" \
-         "$BASE_URL/~/channel/homunculus"
+         "$BASE_URL/~/channel/$channel_id" \
+    > /dev/null 2>&1
 }
 
 stream() {
@@ -60,7 +84,7 @@ stream() {
     curl -N --silent \
          -H "Accept:text/event-stream" \
          --cookie "$cookie_header" \
-         "$BASE_URL/~/channel/homunculus" |
+         "$BASE_URL/~/channel/$channel_id" |
     while read -r -s line; do
         if [[ "${line:0:4}" = "id: " ]]; then
             event_id="${line:4}"
@@ -82,21 +106,30 @@ read_input() {
             else
                 eval sequence=$seq
             fi
-            poke "\\$sequence"
+            poke "\"\\$sequence\""
         elif [[ "$char" = '\' ]] || [[ "$char" = '"' ]]; then
-            poke "\\$char"
+            poke "\"\\$char\""
         else
-            poke "$char"
+            poke "\"$char\""
         fi
     done
 }
 
-PS1=
+send_size() {
+    cols=$(tput cols)
+    rows=$(tput lines)
+    poke "[$cols, $rows]"
+}
 
-subscribe
+PS1=
+#stty -echo
+
+start_connection
+
+send_size
 
 stream &
-pid[0]=$!
-trap "kill ${pid[0]}; exit 1" INT
+
+trap end_connection INT
 
 read_input
