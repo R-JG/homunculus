@@ -37,10 +37,10 @@
   ==
 ::
 +$  omen  (map nota lex)
-+$  zona  belt:dill
++$  zona  ?([%whe p=?(%d %u) x=@ud y=@ud] belt:dill)
 +$  nota
   $%  [%mod ?(%ctl %met %hyp) bolt:dill]  [%aro ?(%d %l %r %u)]
-      [%txt ~]  [%bac ~]  [%hit ~]  [%ret ~]
+      [%txt ~]  [%bac ~]  [%ret ~]  [%hit ~]  [%whe ?(%d %u)]
   ==
 +$  lex
   $?  %nav-l  %nav-r  %nav-u  %nav-d
@@ -112,7 +112,7 @@
   ?+  mark  ~|("homunculus poke failed with mark: {<mark>}" !!)
     ::
       %elem
-    =/  elem=manx  !<(manx vase)
+    =/  elem       !<(manx vase)
     =/  gen=opus   (geno elem)
     =/  dic=cura   (dico esse.gen)
     =/  lu=lux
@@ -120,7 +120,7 @@
       :~  (supo visa.gen)
           (fero rex.dic esse.gen)
       ==
-    :_  %=  hoc
+    :_  %_  hoc
           esse.ara  esse.gen
           visa.ara  visa.gen
           vela.ara  elem
@@ -185,20 +185,32 @@
     ?~  t.t.seq
       ?:  =(['3' '~' ~] seq)  [~ [%del ~]]
       ~
-    ?:  =(['<' '0'] [i.seq i.t.seq])
+    ?:  |(=(['<' '0'] [i.seq i.t.seq]) =(['<' '6'] [i.seq i.t.seq]))
+      =/  loc=tape
+        ?:  =('0' i.t.seq)  t.t.t.seq
+        ?:  =('6' i.t.seq)  ?~(t.t.t.seq ~ t.t.t.t.seq)
+        ~
       =|  [xt=tape yt=tape]
       |-  ^-  (unit zona)
-      ?~  t.t.t.seq  ~
-      ?.  =(';' i.t.t.t.seq)
-        $(t.t.t.seq t.t.t.t.seq, xt [i.t.t.t.seq xt])
+      ?~  loc  ~
+      ?.  =(';' i.loc)
+        $(loc t.loc, xt [i.loc xt])
       |-  ^-  (unit zona)
-      ?~  t.t.t.t.seq  ~
-      ?.  =('m' i.t.t.t.t.seq)
-        $(t.t.t.t.seq t.t.t.t.t.seq, yt [i.t.t.t.t.seq yt])
-      :^    ~
-          %hit
-        ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
-      ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
+      ?~  t.loc  ~
+      ?.  =('M' i.t.loc)
+        $(t.loc t.t.loc, yt [i.t.loc yt])
+      ?:  =('0' i.t.seq)
+        :^    ~
+            %hit
+          ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
+        ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
+      ?:  =('6' i.t.seq)
+        :^    ~
+            %whe
+          ?:(=('4' i.t.t.seq) %u ?:(=('5' i.t.t.seq) %d !!))
+        :-  ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
+        ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
+      ~
     ~  :: TODO: parse mod+arrow
     ::
   ==
@@ -234,6 +246,7 @@
   ^-  (list [nota lex])
   :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
       [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
+      [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
       [[%hit ~] %clk]
   ==
 ::
@@ -243,8 +256,8 @@
   ^-  (list [nota lex])
   :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
       [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
+      [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
       [[%txt ~] %inp]  [[%bac ~] %del]
-      [[%mod mod=%ctl key=~-i] %tog]
       [[%hit ~] %clk]
   ==
 ::  ::  ::
@@ -325,10 +338,11 @@
         %input         (~(uni by omen.ara) hinp)
       ==
     =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
-    =?  upd  ?=(^ upd)  upd(visa (~(uni by visa.upd) (~(uni by visa.prae) visa.post)))
+    =/  ppv=visa  (~(uni by visa.prae) visa.post)
+    =?  upd  ?=(^ upd)  upd(visa (~(uni by visa.upd) ppv))
     =/  =lux
       :-  %mor
-      :~  (dono visa.ara ?~(upd (~(uni by visa.prae) visa.post) visa.upd))
+      :~  (dono visa.ara ?~(upd ppv visa.upd))
           ^-  lux
           ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
             (vado ab.ars.u.sel i.ars.u.sel w.size.res.u.sel lar.u.sel iter.u.sel)
@@ -337,7 +351,7 @@
             [%hop [l.rex.ara t.rex.ara]]
           (cedo rex.ara scr u.spar)
       ==
-    :_  ego(visa.ara (~(uni by visa.ara) ?~(upd (~(uni by visa.prae) visa.post) visa.upd)))
+    :_  ego(visa.ara ?~(upd (~(uni by visa.ara) ppv) visa.upd))       :: DOUBLE CHECK THIS CHANGE TO VISA
     :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
     ==
     ::
@@ -728,24 +742,44 @@
     :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
     ==
   ::
-  :: ?:  |(?=(%scr-l lex) ?=(%scr-r lex) ?=(%scr-u lex) ?=(%scr-d lex))  :: temporarily removed
-  ::   ?~  rex.ara  [~ ego]
-  ::   =/  upd=$@(~ [opus cura])  (abeo k.rex.ara lex)
-  ::   ?~  upd  [~ ego]
-  ::   :_  %_  ego
-  ::         esse.ara  esse.upd
-  ::         visa.ara  visa.upd
-  ::         ordo.ara  ordo.upd
-  ::         rex.ara   ?~(rex.upd rex.ara rex.upd)
-  ::       ==
-  ::   :~  :*  %give  %fact  ~[/dill/$]  %dill-blit
-  ::     !>([%mor ~[(dono visa.ara visa.upd) [%hop [l.rex.ara t.rex.ara]]]])
-  ::   ==  ==
+  ?:  |(?=(%scr-u lex) ?=(%scr-d lex))
+    ?.  ?=(%whe -.zona)  [~ ego]
+    =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
+    ?~  mk  [~ ego]
+    =/  sk=$@(~ rami)  (ligo u.mk)
+    ?~  sk  [~ ego]
+    =/  upd=$@(~ [opus cura])
+      ?:  |(?=(~ rex.ara) =(sk k.rex.ara))
+        (abeo sk lex)
+      =/  nrex=rex  (rogo sk ordo.ara)
+      ?~  nrex  ~
+      =/  prae=opus  (duco esse.ara k.rex.ara nrex)
+      =.  rex.ara  nrex
+      =:  esse.ara  ?~(esse.prae esse.ara (~(uni by esse.ara) ^-(esse esse.prae)))
+          visa.ara  ?~(visa.prae visa.ara (~(uni by visa.ara) ^-(visa visa.prae)))
+        ==
+      (abeo sk lex)
+    ?~  upd  [~ ego]
+    =:  esse.ara  esse.upd
+        rex.ara   rex.upd
+        mus.ara   mus.upd
+        omen.ara  omen.upd
+        ordo.ara  ordo.upd
+        equi.ara  equi.upd
+      ==
+    =/  =lux
+      :-  %mor
+      :~  (dono visa.ara visa.upd)
+          (fero rex.ara esse.ara)
+      ==
+    :_  ego(visa.ara visa.upd)
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+    ==
   ::
   [~ ego]
 ::
 ++  abeo                    :: handle a scroll event for a scroll element by key
-  |=  [pk=rami =lex]
+  |=  [pk=rami =lex]        :: returns a complete update on the session esse and visa
   ^-  $@(~ [opus cura])
   =/  par=(unit ens)  (~(get by esse.ara) pk)
   ?~  par  ~
@@ -795,7 +829,7 @@
   [opu (dico esse.opu)]
 ::
 ++  eo                      :: perform a scroll on the elements within a scroll element
-  |=  $:  e=esse  v=visa  lx=$@(~ lex)
+  |=  $:  e=esse  v=visa  lx=$@(~ lex)  :: returns the esse and visa passed in with the update applied
           nitr=$@(~ loci)  pk=rami  pv=visa
           prl=@ud  prt=@ud  prr=@ud  prb=@ud
       ==
@@ -965,6 +999,7 @@
   ^-  nota
   ?:  ?=(%txt -.z)  [-.z ~]
   ?:  ?=(%hit -.z)  [-.z ~]
+  ?:  ?=(%whe -.z)  [-.z -.+.z]
   ?:  ?=(%mod -.z)  z
   ?:  ?=(%aro -.z)  z
   ?:  ?=(%bac -.z)  z
