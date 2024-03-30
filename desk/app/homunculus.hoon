@@ -46,7 +46,7 @@
   $?  %nav-l  %nav-r  %nav-u  %nav-d
       %cur-l  %cur-r  %cur-u  %cur-d
       %scr-l  %scr-r  %scr-u  %scr-d
-      %inp  %del  %tog  %act  %def
+      %inp  %del  %tog  %act  %clk  %def
   ==
 +$  mus   (map loci rami)
 +$  equi  (set rami)
@@ -56,7 +56,7 @@
 +$  gens  (map @t rami)
 ::
 +$  opus  [=esse =visa]
-+$  cura  [=omen =equi =ordo =rex]
++$  cura  [=omen =equi =mus =ordo =rex]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  rei
   $:  size=[w=as h=as]
@@ -76,8 +76,8 @@
 +$  ara
   $:  =esse  =visa  =vela
       =omen  =rex  =ordo
-      =equi  =gens  =arx
-      =lar
+      =equi  =gens  =mus
+      =arx  =lar
   ==
 +$  arae  (map @tas ara)
 +$  ego
@@ -125,6 +125,7 @@
           visa.ara  visa.gen
           vela.ara  elem
           rex.ara   rex.dic
+          mus.ara   mus.dic
           omen.ara  omen.dic
           ordo.ara  ordo.dic
           equi.ara  equi.dic
@@ -184,8 +185,21 @@
     ?~  t.t.seq
       ?:  =(['3' '~' ~] seq)  [~ [%del ~]]
       ~
-    :: TODO: parse mod+arrow and click
-    ~
+    ?:  =(['<' '0'] [i.seq i.t.seq])
+      =|  [xt=tape yt=tape]
+      |-  ^-  (unit zona)
+      ?~  t.t.t.seq  ~
+      ?.  =(';' i.t.t.t.seq)
+        $(t.t.t.seq t.t.t.t.seq, xt [i.t.t.t.seq xt])
+      |-  ^-  (unit zona)
+      ?~  t.t.t.t.seq  ~
+      ?.  =('m' i.t.t.t.t.seq)
+        $(t.t.t.t.seq t.t.t.t.t.seq, yt [i.t.t.t.t.seq yt])
+      :^    ~
+          %hit
+        ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
+      ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
+    ~  :: TODO: parse mod+arrow
     ::
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -220,6 +234,7 @@
   ^-  (list [nota lex])
   :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
       [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
+      [[%hit ~] %clk]
   ==
 ::
 ++  hinp                    :: hotkey context group for an input element
@@ -230,6 +245,7 @@
       [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
       [[%txt ~] %inp]  [[%bac ~] %del]
       [[%mod mod=%ctl key=~-i] %tog]
+      [[%hit ~] %clk]
   ==
 ::  ::  ::
 ++  novo                    :: handle an event from the hotkey context
@@ -274,10 +290,12 @@
       ==
     =?  ara  ?=(^ upd)
       %_  ara
-        rex   rex.upd
-        ordo  ordo.upd
-        omen  omen.upd
         esse  esse.upd
+        rex   rex.upd
+        mus   mus.upd
+        omen  omen.upd
+        ordo  ordo.upd
+        equi  equi.upd
       ==
     =?  next  ?=(^ upd)
       ?~  scr  ~
@@ -293,7 +311,7 @@
         next
       ?:  |(?=(~ scr) ?=(~ spar) ?=(~ upd) ?=(^ (find ~[rex.ara] ordo.upd)))
         rex.ara
-      (frex scr ordo.ara)
+      (rogo scr ordo.ara)
     =/  post=opus
       ?:  ?=(^ next)
         (duco esse.ara k.next rex.ara)
@@ -363,14 +381,6 @@
       ?:  ((keep r) i.pars)
         pars
       ~
-    ::
-    ++  frex
-      |=  [k=rami o=ordo]
-      ^-  rex
-      ?~  o  ~
-      ?:  =(k k.i.o)
-        i.o
-      $(o t.o)
     ::
     ++  chil
       |=  [a=rami b=rami]
@@ -523,6 +533,34 @@
   ::       !>((vado ab.ars.u.el i.ars.u.el w.size.res.u.el lar.u.el iter.u.el))
   ::     ==  ==
   ::   ==
+  ::
+  ?:  ?=(%clk lex)
+    ?.  ?=(%hit -.zona)  [~ ego]
+    =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
+    ?~  mk  [~ ego]
+    =/  el=(unit ens)  (~(get by esse.ara) u.mk)
+    ?~  el  [~ ego]
+    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara) !?=(%input -.ars.u.el))
+      ~&  >>>  %act                                   :: TODO: send act event
+      [~ ego]
+    =/  nrex=rex  (rogo u.mk ordo.ara)
+    =/  prae=opus  ?~(rex.ara [~ ~] (duco esse.ara k.rex.ara nrex))
+    =.  rex.ara  nrex
+    =/  post=opus  ?~(nrex [~ ~] (duco esse.ara k.nrex rex.ara))
+    =.  omen.ara
+      ?+  -.ars.u.el   (~(uni by omen.ara) hnav)
+        %input         (~(uni by omen.ara) hinp)
+      ==
+    =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
+    =/  nvis=visa  (~(uni by visa.prae) visa.post)
+    =/  =lux
+      :-  %mor
+      :~  (dono visa.ara nvis)
+          (fero rex.ara esse.ara)
+      ==
+    :_  ego(visa.ara (~(uni by visa.ara) nvis))              :: TODO: send sel event if in aves
+    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+    ==
   ::
   ?:  ?=(%inp lex)
     ?.  ?=(%txt -.zona)  [~ ego]
@@ -913,6 +951,14 @@
   =/  spar=(unit ens)  (~(get by e) sk)
   ?~  spar  [%hop [l.r t.r]]
   (cedo r sk u.spar)
+::
+++  rogo                    :: find a dux in ordo by key
+  |=  [k=rami o=ordo]
+  ^-  $@(~ dux)
+  ?~  o  ~
+  ?:  =(k k.i.o)
+    i.o
+  $(o t.o)
 ::
 ++  noto                    :: parse belt to nota
   |=  z=zona
@@ -2116,12 +2162,12 @@
   |=  e=esse
   ^-  cura
   ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
-    [~ ~ ~ rex.ara]
-  =/  k=rami                [[%~ 0] ~]
-  =/  rk=$@(~ rami)         ?~(rex.ara ~ k.rex.ara)
-  =/  plim=modi             [x.arx.ara y.arx.ara]
-  =/  acc=[rend=bean cura]  [%.n ~ ~ ~ rex.ara]
-  =;  dic=[bean cura]
+    [~ ~ ~ ~ rex.ara]
+  =/  k=rami                      [[%~ 0] ~]
+  =/  rk=$@(~ rami)               ?~(rex.ara ~ k.rex.ara)
+  =/  plim=modi                   [x.arx.ara y.arx.ara]
+  =/  acc=[rend=bean =visa cura]  [%.n ~ ~ ~ ~ ~ rex.ara]
+  =;  dic=[bean visa cura]
     =.  omen.dic
       ?:  ?=(^ rex.dic)
         =/  el=(unit ens)  (~(get by e) k.rex.dic)
@@ -2131,14 +2177,14 @@
       ?:  ?=(^ ordo.dic)
         hnav
       ~
-    +.dic
-  |-  ^-  [bean cura]
+    +.+.dic
+  |-  ^-  [bean visa cura]
   =/  el=(unit ens)  (~(get by e) k)
   ?~  el
     ?:  ?=(%b axis.i.k)  $(k [[%l 0] t.k])
     ?:  ?=(%l axis.i.k)  $(k [[%~ 0] t.k])
       acc
-  =/  nacc=[rend=bean cura]
+  =/  nacc=[rend=bean =visa cura]
     %=  $
       k         [[%b 0] k]
       rend.acc  %.n
@@ -2166,12 +2212,26 @@
           ?:((lth y.iter.u.el b) (sub b y.iter.u.el) 1)
           k
       ==
+    =.  visa.nacc  (~(uni by visa.u.el) visa.nacc)
+    =?  mus.nacc  nav
+      %-  %~  uni
+            by 
+        ^-  mus
+        %-  malt
+        ^-  (list [loci rami])
+        %+  turn
+          ^-((list [loci [fila @c ~]]) ~(tap by visa.nacc))
+        |=([loc=loci [fila @c ~]] [loc k])
+      mus.nacc
     =?  rex.nacc  &(?=(^ ordo.nacc) =(rk k.i.ordo.nacc))
       i.ordo.nacc
     =?  equi.nacc  ?=(%scroll -.ars.u.el)
       (~(put in equi.nacc) k)
     nacc
-  $(ager.i.k +(ager.i.k), acc nacc(rend |(rend.acc rend.nacc)))
+  %=  $
+    ager.i.k  +(ager.i.k)
+    acc  nacc(rend |(rend.acc rend.nacc), visa (~(uni by visa.nacc) visa.acc))
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::
 :: ++  push-blit
 ::   |=  v=visa

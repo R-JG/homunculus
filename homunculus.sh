@@ -9,6 +9,7 @@ cookie_header="$(echo "$auth_res" | grep -i 'set-cookie:' | awk '{print $2}' | s
 channel_id="$(date +'%Y%m%d')$RANDOM"
 message_id=0
 sub_id=0
+stop_flag=false
 
 start_connection() {
     sub_id=$message_id
@@ -45,9 +46,7 @@ end_connection() {
              }]" \
          "$BASE_URL/~/channel/$channel_id" \
     > /dev/null 2>&1
-    clear
-    #stty echo
-    exit 0
+    stop_flag=true
 }
 
 poke() {
@@ -98,8 +97,10 @@ stream() {
 
 read_input() {
     while read -r -s -N 1 char; do
-        if [[ "$char" = $'\033' ]] || [[ "$char" =~ [[:cntrl:]] ]]; then
-            read -r -s -t 0.01 chars
+        if $stop_flag; then
+            break
+        elif [[ "$char" = $'\033' ]] || [[ "$char" =~ [[:cntrl:]] ]]; then
+            read -r -s -t 0.001 chars
             printf -v seq "%q" "$char$chars"
             if [[ "${seq:0:1}" = '$' ]]; then
                 eval sequence=${seq:1}
@@ -122,7 +123,8 @@ send_size() {
 }
 
 PS1=
-#stty -echo
+stty -echo
+echo -e "\e[?1000;1006;1015h"
 
 start_connection
 
@@ -130,6 +132,10 @@ send_size
 
 stream &
 
-trap end_connection INT
+trap "end_connection" INT
 
 read_input
+
+clear
+stty echo
+echo -e "\e[?1000;1006;1015l"
