@@ -21,7 +21,7 @@
 +$  modi  loci
 +$  axis  ?(%b %l %~)
 +$  ager  @ud
-+$  aves  (map ?(%sel %act) @t)
++$  aves  (map ?(%sel %act %key) @t)
 +$  iter  [x=@ud y=@ud]
 +$  vox   tape
 +$  fila  [d=(set deco) b=tint f=tint]
@@ -33,7 +33,7 @@
 +$  ars
   $%  [%text =vox]  [%layer ~]  [%border =ad =pila]
       [%select =acia]  [%input i=@ud ab=@ud =vox]
-      [%scroll =iter =muri =sola]  [%$ ~]
+      [%scroll =iter =muri =sola]  [%form ~]  [%$ ~]
   ==
 ::
 +$  omen  (map nota lex)
@@ -70,16 +70,23 @@
 +$  flex  [x=@ud y=@ud]
 +$  flow  [d=?(%col %row) b=?(%wrap %clip)]
 ::
++$  data
+  $%  [%sel p=@t]
+      [%act p=@t]
+      [%form p=(map @t @t)]
+  ==
+::
 +$  vela  manx
 +$  urbs  $~([50 25] [x=@ud y=@ud])
 +$  arx   [x=@ud y=@ud]
++$  fons  [@p @tas]
 +$  ara
   $:  =esse  =visa  =vela
       =omen  =rex  =ordo
       =equi  =gens  =mus
-      =arx  =lar
+      =arx  =lar  =fons
   ==
-+$  arae  (map @tas ara)
++$  arae  (map fons ara)
 +$  ego
   $:  =urbs  =ara
   ==
@@ -129,6 +136,8 @@
           omen.ara  omen.dic
           ordo.ara  ordo.dic
           equi.ara  equi.dic
+          fons.ara
+            [src.bowl ?:(&(?=(^ sap.bowl) ?=(^ t.sap.bowl)) i.t.sap.bowl %$)]
         ==
     :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lu))]))]
     ==
@@ -247,7 +256,7 @@
   :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
       [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
       [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
-      [[%hit ~] %clk]
+      [[%hit ~] %clk]  [[%ret ~] %act]
   ==
 ::
 ++  hinp                    :: hotkey context group for an input element
@@ -351,9 +360,11 @@
             [%hop [l.rex.ara t.rex.ara]]
           (cedo rex.ara scr u.spar)
       ==
-    :_  ego(visa.ara ?~(upd (~(uni by visa.ara) ppv) visa.upd))       :: DOUBLE CHECK THIS CHANGE TO VISA
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ==
+    =/  avis=(unit @t)  ?~(sel ~ (~(get by aves.u.sel) %sel))
+    :_  ego(visa.ara ?~(upd (~(uni by visa.ara) ppv) visa.upd))
+    :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+    ?~  avis  ~
+    [[%pass /sel %agent fons.ara %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
     ::
     ++  navi
       |=  [r=rex o=ordo]
@@ -548,15 +559,29 @@
   ::     ==  ==
   ::   ==
   ::
+  ?:  ?=(%act lex)
+    ?~  rex.ara  [~ ego]
+    =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+    ?~  el  [~ ego]
+    ?:  ?=(%input -.ars.u.el)  [~ ego]
+    =/  avis=(unit @t)  (~(get by aves.u.el) %act)
+    ?~  avis  [~ ego]
+    :_  ego
+    :~  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))]
+    ==
+  ::
   ?:  ?=(%clk lex)
     ?.  ?=(%hit -.zona)  [~ ego]
     =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
     ?~  mk  [~ ego]
     =/  el=(unit ens)  (~(get by esse.ara) u.mk)
     ?~  el  [~ ego]
-    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara) !?=(%input -.ars.u.el))
-      ~&  >>>  %act                                   :: TODO: send act event
-      [~ ego]
+    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara))
+      ?:  ?=(%input -.ars.u.el)  [~ ego]
+      =/  avis=(unit @t)  (~(get by aves.u.el) %act)
+      :_  ego
+      ?~  avis  ~
+      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
     =/  nrex=rex  (rogo u.mk ordo.ara)
     =/  prae=opus  ?~(rex.ara [~ ~] (duco esse.ara k.rex.ara nrex))
     =.  rex.ara  nrex
@@ -572,9 +597,11 @@
       :~  (dono visa.ara nvis)
           (fero rex.ara esse.ara)
       ==
-    :_  ego(visa.ara (~(uni by visa.ara) nvis))              :: TODO: send sel event if in aves
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ==
+    =/  avis=(unit @t)  (~(get by aves.u.el) %sel)
+    :_  ego(visa.ara (~(uni by visa.ara) nvis))
+    :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+    ?~  avis  ~
+    [[%pass /sel %agent fons.ara %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
   ::
   ?:  ?=(%inp lex)
     ?.  ?=(%txt -.zona)  [~ ego]
@@ -994,6 +1021,45 @@
     i.o
   $(o t.o)
 ::
+++  lego                    :: reset and collect values of inputs under a form element
+  |=  sk=rami
+  ^-  [opus (map @t @t)]
+  =|  acc=[opus form=(map @t @t)]
+  =/  fk
+    |-  ^-  $@(~ rami)
+    ?~  t.sk  ~
+    =/  el=(unit ens)  (~(get by esse.ara) t.sk)
+    ?~  el  ~
+    ?:  ?=(%form -.ars.u.el)
+      t.sk
+    $(sk t.sk)
+  ?~  fk  acc
+  |-  ^-  [opus (map @t @t)]
+  =/  el=(unit ens)  (~(get by esse.ara) fk)
+  ?~  el
+    ?:  ?=(%b axis.i.fk)  $(fk [[%l 0] t.fk])
+    ?:  ?=(%l axis.i.fk)  $(fk [[%~ 0] t.fk])
+    acc
+  ?.  ?=(%input -.ars.u.el)
+    $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+  =/  key=(unit @t)  (~(get by aves.u.el) %key)
+  ?~  key  acc
+  =/  val=@t  (crip vox.ars.u.el)
+  =:  vox.ars.u.el  ~
+      ab.ars.u.el   0
+      i.ars.u.el    0
+      visa.u.el
+        %-  %~  int
+              by
+            visa.u.el
+        (rinp lar.u.el modi.u.el res.u.el 0 ~)
+    ==
+  =:  esse.acc  (~(put by esse.acc) fk u.el)
+      visa.acc  (~(uni by visa.acc) visa.u.el)
+      form.acc  (~(put by form.acc) u.key val)
+    ==
+  $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+::
 ++  noto                    :: parse belt to nota
   |=  z=zona
   ^-  nota
@@ -1096,6 +1162,7 @@
         %border-bottom  [(dolo %border-bottom) ~ [%border %bottom %~] ~]
         %input          [(dolo %input) ~ [%input 0 0 ~] ~]
         %scroll         [(dolo %scroll) ~ [%scroll *iter *muri *sola] ~]
+        %form           [(dolo %$) ~ [%form ~] ~]
       ==
   |-  ^-  [^rei ^aves ^ars mart]
   ?~  a  [rei aves ars velo]
@@ -1304,6 +1371,8 @@
     ==
       %act
     $(aves (~(put by aves) %act (crip v.i.a)), a t.a)
+      %key
+    $(aves (~(put by aves) %key (crip v.i.a)), a t.a)
   ==
 ::
 ++  pars                    :: parse a tape to a sizing unit
