@@ -32,8 +32,8 @@
 +$  sola  [x=@ud y=@ud]
 +$  ars
   $%  [%text =vox]  [%layer ~]  [%border =ad =pila]
-      [%select =acia]  [%input i=@ud ab=@ud =vox]
-      [%scroll =iter =muri =sola]  [%form ~]  [%$ ~]
+      [%select =acia ob=?(%submit %~)]  [%input i=@ud ab=@ud =vox]
+      [%form ~]  [%scroll =iter =muri =sola]  [%$ ~]
   ==
 ::
 +$  omen  (map nota lex)
@@ -564,24 +564,37 @@
     =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
     ?~  el  [~ ego]
     ?:  ?=(%input -.ars.u.el)  [~ ego]
+    =/  fupd=$@(~ [opus form=(map @t @t)])
+      ?.  &(?=(%select -.ars.u.el) ?=(%submit ob.ars.u.el))
+        ~
+      (lego k.rex.ara)
     =/  avis=(unit @t)  (~(get by aves.u.el) %act)
-    ?~  avis  [~ ego]
-    :_  ego
-    :~  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))]
-    ==
+    ?~  fupd
+      ?~  avis  [~ ego]
+      :_  ego
+      :~  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))]
+      ==
+    =.  esse.ara  (~(uni by esse.ara) esse.fupd)
+    =/  =lux
+      :-  %mor
+      :~  (dono visa.ara visa.fupd)
+          (fero rex.ara esse.ara)
+      ==
+    :_  ego(visa.ara (~(uni by visa.ara) visa.fupd))
+    :+  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+      [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))]
+    ?~  avis  ~
+    [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
+    
   ::
   ?:  ?=(%clk lex)
     ?.  ?=(%hit -.zona)  [~ ego]
     =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
     ?~  mk  [~ ego]
+    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara))
+      (novo %act zona)
     =/  el=(unit ens)  (~(get by esse.ara) u.mk)
     ?~  el  [~ ego]
-    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara))
-      ?:  ?=(%input -.ars.u.el)  [~ ego]
-      =/  avis=(unit @t)  (~(get by aves.u.el) %act)
-      :_  ego
-      ?~  avis  ~
-      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
     =/  nrex=rex  (rogo u.mk ordo.ara)
     =/  prae=opus  ?~(rex.ara [~ ~] (duco esse.ara k.rex.ara nrex))
     =.  rex.ara  nrex
@@ -1021,7 +1034,7 @@
     i.o
   $(o t.o)
 ::
-++  lego                    :: reset and collect values of inputs under a form element
+++  lego                    :: reset and collect the values of inputs under a form element
   |=  sk=rami
   ^-  [opus (map @t @t)]
   =|  acc=[opus form=(map @t @t)]
@@ -1043,7 +1056,9 @@
   ?.  ?=(%input -.ars.u.el)
     $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
   =/  key=(unit @t)  (~(get by aves.u.el) %key)
-  ?~  key  acc
+  ?~  key
+    ~&  'input key missing on form submit'
+    $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
   =/  val=@t  (crip vox.ars.u.el)
   =:  vox.ars.u.el  ~
       ab.ars.u.el   0
@@ -1155,7 +1170,7 @@
       ?+  n             [(dolo %$) ~ [%$ ~] ~]
         %$              [(dolo %text) ~ [%text ?~(a ~ v.i.a)] ~]
         %layer          [(dolo %layer) ~ [%layer ~] ~]
-        %select         [(dolo %$) ~ [%select ~ ~ ~] ~]
+        %select         [(dolo %$) ~ [%select [~ ~ ~] %~] ~]
         %border-left    [(dolo %border-left) ~ [%border %left %~] ~]
         %border-right   [(dolo %border-right) ~ [%border %right %~] ~]
         %border-top     [(dolo %border-top) ~ [%border %top %~] ~]
@@ -1163,6 +1178,7 @@
         %input          [(dolo %input) ~ [%input 0 0 ~] ~]
         %scroll         [(dolo %scroll) ~ [%scroll *iter *muri *sola] ~]
         %form           [(dolo %$) ~ [%form ~] ~]
+        %submit         [(dolo %$) ~ [%select [~ ~ ~] %submit] ~]
       ==
   |-  ^-  [^rei ^aves ^ars mart]
   ?~  a  [rei aves ars velo]
