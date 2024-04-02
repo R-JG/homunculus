@@ -292,7 +292,9 @@
               &(?=(%nav-u lex) =(0 y.iter.ars.u.spar))
               &(?=(%nav-d lex) =(y.sola.ars.u.spar y.iter.ars.u.spar))
       ==  ==
-    =?  scr  &(send ?=(^ scr) ?=(^ t.scr))  (ligo t.scr)
+    =?  scr   &(send ?=(^ scr) ?=(^ t.scr))  
+      =/  pscr=$@(~ rami)  (ligo t.scr)
+      ?~(pscr scr pscr)
     =?  spar  &(send ?=(^ scr))  (~(get by esse.ara) scr)
     =?  next  &(send ?=(~ scr) ?=(^ navs))  i.navs
     =?  snav  &(send ?=(^ scr))
@@ -585,7 +587,6 @@
       [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))]
     ?~  avis  ~
     [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
-    
   ::
   ?:  ?=(%clk lex)
     ?.  ?=(%hit -.zona)  [~ ego]
@@ -819,7 +820,7 @@
   [~ ego]
 ::
 ++  abeo                    :: handle a scroll event for a scroll element by key
-  |=  [pk=rami =lex]        :: returns a complete update on the session esse and visa
+  |=  [pk=rami =lex]        :: returns an update from the root
   ^-  $@(~ [opus cura])
   =/  par=(unit ens)  (~(get by esse.ara) pk)
   ?~  par  ~
