@@ -73,8 +73,9 @@
 +$  data
   $%  [%sel p=@t]
       [%act p=@t]
-      [%form p=(map @t @t)]
+      [%form form]
   ==
++$  form  (pair @t (map @t @t))
 ::
 +$  vela  manx
 +$  urbs  $~([50 25] [x=@ud y=@ud])
@@ -513,33 +514,33 @@
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-          (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
+          (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
         %-  sqt  %+  add
           (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
-        (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 6) 2)
+        (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
           %nav-u
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
-            (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
+            (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
           (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
         %-  sqt  %+  add
-          (pow (mul ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2) 2)
+          (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
           %nav-r
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
             (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-          (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
+          (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
         %-  sqt  %+  add
           (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
-        (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 6) 2)
+        (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
           %nav-d
         ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
           %-  sqt  %+  add
-            (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
+            (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
           (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
         %-  sqt  %+  add
-          (pow (mul ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2) 2)
+          (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((lte b.rex t.dux) (sub t.dux b.rex) (sub b.rex t.dux)) 2) 2)
       ==
     --
@@ -566,7 +567,7 @@
     =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
     ?~  el  [~ ego]
     ?:  ?=(%input -.ars.u.el)  [~ ego]
-    =/  fupd=$@(~ [opus form=(map @t @t)])
+    =/  fupd=$@(~ [opus =form])
       ?.  &(?=(%select -.ars.u.el) ?=(%submit pro.ars.u.el))
         ~
       (lego k.rex.ara)
@@ -1037,8 +1038,8 @@
 ::
 ++  lego                    :: reset and collect the values of inputs under a form element
   |=  sk=rami
-  ^-  [opus (map @t @t)]
-  =|  acc=[opus form=(map @t @t)]
+  ^-  [opus form]
+  =|  acc=[opus =form]
   =/  fk
     |-  ^-  $@(~ rami)
     ?~  t.sk  ~
@@ -1048,12 +1049,18 @@
       t.sk
     $(sk t.sk)
   ?~  fk  acc
-  |-  ^-  [opus (map @t @t)]
+  |-  ^-  [opus form]
   =/  el=(unit ens)  (~(get by esse.ara) fk)
   ?~  el
     ?:  ?=(%b axis.i.fk)  $(fk [[%l 0] t.fk])
     ?:  ?=(%l axis.i.fk)  $(fk [[%~ 0] t.fk])
     acc
+  ?:  &(?=(%form -.ars.u.el) =(~ p.form.acc))
+    =/  key=(unit @t)  (~(get by aves.u.el) %key)
+    %=  $
+      ager.i.fk  +(ager.i.fk)
+      acc        $(fk [[%b 0] fk], p.form.acc ?~(key '' u.key))
+    ==
   ?.  ?=(%input -.ars.u.el)
     $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
   =/  key=(unit @t)  (~(get by aves.u.el) %key)
@@ -1072,7 +1079,7 @@
     ==
   =:  esse.acc  (~(put by esse.acc) fk u.el)
       visa.acc  (~(uni by visa.acc) visa.u.el)
-      form.acc  (~(put by form.acc) u.key val)
+      q.form.acc  (~(put by q.form.acc) u.key val)
     ==
   $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
 ::
