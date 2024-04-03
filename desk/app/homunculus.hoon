@@ -37,10 +37,15 @@
   ==
 ::
 +$  omen  (map nota lex)
-+$  zona  ?([%whe p=?(%d %u) x=@ud y=@ud] belt:dill)
++$  zona
+  $?  [%clk p=?(%d %u) x=@ud y=@ud]
+      [%whe p=?(%d %u) x=@ud y=@ud]
+      belt:dill
+  ==
 +$  nota
   $%  [%mod ?(%ctl %met %hyp) bolt:dill]  [%aro ?(%d %l %r %u)]
-      [%txt ~]  [%bac ~]  [%ret ~]  [%hit ~]  [%whe ?(%d %u)]
+      [%txt ~]  [%bac ~]  [%ret ~]  [%hit ~]
+      [%clk ?(%d %u)]  [%whe ?(%d %u)]
   ==
 +$  lex
   $?  %nav-l  %nav-r  %nav-u  %nav-d
@@ -195,10 +200,15 @@
     ?~  t.t.seq
       ?:  =(['3' '~' ~] seq)  [~ [%del ~]]
       ~
-    ?:  |(=(['<' '0'] [i.seq i.t.seq]) =(['<' '6'] [i.seq i.t.seq]))
+    ?:  ?|  =(['<' '0'] [i.seq i.t.seq])  =(['<' '6'] [i.seq i.t.seq])
+            =(['3' '2'] [i.seq i.t.seq])  =(['3' '5'] [i.seq i.t.seq])
+            =(['9' '6'] [i.seq i.t.seq])  =(['9' '7'] [i.seq i.t.seq])
+        ==
       =/  loc=tape
-        ?:  =('0' i.t.seq)  t.t.t.seq
-        ?:  =('6' i.t.seq)  ?~(t.t.t.seq ~ t.t.t.t.seq)
+        ?:  |(=('0' i.t.seq) =('3' i.seq) =('9' i.seq))
+          t.t.t.seq
+        ?:  =('6' i.t.seq)
+          ?~(t.t.t.seq ~ t.t.t.t.seq)
         ~
       =|  [xt=tape yt=tape]
       |-  ^-  (unit zona)
@@ -207,17 +217,28 @@
         $(loc t.loc, xt [i.loc xt])
       |-  ^-  (unit zona)
       ?~  t.loc  ~
-      ?.  =('M' i.t.loc)
+      ?.  |(=('M' i.t.loc) =('m' i.t.loc))
         $(t.loc t.t.loc, yt [i.t.loc yt])
-      ?:  =('0' i.t.seq)
+      ?:  |(=(['<' '0'] [i.seq i.t.seq]) =('3' i.seq))
         :^    ~
-            %hit
-          ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
+            %clk
+          ?:  =(['<' '0'] [i.seq i.t.seq])
+            ?:  =('M' i.t.loc)  %d
+            ?:  =('m' i.t.loc)  %u  !!
+          ?:  =('3' i.seq)
+            ?:  =('2' i.t.seq)  %d
+            ?:  =('5' i.t.seq)  %u  !!  !!
+        :-  ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
         ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
-      ?:  =('6' i.t.seq)
+      ?:  |(=(['<' '6'] [i.seq i.t.seq]) =('9' i.seq))
         :^    ~
             %whe
-          ?:(=('4' i.t.t.seq) %u ?:(=('5' i.t.t.seq) %d !!))
+          ?:  =(['<' '6'] [i.seq i.t.seq])
+            ?:  =('4' i.t.t.seq)  %u
+            ?:  =('5' i.t.t.seq)  %d  !!
+          ?:  =('9' i.seq)
+            ?:  =('6' i.t.seq)  %u
+            ?:  =('7' i.t.seq)  %d  !!  !!
         :-  ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
         ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
       ~
@@ -257,7 +278,8 @@
   :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
       [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
       [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
-      [[%hit ~] %clk]  [[%ret ~] %act]
+      [[%clk %u] %clk]  [[%clk %d] %clk]
+      [[%ret ~] %act]
   ==
 ::
 ++  hinp                    :: hotkey context group for an input element
@@ -267,8 +289,8 @@
   :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
       [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
       [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
+      [[%clk %u] %clk]  [[%clk %d] %clk]
       [[%txt ~] %inp]  [[%bac ~] %del]
-      [[%hit ~] %clk]
   ==
 ::  ::  ::
 ++  novo                    :: handle an event from the hotkey context
@@ -590,10 +612,11 @@
     [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
   ::
   ?:  ?=(%clk lex)
-    ?.  ?=(%hit -.zona)  [~ ego]
+    ?.  ?=(%clk -.zona)  [~ ego]
     =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
     ?~  mk  [~ ego]
     ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara))
+      ?.  ?=(%u p.zona)  [~ ego]
       (novo %act zona)
     =/  el=(unit ens)  (~(get by esse.ara) u.mk)
     ?~  el  [~ ego]
@@ -1088,6 +1111,7 @@
   ^-  nota
   ?:  ?=(%txt -.z)  [-.z ~]
   ?:  ?=(%hit -.z)  [-.z ~]
+  ?:  ?=(%clk -.z)  [-.z -.+.z]
   ?:  ?=(%whe -.z)  [-.z -.+.z]
   ?:  ?=(%mod -.z)  z
   ?:  ?=(%aro -.z)  z
