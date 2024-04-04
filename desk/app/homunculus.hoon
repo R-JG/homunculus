@@ -1772,13 +1772,15 @@
   =?  q.h.size.rei  &(hcen !=(%i p.h.size.rei))
     =/  m=@ud  (add q.t.marg.rei q.b.marg.rei)
     ?:  (gth m q.h.size.rei)  0  (sub q.h.size.rei m)
+  =?  x.flex.rei  =(%i p.w.size.rei)  0
+  =?  y.flex.rei  =(%i p.h.size.rei)  0
   =/  imp=bean
     ?|  =(%i p.w.size.rei)
         =(%i p.h.size.rei)
     ==
   =/  repo=bean
-    ?|  &(!=(0 x.flex.rei) =(%c p.px)) 
-        &(!=(0 y.flex.rei) =(%c p.py))
+    ?|  &(!=(0 x.flex.rei) =(%c p.w.size.rei)) 
+        &(!=(0 y.flex.rei) =(%c p.h.size.rei))
     ==
   =/  wrap=bean
     ?&  !?=(%border -.ars)
@@ -1927,7 +1929,7 @@
     %_  .
       b
         %=  $
-          a     *opus
+          a     b
           m     lay
           k     [[%l 0] k]
           px    w.size.rei
@@ -1965,7 +1967,7 @@
     %_  .
       b
         %=  $
-          a     *opus
+          a     b
           m     nor
           k     [[%~ 0] k]
           px    w.size.rei
@@ -1986,9 +1988,18 @@
     =/  i=@ud    0
     =/  ax=axis  %l
     =|  [rig=(unit @ud) bot=(unit @ud)]
-    |-  ^-  [w=@ud h=@ud]
-    =/  el=(unit ens)  (~(get by ?:(|(repo wrim) esse.b esse.a)) [[ax i] k])
-    ?:  ?=(^ el)
+    =.  -
+      |-  ^-  [(unit @ud) (unit @ud)]
+      =/  el=(unit ens)  (~(get by ?:(|(repo wrim) esse.b esse.a)) [[ax i] k])
+      ?~  el
+        ?:  ?=(%b ax)  $(ax %l, i 0)
+        ?:  ?=(%l ax)  $(ax %~, i 0)
+        [rig bot]
+      ?:  ?=(%l ax)
+        =/  lchi=[r=(unit @ud) b=(unit @ud)]  $(k [[ax i] k])
+        =?  rig  &(?=(^ r.lchi) |(?=(~ rig) (gth u.r.lchi u.rig)))  r.lchi
+        =?  bot  &(?=(^ b.lchi) |(?=(~ bot) (gth u.b.lchi u.bot)))  b.lchi
+        $(i +(i))
       =/  el-r=@ud
         %+  add  x.lar.u.el
         %+  add  r.marg.res.u.el
@@ -2000,8 +2011,6 @@
       =?  rig  |(?=(~ rig) (gth el-r u.rig))  [~ el-r]
       =?  bot  |(?=(~ bot) (gth el-b u.bot))  [~ el-b]
       $(i +(i))
-    ?:  ?=(%l ax)
-      $(ax %~, i 0)
     :-  ?:  |(?=(~ rig) (gth x.vlar +(u.rig)))
           0
         (sub +(u.rig) x.vlar)
