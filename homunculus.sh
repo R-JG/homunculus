@@ -12,6 +12,8 @@ sub_id=0
 stop_flag=false
 
 start_connection() {
+    send_size
+    ((message_id++))
     sub_id=$message_id
     curl -X PUT \
          --cookie "$cookie_header" \
@@ -127,8 +129,6 @@ stty -echo
 echo -e "\e[?1000;1006;1015h"
 
 start_connection
-
-send_size
 
 stream &
 

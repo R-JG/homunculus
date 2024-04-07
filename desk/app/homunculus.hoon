@@ -154,7 +154,27 @@
       ?.  &(?=(^ p.jsn) ?=(%n -.i.p.jsn) ?=(^ t.p.jsn) ?=(%n -.i.t.p.jsn))
         [~ hoc]
       =/  siz=[@ud @ud]  [(slav %ud p.i.p.jsn) (slav %ud p.i.t.p.jsn)]
-      [~ hoc(urbs siz, arx.ara siz)]
+      =:  urbs     siz
+          arx.ara  siz
+        ==
+      =/  gen=opus   (geno vela.ara)
+      =/  dic=cura   (dico esse.gen)
+      =/  lu=lux
+        :-  %mor
+        :~  (supo visa.gen)
+            (fero rex.dic esse.gen)
+        ==
+      :_  %_  hoc
+            esse.ara  esse.gen
+            visa.ara  visa.gen
+            rex.ara   rex.dic
+            mus.ara   mus.dic
+            omen.ara  omen.dic
+            ordo.ara  ordo.dic
+            equi.ara  equi.dic
+          ==
+      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lu))]))]
+      ==
     ?.  ?=(%s -.jsn)  [~ hoc]
     =/  inp=tape  (trip p.jsn)
     =;  z=(unit zona)
