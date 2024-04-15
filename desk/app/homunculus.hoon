@@ -32,8 +32,9 @@
 +$  sola  [x=@ud y=@ud]
 +$  ars
   $%  [%text =vox]  [%layer ~]  [%border =ad =pila]
-      [%select =acia pro=?(%submit %~)]  [%input i=@ud ab=@ud =vox]
-      [%form ~]  [%scroll =iter =muri =sola]  [%$ ~]
+      [%select =acia pro=?(%submit %~)]  [%form ~]
+      [%input i=@ud ab=@ud =vox]  [%checkbox v=bean]
+      [%radio ~]  [%scroll =iter =muri =sola]  [%$ ~]
   ==
 ::
 +$  omen  (map nota lex)
@@ -613,23 +614,37 @@
       ?.  &(?=(%select -.ars.u.el) ?=(%submit pro.ars.u.el))
         ~
       (lego k.rex.ara)
+    =/  cupd=$@(~ opus)
+      ?.  ?=(%checkbox -.ars.u.el)
+        ~
+      (opto k.rex.ara u.el)
     =/  avis=(unit @t)  (~(get by aves.u.el) %act)
-    ?~  fupd
+    ?:  &(?=(~ fupd) ?=(~ cupd))
       ?~  avis  [~ ego]
       :_  ego
       :~  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))]
       ==
-    =.  esse.ara  (~(uni by esse.ara) esse.fupd)
+    =.  esse.ara
+      ?^  fupd
+        (~(uni by esse.ara) esse.fupd)
+      ?^  cupd
+        (~(uni by esse.ara) esse.cupd)
+      esse.ara
     =/  =lux
       :-  %mor
-      :~  (dono visa.ara visa.fupd)
+      :~  (dono visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
           (fero rex.ara esse.ara)
       ==
-    :_  ego(visa.ara (~(uni by visa.ara) visa.fupd))
-    :+  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-      [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))]
-    ?~  avis  ~
-    [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
+    :_  ego(visa.ara (~(uni by visa.ara) ?^(fupd visa.fupd ?^(cupd visa.cupd ~))))
+    :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+    ?:  &(?=(^ fupd) ?=(^ avis))
+      :-  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))]
+      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
+    ?^  fupd
+      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))] ~]
+    ?^  avis
+      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
+    ~
   ::
   ?:  ?=(%clk lex)
     ?.  ?=(%clk -.zona)  [~ ego]
@@ -1079,6 +1094,46 @@
     i.o
   $(o t.o)
 ::
+++  opto                    :: process a checkbox, potentially in a radio group
+  |=  [k=rami e=ens]
+  ^-  opus
+  ?.  ?=(%checkbox -.ars.e)  [~ ~]
+  =/  rad
+    |-  ^-  $@(~ [k=rami e=ens])
+    ?~  t.k  ~
+    =/  el=(unit ens)  (~(get by esse.ara) t.k)
+    ?~  el  $(k t.k)
+    ?:  ?=(%radio -.ars.u.el)
+      [t.k u.el]
+    $(k t.k)
+  ?:  |(?=(~ rad) v.ars.e)
+    =.  v.ars.e  !v.ars.e
+    =.  visa.e   (~(int by visa.e) (ruo iter.e (viso lar.e res.e ars.e modi.e)))
+    [^-(esse (malt ~[[k e]])) visa.e]
+  =/  opu
+    =/  [rk=rami acc=opus]  [[[%b 0] k.rad] [~ ~]]
+    |-  ^-  opus
+    =/  el=(unit ens)  (~(get by esse.ara) rk)
+    ?~  el
+      ?:  ?=(%b axis.i.rk)  $(rk [[%l 0] t.rk])
+      ?:  ?=(%l axis.i.rk)  $(rk [[%~ 0] t.rk])
+      acc
+    ?.  ?=(%checkbox -.ars.u.el)
+      $(ager.i.rk +(ager.i.rk), acc $(rk [[%b 0] rk]))
+    ?:  !v.ars.u.el
+      $(ager.i.rk +(ager.i.rk), acc $(rk [[%b 0] rk]))
+    =.  v.ars.u.el  |
+    =.  visa.u.el
+      (~(int by visa.u.el) (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el)))
+    %=  $
+      ager.i.rk  +(ager.i.rk)
+      esse.acc   (~(put by esse.acc) rk u.el)
+      visa.acc   (~(uni by visa.acc) visa.u.el)
+    ==
+  =.  v.ars.e  !v.ars.e
+  =.  visa.e   (~(int by visa.e) (ruo iter.e (viso lar.e res.e ars.e modi.e)))
+  opu(esse (~(put by esse.opu) k e), visa (~(uni by visa.opu) visa.e))
+::
 ++  lego                    :: reset and collect the values of inputs under a form element
   |=  sk=rami
   ^-  [opus form]
@@ -1093,7 +1148,7 @@
     $(sk t.sk)
   ?~  fk  acc
   |-  ^-  [opus form]
-  =/  el=(unit ens)  (~(get by esse.ara) fk)
+  =/  el=(unit ens)  (~(get by esse.ara) fk)        :: TODO: ADD a case here for checkbox and radio 
   ?~  el
     ?:  ?=(%b axis.i.fk)  $(fk [[%l 0] t.fk])
     ?:  ?=(%l axis.i.fk)  $(fk [[%~ 0] t.fk])
@@ -1104,26 +1159,43 @@
       ager.i.fk  +(ager.i.fk)
       acc        $(fk [[%b 0] fk], p.form.acc ?~(key '' u.key))
     ==
-  ?.  ?=(%input -.ars.u.el)
+  ?:  ?=(%input -.ars.u.el)
+    =/  key=(unit @t)  (~(get by aves.u.el) %key)
+    ?~  key
+      ~&  'key missing on form submit'
+      $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+    =/  val=@t  (crip vox.ars.u.el)
+    =:  vox.ars.u.el  ~
+        ab.ars.u.el   0
+        i.ars.u.el    0
+        visa.u.el
+          %-  %~  int
+                by
+              visa.u.el
+          (ruo iter.u.el (rinp lar.u.el modi.u.el res.u.el 0 ~))
+      ==
+    =:  esse.acc  (~(put by esse.acc) fk u.el)
+        visa.acc  (~(uni by visa.acc) visa.u.el)
+        q.form.acc  (~(put by q.form.acc) u.key val)
+      ==
     $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-  =/  key=(unit @t)  (~(get by aves.u.el) %key)
-  ?~  key
-    ~&  'input key missing on form submit'
+  ?:  ?=(%checkbox -.ars.u.el)
+    =/  key=(unit @t)  (~(get by aves.u.el) %key)
+    ?~  key
+      ~&  'key missing on form submit'
+      $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+    =/  val=@t  ?:(v.ars.u.el '%.y' '%.n')
+    =.  v.ars.u.el  |
+    =.  visa.u.el
+          %-  %~  int
+                by
+              visa.u.el
+          (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el))
+    =:  esse.acc  (~(put by esse.acc) fk u.el)
+        visa.acc  (~(uni by visa.acc) visa.u.el)
+        q.form.acc  (~(put by q.form.acc) u.key val)
+      ==
     $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-  =/  val=@t  (crip vox.ars.u.el)
-  =:  vox.ars.u.el  ~
-      ab.ars.u.el   0
-      i.ars.u.el    0
-      visa.u.el
-        %-  %~  int
-              by
-            visa.u.el
-        (rinp lar.u.el modi.u.el res.u.el 0 ~)
-    ==
-  =:  esse.acc  (~(put by esse.acc) fk u.el)
-      visa.acc  (~(uni by visa.acc) visa.u.el)
-      q.form.acc  (~(put by q.form.acc) u.key val)
-    ==
   $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
 ::
 ++  noto                    :: parse belt to nota
@@ -1206,6 +1278,14 @@
         flow=[%row %clip]
         look=[~ [~ %w] [~ %k]]
     ==
+      %checkbox
+    :*  size=[[%c 2] [%c 1]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%row %clip]
+        look=[~ [~ %w] [~ %k]]
+    ==
       %scroll
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1227,8 +1307,10 @@
         %border-right   [(dolo %border-right) ~ [%border %right %~] ~]
         %border-top     [(dolo %border-top) ~ [%border %top %~] ~]
         %border-bottom  [(dolo %border-bottom) ~ [%border %bottom %~] ~]
-        %input          [(dolo %input) ~ [%input 0 0 ~] ~]
         %scroll         [(dolo %scroll) ~ [%scroll *iter *muri *sola] ~]
+        %input          [(dolo %input) ~ [%input 0 0 ~] ~]
+        %checkbox       [(dolo %checkbox) ~ [%checkbox %.n] ~]
+        %radio          [(dolo %$) ~ [%radio ~] ~]
         %form           [(dolo %$) ~ [%form ~] ~]
         %submit         [(dolo %$) ~ [%select [~ ~ ~] %submit] ~]
       ==
@@ -1581,14 +1663,29 @@
   ^-  visa
   (~(urn by vi) |=([* va=[fila @c ~]] [fi +.va]))
 ::
+++  ruo                     :: shift a set of characters by scroll position
+  |=  [it=iter vi=visa]
+  ^-  visa
+  ?:  &(=(0 x.it) =(0 y.it))
+    vi
+  %-  %~  rep
+        by
+      vi
+  |=  [[l=loci c=[fila @c ~]] ac=visa]
+  ^-  visa
+  ?:  |((gth x.it x.l) (gth y.it y.l))
+    ac
+  (~(put by ac) [(sub x.l x.it) (sub y.l y.it)] c)
+::
 ++  viso                    :: take an element and render it 
   |=  [=lar =res =ars lim=modi]
   ^-  visa
-  ?+  -.ars  (rbox lar lim res)
-    %text    (rtxt lar lim look.res w.size.res vox.ars)
-    %border  (rbor lar lim res +.ars)
-    %input   (rinp lar lim res ab.ars vox.ars)
-    %layer   ~
+  ?+  -.ars    (rbox lar lim res)
+    %text      (rtxt lar lim look.res w.size.res vox.ars)
+    %border    (rbor lar lim res +.ars)
+    %input     (rinp lar lim res ab.ars vox.ars)
+    %checkbox  (rbox lar lim ?:(v.ars res(b.look f.look.res, f.look b.look.res) res))
+    %layer     ~
   ==
 ::
 ++  rbox                    :: render a generic box
@@ -2265,8 +2362,12 @@
     ?:  ?=(%input -.ars)
       =/  old=(unit ens)  (~(get by esse.ara) k)
       ?~  old  ars
-      ?.  ?=(%input -.ars.u.old)
-        ars
+      ?.  ?=(%input -.ars.u.old)  ars
+      ars.u.old
+    ?:  ?=(%checkbox -.ars)
+      =/  old=(unit ens)  (~(get by esse.ara) k)
+      ?~  old  ars
+      ?.  ?=(%checkbox -.ars.u.old)  ars
       ars.u.old
     ?:  ?=(%scroll -.ars)
       =/  sol=sola
@@ -2377,9 +2478,8 @@
   =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
   =/  nav=bean
     ?|  &(?=(^ sel) !?=(%layer -.ars.u.el))
-        ?=(%select -.ars.u.el)
-        ?=(%input -.ars.u.el)
-        ?=(%scroll -.ars.u.el)
+        ?=(%select -.ars.u.el)  ?=(%scroll -.ars.u.el)
+        ?=(%input -.ars.u.el)  ?=(%checkbox -.ars.u.el)
     ==
   =.  ordo.acc  
     ?.  nav
@@ -2424,30 +2524,6 @@
     visa.acc  (~(uni by visa.nacc) visa.acc)
   ==
 ::  ::  ::  ::  ::  ::  ::  ::
-:: ++  push-blit
-::   |=  v=visa
-::   ^-  lux
-::   =/  y=@ud  0
-::   :-  %mor
-::   :-  [%clr ~]
-::   :-  [%nel ~]
-::   |-  ^-  (list lux)
-::   ?:  =(+(y) y.urbs)
-::     [[%klr (make-stub y v)] ~]
-::   :-  [%klr (make-stub y v)]
-::   [[%nel ~] $(y +(y))]
-:: ::
-:: ++  make-stub
-::   |=  [y=@ud v=visa]
-::   =/  x=@ud  0
-::   |-  ^-  stub
-::   ?:  (gte x x.urbs)
-::     ~
-::   =/  val=(unit [fila @c ~])  (~(get by v) [x y])
-::   =/  char=(pair stye (list @c))
-::     ?~(val [[~ ~ ~] ~[(@c 'x')]] u.val)
-::   [char $(x +(x))]
-::
 ++  supo                    :: make a full display update
   |=  v=visa
   ^-  lux
