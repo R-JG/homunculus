@@ -633,28 +633,61 @@
     ?.  ?=(%clk -.zona)  [~ ego]
     =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
     ?~  mk  [~ ego]
-    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara))
-      ?.  ?=(%u p.zona)  [~ ego]
+    ?:  ?=(%u p.zona)
+      ?.  &(?=(^ rex.ara) =(u.mk k.rex.ara))
+        [~ ego]
       (novo %act zona)
     =/  el=(unit ens)  (~(get by esse.ara) u.mk)
     ?~  el  [~ ego]
+    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara) !?=(%input -.ars.u.el))
+      [~ ego]
     =/  nrex=rex  (rogo u.mk ordo.ara)
     =/  prae=opus  ?~(rex.ara [~ ~] (duco esse.ara k.rex.ara nrex))
     =.  rex.ara  nrex
     =/  post=opus  ?~(nrex [~ ~] (duco esse.ara k.nrex rex.ara))
+    =?  esse.ara  |(?=(^ esse.prae) ?=(^ esse.post))
+      (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
+    =?  u.el  |(?=(^ esse.prae) ?=(^ esse.post))
+      ?~(nel=(~(get by esse.ara) u.mk) u.el u.nel)
+    =?  esse.ara  &(?=(%input -.ars.u.el) ?=(^ vox.ars.u.el))
+      =/  [x=@ud y=@ud]
+        =:  x.zona  (add x.zona x.iter.u.el)
+            y.zona  (add y.zona y.iter.u.el)
+          ==
+        :-  ?:((lte x.lar.u.el x.zona) (sub x.zona x.lar.u.el) 0)
+        ?:((lte y.lar.u.el y.zona) (sub y.zona y.lar.u.el) 0)
+      ?:  =(1 h.size.res.u.el)
+        ?.  =(0 y)  esse.ara
+        =.  x  (add x ab.ars.u.el)
+        =/  l=@ud  (lent i.vox.ars.u.el)
+        (~(put by esse.ara) u.mk u.el(i.ars [?:((lth x l) x l) 0]))
+      =/  l=@ud  (lent vox.ars.u.el)
+      =/  rlen=@ud
+        ?:  (gth +(y) l)
+          (pono ^-(tape (rear ^-(vox vox.ars.u.el))))
+        (pono ^-(tape (snag y ^-(vox vox.ars.u.el))))
+      %+  %~  put
+            by
+          esse.ara
+        u.mk
+      %_  u.el
+        i.ars 
+          :-  ?:((lth x rlen) x rlen)
+          (add ab.ars.u.el ?:((gth +(y) l) (dec l) y))
+      ==
     =.  omen.ara
       ?+  -.ars.u.el   (~(uni by omen.ara) hnav)
         %input         (~(uni by omen.ara) hinp)
       ==
-    =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
-    =/  nvis=visa  (~(uni by visa.prae) visa.post)
+    =/  nvis=visa
+      ?:(|(?=(^ visa.prae) ?=(^ visa.post)) (~(uni by visa.prae) visa.post) ~)
     =/  =lux
       :-  %mor
       :~  (dono visa.ara nvis)
           (fero rex.ara esse.ara)
       ==
     =/  avis=(unit @t)  (~(get by aves.u.el) %sel)
-    :_  ego(visa.ara (~(uni by visa.ara) nvis))
+    :_  ego(visa.ara ?~(nvis visa.ara (~(uni by visa.ara) ^-(visa nvis))))
     :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
     ?~  avis  ~
     [[%pass /sel %agent fons.ara %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
