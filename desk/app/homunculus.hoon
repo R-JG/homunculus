@@ -686,10 +686,31 @@
               +(ab.ars.u.el)
         ==
       =/  row=tape  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+      =/  wup=bean
+        ?.  &(=(~-. i.p.zona) !=(0 y.i.ars.u.el) (lth x.i.ars.u.el (sumo row)))
+          |
+        %+  gte  w.size.res.u.el
+        %+  add  x.i.ars.u.el
+        %-  lent
+        ?~  vox.ars.u.el  ~
+        (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
       =.  row
         ?~  t.p.zona  (into row x.i.ars.u.el (tuft i.p.zona))
         %+  weld  (weld (scag +(x.i.ars.u.el) row) (tufa p.zona))
         (slag +(x.i.ars.u.el) row)
+      ?:  wup
+        =.  vox.ars.u.el
+          %+  weld
+            (scag (dec y.i.ars.u.el) vox.ars.u.el)
+          %:  oro
+            w.size.res.u.el  h.size.res.u.el
+            ^-  tape
+            %-  zing
+            :+  ^-(tape (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+              row
+            (slag +(y.i.ars.u.el) vox.ars.u.el)
+          ==
+        ars.u.el(i [?~(t.p.zona 0 (pono (flop (tufa p.zona)))) y.i.ars.u.el])
       =/  len=@ud  (pono row)
       ?:  (lte len w.size.res.u.el)
         %_  ars.u.el
@@ -737,23 +758,28 @@
     =.  ars.u.el
       ?:  =(1 h.size.res.u.el)
         ?~  vox.ars.u.el  ars.u.el
-        =.  x.i.ars.u.el  ?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el))
+        ?:  =(0 x.i.ars.u.el)  ars.u.el
+        =.  x.i.ars.u.el  (dec x.i.ars.u.el)
         =.  i.vox.ars.u.el  (oust [x.i.ars.u.el 1] i.vox.ars.u.el)
         =.  ab.ars.u.el
           ?:  &((lte x.i.ars.u.el ab.ars.u.el) !=(0 ab.ars.u.el))
             ?:((gth w.size.res.u.el ab.ars.u.el) 0 +((sub ab.ars.u.el w.size.res.u.el)))
           ab.ars.u.el
         ars.u.el
+      ?:  =([0 0] i.ars.u.el)  ars.u.el
       =/  arow=tape
         ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  ~
         (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
+      =?  arow  =(0 x.i.ars.u.el)
+        (snip arow)
       =/  alen=@ud  (lent arow)
       =/  row=tape  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
-      =.  row  (oust [?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el)) 1] row)
-      =/  wor=@ud  (sumo row)
-      ?:  ?&  ?=(^ arow)  (lth alen w.size.res.u.el)
-              (lte wor (sub w.size.res.u.el alen))
-          ==
+      =?  row  !=(0 x.i.ars.u.el)
+        (oust [(dec x.i.ars.u.el) 1] row)
+      ?:  ?&  ?=(^ arow)
+              ?|  &((lth alen w.size.res.u.el) (lte (sumo row) (sub w.size.res.u.el alen)))
+                  !=(' ' (rear arow))
+          ==  ==
         =.  vox.ars.u.el
           %+  weld
             ?:  =(0 y.i.ars.u.el)  ~
@@ -765,11 +791,16 @@
             [arow row ^-(vox (slag +(y.i.ars.u.el) ^-(vox vox.ars.u.el)))]
           ==
         =.  i.ars.u.el
-          :-  (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.u.el)
-          ?:(=(0 y.i.ars.u.el) 0 (dec y.i.ars.u.el))
-        =.  ab.ars.u.el
-          ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el)
-        ars.u.el
+          =/  nlen=@ud
+            ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  0
+            (lent (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+          =/  lend=@ud  ?:((lte nlen alen) (sub alen nlen) 0)
+          ?.  =(0 lend)
+            [lend y.i.ars.u.el]
+          :_  ?:(=(0 y.i.ars.u.el) 0 (dec y.i.ars.u.el))
+          ?:  =(0 x.i.ars.u.el)  alen
+          (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.u.el)
+        ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
       =/  len=@ud  (lent row)
       =/  brow=tape
         ?:  |(?=(~ vox.ars.u.el) (lth (lent vox.ars.u.el) +(+(y.i.ars.u.el))))
@@ -819,9 +850,59 @@
     =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
     ?~  el  [~ ego]
     ?.  ?=(%input -.ars.u.el)  [~ ego]
-    =/  [nab=@ud ni=loci]
-      (peto ab.ars.u.el i.ars.u.el size.res.u.el lex vox.ars.u.el)
-    ?:  =(ni i.ars.u.el)
+    =/  oi=loci  i.ars.u.el
+    =.  i.ars.u.el
+      ?~  vox.ars.u.el  i.ars.u.el
+      ?+  lex  i.ars.u.el
+          %cur-l
+        ?:  =(1 h.size.res.u.el)
+          [?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el)) y.i.ars.u.el]
+        ?:  =(0 x.i.ars.u.el)
+          ?:  =(0 y.i.ars.u.el)
+            i.ars.u.el
+          =.  y.i.ars.u.el  (dec y.i.ars.u.el)
+          =/  l=@ud  (lent ^-(tape (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+          [?:(=(0 l) 0 (dec l)) y.i.ars.u.el]
+        [(dec x.i.ars.u.el) y.i.ars.u.el]
+          %cur-r
+        ?:  =(1 h.size.res.u.el)
+          =/  x=@ud  +(x.i.ars.u.el)
+          ?:  (gth x (lent i.vox.ars.u.el))
+            i.ars.u.el
+          [x y.i.ars.u.el]
+        =/  x=@ud  +(x.i.ars.u.el)
+        =/  l=@ud  (lent ^-(tape (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+        ?:  (gth x l)
+          =/  y=@ud  +(y.i.ars.u.el)
+          ?:  (gte y (lent vox.ars.u.el))
+            i.ars.u.el
+          [0 y]
+        [x y.i.ars.u.el]
+          %cur-u
+        ?:  =(1 h.size.res.u.el)
+          [0 0]
+        ?:  =(0 y.i.ars.u.el)
+          [0 0]
+        =.  y.i.ars.u.el  (dec y.i.ars.u.el)
+        =/  l=@ud  (pono (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+        :_  y.i.ars.u.el
+        ?:  (lte x.i.ars.u.el l)
+          x.i.ars.u.el
+        l
+          %cur-d
+        ?:  =(1 h.size.res.u.el)
+          [(lent i.vox.ars.u.el) y.i.ars.u.el]
+        =/  y=@ud  +(y.i.ars.u.el)
+        ?:  (gte y (lent vox.ars.u.el))
+          [(lent (rear vox.ars.u.el)) y.i.ars.u.el]
+        =.  y.i.ars.u.el  y
+        =/  l=@ud  (pono (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+        :_  y.i.ars.u.el
+        ?:  (lte x.i.ars.u.el l)
+          x.i.ars.u.el
+        l
+      ==
+    ?:  =(oi i.ars.u.el)
       %+  novo
         ?+  lex   lex
           %cur-l  %nav-l
@@ -830,8 +911,32 @@
           %cur-d  %nav-d
         ==
       zona
-    =.  i.ars.u.el  ni
-    ?:  =(nab ab.ars.u.el)
+    =/  oab=@ud  ab.ars.u.el
+    =.  ab.ars.u.el
+      ?~  vox.ars.u.el  ab.ars.u.el
+      ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
+        ?:  =(0 ab.ars.u.el)  0
+        ?:  =(1 h.size.res.u.el)
+          ?:  ?=(%cur-u lex)  0
+          ?:  (lte x.i.ars.u.el ab.ars.u.el)
+            (dec ab.ars.u.el)
+          ab.ars.u.el
+        ?:  (lth y.i.ars.u.el ab.ars.u.el)
+          (dec ab.ars.u.el)
+        ab.ars.u.el
+      ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
+        ?:  =(1 h.size.res.u.el)
+          ?:  (lth (sub x.i.ars.u.el ab.ars.u.el) w.size.res.u.el)
+            ab.ars.u.el
+          ?:  ?=(%cur-d lex)
+            =/  l=@ud  (lent i.vox.ars.u.el)
+            ?:((lte w.size.res.u.el l) +((sub l w.size.res.u.el)) 0)
+          +(ab.ars.u.el)
+        ?:  (lth (sub y.i.ars.u.el ab.ars.u.el) h.size.res.u.el)
+          ab.ars.u.el
+        +(ab.ars.u.el)
+      ab.ars.u.el
+    ?:  =(oab ab.ars.u.el)
       =/  ansi=@t
         %-  crip
         %-  volo
@@ -839,7 +944,6 @@
       :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el))
       :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
       ==
-    =.  ab.ars.u.el  nab
     =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
     =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
     =.  visa.u.el  vi
@@ -1056,85 +1160,6 @@
   ?~  ro  n
   ?:  =(' ' i.ro)  n
   $(n +(n), ro t.ro)
-::
-++  peto                    :: change the character indices of an input elemnt by direction
-  |=  [ab=@ud i=loci [w=@ud h=@ud] =lex =vox]
-  ^-  [@ud loci]
-  =.  i
-    ?~  vox  [0 0]
-    ?+  lex  i
-        %cur-l
-      ?:  =(1 h)
-        [?:(=(0 x.i) 0 (dec x.i)) y.i]
-      ?:  =(0 x.i)
-        ?:  =(0 y.i)
-          i
-        =.  y.i  (dec y.i)
-        =/  l=@ud  (lent ^-(tape (snag y.i ^-(^vox vox))))
-        [?:(=(0 l) 0 (dec l)) y.i]
-      [(dec x.i) y.i]
-        %cur-r
-      ?:  =(1 h)
-        =/  x=@ud  +(x.i)
-        ?:  (gth x (lent i.vox))
-          i
-        [x y.i]
-      =/  x=@ud  +(x.i)
-      =/  l=@ud  (lent ^-(tape (snag y.i ^-(^vox vox))))
-      ?:  (gth x l)
-        =/  y=@ud  +(y.i)
-        ?:  (gth y (lent vox))
-          i
-        [0 y]
-      [x y.i]
-        %cur-u
-      ?:  =(1 h)
-        [0 0]
-      ?:  =(0 y.i)
-        [0 0]
-      =.  y.i  (dec y.i)
-      =/  l=@ud  (pono (snag y.i ^-(^vox vox)))
-      :_  y.i
-      ?:  (lte x.i l)
-        x.i
-      l
-        %cur-d
-      ?:  =(1 h)
-        [(lent i.vox) y.i]
-      =/  y=@ud  +(y.i)
-      ?:  (gte y (lent vox))
-        [(lent (rear vox)) y.i]
-      =.  y.i  y
-      =/  l=@ud  (pono (snag y.i ^-(^vox vox)))
-      :_  y.i
-      ?:  (lte x.i l)
-        x.i
-      l
-    ==
-  =.  ab
-    ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
-      ?:  =(0 ab)  0
-      ?:  =(1 h)
-        ?:  ?=(%cur-u lex)  0
-        ?:  (lte x.i ab)
-          (dec ab)
-        ab
-      ?:  (lth y.i ab)
-        (dec ab)
-      ab
-    ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
-      ?:  =(1 h)
-        ?:  (lth (sub x.i ab) w)
-          ab
-        ?:  ?=(%cur-d lex)
-          =/  l=@ud  ?~(vox 0 (lent i.vox))
-          ?:((lte w l) +((sub l w)) 0)
-        +(ab)
-      ?:  (lth (sub y.i ab) h)
-        ab
-      +(ab)
-    ab
-  [ab i]
 ::
 ++  cedo                    :: move the cursor within a scroll element
   |=  [=rex sk=$@(~ rami) spar=ens]
@@ -2521,11 +2546,13 @@
       =/  old=(unit ens)  (~(get by esse.ara) k)
       ?~  old  ars
       ?.  ?=(%input -.ars.u.old)  ars
-      ?:  ?|  &(=(1 h.size.res.u.old) !=(1 h.size.ares))
-              &(=(1 h.size.ares) !=(1 h.size.res.u.old))
-          ==
-        ars
-      ars.u.old
+      ?:  =(size.res.u.old size.ares)
+        ars.u.old
+      %_  ars.u.old
+        ab   0
+        i    [0 0]
+        vox  (oro w.size.ares h.size.ares ^-(tape (zing vox.ars.u.old)))
+      ==
     ?:  ?=(%checkbox -.ars)
       =/  old=(unit ens)  (~(get by esse.ara) k)
       ?~  old  ars
