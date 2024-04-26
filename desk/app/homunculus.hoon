@@ -15,17 +15,13 @@
       flow=[d=?(%col %row) b=?(%wrap %clip)]
       look=fila
   ==
-+$  visa  (map loci [=fila @c ~])
 +$  loci  [x=@ud y=@ud]
-+$  lar   $~([1 1] loci)
-+$  modi  loci
 +$  axis  ?(%b %l %~)
 +$  ager  @ud
-+$  aves  (map ?(%sel %act %key) @t)
++$  lar   $~([1 1] loci)
++$  modi  loci
 +$  iter  [x=@ud y=@ud]
-+$  vox   (list tape)
-+$  fila  [d=(set deco) b=tint f=tint]
-+$  acia  [d=(unit (set deco)) b=(unit tint) f=(unit tint)]
++$  aves  (map ?(%sel %act %key) @t)
 +$  ad    ?(%left %right %top %bottom)
 +$  pila  ?(%light %heavy %double %blank %~)
 +$  muri  [l=@ud r=@ud t=@ud b=@ud]
@@ -36,17 +32,33 @@
       [%input ab=@ud i=loci =vox]  [%checkbox v=bean]
       [%radio ~]  [%scroll =iter =muri =sola]  [%$ ~]
   ==
-::
-+$  omen  (map nota lex)
++$  visa  (map loci nodi)
++$  nodi  (pair fila @c)
++$  lina  (list @c)
++$  vox   (list lina)
++$  fila  [d=(set deco) b=tint f=tint]
++$  acia  [d=(unit (set deco)) b=(unit tint) f=(unit tint)]
++$  lux
+  $~  [%klr ~]
+  $%  [%hop p=$@(@ud [x=@ud y=@ud])]
+      [%klr p=(list nodi)]
+      [%mor p=(list lux)]
+  ==
 +$  zona
-  $?  [%clk p=?(%d %u) x=@ud y=@ud]
+  $~  [%txt ~]
+  $%  [%clk p=?(%d %u) x=@ud y=@ud]
       [%whe p=?(%d %u) x=@ud y=@ud]
-      belt:dill
+      [%mod mod=?(%ctl %met %hyp) key=$~([%txt ~] zona)]
+      [%aro p=?(%d %l %r %u)]
+      [%txt p=lina]
+      [%bac ~]
+      [%del ~]
+      [%ret ~]
   ==
 +$  nota
-  $%  [%mod ?(%ctl %met %hyp) bolt:dill]  [%aro ?(%d %l %r %u)]
-      [%txt ~]  [%bac ~]  [%ret ~]  [%hit ~]
-      [%clk ?(%d %u)]  [%whe ?(%d %u)]
+  $%  [%clk ?(%d %u)]  [%whe ?(%d %u)]
+      [%mod ?(%ctl %met %hyp) @tas]  [%aro ?(%d %l %r %u)]
+      [%txt ~]  [%bac ~]  [%del ~]  [%ret ~]
   ==
 +$  lex
   $?  %nav-l  %nav-r  %nav-u  %nav-d
@@ -54,6 +66,7 @@
       %scr-l  %scr-r  %scr-u  %scr-d
       %inp  %del  %tog  %act  %clk  %def
   ==
++$  omen  (map nota lex)
 +$  mus   (map loci rami)
 +$  equi  (set rami)
 +$  dux   [l=@ud r=@ud t=@ud b=@ud k=rami]
@@ -72,7 +85,6 @@
       =flow
       look=acia
   ==
-+$  lux   blit:dill
 +$  flex  [x=@ud y=@ud]
 +$  flow  [d=?(%col %row) b=?(%wrap %clip)]
 ::
@@ -189,7 +201,7 @@
     ?.  =('\\' i.inp)     [~ [%txt (tuba inp)]]
     ?~  t.inp             [~ [%txt ~[~-~5c.]]]
     ?~  t.t.inp
-      ?:  =('t' i.t.inp)  [~ [%mod %ctl ~-i]]
+      ?:  =('t' i.t.inp)  [~ [%mod %ctl [%txt ~[~-i]]]]
       ?:  =('n' i.t.inp)  [~ [%ret ~]]
       ~
     ?~  t.t.t.inp  ~
@@ -664,8 +676,8 @@
       =/  l=@ud  (lent vox.ars.u.el)
       =/  rlen=@ud
         ?:  (gth +(y) l)
-          (pono ^-(tape (rear ^-(vox vox.ars.u.el))))
-        (pono ^-(tape (snag y ^-(vox vox.ars.u.el))))
+          (pono ^-(lina (rear ^-(vox vox.ars.u.el))))
+        (pono ^-(lina (snag y ^-(vox vox.ars.u.el))))
       %+  %~  put
             by
           esse.ara
@@ -703,9 +715,9 @@
       ?:  =(1 h.size.res.u.el)
         =.  vox.ars.u.el
           :_  ~
-          ?~  vox.ars.u.el  ?~(t.p.zona ~[(tuft i.p.zona)] (tufa p.zona))
-          ?~  t.p.zona  (into i.vox.ars.u.el x.i.ars.u.el (tuft i.p.zona))
-          %+  weld  (weld (scag +(x.i.ars.u.el) i.vox.ars.u.el) (tufa p.zona))
+          ?~  vox.ars.u.el  ?~(t.p.zona ~[i.p.zona] p.zona)
+          ?~  t.p.zona  (into i.vox.ars.u.el x.i.ars.u.el i.p.zona)
+          %+  weld  (weld (scag +(x.i.ars.u.el) i.vox.ars.u.el) p.zona)
           (slag +(x.i.ars.u.el) i.vox.ars.u.el)
         =.  i.ars.u.el
           ?~  vox.ars.u.el  i.ars.u.el
@@ -718,7 +730,7 @@
                 ab.ars.u.el
               +(ab.ars.u.el)
         ==
-      =/  row=tape  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+      =/  row=lina  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
       =/  wup=bean
         ?.  &(=(~-. i.p.zona) !=(0 y.i.ars.u.el) (lth x.i.ars.u.el (sumo row)))
           |
@@ -728,8 +740,8 @@
         ?~  vox.ars.u.el  ~
         (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
       =.  row
-        ?~  t.p.zona  (into row x.i.ars.u.el (tuft i.p.zona))
-        %+  weld  (weld (scag +(x.i.ars.u.el) row) (tufa p.zona))
+        ?~  t.p.zona  (into row x.i.ars.u.el i.p.zona)
+        %+  weld  (weld (scag +(x.i.ars.u.el) row) p.zona)
         (slag +(x.i.ars.u.el) row)
       ?:  wup
         =.  vox.ars.u.el
@@ -737,13 +749,13 @@
             (scag (dec y.i.ars.u.el) vox.ars.u.el)
           %:  oro
             w.size.res.u.el  h.size.res.u.el
-            ^-  tape
+            ^-  lina
             %-  zing
-            :+  ^-(tape (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+            :+  ^-(lina (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
               row
             (slag +(y.i.ars.u.el) vox.ars.u.el)
           ==
-        ars.u.el(i [?~(t.p.zona 0 (pono (flop (tufa p.zona)))) y.i.ars.u.el])
+        ars.u.el(i [?~(t.p.zona 0 (pono (flop p.zona))) y.i.ars.u.el])
       =/  len=@ud  (pono row)
       ?:  (lte len w.size.res.u.el)
         %_  ars.u.el
@@ -755,12 +767,12 @@
           (scag y.i.ars.u.el vox.ars.u.el)
         %:  oro
           w.size.res.u.el  h.size.res.u.el
-          ^-(tape (zing [row (slag +(y.i.ars.u.el) vox.ars.u.el)]))
+          ^-(lina (zing [row (slag +(y.i.ars.u.el) vox.ars.u.el)]))
         ==
       =.  i.ars.u.el
         =/  nlen=(unit @ud)
           ?~  vox.ars.u.el  ~
-          [~ (lent ^-(tape (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))]
+          [~ (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))]
         =/  npos=(unit @ud)
           ?:(|(?=(~ nlen) (lte +(x.i.ars.u.el) u.nlen)) ~ [~ (sub +(x.i.ars.u.el) u.nlen)])
         ?~  npos
@@ -800,18 +812,18 @@
           ab.ars.u.el
         ars.u.el
       ?:  =([0 0] i.ars.u.el)  ars.u.el
-      =/  arow=tape
+      =/  arow=lina
         ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  ~
         (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
       =?  arow  =(0 x.i.ars.u.el)
         (snip arow)
       =/  alen=@ud  (lent arow)
-      =/  row=tape  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+      =/  row=lina  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
       =?  row  !=(0 x.i.ars.u.el)
         (oust [(dec x.i.ars.u.el) 1] row)
       ?:  ?&  ?=(^ arow)
               ?|  &((lth alen w.size.res.u.el) (lte (sumo row) (sub w.size.res.u.el alen)))
-                  !=(' ' (rear arow))
+                  !=(~-. (rear arow))
           ==  ==
         =.  vox.ars.u.el
           %+  weld
@@ -819,7 +831,7 @@
             ^-(vox (scag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
           %:  oro
             w.size.res.u.el  h.size.res.u.el
-            ^-  tape
+            ^-  lina
             %-  zing
             [arow row ^-(vox (slag +(y.i.ars.u.el) ^-(vox vox.ars.u.el)))]
           ==
@@ -835,7 +847,7 @@
           (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.u.el)
         ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
       =/  len=@ud  (lent row)
-      =/  brow=tape
+      =/  brow=lina
         ?:  |(?=(~ vox.ars.u.el) (lth (lent vox.ars.u.el) +(+(y.i.ars.u.el))))
           ~
         (snag +(y.i.ars.u.el) ^-(vox vox.ars.u.el))
@@ -843,7 +855,7 @@
       ?.  ?|  ?&  (lth len w.size.res.u.el)
                   (lte bwor (sub w.size.res.u.el len))
               ==
-              &(?=(^ row) =(' ' (rear row)))
+              &(?=(^ row) =(~-. (rear row)))
           ==
         %_  ars.u.el
           vox  (snap vox.ars.u.el y.i.ars.u.el row)
@@ -854,7 +866,7 @@
           (scag y.i.ars.u.el vox.ars.u.el)
         %:  oro
           w.size.res.u.el  h.size.res.u.el
-          ^-(tape (zing [row brow (slag +(+(y.i.ars.u.el)) vox.ars.u.el)]))
+          ^-(lina (zing [row brow (slag +(+(y.i.ars.u.el)) vox.ars.u.el)]))
         ==
       =.  i.ars.u.el
         ?.  =(0 x.i.ars.u.el)
@@ -863,7 +875,7 @@
           i.ars.u.el
         =.  y.i.ars.u.el  (dec y.i.ars.u.el)
         =/  l=@ud
-          (lent ^-(tape (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+          (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
         [?:(=(0 l) 0 (dec l)) y.i.ars.u.el]
       ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
     =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
@@ -894,7 +906,7 @@
           ?:  =(0 y.i.ars.u.el)
             i.ars.u.el
           =.  y.i.ars.u.el  (dec y.i.ars.u.el)
-          =/  l=@ud  (lent ^-(tape (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+          =/  l=@ud  (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
           [?:(=(0 l) 0 (dec l)) y.i.ars.u.el]
         [(dec x.i.ars.u.el) y.i.ars.u.el]
           %cur-r
@@ -904,7 +916,7 @@
             i.ars.u.el
           [x y.i.ars.u.el]
         =/  x=@ud  +(x.i.ars.u.el)
-        =/  l=@ud  (lent ^-(tape (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+        =/  l=@ud  (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
         ?:  (gth x l)
           =/  y=@ud  +(y.i.ars.u.el)
           ?:  (gte y (lent vox.ars.u.el))
@@ -1153,7 +1165,7 @@
     %-  %~  rep
           by
         vi
-    |=  [[l=loci c=[fila @c ~]] acc=visa]
+    |=  [[l=loci n=nodi] acc=visa]
     ^-  visa
     ?:  |((gth x.iter.u.chi x.l) (gth y.iter.u.chi y.l))
       acc
@@ -1164,7 +1176,7 @@
             &(?=(^ slar) |((lth x.l x.slar) (lth y.l y.slar)))
         ==
       acc
-    (~(put by acc) l c)
+    (~(put by acc) l n)
   =.  vi  (~(int by olv) (~(dif by vi) visa.a))
   =.  esse.a  (~(put by esse.a) k u.chi(visa vi))
   =.  visa.a  (~(uni by visa.a) vi)
@@ -1179,19 +1191,19 @@
   $(r t.r)
 ::
 ++  pono                    :: get the length of a row in vox without the trailing whitespace
-  |=  lop=tape
+  |=  lop=lina
   =.  lop  (flop lop)
   |-  ^-  @ud
   ?~  lop  0
-  ?.  =(' ' i.lop)  (lent lop)
+  ?.  =(~-. i.lop)  (lent lop)
   $(lop t.lop)
 ::
 ++  sumo                    :: get the length of the first word in a vox row
-  |=  ro=tape
+  |=  ro=lina
   =|  n=@ud
   |-  ^-  @ud
   ?~  ro  n
-  ?:  =(' ' i.ro)  n
+  ?:  =(~-. i.ro)  n
   $(n +(n), ro t.ro)
 ::
 ++  cedo                    :: move the cursor within a scroll element
@@ -1326,7 +1338,7 @@
     ?~  key
       ~&  'key missing on form submit'
       $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-    =/  val=@t  (crip ^-(tape (zing vox.ars.u.el)))
+    =/  val=@t  (crip (tufa ^-(lina (zing vox.ars.u.el))))
     =:  vox.ars.u.el  ~
         ab.ars.u.el   0
         i.ars.u.el    [0 0]
@@ -1363,11 +1375,10 @@
 ++  noto                    :: parse belt to nota
   |=  z=zona
   ^-  nota
-  ?:  ?=(%txt -.z)  [-.z ~]
-  ?:  ?=(%hit -.z)  [-.z ~]
+  ?:  ?=(%mod -.z)  [-.z -.+.z -.+.+.z]
   ?:  ?=(%clk -.z)  [-.z -.+.z]
   ?:  ?=(%whe -.z)  [-.z -.+.z]
-  ?:  ?=(%mod -.z)  z
+  ?:  ?=(%txt -.z)  [-.z ~]
   ?:  ?=(%aro -.z)  z
   ?:  ?=(%bac -.z)  z
   ?:  ?=(%ret -.z)  z
@@ -1460,9 +1471,9 @@
 ::
 ++  suo                     :: process a sail element's name and attribute list for geno
   |=  [n=mane a=mart]
-  =/  [=rei =aves =ars lit=tape velo=mart]
+  =/  [=rei =aves =ars =lina velo=mart]
       ?+  n             [(dolo %$) ~ [%$ ~] ~ ~]
-        %$              [(dolo %text) ~ [%text ~] ?~(a ~ v.i.a) ~]
+        %$              [(dolo %text) ~ [%text ~] ?~(a ~ (tuba v.i.a)) ~]
         %layer          [(dolo %layer) ~ [%layer ~] ~ ~]
         %select         [(dolo %$) ~ [%select [~ ~ ~] %~] ~ ~]
         %border-left    [(dolo %border-left) ~ [%border %left %~] ~ ~]
@@ -1476,8 +1487,8 @@
         %form           [(dolo %$) ~ [%form ~] ~ ~]
         %submit         [(dolo %$) ~ [%select [~ ~ ~] %submit] ~ ~]
       ==
-  |-  ^-  [^rei ^aves ^ars tape mart]
-  ?~  a  [rei aves ars lit velo]
+  |-  ^-  [^rei ^aves ^ars ^lina mart]
+  ?~  a  [rei aves ars lina velo]
   ?+  n.i.a  $(a t.a)
       %w
     ?:  &(?=(%border -.ars) |(?=(%top ad.ars) ?=(%bottom ad.ars)))
@@ -1823,7 +1834,7 @@
 ++  fuco                    :: change the style of a set of characters
   |=  [vi=visa fi=fila]
   ^-  visa
-  (~(urn by vi) |=([* va=[fila @c ~]] [fi +.va]))
+  (~(urn by vi) |=([* no=nodi] [fi q.no]))
 ::
 ++  ruo                     :: shift a set of characters by scroll position
   |=  [it=iter vi=visa]
@@ -1833,43 +1844,46 @@
   %-  %~  rep
         by
       vi
-  |=  [[l=loci c=[fila @c ~]] ac=visa]
+  |=  [[l=loci n=nodi] ac=visa]
   ^-  visa
   ?:  |((gth x.it x.l) (gth y.it y.l))
     ac
-  (~(put by ac) [(sub x.l x.it) (sub y.l y.it)] c)
+  (~(put by ac) [(sub x.l x.it) (sub y.l y.it)] n)
 ::
-++  oro                     :: turn a tape into vox
-  |=  [wid=@ud hei=@ud tap=tape]
-  ?:  =(1 hei)  ^-(vox ~[tap])
+++  oro                     :: turn lina into vox
+  |=  [wid=@ud hei=@ud lin=lina]
+  ?:  =(1 hei)  ^-(vox ~[lin])
   =|  [v=vox col=@ud wod=@ud]
   |-  ^-  vox
-  ?~  tap
+  ?~  lin
     (flop ?:(&(?=(^ v) ?=(^ i.v)) v(i (flop i.v)) v))
   ?~  v
-    $(tap t.tap, col +(col), wod +(wod), v [[i.tap ~] v])
-  ?:  =(' ' i.tap)
-    $(tap t.tap, col +(col), wod +(wod), v [[i.tap i.v] t.v])
-  ?:  &(?=(^ i.v) =(' ' i.i.v))
-    ?:  |((gth +(col) wid) &(=(wid +(col)) !&(?=(^ t.tap) =(' ' i.t.tap))))
-      $(tap t.tap, col 1, wod 1, v [[i.tap ~] (flop i.v) t.v])
-    $(tap t.tap, col +(col), wod 1, v [[i.tap i.v] t.v])
-  ?:  &((gte +(col) wid) ?=(^ t.tap) !=(' ' i.t.tap))
+    $(lin t.lin, col +(col), wod +(wod), v [[i.lin ~] v])
+  ?:  =(~-. i.lin)
+    $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
+  ?:  &(?=(^ i.v) =(~-. i.i.v))
+    ?:  |((gth +(col) wid) &(=(wid +(col)) !&(?=(^ t.lin) =(~-. i.t.lin))))
+      $(lin t.lin, col 1, wod 1, v [[i.lin ~] (flop i.v) t.v])
+    $(lin t.lin, col +(col), wod 1, v [[i.lin i.v] t.v])
+  ?:  &((gte +(col) wid) ?=(^ t.lin) !=(~-. i.t.lin))
     ?:  (lth +(wod) wid)
       %=  $
-        tap  t.tap
+        lin  t.lin
         col  +(wod)
         wod  +(wod)
-        v    [[i.tap (scag wod ^-(tape i.v))] (flop (oust [0 wod] ^-(tape i.v))) t.v]
+        v     
+          :+  [i.lin ^-(lina (scag wod ^-(lina i.v)))]
+            ^-(lina (flop (oust [0 wod] ^-(lina i.v))))
+          t.v
       ==
-    $(tap t.tap, col 0, wod 0, v ["" (flop [i.tap i.v]) t.v])
-  $(tap t.tap, col +(col), wod +(wod), v [[i.tap i.v] t.v])
+    $(lin t.lin, col 0, wod 0, v [~ ^-(lina (flop [i.lin i.v])) t.v])
+  $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
 ::
 ++  viso                    :: take an element and render it 
   |=  [=lar =res =ars lim=modi]
   ^-  visa
   ?+  -.ars    (rbox lar lim res)
-    %text      (rtxt lar lim look.res w.size.res vox.ars)
+    %text      (rtxt lar lim look.res size.res vox.ars)
     %border    (rbor lar lim res +.ars)
     %input     (rinp lar lim res ab.ars vox.ars)
     %checkbox  (rbox lar lim ?:(v.ars res(b.look f.look.res, f.look b.look.res) res))
@@ -1888,43 +1902,43 @@
   %=  $
     w  ?:(nrow 0 +(w))
     h  ?:(nrow +(h) h)
-    a  ?:((lte x x.lim) (~(put by a) [x y] [[~ +.look.res] ~-. ~]) a)
+    a  ?:((lte x x.lim) (~(put by a) [x y] [[~ +.look.res] ~-.]) a)
   ==
 ::
 ++  rtxt                    :: render a text element
-  |=  [=lar lim=loci fil=fila cols=@ud =vox]
+  |=  [=lar lim=loci fil=fila [wid=@ud hei=@ud] =vox]
   =|  [w=@ud h=@ud a=visa spac=visa]
   |-  ^-  visa
   ?~  vox  a
   ?~  i.vox  $(vox t.vox, w 0, h +(h), spac ~)
   =/  [x=@ud y=@ud]  [(add x.lar w) (add y.lar h)]
-  ?:  (gth y y.lim)  a
-  ?:  (gth x x.lim)  $(w +(w), i.vox t.i.vox)
-  ?:  =(' ' i.i.vox)
+  ?:  |((gte h hei) (gth y y.lim))  a
+  ?:  |((gte w wid) (gth x x.lim))  $(w +(w), i.vox t.i.vox)
+  ?:  =(~-. i.i.vox)
     %=  $
       w      +(w)
       i.vox  t.i.vox
-      spac   (~(put by spac) [x y] [fil (@c i.i.vox) ~])
+      spac   (~(put by spac) [x y] [fil i.i.vox])
     ==
   %=  $
     w      +(w)
     i.vox  t.i.vox
     spac   ~
-    a      (~(put by (~(uni by a) spac)) [x y] [fil (@c i.i.vox) ~])
+    a      (~(put by (~(uni by a) spac)) [x y] [fil i.i.vox])
   ==
 ::
 ++  rtxb                    :: render basic text (no word wrapping)
-  |=  [=lar lim=loci fil=fila cols=@ud v=tape]
+  |=  [=lar lim=loci fil=fila [wid=@ud hei=@ud] v=lina]
   =|  [w=@ud h=@ud a=visa]
   |-  ^-  visa
   ?~  v  a
   =/  [x=@ud y=@ud nrow=bean]
-    [(add x.lar w) (add y.lar h) (gte +(w) cols)]
-  ?:  (gth y y.lim)  a
+    [(add x.lar w) (add y.lar h) (gte +(w) wid)]
+  ?:  |((gte h hei) (gth y y.lim))  a
   %=  $
     w  ?:(nrow 0 +(w))
     h  ?:(nrow +(h) h)
-    a  ?:((lte x x.lim) (~(put by a) [x y] [fil (@c i.v) ~]) a)
+    a  ?:((lte x x.lim) (~(put by a) [x y] [fil i.v]) a)
     v  t.v
   ==
 ::
@@ -1937,14 +1951,14 @@
   ?:  =(1 h.size.res)
     ?~  v  ~
     %:  rtxb
-      lar  lim  look.res  w.size.res
-      |-  ^-  tape
+      lar  lim  look.res  size.res
+      |-  ^-  lina
       ?~  i.v  ~
       ?:  =(0 ab)  i.v
       $(i.v t.i.v, ab (dec ab))
     ==
   %:  rtxt
-    lar  lim  look.res  w.size.res
+    lar  lim  look.res  size.res
     |-  ^-  vox
     ?~  v  ~
     ?:  =(0 ab)  v
@@ -2003,7 +2017,7 @@
   %=  $
     w  ?:(nrow 0 +(w))
     h  ?:(nrow +(h) h)
-    a  (~(put by a) [x y] [look.res c ~])
+    a  (~(put by a) [x y] [look.res c])
   ==
 ::
 ++  geno                    :: turn sail into session display state
@@ -2029,7 +2043,7 @@
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
   |-  ^-  opus
   ?~  m  a
-  =/  [=rei =aves =ars lit=tape velo=mart]
+  =/  [=rei =aves =ars =lina velo=mart]
     (suo g.i.m)
   =/  [bor=marl lay=marl nor=marl]
     ?:  ?=(%input -.ars)
@@ -2508,16 +2522,18 @@
     =.  visa.b  (muto movx movy ~(tap by visa.b))
     b
     ++  muto
-      |=  [movx=@ud movy=@ud v=(list [=loci fila @c ~])]
+      |=  [movx=@ud movy=@ud v=(list [=loci nodi])]
       ^-  visa
       %-  %~  dif
           by
         %-  malt
-        |-  ^-  (list [=loci fila @c ~])
+        |-  ^-  (list [loci nodi])
         ?~  v  ~
         =/  x=@ud  (add x.loci.i.v movx)
         =/  y=@ud  (add y.loci.i.v movy)
-        ?:  |((gth x x.alim) (gth y y.alim) &(?=(^ slim) |((gth x x.slim) (gth y y.slim))))
+        ?:  ?|  (gth x x.alim)  (gth y y.alim)
+                &(?=(^ slim) |((gth x x.slim) (gth y y.slim)))
+            ==
           $(v t.v)
         [[[x y] +.i.v] $(v t.v)]
       visa.a
@@ -2529,7 +2545,7 @@
     :-  -.ars
     %^  oro  (sub prx ?:(?=(%row d.pow) n.vir o.vir))
       (sub pry ?:(?=(%col d.pow) n.vir o.vir))
-    lit
+    lina
   =/  ares=res
     ?+  -.ars
       :*  [q.w.size.rei q.h.size.rei]
@@ -2540,7 +2556,7 @@
           fi
       ==
         %text
-      =/  len=@ud  (lent lit)
+      =/  len=@ud  (lent lina)
       =/  lim=@ud  (sub prx ?:(?=(%row d.pow) n.vir o.vir))
       :*  [?:((lth len lim) len lim) (lent vox.ars)]
           [0 0 0 0]
@@ -2574,7 +2590,7 @@
       vlar  alar
       vir   [0 0 0]
     ==
-  =?  ars  |(?=(%input -.ars) ?=(%scroll -.ars))
+  =?  ars  |(?=(%input -.ars) ?=(%scroll -.ars) ?=(%checkbox -.ars))
     ?:  ?=(%input -.ars)
       =/  old=(unit ens)  (~(get by esse.ara) k)
       ?~  old  ars
@@ -2584,7 +2600,7 @@
       %_  ars.u.old
         ab   0
         i    [0 0]
-        vox  (oro w.size.ares h.size.ares ^-(tape (zing vox.ars.u.old)))
+        vox  (oro w.size.ares h.size.ares ^-(^lina (zing vox.ars.u.old)))
       ==
     ?:  ?=(%checkbox -.ars)
       =/  old=(unit ens)  (~(get by esse.ara) k)
@@ -2733,8 +2749,8 @@
       %-  malt
       ^-  (list [loci rami])
       %+  turn
-        ^-((list [loci [fila @c ~]]) ~(tap by visa.nacc))
-      |=([loc=loci [fila @c ~]] [loc k])
+        ^-((list [loci nodi]) ~(tap by visa.nacc))
+      |=([loc=loci nodi] [loc k])
     (~(uni by mus.acc) mus.nacc)
   =.  equi.acc 
     ?.  ?=(%scroll -.ars.u.el)
@@ -2752,27 +2768,25 @@
   =/  y=@ud  1
   :-  %mor
   |-  ^-  (list lux)
-  =/  s=stub
+  =/  nod=(list nodi)
     =/  x=@ud  1
-    |-  ^-  stub
+    |-  ^-  (list nodi)
     ?:  (gte x x.urbs)
       ~
-    =/  val=(unit [fila @c ~])  (~(get by v) [x y])
-    =/  char=(pair stye (list @c))
-      ?~(val [[~ ~ ~] ~[(@c 'x')]] u.val)
-    [char $(x +(x))]
+    =/  val=(unit nodi)  (~(get by v) [x y])
+    [?~(val [[~ ~ ~] ~-x] u.val) $(x +(x))]
   :+  [%hop 1 y]
-    [%klr s] 
+    [%klr nod] 
   ?:(=(y y.urbs) ~ $(y +(y)))
 ::
 ++  dono                    :: make a display update diff
   |=  [old=visa new=visa]
   ^-  lux
-  =/  n=(list [=loci [fila @c ~]])  ~(tap by new)
+  =/  n=(list [=loci nodi])  ~(tap by new)
   :-  %mor
   |-  ^-  (list lux)
   ?~  n  ~
-  =/  v=(unit [fila @c ~])  (~(get by old) loci.i.n)
+  =/  v=(unit nodi)  (~(get by old) loci.i.n)
   ?.  |(&(?=(^ v) !=(u.v +.i.n)) ?=(~ v))
     $(n t.n)
   [[%hop loci.i.n] [%klr ~[+.i.n]] $(n t.n)]
@@ -2784,30 +2798,31 @@
     ?@  p.lux  ~
     ['\\' 'e' '[' (scot %ud y.p.lux) ';' (scot %ud x.p.lux) 'H' ~]
   ?.  ?=(%mor -.lux)  ~
-  =/  prev=stye  [~ ~ ~]
+  =/  prev=fila  [~ ~ ~]
   |-  ^-  tape
   ?~  p.lux
     ?.  =([~ ~ ~] prev)
       :^  '\\'  'e'  '['
       :+  '0'  'm'  ~
     ~
-  ?:  ?=(%mor -.i.p.lux)
+  ?-  -.i.p.lux
+      %mor
     $(p.lux ^-((list ^lux) (weld p.i.p.lux t.p.lux)))
-  ?:  ?=(%hop -.i.p.lux)
+      %hop
     ?@  p.i.p.lux  $(p.lux t.p.lux)
     :*  '\\'  'e'  '['
         (scot %ud y.p.i.p.lux)  ';'
         (scot %ud x.p.i.p.lux)  'H'
         $(p.lux t.p.lux)
     ==
-  ?:  ?=(%klr -.i.p.lux)
+      %klr
     |-  ^-  tape
     ?~  p.i.p.lux  ^$(p.lux t.p.lux)
-    =/  newb=(unit tint)  ?:(=(p.q.prev p.q.p.i.p.i.p.lux) ~ [~ p.q.p.i.p.i.p.lux])
-    =/  newf=(unit tint)  ?:(=(q.q.prev q.q.p.i.p.i.p.lux) ~ [~ q.q.p.i.p.i.p.lux])
-    =/  oldd=(list deco)  ~(tap in (~(dif in p.prev) p.p.i.p.i.p.lux))
-    =/  newd=(list deco)  ~(tap in (~(dif in p.p.i.p.i.p.lux) p.prev))
-    =/  newt=tape  (tufa q.i.p.i.p.lux)
+    =/  newb=(unit tint)  ?:(=(b.prev b.p.i.p.i.p.lux) ~ [~ b.p.i.p.i.p.lux])
+    =/  newf=(unit tint)  ?:(=(f.prev f.p.i.p.i.p.lux) ~ [~ f.p.i.p.i.p.lux])
+    =/  oldd=(list deco)  ~(tap in (~(dif in d.prev) d.p.i.p.i.p.lux))
+    =/  newd=(list deco)  ~(tap in (~(dif in d.p.i.p.i.p.lux) d.prev))
+    =/  newt=@t  ?:((lte q.i.p.i.p.lux 127) ^-(@ q.i.p.i.p.lux) (tuft q.i.p.i.p.lux))
     |-  ^-  tape
     ?^  newb
       :^  '\\'  'e'  '['
@@ -2855,9 +2870,7 @@
       :+  ?-(i.newd %bl '5', %br '1', %un '4')
         'm'
       $(newd t.newd)
-    ?^  newt
-      :-  i.newt
-      $(newt t.newt)
+    :-  newt
     ^$(p.i.p.lux t.p.i.p.lux, prev p.i.p.i.p.lux)
-  $(p.lux t.p.lux)
+  ==
 --
