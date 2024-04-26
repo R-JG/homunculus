@@ -190,6 +190,7 @@
       ==
     ?.  ?=(%s -.jsn)  [~ hoc]
     =/  inp=tape  (trip p.jsn)
+    ?:  =("\\" inp)  [~ hoc]
     =;  z=(unit zona)
       ?~  z  [~ hoc]
       =/  l=(unit lex)  (~(get by omen.ara) (noto u.z))
@@ -1858,14 +1859,16 @@
   ?~  lin
     (flop ?:(&(?=(^ v) ?=(^ i.v)) v(i (flop i.v)) v))
   ?~  v
-    $(lin t.lin, col +(col), wod +(wod), v [[i.lin ~] v])
+    ?:  (gte +(col) wid)
+      $(lin t.lin, col 0, wod 0, v [~ [i.lin ~] ~])
+    $(lin t.lin, col +(col), wod +(wod), v [[i.lin ~] ~])
   ?:  =(~-. i.lin)
     $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
   ?:  &(?=(^ i.v) =(~-. i.i.v))
     ?:  |((gth +(col) wid) &(=(wid +(col)) !&(?=(^ t.lin) =(~-. i.t.lin))))
-      $(lin t.lin, col 1, wod 1, v [[i.lin ~] (flop i.v) t.v])
+      $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
     $(lin t.lin, col +(col), wod 1, v [[i.lin i.v] t.v])
-  ?:  &((gte +(col) wid) ?=(^ t.lin) !=(~-. i.t.lin))
+  ?:  &((gte +(col) wid) |(?=(~ t.lin) !=(~-. i.t.lin)))
     ?:  (lth +(wod) wid)
       %=  $
         lin  t.lin
@@ -1876,7 +1879,9 @@
             ^-(lina (flop (oust [0 wod] ^-(lina i.v))))
           t.v
       ==
-    $(lin t.lin, col 0, wod 0, v [~ ^-(lina (flop [i.lin i.v])) t.v])
+    ?:  (gte col wid)
+      $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
+    $(lin t.lin, col 0, wod 0, v ?~(t.lin [[i.lin i.v] t.v] [~ ^-(lina (flop [i.lin i.v])) t.v]))
   $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
 ::
 ++  viso                    :: take an element and render it 
@@ -2029,13 +2034,13 @@
   =/  m=marl        ~[x]
   =/  k=rami        ~[[%~ 0]]
   =/  pl=fila       [~ ~ %w]
-  =/  px=as         [%c x.arx.ara]
+  =/  px=as         [%c (dec x.arx.ara)]
   =/  py=as         [%c y.arx.ara]
   =/  pow=flow      [%row %clip]
   =/  prx=@ud       x.arx.ara
   =/  pry=@ud       y.arx.ara
   =/  plar=lar      lar.ara
-  =/  plim=modi     [x.arx.ara y.arx.ara]
+  =/  plim=modi     [(dec x.arx.ara) y.arx.ara]
   =/  pitr=iter     [0 0]
   =/  pscr=[x=bean y=bean]  [%.n %.n]
   =/  slim=$@(~ loci)  ~
@@ -2119,9 +2124,10 @@
   =?  x.flex.rei  =(%i p.w.size.rei)  0
   =?  y.flex.rei  =(%i p.h.size.rei)  0
   =/  imp=bean
-    ?|  =(%i p.w.size.rei)
-        =(%i p.h.size.rei)
-    ==
+    ?&  !?=(%text -.ars)
+        ?|  =(%i p.w.size.rei)
+            =(%i p.h.size.rei)
+    ==  ==
   =/  mov=bean
     ?|  &(!=(0 x.flex.rei) =(%c p.w.size.rei)) 
         &(!=(0 y.flex.rei) =(%c p.h.size.rei))
@@ -2543,8 +2549,11 @@
     (~(uni by visa.b) visa.a)
   =?  ars  ?=(%text -.ars)
     :-  -.ars
-    %^  oro  (sub prx ?:(?=(%row d.pow) n.vir o.vir))
-      (sub pry ?:(?=(%col d.pow) n.vir o.vir))
+    =/  [x=@ud y=@ud]
+      :-  ?:(?=(%row d.pow) n.vir o.vir)
+      ?:(?=(%col d.pow) n.vir o.vir)
+    %^  oro  ?:((lte x prx) (sub prx x) 0)
+      ?:((lte y pry) (sub pry y) 0)
     lina
   =/  ares=res
     ?+  -.ars
@@ -2556,7 +2565,8 @@
           fi
       ==
         %text
-      =/  len=@ud  (lent lina)
+      =/  len=@ud
+        (roll ^-(vox vox.ars) |=([i=^lina a=@ud] =/(l=@ud (pono i) ?:((lth a l) l a))))
       =/  lim=@ud  (sub prx ?:(?=(%row d.pow) n.vir o.vir))
       :*  [?:((lth len lim) len lim) (lent vox.ars)]
           [0 0 0 0]
