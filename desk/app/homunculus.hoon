@@ -24,13 +24,12 @@
 +$  aves  (map ?(%sel %act %key) @t)
 +$  ad    ?(%l %r %t %b)
 +$  via   ?(%h %v)
-+$  saxa  ?(%light %heavy %double %arc %blank %~)
-+$  crux  [c=(pair via saxa) l=saxa r=saxa t=saxa b=saxa]
++$  ora   ?(%light %heavy %double %arc %blank %~)
 +$  muri  [l=@ud r=@ud t=@ud b=@ud]
 +$  sola  [x=@ud y=@ud]
 +$  ars
   $%  [%text =vox]  [%layer ~]  [%scroll =iter =muri =sola]
-      [%border =ad =saxa]  [%line =via =saxa]
+      [%border =ad =ora]  [%line =via =ora]
       [%select =acia pro=?(%submit %~)]
       [%input ab=@ud i=loci =vox]  [%checkbox v=bean]
       [%radio ~]  [%form ~]  [%$ ~]
@@ -77,6 +76,13 @@
 +$  ordo  (list dux)
 +$  gens  (map @t rami)
 ::
++$  os
+  $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora =visa]
+      [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora =visa]
+  ==
++$  ossa  (set os)
++$  crux  [c=(pair via ora) l=ora r=ora t=ora b=ora]
++$  viae  (map loci (pair fila crux))
 +$  opus  [=esse =visa]
 +$  cura  [=omen =equi =mus =ordo =rex =visa]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
@@ -1632,11 +1638,11 @@
     ?.  ?=(%border -.ars)
       $(velo [i.a velo], a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %light   $(saxa.ars %light, a t.a)
-      %heavy   $(saxa.ars %heavy, a t.a)
-      %double  $(saxa.ars %double, a t.a)
-      %arc     $(saxa.ars %arc, a t.a)
-      %blank   $(saxa.ars %blank, a t.a)
+      %light   $(ora.ars %light, a t.a)
+      %heavy   $(ora.ars %heavy, a t.a)
+      %double  $(ora.ars %double, a t.a)
+      %arc     $(ora.ars %arc, a t.a)
+      %blank   $(ora.ars %blank, a t.a)
     ==
       %b-cb
     ?.  ?=(%border -.ars)
@@ -1679,10 +1685,11 @@
       %l
     ?.  ?=(%line -.ars)  $(a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %light   $(saxa.ars %light, a t.a)
-      %heavy   $(saxa.ars %heavy, a t.a)
-      %double  $(saxa.ars %double, a t.a)
-      %blank   $(saxa.ars %blank, a t.a)
+      %light   $(ora.ars %light, a t.a)
+      %heavy   $(ora.ars %heavy, a t.a)
+      %double  $(ora.ars %double, a t.a)
+      %arc     $(ora.ars %arc, a t.a)
+      %blank   $(ora.ars %blank, a t.a)
     ==
       %sel
     $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
@@ -1912,81 +1919,41 @@
     $(lin t.lin, col 0, wod 0, v ?~(t.lin [[i.lin i.v] t.v] [~ ^-(lina (flop [i.lin i.v])) t.v]))
   $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
 ::
-++  iugo                    :: determine a new line intersection from adjacent characters
-  |=  [c=(unit @c) l=(unit @c) r=(unit @c) t=(unit @c) b=(unit @c)]
-  ^-  $@(~ crux)
-  ?~  c  ~
-  =+  ^-  $@(~ (pair via saxa))
-    ?:  =(~-~2500. u.c)  [%h %light]
-    ?:  =(~-~2501. u.c)  [%h %heavy]
-    ?:  =(~-~2550. u.c)  [%h %double]
-    ?:  =(~-~2502. u.c)  [%v %light]
-    ?:  =(~-~2503. u.c)  [%v %heavy]
-    ?:  =(~-~2551. u.c)  [%v %double]
-    ~
-  ?~  -  ~
-  :*  -
-      ?^  l
-        ?:  ?|  =(~-~2500. u.l)  =(~-~2504. u.l)  =(~-~2508. u.l)  =(~-~250c. u.l)
-                =(~-~2514. u.l)  =(~-~254c. u.l)  =(~-~256d. u.l)  =(~-~2570. u.l)
-            ==
-          %light
-        ?:  ?|  =(~-~2501. u.l)  =(~-~2505. u.l)  =(~-~2509. u.l)  =(~-~250f. u.l)
-                =(~-~2517. u.l)  =(~-~254d. u.l)
-            ==
-          %heavy
-        ?:  ?|  =(~-~2550. u.l)  =(~-~2554. u.l)  =(~-~255a. u.l)
-            ==
-          %double
-        %~
-      %~
-      ?^  r
-        ?:  ?|  =(~-~2500. u.r)  =(~-~2504. u.r)  =(~-~2508. u.r)  =(~-~2510. u.r)
-                =(~-~2518. u.r)  =(~-~254c. u.r)  =(~-~256e. u.r)  =(~-~256f. u.r)
-            ==
-          %light
-        ?:  ?|  =(~-~2501. u.r)  =(~-~2505. u.r)  =(~-~2509. u.r)  =(~-~2513. u.r)
-                =(~-~251b. u.r)  =(~-~254d. u.r)
-            ==
-          %heavy
-        ?:  ?|  =(~-~2550. u.r)  =(~-~2557. u.r)  =(~-~255d. u.r)
-            ==
-          %double
-        %~
-      %~
-      ?^  t
-        ?:  ?|  =(~-~2502. u.t)  =(~-~2506. u.t)  =(~-~250a. u.t)  =(~-~250c. u.t)
-                =(~-~2510. u.t)  =(~-~254e. u.t)  =(~-~256d. u.t)  =(~-~256e. u.t)
-            ==
-          %light
-        ?:  ?|  =(~-~2503. u.t)  =(~-~2507. u.t)  =(~-~250b. u.t)  =(~-~250f. u.t)
-                =(~-~2513. u.t)  =(~-~254f. u.t)
-            ==
-          %heavy
-        ?:  ?|  =(~-~2551. u.t)  =(~-~2554. u.t)  =(~-~2557. u.t)
-            ==
-          %double
-        %~
-      %~
-      ?^  b
-        ?:  ?|  =(~-~2502. u.b)  =(~-~2506. u.b)  =(~-~250a. u.b)  =(~-~2514. u.b)
-                =(~-~2518. u.b)  =(~-~254e. u.b)  =(~-~256f. u.b)  =(~-~2570. u.b)
-            ==
-          %light
-        ?:  ?|  =(~-~2503. u.b)  =(~-~2507. u.b)  =(~-~250b. u.b)  =(~-~2517. u.b)
-                =(~-~251b. u.b)  =(~-~254f. u.b)
-            ==
-          %heavy
-        ?:  ?|  =(~-~2551. u.b)  =(~-~255a. u.b)  =(~-~255d. u.b)
-            ==
-          %double
-        %~
-      %~
-  ==
-::
-++  figo                    :: make a character for a line intersection
+++  iugo                    :: make a line intersection character
   |=  crux
   ^-  @c
+  ?:  ?&  ?=(%~ l)  ?=(%~ t)
+          ?|  &(?=(%arc r) ?=(%arc b))
+              &(?=(%arc r) ?=(%light b))
+              &(?=(%light r) ?=(%arc b))
+      ==  ==
+    ~-~256d.  ::  ╭
+  ?:  ?&  ?=(%~ r)  ?=(%~ t)
+          ?|  &(?=(%arc l) ?=(%arc b))
+              &(?=(%arc l) ?=(%light b))
+              &(?=(%light l) ?=(%arc b))
+      ==  ==
+    ~-~256e.  ::  ╮
+  ?:  ?&  ?=(%~ l)  ?=(%~ b)
+          ?|  &(?=(%arc r) ?=(%arc t))
+              &(?=(%arc r) ?=(%light t))
+              &(?=(%light r) ?=(%arc t))
+      ==  ==
+    ~-~2570.  ::  ╰
+  ?:  ?&  ?=(%~ r)  ?=(%~ b)
+          ?|  &(?=(%arc l) ?=(%arc t))
+              &(?=(%arc l) ?=(%light t))
+              &(?=(%light l) ?=(%arc t))
+      ==  ==
+    ~-~256f.  ::  ╯
+  =?  +<  |(?=(%arc q.c) ?=(%arc l) ?=(%arc r) ?=(%arc t) ?=(%arc b))
+    %_  +<
+      q.c  ?:(?=(%arc q.c) %light q.c)
+      l    ?:(?=(%arc l) %light l)
+      r    ?:(?=(%arc r) %light r)
+      t    ?:(?=(%arc t) %light t)
+      b    ?:(?=(%arc b) %light b)
+    ==
   ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%light b))  ~-~250c.  ::  ┌
   ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%light b))  ~-~250d.  ::  ┍
   ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%heavy b))  ~-~250e.  ::  ┎
@@ -2244,38 +2211,93 @@
   ?:  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%heavy b))  ~-~2545.  ::  ╅
   ~-.
 ::
-++  coeo                    :: apply line intersections on visa
-  |=  [vi=visa do=(list loci) done=(set loci)]
-  ^-  visa
-  %-  %~  gas  by  vi
-  |-  ^-  (list [loci nodi])
-  ?~  do  ~
-  ?:  (~(has in done) i.do)
-    $(do t.do)
-  =/  [ll=(unit loci) tl=(unit loci)]
-    :-  ?:(=(0 x.i.do) ~ [~ [(dec x.i.do) y.i.do]])
-    ?:(=(0 y.i.do) ~ [~ [x.i.do (dec y.i.do)]])
-  =/  [rl=loci bl=loci]
-    [[+(x.i.do) y.i.do] [x.i.do +(y.i.do)]]
-  =/  c=(unit nodi)  (~(get by vi) i.do)
-  =/  l=(unit nodi)  ?~(ll ~ (~(get by vi) u.ll))
-  =/  t=(unit nodi)  ?~(tl ~ (~(get by vi) u.tl))
-  =/  r=(unit nodi)  (~(get by vi) rl)
-  =/  b=(unit nodi)  (~(get by vi) bl)
-  =/  int=$@(~ crux)
-    %:  iugo
-      ?^(c [~ q.u.c] ~)  ?^(l [~ q.u.l] ~)  ?^(r [~ q.u.r] ~)
-      ?^(t [~ q.u.t] ~)  ?^(b [~ q.u.b] ~)
+++  figo                    :: parse a target character for a line intersection
+  |=  c=@c
+  ^-  $@(~ (pair via ora))
+  ?:  =(~-~2500. c)  [%h %light]
+  ?:  =(~-~2501. c)  [%h %heavy]
+  ?:  =(~-~2550. c)  [%h %double]
+  ?:  =(~-~2502. c)  [%v %light]
+  ?:  =(~-~2503. c)  [%v %heavy]
+  ?:  =(~-~2551. c)  [%v %double]
+  ~
+::
+++  coeo                    :: apply line intersections
+  |=  oz=(list os)
+  =;  ints
+    |-  ^-  (list [loci nodi])
+    ?~  ints  ~
+    =/  char=@c  (iugo crux.i.ints)
+    ?:  =(~-. char)  $(ints t.ints)
+    :-  [loci.i.ints fila.i.ints char]
+    $(ints t.ints)
+  =/  [zo=(list os) a=viae]  [oz ~]
+  |-  ^-  (list [=loci =fila =crux])
+  =/  o=(list os)  zo
+  ?~  oz  ~(tap by a)
+  =/  [hit1=bean hit2=bean]  [| |]
+  |-  ^-  (list [=loci =fila =crux])
+  ?:  |(?=(~ o) &(hit1 hit2))  ^$(oz t.oz)
+  ?:  |(&(?=(%h -.i.oz) ?=(%h -.i.o)) &(?=(%v -.i.oz) ?=(%v -.i.o)))
+    $(o t.o)
+  =/  v=$@(~ (pair ?(%1 %2) (pair loci nodi)))
+    ?-  -.i.oz
+        %h
+      =/  h1=(unit nodi)  (~(get by visa.i.o) [x1.i.oz y.i.oz])
+      ?^  h1  [%1 [[x1.i.oz y.i.oz] u.h1]]
+      =/  h2=(unit nodi)  (~(get by visa.i.o) [x2.i.oz y.i.oz])
+      ?^  h2  [%2 [[x2.i.oz y.i.oz] u.h2]]  ~
+        %v
+      =/  v1=(unit nodi)  (~(get by visa.i.o) [x.i.oz y1.i.oz])
+      ?^  v1  [%1 [[x.i.oz y1.i.oz] u.v1]]
+      =/  v2=(unit nodi)  (~(get by visa.i.o) [x.i.oz y2.i.oz])
+      ?^  v2  [%2 [[x.i.oz y2.i.oz] u.v2]]  ~
     ==
-  ?:  |(?=(~ c) ?=(~ int))  $(do t.do)
-  [[i.do p.u.c (figo int)] $(do t.do)]
+  ?~  v  $(o t.o)
+  =/  c=$@(~ (pair via ora))  (figo q.q.q.v)
+  ?~  c  $(o t.o)
+  =/  ac=(unit (pair fila crux))  (~(get by a) p.q.v)
+  =/  nc=(pair fila crux)
+    ?^  ac
+      ?:  ?=(%h -.i.oz)
+        ?-(p.v %1 u.ac(r.q ora.i.oz), %2 u.ac(l.q ora.i.oz))
+      ?-(p.v %1 u.ac(b.q ora.i.oz), %2 u.ac(t.q ora.i.oz))
+    =?  i.o  ?=(%line p.i.o)
+      ?-  -.i.o
+        %h  i.o(x1 +(x1.i.o), x2 ?:(=(0 x2.i.o) 0 (dec x2.i.o)))
+        %v  i.o(y1 +(y1.i.o), y2 ?:(=(0 y2.i.o) 0 (dec y2.i.o)))
+      ==
+    :+  p.q.q.v  c
+    ?-  -.i.oz
+        %h
+      ?>  ?=(%v -.i.o)
+      :+  ?-(p.v %1 %~, %2 ora.i.oz)
+        ?-(p.v %1 ora.i.oz, %2 %~)
+      ?:  &((gth y.i.oz y1.i.o) (lth y.i.oz y2.i.o))  [ora.i.o ora.i.o]
+      ?:  &((gth y.i.oz y1.i.o) =(y.i.oz y2.i.o))     [ora.i.o %~]
+      ?:  &((lth y.i.oz y2.i.o) =(y.i.oz y1.i.o))     [%~ ora.i.o]
+      [%~ %~]
+        %v
+      ?>  ?=(%h -.i.o)
+      =+  [?-(p.v %1 %~, %2 ora.i.oz) ?-(p.v %1 ora.i.oz, %2 %~)]
+      ?:  &((gth x.i.oz x1.i.o) (lth x.i.oz x2.i.o))  [ora.i.o ora.i.o -]
+      ?:  &((gth x.i.oz x1.i.o) =(x.i.oz x2.i.o))     [ora.i.o %~ -]
+      ?:  &((lth x.i.oz x2.i.o) =(x.i.oz x1.i.o))     [%~ ora.i.o -]
+      [%~ %~ -]
+    ==
+  %=  $
+    a     (~(put by a) p.q.v nc)
+    hit1  |(hit1 ?=(%1 p.v))
+    hit2  |(hit2 ?=(%2 p.v))
+    o     t.o
+  ==
 ::
 ++  viso                    :: take an element and render it 
   |=  [=lar =res =ars lim=modi]
   ^-  visa
   ?+  -.ars    (rbox lar lim res)
     %text      (rtxt lar lim look.res size.res vox.ars)
-    %border    (rbor lar lim res +.ars)
+    %border    (rlin lar lim res ?:(|(?=(%t ad.ars) ?=(%b ad.ars)) %h %v) ora.ars)
     %line      (rlin lar lim res +.ars)
     %input     (rinp lar lim res ab.ars vox.ars)
     %checkbox  (rbox lar lim ?:(v.ars res(b.look f.look.res, f.look b.look.res) res))
@@ -2357,10 +2379,10 @@
     $(v t.v, ab (dec ab))
   ==
 ::
-++  rbor                    :: render a border element
-  |=  [=lar lim=loci =res =ad =saxa]
+++  rlin                    :: render a line or border element
+  |=  [=lar lim=loci =res =via =ora]
   =|  [w=@ud h=@ud a=visa]
-  ?:  ?=(%~ saxa)  a
+  ?:  ?=(%~ ora)  a
   ?:  |(=(0 w.size.res) =(0 h.size.res))  a
   |-  ^-  visa
   =/  x=@ud  (add x.lar w)
@@ -2370,52 +2392,10 @@
   ?:  (gth x x.lim)
     $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
   =/  c=@c
-    ?:  ?=(%blank saxa)  ~-.
-    ?-  ad
-        %l
-      ?.  =(0 w)  ~-.
-      ?:  &(=(0 h) ?=(%arc saxa))  ~-~256d.  ::  ╭
-      ?:  &(=(h.size.res +(h)) ?=(%arc saxa))  ~-~2570.  :: ╰
-      ?+(saxa ~-~2502. %light ~-~2502., %heavy ~-~2503., %double ~-~2551.)  ::  │  ┃  ║
-        %r
-      ?.  nrow  ~-.
-      ?:  &(=(0 h) ?=(%arc saxa))  ~-~256e.  :: ╮
-      ?:  &(=(h.size.res +(h)) ?=(%arc saxa))  ~-~256F.  :: ╯
-      ?+(saxa ~-~2502. %light ~-~2502., %heavy ~-~2503., %double ~-~2551.)  ::  │  ┃  ║
-        %t
-      ?.  =(0 h)  ~-.
-      ?:  &(=(0 w) ?=(%arc saxa))  ~-~256d.  ::  ╭
-      ?:  &(nrow ?=(%arc saxa))  ~-~256e.  :: ╮
-      ?+(saxa ~-~2500. %light ~-~2500., %heavy ~-~2501., %double ~-~2550.)  ::  ─  ━  ═
-        %b
-      ?.  =(h.size.res +(h))  ~-.
-      ?:  &(=(0 w) ?=(%arc saxa))  ~-~2570.  :: ╰
-      ?:  &(nrow ?=(%arc saxa))  ~-~256F.  :: ╯
-      ?+(saxa ~-~2500. %light ~-~2500., %heavy ~-~2501., %double ~-~2550.)  ::  ─  ━  ═
-    ==
-  %=  $
-    w  ?:(nrow 0 +(w))
-    h  ?:(nrow +(h) h)
-    a  (~(put by a) [x y] [look.res c])
-  ==
-::
-++  rlin                    :: render a line element
-  |=  [=lar lim=loci =res =via =saxa]
-  =|  [w=@ud h=@ud a=visa]
-  ?:  ?=(%~ saxa)  a
-  ?:  |(=(0 w.size.res) =(0 h.size.res))  a
-  |-  ^-  visa
-  =/  x=@ud  (add x.lar w)
-  =/  y=@ud  (add y.lar h)
-  =/  nrow=bean  (gte +(w) w.size.res)
-  ?:  |((gte h h.size.res) (gth y y.lim))  a
-  ?:  (gth x x.lim)
-    $(w ?:(nrow 0 +(w)), h ?:(nrow +(h) h))
-  =/  c=@c
-    ?:  ?=(%blank saxa)  ~-.
+    ?:  ?=(%blank ora)  ~-.
     ?-  via
-      %h  ?+(saxa ~-~2500. %light ~-~2500., %heavy ~-~2501., %double ~-~2550.)  ::  ─  ━  ═
-      %v  ?+(saxa ~-~2502. %light ~-~2502., %heavy ~-~2503., %double ~-~2551.)  ::  │  ┃  ║
+      %h  ?+(ora ~-~2500. %light ~-~2500., %heavy ~-~2501., %double ~-~2550.)  ::  ─  ━  ═
+      %v  ?+(ora ~-~2502. %light ~-~2502., %heavy ~-~2503., %double ~-~2551.)  ::  │  ┃  ║
     ==
   %=  $
     w  ?:(nrow 0 +(w))
@@ -3091,11 +3071,10 @@
   ^-  cura
   ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
     [~ ~ ~ ~ rex.ara ~]
-  =/  k=rami                [[%~ 0] ~]
-  =/  rk=$@(~ rami)         ?~(rex.ara ~ k.rex.ara)
-  =/  plim=modi             [x.arx.ara y.arx.ara]
-  =/  acc=[rend=bean sect=[do=(set loci) done=(set loci)] cura]
-    [%.n [~ ~] *cura]
+  =/  k=rami                      [[%~ 0] ~]
+  =/  rk=$@(~ rami)               ?~(rex.ara ~ k.rex.ara)
+  =/  plim=modi                   [x.arx.ara y.arx.ara]
+  =/  acc=[rend=bean =ossa cura]  [%.n ~ *cura]
   =;  dic
     =.  omen.dic
       ?:  ?=(^ rex.dic)
@@ -3106,19 +3085,20 @@
       ?:  ?=(^ ordo.dic)
         hnav
       ~
-    =?  visa.dic  ?=(^ do.sect.dic)
-      (coeo visa.dic ~(tap in ^-((set loci) do.sect.dic)) done.sect.dic)
-    +.+.dic
-  |-  ^-  [bean sect=[do=(set loci) done=(set loci)] cura]
+    ?~  ossa.dic  +>.dic
+    %_  +>.dic
+      visa  (~(gas by visa.dic) (coeo ~(tap in ^-(ossa ossa.dic))))
+    ==
+  |-  ^-  [bean =ossa cura]
   =/  el=(unit ens)  (~(get by e) k)
   ?~  el
     ?:  ?=(%l axis.i.k)  $(k [[%b 0] t.k])
     ?:  ?=(%b axis.i.k)  $(k [[%~ 0] t.k])
     acc
-  =/  nacc=[rend=bean sect=[do=(set loci) done=(set loci)] cura]
+  =/  nacc=[rend=bean =ossa cura]
     %=  $
       k     [[%l 0] k]
-      acc   [%.n [~ ~] ~ ~ ~ ~ rex.acc ~]
+      acc   [%.n ~ ~ ~ ~ ~ rex.acc ~]
       plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
             ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
     ==
@@ -3132,8 +3112,7 @@
         ?=(%input -.ars.u.el)  ?=(%checkbox -.ars.u.el)
     ==
   =.  ordo.acc  
-    ?.  nav
-      (weld ordo.nacc ordo.acc)
+    ?.  nav  (weld ordo.nacc ordo.acc)
     %+  weld
       ^-  ordo
       :_  ordo.nacc
@@ -3169,36 +3148,39 @@
       (~(uni by equi.acc) equi.nacc)
     (~(put in (~(uni by equi.acc) equi.nacc)) k)
   =.  visa.acc  (~(uni by visa.nacc) visa.acc)
-  =?  sect.acc  |(?=(^ do.sect.nacc) ?=(^ done.sect.nacc))
-    :-  (~(uni in do.sect.acc) do.sect.nacc)
-    (~(uni in done.sect.acc) ^-((set loci) done.sect.nacc))
-  =?  do.sect.acc  |(?=(%border -.ars.u.el) ?=(%line -.ars.u.el))
-    %-  %~  gas
+  =?  ossa.acc  ?=(^ ossa.nacc)  (~(uni in ossa.acc) ^-(ossa ossa.nacc))
+  =?  ossa.acc
+      ?|  &(?=(%border -.ars.u.el) !|(?=(%~ ora.ars.u.el) ?=(%blank ora.ars.u.el)))
+          &(?=(%line -.ars.u.el) !|(?=(%~ ora.ars.u.el) ?=(%blank ora.ars.u.el)))
+      ==
+    %-  %~  put
           in
-        do.sect.acc
-    ^-  (list loci)
+        ossa.acc
     =/  x=@ud  ?:((lte x.iter.u.el x.lar.u.el) (sub x.lar.u.el x.iter.u.el) 0)
     =/  y=@ud  ?:((lte y.iter.u.el y.lar.u.el) (sub y.lar.u.el y.iter.u.el) 0)
     ?:  ?|  &(?=(%line -.ars.u.el) ?=(%h via.ars.u.el))
             &(?=(%border -.ars.u.el) |(?=(%t ad.ars.u.el) ?=(%b ad.ars.u.el)))
         ==
       =/  xend=@ud  (add x.lar.u.el w.size.res.u.el)
-      :-  ^-(loci [?:((lte x.iter.u.el xend) (sub xend x.iter.u.el) 0) y])
-      ?:  =(0 x)  ~
-      [^-(loci [(dec x) y]) ~]
+      =?  xend  (lte x.iter.u.el xend)  (sub xend x.iter.u.el)
+      ?+  -.ars.u.el  !!
+        %border  [%h -.ars.u.el x ?:(=(0 xend) 0 (dec xend)) y ora.ars.u.el visa.u.el]
+        %line    [%h -.ars.u.el ?:(=(0 x) 0 (dec x)) xend y ora.ars.u.el visa.u.el]
+      ==
     =/  yend=@ud  (add y.lar.u.el h.size.res.u.el)
-    :-  ^-(loci [x ?:((lte y.iter.u.el yend) (sub yend y.iter.u.el) 0)])
-    ?:  =(0 y)  ~
-    [^-(loci [x (dec y)]) ~]
+    =?  yend  (lte y.iter.u.el yend)  (sub yend y.iter.u.el)
+    ?+  -.ars.u.el  !!
+      %border  [%v -.ars.u.el x y ?:(=(0 yend) 0 (dec yend)) ora.ars.u.el visa.u.el]
+      %line    [%v -.ars.u.el x ?:(=(0 y) 0 (dec y)) yend ora.ars.u.el visa.u.el]
+    ==
   ?:  ?=(%l axis.i.k)
     %=  $
-      ager.i.k       +(ager.i.k)
-      rend.acc       |(rend.acc rend.nacc)
-      done.sect.acc  (~(uni in done.sect.acc) do.sect.acc)
-      do.sect.acc    ~
+      ager.i.k  +(ager.i.k)
+      rend.acc  |(rend.acc rend.nacc)
+      ossa.acc  ~
       visa.acc
-        ?~  do.sect.acc  visa.acc
-        (coeo visa.acc ~(tap in ^-((set loci) do.sect.acc)) done.sect.acc)
+        ?~  ossa.acc  visa.acc
+        (~(gas by visa.acc) (coeo ~(tap in ^-(ossa ossa.acc))))
     ==
   %=  $
     ager.i.k  +(ager.i.k)
