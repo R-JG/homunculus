@@ -683,6 +683,7 @@
         =.  x  (add x ab.ars.u.el)
         =/  l=@ud  (lent i.vox.ars.u.el)
         (~(put by esse.ara) u.mk u.el(i.ars [?:((lth x l) x l) 0]))
+      =.  y  (add y ab.ars.u.el)
       =/  l=@ud  (lent vox.ars.u.el)
       =/  rlen=@ud
         ?:  (gth +(y) l)
@@ -692,11 +693,7 @@
             by
           esse.ara
         u.mk
-      %_  u.el
-        i.ars 
-          :-  ?:((lth x rlen) x rlen)
-          (add ab.ars.u.el ?:((gth +(y) l) (dec l) y))
-      ==
+      u.el(i.ars [?:((lth x rlen) x rlen) ?:((gth +(y) l) (dec l) y)])
     =.  omen.ara
       ?+  -.ars.u.el   (~(uni by omen.ara) hnav)
         %input         (~(uni by omen.ara) hinp)
@@ -832,8 +829,11 @@
       =?  row  !=(0 x.i.ars.u.el)
         (oust [(dec x.i.ars.u.el) 1] row)
       ?:  ?&  ?=(^ arow)
-              ?|  &((lth alen w.size.res.u.el) (lte (sumo row) (sub w.size.res.u.el alen)))
-                  !=(~-. (rear arow))
+              ?|  ?&  (lth alen w.size.res.u.el)
+                      %+  lte  (sumo row)
+                      ?:((lte alen w.size.res.u.el) (sub w.size.res.u.el alen) 0)
+                  ==
+                  &(|(=(0 x.i.ars.u.el) =(1 x.i.ars.u.el)) !=(~-. (rear arow)))
           ==  ==
         =.  vox.ars.u.el
           %+  weld
@@ -879,10 +879,10 @@
           ^-(lina (zing [row brow (slag +(+(y.i.ars.u.el)) vox.ars.u.el)]))
         ==
       =.  i.ars.u.el
-        ?.  =(0 x.i.ars.u.el)
+        ?:  &(=(0 y.i.ars.u.el) !=(0 x.i.ars.u.el))
+          [(dec x.i.ars.u.el) 0]
+        ?.  |(=(0 x.i.ars.u.el) =(1 x.i.ars.u.el))
           [(dec x.i.ars.u.el) y.i.ars.u.el]
-        ?:  =(0 y.i.ars.u.el)
-          i.ars.u.el
         =.  y.i.ars.u.el  (dec y.i.ars.u.el)
         =/  l=@ud
           (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
@@ -1900,10 +1900,10 @@
   ?:  =(~-. i.lin)
     $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
   ?:  &(?=(^ i.v) =(~-. i.i.v))
-    ?:  |((gth +(col) wid) &(=(wid +(col)) !&(?=(^ t.lin) =(~-. i.t.lin))))
+    ?:  |((gth col wid) &(=(wid col) !&(?=(^ t.lin) =(~-. i.t.lin))))
       $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
     $(lin t.lin, col +(col), wod 1, v [[i.lin i.v] t.v])
-  ?:  &((gte +(col) wid) |(?=(~ t.lin) !=(~-. i.t.lin)))
+  ?:  (gte col wid)
     ?:  (lth +(wod) wid)
       %=  $
         lin  t.lin
@@ -2415,7 +2415,7 @@
   =/  px=as         [%c (dec x.arx.ara)]
   =/  py=as         [%c y.arx.ara]
   =/  pow=flow      [%row %clip]
-  =/  prx=@ud       x.arx.ara
+  =/  prx=@ud       (dec x.arx.ara)
   =/  pry=@ud       y.arx.ara
   =/  plar=lar      lar.ara
   =/  plim=modi     [(dec x.arx.ara) y.arx.ara]
@@ -2455,13 +2455,13 @@
   =/  wcen=bean  =(%p p.w.size.rei)
   =/  hcen=bean  =(%p p.h.size.rei)
   =?  w.size.rei  wcen
-    ?:  |(=(%i p.px) =(%p p.px))
+    ?:  &(=(%i p.px) ?=(%layer -.ars))
       [%i 0]
-    [%c (div (mul q.w.size.rei q.px) 100)]
+    [%c (div (mul q.w.size.rei prx) 100)]
   =?  h.size.rei  hcen
-    ?:  |(=(%i p.py) =(%p p.py))
+    ?:  &(=(%i p.py) ?=(%layer -.ars))
       [%i 0]
-    [%c (div (mul q.h.size.rei q.py) 100)]
+    [%c (div (mul q.h.size.rei pry) 100)]
   =?  t.marg.rei  =(%p p.t.marg.rei)
     ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
       [%c 0]
