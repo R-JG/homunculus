@@ -12,7 +12,7 @@
       padd=[l=@ud r=@ud t=@ud b=@ud]
       marg=[l=@ud r=@ud t=@ud b=@ud]
       flex=[x=@ud y=@ud]
-      flow=[d=?(%col %row) b=?(%wrap %clip)]
+      flow=fuga
       look=fila
   ==
 +$  loci  [x=@ud y=@ud]
@@ -21,6 +21,7 @@
 +$  lar   $~([1 1] loci)
 +$  modi  loci
 +$  iter  [x=@ud y=@ud]
++$  fuga  [d=?(%col %row) b=?(%wrap %clip)]
 +$  aves  (map ?(%sel %act %key) @t)
 +$  ad    ?(%l %r %t %b)
 +$  via   ?(%h %v)
@@ -82,20 +83,35 @@
 +$  ossa  (set os)
 +$  crux  [c=(pair via ora) l=ora r=ora t=ora b=ora]
 +$  viae  (map loci (pair fila crux))
++$  aqua  (list [i=@ud size=@ud marg=@ud])
 +$  opus  [=esse =visa]
-+$  cura  [=omen =equi =mus =ordo =rex =visa]
++$  cura  [=visa =omen =gens =ordo =rex =equi =mus]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
-+$  rei
++$  ovum
   $:  size=[w=as h=as]
       padd=[l=as r=as t=as b=as]
       marg=[l=as r=as t=as b=as]
-      =flex
-      =flow
+      flex=[x=@ud y=@ud]
+      flow=fuga
       look=acia
   ==
-+$  aqua  (list [i=@ud size=@ud marg=@ud])
-+$  flex  [x=@ud y=@ud]
-+$  flow  [d=?(%col %row) b=?(%wrap %clip)]
++$  cor   @
++$  fons  [@p @tas]
++$  aula  (list (set fons))
++$  vela  manx
++$  ara
+  $:  =vela
+      =esse  =visa
+      =omen  =gens
+      =ordo  =rex
+      =equi  =mus
+  ==
++$  arae  (map fons ara)
++$  urbs  $~([50 25] [x=@ud y=@ud])
++$  ego
+  $:  =cor  =fons  =urbs
+      =aula  =arae
+  ==
 ::
 +$  data
   $%  [%sel p=@t]
@@ -103,21 +119,6 @@
       [%form form]
   ==
 +$  form  (pair @t (map @t @t))
-::
-+$  vela  manx
-+$  urbs  $~([50 25] [x=@ud y=@ud])
-+$  arx   [x=@ud y=@ud]
-+$  fons  [@p @tas]
-+$  ara
-  $:  =esse  =visa  =vela
-      =omen  =rex  =ordo
-      =equi  =gens  =mus
-      =arx  =lar  =fons
-  ==
-+$  arae  (map fons ara)
-+$  ego
-  $:  =urbs  =ara
-  ==
 ::
 +$  card  card:agent:gall
 --
@@ -139,7 +140,7 @@
   ^-  (quip card _hoc)
   =/  ol  !<(^urbs old)
   =/  siz=^urbs  ?:(=([0 0] ol) *^urbs ol)
-  [~ hoc(ego =+(*^ego -(urbs siz, arx.ara siz)))]
+  [~ hoc(ego =+(*^ego -(urbs siz)))]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -147,27 +148,29 @@
   ?+  mark  ~|("homunculus poke failed with mark: {<mark>}" !!)
     ::
       %elem
-    =/  elem       !<(manx vase)
-    =/  gen=esse   (geno elem)
-    =/  dic=cura   (dico gen)
-    =/  lu=lux
-      :-  %mor
-      :~  (supo visa.dic)
-          (fero rex.dic gen)
+    =/  elem  !<(manx vase)
+    =/  fon=^fons
+      [src.bowl ?:(&(?=(^ sap.bowl) ?=(^ t.sap.bowl)) i.t.sap.bowl %$)]
+    =/  aru=(unit ara)  (~(get by arae) fon)
+    ?^  aru
+      =/  gen=ara  (geno elem u.aru)
+      :_  hoc(arae (~(put by arae) fon gen))
+      ?.  =/(aul=(set ^fons) (snag cor aula) (~(has in aul) fon))
+        ~
+      :_  ~
+      :*  %give  %fact  ~[/homunculus-http]  %json
+          !>  ^-  json  :-  %s  %-  crip  %-  volo
+          ^-(lux [%mor ~[(dono visa.u.aru visa.gen) (fero rex.gen equi.gen esse.gen)]])
       ==
-    :_  %_  hoc
-          vela.ara  elem
-          esse.ara  gen
-          visa.ara  visa.dic
-          rex.ara   rex.dic
-          mus.ara   mus.dic
-          omen.ara  omen.dic
-          ordo.ara  ordo.dic
-          equi.ara  equi.dic
-          fons.ara
-            [src.bowl ?:(&(?=(^ sap.bowl) ?=(^ t.sap.bowl)) i.t.sap.bowl %$)]
-        ==
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lu))]))]
+    =/  gen=ara  (geno elem *ara)
+    =:  aula  (into aula cor (silt ~[fon]))
+        fons  fon
+      ==
+    :_  hoc(arae (~(put by arae) fon gen))
+    :_  ~
+    :*  %give  %fact  ~[/homunculus-http]  %json
+        !>  ^-  json  :-  %s  %-  crip  %-  volo
+        ^-(lux [%mor ~[(supo visa.gen) (fero rex.gen equi.gen esse.gen)]])
     ==
     ::
       %json
@@ -175,38 +178,61 @@
     ?:  ?=(%a -.jsn)
       ?.  &(?=(^ p.jsn) ?=(%n -.i.p.jsn) ?=(^ t.p.jsn) ?=(%n -.i.t.p.jsn))
         [~ hoc]
-      =/  siz=[@ud @ud]  [(slav %ud p.i.p.jsn) (slav %ud p.i.t.p.jsn)]
-      =:  urbs     siz
-          arx.ara  siz
+      =.  urbs  [(slav %ud p.i.p.jsn) (slav %ud p.i.t.p.jsn)]
+      =^  vis=visa  arae
+        =/  aul=(set ^fons)  (snag cor aula)
+        =/  kes=(list ^fons)  ~(tap in ~(key by arae))
+        =|  vis=visa
+        |-  ^-  [visa ^arae]
+        ?~  kes  [vis arae]
+        =/  aru=(unit ara)  (~(get by arae) i.kes)
+        ?~  aru  $(kes t.kes)
+        =/  gen=ara  (geno vela.u.aru u.aru)
+        %=  $
+          kes   t.kes
+          arae  (~(put by arae) i.kes gen)
+          vis   ?:((~(has in aul) i.kes) (~(uni by vis) visa.gen) vis)
         ==
-      =/  gen=esse   (geno vela.ara)
-      =/  dic=cura   (dico gen)
-      =/  lu=lux
-        :-  %mor
-        :~  (supo visa.dic)
-            (fero rex.dic gen)
-        ==
-      :_  %_  hoc
-            esse.ara  gen
-            visa.ara  visa.dic
-            rex.ara   rex.dic
-            mus.ara   mus.dic
-            omen.ara  omen.dic
-            ordo.ara  ordo.dic
-            equi.ara  equi.dic
-          ==
-      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lu))]))]
+      =/  aru=(unit ara)  (~(get by arae) fons)
+      =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
+      =/  lus=lux  (supo ^-(visa (~(uni by bac) vis)))
+      :_  hoc
+      :_  ~
+      :*  %give  %fact  ~[/homunculus-http]  %json
+          !>  ^-  json  :-  %s  %-  crip  %-  volo
+          ^-(lux [%mor ?~(aru ~[lus] ~[lus (fero rex.u.aru equi.u.aru esse.u.aru)])])
       ==
     ?.  ?=(%s -.jsn)  [~ hoc]
     =/  inp=tape  (trip p.jsn)
     ?:  =("\\" inp)  [~ hoc]
     =;  z=(unit zona)
       ?~  z  [~ hoc]
-      =/  l=(unit lex)  (~(get by omen.ara) (noto u.z))
+      =/  arf=$@(~ (pair ara ^fons))
+        ?.  |(?=(%clk -.u.z) ?=(%whe -.u.z))
+          =/  aru=(unit ara)  (~(get by arae) fons)
+          ?~  aru  ~
+          [u.aru fons]
+        =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
+        |-  ^-  $@(~ (pair ara ^fons))
+        ?~  aul  ~
+        =/  aru=(unit ara)  (~(get by arae) i.aul)
+        ?~  aru  $(aul t.aul)
+        =/  roo=(unit ens)  (~(get by esse.u.aru) [[%~ 0] ~])
+        ?~  roo  $(aul t.aul)
+        =/  [x=@ud y=@ud]
+          ?:(?=(%clk -.u.z) [x.u.z y.u.z] ?:(?=(%whe -.u.z) [x.u.z y.u.z] [0 0]))
+        ?:  ?&  (gte x x.lar.u.roo)
+                (lte x (add x.lar.u.roo ?:(=(0 w.size.res.u.roo) 0 (dec w.size.res.u.roo))))
+                (lte y (add y.lar.u.roo ?:(=(0 h.size.res.u.roo) 0 (dec h.size.res.u.roo))))
+                (gte y y.lar.u.roo)
+            ==
+          [u.aru i.aul]
+        $(aul t.aul)
+      ?~  arf  [~ hoc]
+      =/  l=(unit lex)  (~(get by omen.p.arf) (noto u.z))
       ?~  l  [~ hoc]
-      =^  crds  ego
-        (novo u.l u.z)
-      [crds hoc]
+      =^  crds  p.arf  (muto u.l u.z q.arf p.arf)
+      [crds hoc(arae (~(put by arae) q.arf p.arf), fons q.arf)]
     ?~  inp  ~
     ?.  =('\\' i.inp)     [~ [%txt (tuba inp)]]
     ?~  t.inp             [~ [%txt ~[~-~5c.]]]
@@ -291,17 +317,26 @@
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-watch
   |=  =path
+  ^-  (quip card _hoc)
   ?+  path  [~ hoc]
     ::
       [%homunculus-http ~]
-    =/  =lux
-      :-  %mor
-      :~  (supo visa.ara)
-          (fero rex.ara esse.ara)
-      ==
-    =/  ansi=@t  (crip ^-(tape ['\\e[1;1H\\e[3J\\e[0J' (volo lux)]))
+    =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
+    =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
+    =/  vis
+      |-  ^-  visa
+      ?~  aul  bac
+      =/  aru=(unit ara)  (~(get by arae) i.aul)
+      ?~  aru  $(aul t.aul)
+      (~(uni by $(aul t.aul)) visa.u.aru)
+    =/  aru=(unit ara)  (~(get by arae) fons)
     :_  hoc
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
+    :_  ~
+    :*  %give  %fact  ~[/homunculus-http]  %json
+        !>  ^-  json  :-  %s  %-  crip  
+        ^-  tape  :-  '\\e[1;1H\\e[3J\\e[0J'
+        %-  volo  ^-  lux  :-  %mor
+        ~[(supo vis) ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))]
     ==
     ::
   ==
@@ -336,769 +371,894 @@
       [[%txt ~] %inp]  [[%bac ~] %del]
   ==
 ::  ::  ::
-++  novo                    :: handle an event from the hotkey context
-  |=  [=lex =zona]
-  ^-  (quip card _ego)
+++  muto                    :: handle an event from the hotkey context
+  |=  [=lex zon=zona fon=^fons =ara]
+  |^  ^-  (quip card ^ara)  novo
   ::
-  ?:  |(?=(%nav-l lex) ?=(%nav-r lex) ?=(%nav-u lex) ?=(%nav-d lex))
-    |^
-    =/  scr=$@(~ rami)  ?~(rex.ara ~ (ligo k.rex.ara))
-    =/  spar=(unit ens)  ?~(scr ~ (~(get by esse.ara) scr))
-    =/  navs=ordo  (navi rex.ara ordo.ara)
-    =/  snav=ordo
-      ?~  scr  ~
-      %+  skim  ^-(ordo navs)
-      |=  =dux
-      (chil scr k.dux)
-    =/  next=rex  ?~(navs ~ ?~(snav i.navs i.snav))
-    =/  send=bean
-      ?&  ?=(^ rex.ara)  ?=(^ spar)  ?=(%scroll -.ars.u.spar)  =(scr k.rex.ara)
-          ?|  &(?=(%nav-l lex) =(0 x.iter.ars.u.spar))
-              &(?=(%nav-r lex) =(x.sola.ars.u.spar x.iter.ars.u.spar))
-              &(?=(%nav-u lex) =(0 y.iter.ars.u.spar))
-              &(?=(%nav-d lex) =(y.sola.ars.u.spar y.iter.ars.u.spar))
-      ==  ==
-    =?  scr   &(send ?=(^ scr) ?=(^ t.scr))  
-      =/  pscr=$@(~ rami)  (ligo t.scr)
-      ?~(pscr scr pscr)
-    =?  spar  &(send ?=(^ scr))  (~(get by esse.ara) scr)
-    =?  next  &(send ?=(~ scr) ?=(^ navs))  i.navs
-    =?  snav  &(send ?=(^ scr))
-      %+  skim  ^-(ordo navs)
-      |=  =dux
-      (chil scr k.dux)
-    =?  next  &(send ?=(^ scr) ?=(^ snav))  i.snav
-    =/  upd=$@(~ [=esse cura])
-      ?~  scr  ~
-      ?:  ?=(^ snav)  ~
-      %+  abeo  scr
-      ?+  lex   lex
-        %nav-l  %scr-l
-        %nav-r  %scr-r
-        %nav-u  %scr-u
-        %nav-d  %scr-d
-      ==
-    =?  ara  ?=(^ upd)
-      %_  ara
-        esse  esse.upd
-        rex   rex.upd
-        mus   mus.upd
-        omen  omen.upd
-        ordo  ordo.upd
-        equi  equi.upd
-      ==
-    =?  next  ?=(^ upd)
-      ?~  scr  ~
-      =<  ?~(. ~ i)
-      %+  skim  ^-(ordo (navi rex.ara ordo.upd))
-      |=  =dux
-      (chil scr k.dux)
-    =/  prae=opus
-      ?~  rex.ara  [~ ~]
-      (duco esse.ara k.rex.ara next)
-    =.  rex.ara
-      ?:  ?=(^ next)
-        next
-      ?:  |(?=(~ scr) ?=(~ spar) ?=(~ upd) ?=(^ (find ~[rex.ara] ordo.upd)))
-        rex.ara
-      (rogo scr ordo.ara)
-    =/  post=opus
-      ?:  ?=(^ next)
-        (duco esse.ara k.next rex.ara)
-      ?:  ?=(^ rex.ara)
-        (duco esse.ara k.rex.ara rex.ara)
-      [~ ~]
-    =/  sel=(unit ens)  ?~(rex.ara ~ (~(get by esse.ara) k.rex.ara))
-    =.  omen.ara
-      ?~  sel  omen.ara
-      ?+  -.ars.u.sel  (~(uni by omen.ara) hnav)
-        %input         (~(uni by omen.ara) hinp)
-      ==
-    =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
-    =/  ppv=visa  (~(uni by visa.prae) visa.post)
-    =?  upd  ?=(^ upd)  upd(visa (~(uni by visa.upd) ppv))
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara ?~(upd ppv visa.upd))
-          ^-  lux
-          ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
-            (vado ab.ars.u.sel i.ars.u.sel size.res.u.sel lar.u.sel iter.u.sel)
-          ?~  rex.ara  [%hop [1 1]]
-          ?:  |(?=(~ spar) &(?=(~ upd) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
-            [%hop [l.rex.ara t.rex.ara]]
-          (cedo rex.ara scr u.spar)
-      ==
-    =/  avis=(unit @t)  ?:(|(?=(~ next) ?=(~ sel)) ~ (~(get by aves.u.sel) %sel))
-    :_  ego(visa.ara ?~(upd (~(uni by visa.ara) ppv) visa.upd))
-    :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ?~  avis  ~
-    [[%pass /sel %agent fons.ara %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
+  ++  novo                  :: process an event update
+    ^-  (quip card ^ara)
+    ?:  |(?=(%nav-l lex) ?=(%nav-r lex) ?=(%nav-u lex) ?=(%nav-d lex))
+      =/  scr=$@(~ rami)  ?~(rex.ara ~ (ligo k.rex.ara equi.ara))
+      =/  spar=(unit ens)  ?~(scr ~ (~(get by esse.ara) scr))
+      =/  navs=ordo  (gero rex.ara ordo.ara)
+      =/  snav=ordo
+        ?~  scr  ~
+        %+  skim  ^-(ordo navs)
+        |=  =dux
+        (alo scr k.dux)
+      =/  next=rex  ?~(navs ~ ?~(snav i.navs i.snav))
+      =/  send=bean
+        ?&  ?=(^ rex.ara)  ?=(^ spar)  ?=(%scroll -.ars.u.spar)  =(scr k.rex.ara)
+            ?|  &(?=(%nav-l lex) =(0 x.iter.ars.u.spar))
+                &(?=(%nav-r lex) =(x.sola.ars.u.spar x.iter.ars.u.spar))
+                &(?=(%nav-u lex) =(0 y.iter.ars.u.spar))
+                &(?=(%nav-d lex) =(y.sola.ars.u.spar y.iter.ars.u.spar))
+        ==  ==
+      =?  scr   &(send ?=(^ scr) ?=(^ t.scr))  
+        =/  pscr=$@(~ rami)  (ligo t.scr equi.ara)
+        ?~(pscr scr pscr)
+      =?  spar  &(send ?=(^ scr))  (~(get by esse.ara) scr)
+      =?  next  &(send ?=(~ scr) ?=(^ navs))  i.navs
+      =?  snav  &(send ?=(^ scr))
+        %+  skim  ^-(ordo navs)
+        |=  =dux
+        (alo scr k.dux)
+      =?  next  &(send ?=(^ scr) ?=(^ snav))  i.snav
+      =/  upd=$@(~ [=esse cura])
+        ?~  scr  ~
+        ?:  ?=(^ snav)  ~
+        %+  abeo  scr
+        ?+  lex   lex
+          %nav-l  %scr-l
+          %nav-r  %scr-r
+          %nav-u  %scr-u
+          %nav-d  %scr-d
+        ==
+      =?  ara  ?=(^ upd)
+        %_  ara
+          esse  esse.upd
+          rex   rex.upd
+          mus   mus.upd
+          omen  omen.upd
+          ordo  ordo.upd
+          equi  equi.upd
+        ==
+      =?  next  ?=(^ upd)
+        ?~  scr  ~
+        =<  ?~(. ~ i)
+        %+  skim  ^-(ordo (gero rex.ara ordo.upd))
+        |=  =dux
+        (alo scr k.dux)
+      =/  prae=opus
+        ?~  rex.ara  [~ ~]
+        (duco esse.ara k.rex.ara next)
+      =.  rex.ara
+        ?:  ?=(^ next)
+          next
+        ?:  |(?=(~ scr) ?=(~ spar) ?=(~ upd) ?=(^ (find ~[rex.ara] ordo.upd)))
+          rex.ara
+        (rogo scr ordo.ara)
+      =/  post=opus
+        ?:  ?=(^ next)
+          (duco esse.ara k.next rex.ara)
+        ?:  ?=(^ rex.ara)
+          (duco esse.ara k.rex.ara rex.ara)
+        [~ ~]
+      =/  sel=(unit ens)  ?~(rex.ara ~ (~(get by esse.ara) k.rex.ara))
+      =.  omen.ara
+        ?~  sel  omen.ara
+        ?+  -.ars.u.sel  (~(uni by omen.ara) hnav)
+          %input         (~(uni by omen.ara) hinp)
+        ==
+      =.  esse.ara  (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
+      =/  ppv=visa  (~(uni by visa.prae) visa.post)
+      =?  upd  ?=(^ upd)  upd(visa (~(uni by visa.upd) ppv))
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara ?~(upd ppv visa.upd))
+            ^-  lux
+            ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
+              (vado ab.ars.u.sel i.ars.u.sel size.res.u.sel lar.u.sel iter.u.sel)
+            ?~  rex.ara  [%hop [1 1]]
+            ?:  |(?=(~ spar) &(?=(~ upd) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
+              [%hop [l.rex.ara t.rex.ara]]
+            (cedo rex.ara scr u.spar)
+        ==
+      =/  avis=(unit @t)  ?:(|(?=(~ next) ?=(~ sel)) ~ (~(get by aves.u.sel) %sel))
+      :_  ara(visa ?~(upd (~(uni by visa.ara) ppv) visa.upd))
+      :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+      ?~  avis  ~
+      [[%pass /sel %agent fon %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
     ::
-    ++  navi
-      |=  [r=rex o=ordo]
-      ^-  ordo
-      ?~  r  o
-      =/  chis=ordo
-        ?.  |(=(%nav-r lex) =(%nav-d lex))
+    ?:  ?=(%act lex)
+      ?~  rex.ara  [~ ara]
+      =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+      ?~  el  [~ ara]
+      ?:  ?=(%input -.ars.u.el)  [~ ara]
+      =/  fupd=$@(~ [opus =form])
+        ?.  &(?=(%select -.ars.u.el) ?=(%submit pro.ars.u.el))
           ~
-        %+  sort
-          ^-  ordo
-          %+  skim  `ordo`o
-          |=  =dux
-          (chil k.r k.dux)
-        |=  [a=dux b=dux]
-        (lth (pyth a r) (pyth b r))
-      ?:  ?=(^ chis)
-        chis
-      =/  tars=ordo
-        %+  sort  `ordo`(skim `ordo`o (keep r))
-        |=  [a=dux b=dux]
-        (lth (pyth a r) (pyth b r))
-      ?~  tars
-        ~
-      =/  pars=ordo
-        %+  sort
-          ^-  ordo
-          %+  skim  `ordo`o
-          |=  =dux
-          ^-  bean
-          ?:  =(k.dux k.r)
-            |
-          ?:  (chil k.dux k.i.tars)
-            !(chil k.dux k.r)
-          |
-        |=  [a=dux b=dux]
-        (lth (lent k.a) (lent k.b))
-      ?~  pars
-        tars
-      ?:  ((keep r) i.pars)
-        pars
+        (lego k.rex.ara)
+      =/  cupd=$@(~ opus)
+        ?.  ?=(%checkbox -.ars.u.el)
+          ~
+        (opto k.rex.ara u.el)
+      =/  avis=(unit @t)  (~(get by aves.u.el) %act)
+      ?:  &(?=(~ fupd) ?=(~ cupd))
+        ?~  avis  [~ ara]
+        :_  ara
+        :~  [%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis]))]
+        ==
+      =.  esse.ara
+        ?^  fupd
+          (~(uni by esse.ara) esse.fupd)
+        ?^  cupd
+          (~(uni by esse.ara) esse.cupd)
+        esse.ara
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
+            (fero rex.ara equi.ara esse.ara)
+        ==
+      :_  ara(visa (~(uni by visa.ara) ?^(fupd visa.fupd ?^(cupd visa.cupd ~))))
+      :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+      ?:  &(?=(^ fupd) ?=(^ avis))
+        :-  [%pass /act %agent fon %poke %homunculus !>(^-(data [%form form.fupd]))]
+        [[%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis]))] ~]
+      ?^  fupd
+        [[%pass /act %agent fon %poke %homunculus !>(^-(data [%form form.fupd]))] ~]
+      ?^  avis
+        [[%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis]))] ~]
       ~
     ::
-    ++  chil
-      |=  [a=rami b=rami]
-      ^-  bean
-      ?:  =(a b)
-        |
-      |-  ^-  bean
-      ?:  =(a b)
-        &
-      ?~  t.b
-        |
-      $(b t.b)
-    ++  abov
-      |=  [a=rami b=rami]
-      =/  a=$@(~ rami)  (flop a)
-      =/  b=$@(~ rami)  (flop b)
-      |-  ^-  ?(%a %b %~)
-      ?~  a  ~
-      ?~  b  ~
-      ?~  t.a  ~
-      ?~  t.b  ~
-      ?:  !=(ager.i.t.a ager.i.t.b)
-        ?:  &(?=(%l axis.i.t.a) ?=(%l axis.i.t.b))
-          ?:  (gth ager.i.t.a ager.i.t.b)
-            %b
-          %a
-        ~
-      $(a t.a, b t.b)
-    ++  lap
-      |=  [=dux rex=dux]
-      ^-  bean
-      ?|  ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
-              (lte t.dux t.rex)  (gte b.dux t.rex)
-          ==
-          ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
-              (lte t.dux t.rex)  (gte b.dux t.rex)
-          ==
-          ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
-              (lte t.dux b.rex)  (gte b.dux b.rex)
-          ==
-          ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
-              (lte t.dux b.rex)  (gte b.dux b.rex)
-          ==
-          ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
-              (lte t.rex t.dux)  (gte b.rex t.dux)
-          ==
-          ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
-              (lte t.rex t.dux)  (gte b.rex t.dux)
-          ==
-          ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
-              (lte t.rex b.dux)  (gte b.rex b.dux)
-          ==
-          ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
-              (lte t.rex b.dux)  (gte b.rex b.dux)
-          ==
-      ==
-    ++  keep
-      |=  rex=dux
-      |=  =dux
-      ^-  bean
-      ?:  =(k.dux k.rex)  |
-      ?+  lex  |
-          %nav-l
-        ?:  (lap dux rex)
-          ?:  =(l.dux l.rex)
-            |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
-          (lth l.dux l.rex)
-        ?.  =(~ (abov k.rex k.dux))
-          (lth l.dux l.rex)
-        (lth r.dux l.rex)
-          %nav-u
-        ?:  (lap dux rex)
-          ?:  =(t.dux t.rex)
-            |((chil k.dux k.rex) =(%b (abov k.rex k.dux)))
-          (lth t.dux t.rex)
-        ?.  =(~ (abov k.rex k.dux))
-          (lth t.dux t.rex)
-        (lth b.dux t.rex)
-          %nav-r
-        ?:  (lap dux rex)
-          ?:  =(l.dux l.rex)
-            |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
-          (gth l.dux l.rex)
-        ?.  =(~ (abov k.rex k.dux))
-          (gth l.dux l.rex)
-        (gth l.dux r.rex)
-          %nav-d
-        ?:  (lap dux rex)
-          ?:  =(t.dux t.rex)
-            |((chil k.rex k.dux) =(%a (abov k.rex k.dux)))
-          (gth t.dux t.rex)
-        ?.  =(~ (abov k.rex k.dux))
-          (gth t.dux t.rex)
-        (gth t.dux b.rex)
-      ==
-    ++  pyth
-      |=  [=dux rex=dux]
-      ^-  @ud
-      =;  pyt=(pair @ud @ud)
-        (add (mul 10 p.pyt) q.pyt)
-      ?+  lex  [0 0]
-          %nav-l
-        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
-          %-  sqt  %+  add
-            (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-          (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
-        %-  sqt  %+  add
-          (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
-        (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
-          %nav-u
-        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
-          %-  sqt  %+  add
-            (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-          (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
-        %-  sqt  %+  add
-          (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-        (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
-          %nav-r
-        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
-          %-  sqt  %+  add
-            (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-          (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
-        %-  sqt  %+  add
-          (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
-        (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
-          %nav-d
-        ?:  |((lap dux rex) !=(~ (abov k.rex k.dux)))
-          %-  sqt  %+  add
-            (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-          (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
-        %-  sqt  %+  add
-          (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-        (pow (mul ?:((lte b.rex t.dux) (sub t.dux b.rex) (sub b.rex t.dux)) 2) 2)
-      ==
-    --
-  ::
-  ?:  ?=(%act lex)
-    ?~  rex.ara  [~ ego]
-    =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
-    ?~  el  [~ ego]
-    ?:  ?=(%input -.ars.u.el)  [~ ego]
-    =/  fupd=$@(~ [opus =form])
-      ?.  &(?=(%select -.ars.u.el) ?=(%submit pro.ars.u.el))
-        ~
-      (lego k.rex.ara)
-    =/  cupd=$@(~ opus)
-      ?.  ?=(%checkbox -.ars.u.el)
-        ~
-      (opto k.rex.ara u.el)
-    =/  avis=(unit @t)  (~(get by aves.u.el) %act)
-    ?:  &(?=(~ fupd) ?=(~ cupd))
-      ?~  avis  [~ ego]
-      :_  ego
-      :~  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))]
-      ==
-    =.  esse.ara
-      ?^  fupd
-        (~(uni by esse.ara) esse.fupd)
-      ?^  cupd
-        (~(uni by esse.ara) esse.cupd)
-      esse.ara
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
-          (fero rex.ara esse.ara)
-      ==
-    :_  ego(visa.ara (~(uni by visa.ara) ?^(fupd visa.fupd ?^(cupd visa.cupd ~))))
-    :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ?:  &(?=(^ fupd) ?=(^ avis))
-      :-  [%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))]
-      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
-    ?^  fupd
-      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%form form.fupd]))] ~]
-    ?^  avis
-      [[%pass /act %agent fons.ara %poke %homunculus !>(^-(data [%act u.avis]))] ~]
-    ~
-  ::
-  ?:  ?=(%clk lex)
-    ?.  ?=(%clk -.zona)  [~ ego]
-    =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
-    ?~  mk  [~ ego]
-    ?:  ?=(%u p.zona)
-      ?.  &(?=(^ rex.ara) =(u.mk k.rex.ara))
-        [~ ego]
-      (novo %act zona)
-    =/  el=(unit ens)  (~(get by esse.ara) u.mk)
-    ?~  el  [~ ego]
-    ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara) !?=(%input -.ars.u.el))
-      [~ ego]
-    =/  nrex=rex  (rogo u.mk ordo.ara)
-    =/  prae=opus  ?~(rex.ara [~ ~] (duco esse.ara k.rex.ara nrex))
-    =.  rex.ara  nrex
-    =/  post=opus  ?~(nrex [~ ~] (duco esse.ara k.nrex rex.ara))
-    =?  esse.ara  |(?=(^ esse.prae) ?=(^ esse.post))
-      (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
-    =?  u.el  |(?=(^ esse.prae) ?=(^ esse.post))
-      ?~(nel=(~(get by esse.ara) u.mk) u.el u.nel)
-    =?  esse.ara  &(?=(%input -.ars.u.el) ?=(^ vox.ars.u.el))
-      =/  [x=@ud y=@ud]
-        =:  x.zona  (add x.zona x.iter.u.el)
-            y.zona  (add y.zona y.iter.u.el)
-          ==
-        :-  ?:((lte x.lar.u.el x.zona) (sub x.zona x.lar.u.el) 0)
-        ?:((lte y.lar.u.el y.zona) (sub y.zona y.lar.u.el) 0)
-      ?:  =(1 h.size.res.u.el)
-        ?.  =(0 y)  esse.ara
-        =.  x  (add x ab.ars.u.el)
-        =/  l=@ud  (lent i.vox.ars.u.el)
-        (~(put by esse.ara) u.mk u.el(i.ars [?:((lth x l) x l) 0]))
-      =.  y  (add y ab.ars.u.el)
-      =/  l=@ud  (lent vox.ars.u.el)
-      =/  rlen=@ud
-        ?:  (gth +(y) l)
-          (pono ^-(lina (rear ^-(vox vox.ars.u.el))))
-        (pono ^-(lina (snag y ^-(vox vox.ars.u.el))))
-      %+  %~  put
-            by
-          esse.ara
-        u.mk
-      u.el(i.ars [?:((lth x rlen) x rlen) ?:((gth +(y) l) (dec l) y)])
-    =.  omen.ara
-      ?+  -.ars.u.el   (~(uni by omen.ara) hnav)
-        %input         (~(uni by omen.ara) hinp)
-      ==
-    =/  nvis=visa
-      ?:(|(?=(^ visa.prae) ?=(^ visa.post)) (~(uni by visa.prae) visa.post) ~)
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara nvis)
-          (fero rex.ara esse.ara)
-      ==
-    =/  avis=(unit @t)  (~(get by aves.u.el) %sel)
-    :_  ego(visa.ara ?~(nvis visa.ara (~(uni by visa.ara) ^-(visa nvis))))
-    :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ?~  avis  ~
-    [[%pass /sel %agent fons.ara %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
-  ::
-  ?:  ?=(%inp lex)
-    ?.  ?=(%txt -.zona)  [~ ego]
-    ?~  p.zona  [~ ego]
-    ?~  rex.ara  [~ ego]
-    =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
-    ?~  el  [~ ego]
-    ?.  ?=(%input -.ars.u.el)  [~ ego]
-    =.  ars.u.el
-      ?:  =(1 h.size.res.u.el)
-        =.  vox.ars.u.el
-          :_  ~
-          ?~  vox.ars.u.el  ?~(t.p.zona ~[i.p.zona] p.zona)
-          ?~  t.p.zona  (into i.vox.ars.u.el x.i.ars.u.el i.p.zona)
-          %+  weld  (weld (scag +(x.i.ars.u.el) i.vox.ars.u.el) p.zona)
-          (slag +(x.i.ars.u.el) i.vox.ars.u.el)
-        =.  i.ars.u.el
-          ?~  vox.ars.u.el  i.ars.u.el
-          =/  x=@ud  +(x.i.ars.u.el)
-          ?:  (gth x (lent i.vox.ars.u.el))
-            i.ars.u.el
-          [x y.i.ars.u.el]
-        %_  ars.u.el
-          ab  ?:  (lth (sub x.i.ars.u.el ab.ars.u.el) w.size.res.u.el)
-                ab.ars.u.el
-              +(ab.ars.u.el)
+    ?:  ?=(%clk lex)
+      ?.  ?=(%clk -.zon)  [~ ara]
+      =/  mk=(unit rami)  (~(get by mus.ara) [x.zon y.zon])
+      ?~  mk  [~ ara]
+      ?:  ?=(%u p.zon)
+        ?.  &(?=(^ rex.ara) =(u.mk k.rex.ara))
+          [~ ara]
+        %_(novo lex %act)
+      =/  el=(unit ens)  (~(get by esse.ara) u.mk)
+      ?~  el  [~ ara]
+      ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara) !?=(%input -.ars.u.el))
+        [~ ara]
+      =/  nrex=rex  (rogo u.mk ordo.ara)
+      =/  prae=opus  ?~(rex.ara [~ ~] (duco esse.ara k.rex.ara nrex))
+      =.  rex.ara  nrex
+      =/  post=opus  ?~(nrex [~ ~] (duco esse.ara k.nrex rex.ara))
+      =?  esse.ara  |(?=(^ esse.prae) ?=(^ esse.post))
+        (~(uni by esse.ara) (~(uni by esse.prae) esse.post))
+      =?  u.el  |(?=(^ esse.prae) ?=(^ esse.post))
+        ?~(nel=(~(get by esse.ara) u.mk) u.el u.nel)
+      =?  esse.ara  &(?=(%input -.ars.u.el) ?=(^ vox.ars.u.el))
+        =/  [x=@ud y=@ud]
+          =:  x.zon  (add x.zon x.iter.u.el)
+              y.zon  (add y.zon y.iter.u.el)
+            ==
+          :-  ?:((lte x.lar.u.el x.zon) (sub x.zon x.lar.u.el) 0)
+          ?:((lte y.lar.u.el y.zon) (sub y.zon y.lar.u.el) 0)
+        ?:  =(1 h.size.res.u.el)
+          ?.  =(0 y)  esse.ara
+          =.  x  (add x ab.ars.u.el)
+          =/  l=@ud  (lent i.vox.ars.u.el)
+          (~(put by esse.ara) u.mk u.el(i.ars [?:((lth x l) x l) 0]))
+        =.  y  (add y ab.ars.u.el)
+        =/  l=@ud  (lent vox.ars.u.el)
+        =/  rlen=@ud
+          ?:  (gth +(y) l)
+            (pono ^-(lina (rear ^-(vox vox.ars.u.el))))
+          (pono ^-(lina (snag y ^-(vox vox.ars.u.el))))
+        %+  %~  put
+              by
+            esse.ara
+          u.mk
+        u.el(i.ars [?:((lth x rlen) x rlen) ?:((gth +(y) l) (dec l) y)])
+      =.  omen.ara
+        ?+  -.ars.u.el   (~(uni by omen.ara) hnav)
+          %input         (~(uni by omen.ara) hinp)
         ==
-      =/  row=lina  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
-      =/  wup=bean
-        ?.  &(=(~-. i.p.zona) !=(0 y.i.ars.u.el) (lth x.i.ars.u.el (sumo row)))
-          |
-        %+  gte  w.size.res.u.el
-        %+  add  x.i.ars.u.el
-        %-  lent
-        ?~  vox.ars.u.el  ~
-        (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
-      =.  row
-        ?~  t.p.zona  (into row x.i.ars.u.el i.p.zona)
-        %+  weld  (weld (scag +(x.i.ars.u.el) row) p.zona)
-        (slag +(x.i.ars.u.el) row)
-      ?:  wup
-        =.  vox.ars.u.el
-          %+  weld
-            (scag (dec y.i.ars.u.el) vox.ars.u.el)
-          %:  oro
-            w.size.res.u.el  h.size.res.u.el
-            ^-  lina
-            %-  zing
-            :+  ^-(lina (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
-              row
-            (slag +(y.i.ars.u.el) vox.ars.u.el)
+      =/  nvis=visa
+        ?:(|(?=(^ visa.prae) ?=(^ visa.post)) (~(uni by visa.prae) visa.post) ~)
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara nvis)
+            (fero rex.ara equi.ara esse.ara)
+        ==
+      =/  avis=(unit @t)  (~(get by aves.u.el) %sel)
+      :_  ara(visa ?~(nvis visa.ara (~(uni by visa.ara) ^-(visa nvis))))
+      :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+      ?~  avis  ~
+      [[%pass /sel %agent fon %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
+    ::
+    ?:  ?=(%inp lex)
+      ?.  ?=(%txt -.zon)  [~ ara]
+      ?~  p.zon  [~ ara]
+      ?~  rex.ara  [~ ara]
+      =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+      ?~  el  [~ ara]
+      ?.  ?=(%input -.ars.u.el)  [~ ara]
+      =.  ars.u.el
+        ?:  =(1 h.size.res.u.el)
+          =.  vox.ars.u.el
+            :_  ~
+            ?~  vox.ars.u.el  ?~(t.p.zon ~[i.p.zon] p.zon)
+            ?~  t.p.zon  (into i.vox.ars.u.el x.i.ars.u.el i.p.zon)
+            %+  weld  (weld (scag +(x.i.ars.u.el) i.vox.ars.u.el) p.zon)
+            (slag +(x.i.ars.u.el) i.vox.ars.u.el)
+          =.  i.ars.u.el
+            ?~  vox.ars.u.el  i.ars.u.el
+            =/  x=@ud  +(x.i.ars.u.el)
+            ?:  (gth x (lent i.vox.ars.u.el))
+              i.ars.u.el
+            [x y.i.ars.u.el]
+          %_  ars.u.el
+            ab  ?:  (lth (sub x.i.ars.u.el ab.ars.u.el) w.size.res.u.el)
+                  ab.ars.u.el
+                +(ab.ars.u.el)
           ==
-        ars.u.el(i [?~(t.p.zona 0 (pono (flop p.zona))) y.i.ars.u.el])
-      =/  len=@ud  (pono row)
-      ?:  (lte len w.size.res.u.el)
-        %_  ars.u.el
-          vox  (snap vox.ars.u.el y.i.ars.u.el row)
-          x.i  +(x.i.ars.u.el)
-        ==
-      =.  vox.ars.u.el
-        %+  weld
-          (scag y.i.ars.u.el vox.ars.u.el)
-        %:  oro
-          w.size.res.u.el  h.size.res.u.el
-          ^-(lina (zing [row (slag +(y.i.ars.u.el) vox.ars.u.el)]))
-        ==
-      =.  i.ars.u.el
-        =/  nlen=(unit @ud)
+        =/  row=lina  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+        =/  wup=bean
+          ?.  &(=(~-. i.p.zon) !=(0 y.i.ars.u.el) (lth x.i.ars.u.el (sumo row)))
+            |
+          %+  gte  w.size.res.u.el
+          %+  add  x.i.ars.u.el
+          %-  lent
           ?~  vox.ars.u.el  ~
-          [~ (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))]
-        =/  npos=(unit @ud)
-          ?:(|(?=(~ nlen) (lte +(x.i.ars.u.el) u.nlen)) ~ [~ (sub +(x.i.ars.u.el) u.nlen)])
-        ?~  npos
-          [+(x.i.ars.u.el) y.i.ars.u.el]
-        [u.npos +(y.i.ars.u.el)]
-      =.  ab.ars.u.el
-        ?:  (lth (sub y.i.ars.u.el ab.ars.u.el) h.size.res.u.el)
-          ab.ars.u.el
-        +(ab.ars.u.el)
-      ars.u.el
-    =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
-    =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
-    =.  visa.u.el  vi
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara vi)
-          (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
-      ==
-    :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ==
-  ::
-  ?:  ?=(%del lex)
-    ?~  rex.ara  [~ ego]
-    =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
-    ?~  el  [~ ego]
-    ?.  ?=(%input -.ars.u.el)  [~ ego]
-    =.  ars.u.el
-      ?:  =(1 h.size.res.u.el)
-        ?~  vox.ars.u.el  ars.u.el
-        ?:  =(0 x.i.ars.u.el)  ars.u.el
-        =.  x.i.ars.u.el  (dec x.i.ars.u.el)
-        =.  i.vox.ars.u.el  (oust [x.i.ars.u.el 1] i.vox.ars.u.el)
-        =.  ab.ars.u.el
-          ?:  &((lte x.i.ars.u.el ab.ars.u.el) !=(0 ab.ars.u.el))
-            ?:((gth w.size.res.u.el ab.ars.u.el) 0 +((sub ab.ars.u.el w.size.res.u.el)))
-          ab.ars.u.el
-        ars.u.el
-      ?:  =([0 0] i.ars.u.el)  ars.u.el
-      =/  arow=lina
-        ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  ~
-        (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
-      =?  arow  =(0 x.i.ars.u.el)
-        (snip arow)
-      =/  alen=@ud  (lent arow)
-      =/  row=lina  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
-      =?  row  !=(0 x.i.ars.u.el)
-        (oust [(dec x.i.ars.u.el) 1] row)
-      ?:  ?&  ?=(^ arow)
-              ?|  ?&  (lth alen w.size.res.u.el)
-                      %+  lte  (sumo row)
-                      ?:((lte alen w.size.res.u.el) (sub w.size.res.u.el alen) 0)
-                  ==
-                  &(|(=(0 x.i.ars.u.el) =(1 x.i.ars.u.el)) !=(~-. (rear arow)))
-          ==  ==
+          (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
+        =.  row
+          ?~  t.p.zon  (into row x.i.ars.u.el i.p.zon)
+          %+  weld  (weld (scag +(x.i.ars.u.el) row) p.zon)
+          (slag +(x.i.ars.u.el) row)
+        ?:  wup
+          =.  vox.ars.u.el
+            %+  weld
+              (scag (dec y.i.ars.u.el) vox.ars.u.el)
+            %:  oro
+              w.size.res.u.el  h.size.res.u.el
+              ^-  lina
+              %-  zing
+              :+  ^-(lina (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+                row
+              (slag +(y.i.ars.u.el) vox.ars.u.el)
+            ==
+          ars.u.el(i [?~(t.p.zon 0 (pono (flop p.zon))) y.i.ars.u.el])
+        =/  len=@ud  (pono row)
+        ?:  (lte len w.size.res.u.el)
+          %_  ars.u.el
+            vox  (snap vox.ars.u.el y.i.ars.u.el row)
+            x.i  +(x.i.ars.u.el)
+          ==
         =.  vox.ars.u.el
           %+  weld
-            ?:  =(0 y.i.ars.u.el)  ~
-            ^-(vox (scag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+            (scag y.i.ars.u.el vox.ars.u.el)
           %:  oro
             w.size.res.u.el  h.size.res.u.el
-            ^-  lina
-            %-  zing
-            [arow row ^-(vox (slag +(y.i.ars.u.el) ^-(vox vox.ars.u.el)))]
+            ^-(lina (zing [row (slag +(y.i.ars.u.el) vox.ars.u.el)]))
           ==
         =.  i.ars.u.el
-          =/  nlen=@ud
-            ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  0
-            (lent (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
-          =/  lend=@ud  ?:((lte nlen alen) (sub alen nlen) 0)
-          ?.  =(0 lend)
-            [lend y.i.ars.u.el]
-          :_  ?:(=(0 y.i.ars.u.el) 0 (dec y.i.ars.u.el))
-          ?:  =(0 x.i.ars.u.el)  alen
-          (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.u.el)
-        ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
-      =/  len=@ud  (lent row)
-      =/  brow=lina
-        ?:  |(?=(~ vox.ars.u.el) (lth (lent vox.ars.u.el) +(+(y.i.ars.u.el))))
-          ~
-        (snag +(y.i.ars.u.el) ^-(vox vox.ars.u.el))
-      =/  bwor=@ud  (sumo brow)
-      ?.  ?|  ?&  (lth len w.size.res.u.el)
-                  (lte bwor (sub w.size.res.u.el len))
-              ==
-              &(?=(^ row) =(~-. (rear row)))
-          ==
-        %_  ars.u.el
-          vox  (snap vox.ars.u.el y.i.ars.u.el row)
-          x.i  ?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el))
+          =/  nlen=(unit @ud)
+            ?~  vox.ars.u.el  ~
+            [~ (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))]
+          =/  npos=(unit @ud)
+            ?:(|(?=(~ nlen) (lte +(x.i.ars.u.el) u.nlen)) ~ [~ (sub +(x.i.ars.u.el) u.nlen)])
+          ?~  npos
+            [+(x.i.ars.u.el) y.i.ars.u.el]
+          [u.npos +(y.i.ars.u.el)]
+        =.  ab.ars.u.el
+          ?:  (lth (sub y.i.ars.u.el ab.ars.u.el) h.size.res.u.el)
+            ab.ars.u.el
+          +(ab.ars.u.el)
+        ars.u.el
+      =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
+      =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
+      =.  visa.u.el  vi
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara vi)
+            (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
         ==
-      =.  vox.ars.u.el
-        %+  weld
-          (scag y.i.ars.u.el vox.ars.u.el)
-        %:  oro
-          w.size.res.u.el  h.size.res.u.el
-          ^-(lina (zing [row brow (slag +(+(y.i.ars.u.el)) vox.ars.u.el)]))
-        ==
-      =.  i.ars.u.el
-        ?:  &(=(0 y.i.ars.u.el) !=(0 x.i.ars.u.el))
-          [(dec x.i.ars.u.el) 0]
-        ?.  |(=(0 x.i.ars.u.el) =(1 x.i.ars.u.el))
-          [(dec x.i.ars.u.el) y.i.ars.u.el]
-        =.  y.i.ars.u.el  (dec y.i.ars.u.el)
-        =/  l=@ud
-          (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
-        [?:(=(0 l) 0 (dec l)) y.i.ars.u.el]
-      ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
-    =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
-    =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
-    =.  visa.u.el  vi
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara vi)
-          (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
+      :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
+      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
       ==
-    :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ==
-  ::
-  ?:  |(?=(%cur-l lex) ?=(%cur-r lex) ?=(%cur-u lex) ?=(%cur-d lex))
-    ?~  rex.ara  [~ ego]
-    =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
-    ?~  el  [~ ego]
-    ?.  ?=(%input -.ars.u.el)  [~ ego]
-    =/  oi=loci  i.ars.u.el
-    =.  i.ars.u.el
-      ?~  vox.ars.u.el  i.ars.u.el
-      ?+  lex  i.ars.u.el
-          %cur-l
+    ::
+    ?:  ?=(%del lex)
+      ?~  rex.ara  [~ ara]
+      =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+      ?~  el  [~ ara]
+      ?.  ?=(%input -.ars.u.el)  [~ ara]
+      =.  ars.u.el
         ?:  =(1 h.size.res.u.el)
-          [?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el)) y.i.ars.u.el]
-        ?:  =(0 x.i.ars.u.el)
-          ?:  =(0 y.i.ars.u.el)
-            i.ars.u.el
+          ?~  vox.ars.u.el  ars.u.el
+          ?:  =(0 x.i.ars.u.el)  ars.u.el
+          =.  x.i.ars.u.el  (dec x.i.ars.u.el)
+          =.  i.vox.ars.u.el  (oust [x.i.ars.u.el 1] i.vox.ars.u.el)
+          =.  ab.ars.u.el
+            ?:  &((lte x.i.ars.u.el ab.ars.u.el) !=(0 ab.ars.u.el))
+              ?:((gth w.size.res.u.el ab.ars.u.el) 0 +((sub ab.ars.u.el w.size.res.u.el)))
+            ab.ars.u.el
+          ars.u.el
+        ?:  =([0 0] i.ars.u.el)  ars.u.el
+        =/  arow=lina
+          ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  ~
+          (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el))
+        =?  arow  =(0 x.i.ars.u.el)
+          (snip arow)
+        =/  alen=@ud  (lent arow)
+        =/  row=lina  ?~(vox.ars.u.el ~ (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+        =?  row  !=(0 x.i.ars.u.el)
+          (oust [(dec x.i.ars.u.el) 1] row)
+        ?:  ?&  ?=(^ arow)
+                ?|  ?&  (lth alen w.size.res.u.el)
+                        %+  lte  (sumo row)
+                        ?:((lte alen w.size.res.u.el) (sub w.size.res.u.el alen) 0)
+                    ==
+                    &(|(=(0 x.i.ars.u.el) =(1 x.i.ars.u.el)) !=(~-. (rear arow)))
+            ==  ==
+          =.  vox.ars.u.el
+            %+  weld
+              ?:  =(0 y.i.ars.u.el)  ~
+              ^-(vox (scag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+            %:  oro
+              w.size.res.u.el  h.size.res.u.el
+              ^-  lina
+              %-  zing
+              [arow row ^-(vox (slag +(y.i.ars.u.el) ^-(vox vox.ars.u.el)))]
+            ==
+          =.  i.ars.u.el
+            =/  nlen=@ud
+              ?:  |(=(0 y.i.ars.u.el) ?=(~ vox.ars.u.el))  0
+              (lent (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
+            =/  lend=@ud  ?:((lte nlen alen) (sub alen nlen) 0)
+            ?.  =(0 lend)
+              [lend y.i.ars.u.el]
+            :_  ?:(=(0 y.i.ars.u.el) 0 (dec y.i.ars.u.el))
+            ?:  =(0 x.i.ars.u.el)  alen
+            (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.u.el)
+          ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
+        =/  len=@ud  (lent row)
+        =/  brow=lina
+          ?:  |(?=(~ vox.ars.u.el) (lth (lent vox.ars.u.el) +(+(y.i.ars.u.el))))
+            ~
+          (snag +(y.i.ars.u.el) ^-(vox vox.ars.u.el))
+        =/  bwor=@ud  (sumo brow)
+        ?.  ?|  ?&  (lth len w.size.res.u.el)
+                    (lte bwor (sub w.size.res.u.el len))
+                ==
+                &(?=(^ row) =(~-. (rear row)))
+            ==
+          %_  ars.u.el
+            vox  (snap vox.ars.u.el y.i.ars.u.el row)
+            x.i  ?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el))
+          ==
+        =.  vox.ars.u.el
+          %+  weld
+            (scag y.i.ars.u.el vox.ars.u.el)
+          %:  oro
+            w.size.res.u.el  h.size.res.u.el
+            ^-(lina (zing [row brow (slag +(+(y.i.ars.u.el)) vox.ars.u.el)]))
+          ==
+        =.  i.ars.u.el
+          ?:  &(=(0 y.i.ars.u.el) !=(0 x.i.ars.u.el))
+            [(dec x.i.ars.u.el) 0]
+          ?.  |(=(0 x.i.ars.u.el) =(1 x.i.ars.u.el))
+            [(dec x.i.ars.u.el) y.i.ars.u.el]
           =.  y.i.ars.u.el  (dec y.i.ars.u.el)
-          =/  l=@ud  (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+          =/  l=@ud
+            (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
           [?:(=(0 l) 0 (dec l)) y.i.ars.u.el]
-        [(dec x.i.ars.u.el) y.i.ars.u.el]
-          %cur-r
-        ?:  =(1 h.size.res.u.el)
+        ars.u.el(ab ?:((lth y.i.ars.u.el ab.ars.u.el) (dec ab.ars.u.el) ab.ars.u.el))
+      =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
+      =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
+      =.  visa.u.el  vi
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara vi)
+            (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
+        ==
+      :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
+      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+      ==
+    ::
+    ?:  |(?=(%cur-l lex) ?=(%cur-r lex) ?=(%cur-u lex) ?=(%cur-d lex))
+      ?~  rex.ara  [~ ara]
+      =/  el=(unit ens)  (~(get by esse.ara) k.rex.ara)
+      ?~  el  [~ ara]
+      ?.  ?=(%input -.ars.u.el)  [~ ara]
+      =/  oi=loci  i.ars.u.el
+      =.  i.ars.u.el
+        ?~  vox.ars.u.el  i.ars.u.el
+        ?+  lex  i.ars.u.el
+            %cur-l
+          ?:  =(1 h.size.res.u.el)
+            [?:(=(0 x.i.ars.u.el) 0 (dec x.i.ars.u.el)) y.i.ars.u.el]
+          ?:  =(0 x.i.ars.u.el)
+            ?:  =(0 y.i.ars.u.el)
+              i.ars.u.el
+            =.  y.i.ars.u.el  (dec y.i.ars.u.el)
+            =/  l=@ud  (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+            [?:(=(0 l) 0 (dec l)) y.i.ars.u.el]
+          [(dec x.i.ars.u.el) y.i.ars.u.el]
+            %cur-r
+          ?:  =(1 h.size.res.u.el)
+            =/  x=@ud  +(x.i.ars.u.el)
+            ?:  (gth x (lent i.vox.ars.u.el))
+              i.ars.u.el
+            [x y.i.ars.u.el]
           =/  x=@ud  +(x.i.ars.u.el)
-          ?:  (gth x (lent i.vox.ars.u.el))
-            i.ars.u.el
+          =/  l=@ud  (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
+          ?:  (gth x l)
+            =/  y=@ud  +(y.i.ars.u.el)
+            ?:  (gte y (lent vox.ars.u.el))
+              i.ars.u.el
+            [0 y]
           [x y.i.ars.u.el]
-        =/  x=@ud  +(x.i.ars.u.el)
-        =/  l=@ud  (lent ^-(lina (snag y.i.ars.u.el ^-(vox vox.ars.u.el))))
-        ?:  (gth x l)
+            %cur-u
+          ?:  =(1 h.size.res.u.el)
+            [0 0]
+          ?:  =(0 y.i.ars.u.el)
+            [0 0]
+          =.  y.i.ars.u.el  (dec y.i.ars.u.el)
+          =/  l=@ud  (pono (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+          :_  y.i.ars.u.el
+          ?:  (lte x.i.ars.u.el l)
+            x.i.ars.u.el
+          l
+            %cur-d
+          ?:  =(1 h.size.res.u.el)
+            [(lent i.vox.ars.u.el) y.i.ars.u.el]
           =/  y=@ud  +(y.i.ars.u.el)
           ?:  (gte y (lent vox.ars.u.el))
-            i.ars.u.el
-          [0 y]
-        [x y.i.ars.u.el]
-          %cur-u
-        ?:  =(1 h.size.res.u.el)
-          [0 0]
-        ?:  =(0 y.i.ars.u.el)
-          [0 0]
-        =.  y.i.ars.u.el  (dec y.i.ars.u.el)
-        =/  l=@ud  (pono (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
-        :_  y.i.ars.u.el
-        ?:  (lte x.i.ars.u.el l)
-          x.i.ars.u.el
-        l
-          %cur-d
-        ?:  =(1 h.size.res.u.el)
-          [(lent i.vox.ars.u.el) y.i.ars.u.el]
-        =/  y=@ud  +(y.i.ars.u.el)
-        ?:  (gte y (lent vox.ars.u.el))
-          [(lent (rear vox.ars.u.el)) y.i.ars.u.el]
-        =.  y.i.ars.u.el  y
-        =/  l=@ud  (pono (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
-        :_  y.i.ars.u.el
-        ?:  (lte x.i.ars.u.el l)
-          x.i.ars.u.el
-        l
-      ==
-    ?:  =(oi i.ars.u.el)
-      %+  novo
-        ?+  lex   lex
-          %cur-l  %nav-l
-          %cur-r  %nav-r
-          %cur-u  %nav-u
-          %cur-d  %nav-d
+            [(lent (rear vox.ars.u.el)) y.i.ars.u.el]
+          =.  y.i.ars.u.el  y
+          =/  l=@ud  (pono (snag y.i.ars.u.el ^-(vox vox.ars.u.el)))
+          :_  y.i.ars.u.el
+          ?:  (lte x.i.ars.u.el l)
+            x.i.ars.u.el
+          l
         ==
-      zona
-    =/  oab=@ud  ab.ars.u.el
-    =.  ab.ars.u.el
-      ?~  vox.ars.u.el  ab.ars.u.el
-      ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
-        ?:  =(0 ab.ars.u.el)  0
-        ?:  =(1 h.size.res.u.el)
-          ?:  ?=(%cur-u lex)  0
-          ?:  (lte x.i.ars.u.el ab.ars.u.el)
+      ?:  =(oi i.ars.u.el)
+        %_    novo
+            lex
+          ?+  lex   lex
+            %cur-l  %nav-l
+            %cur-r  %nav-r
+            %cur-u  %nav-u
+            %cur-d  %nav-d
+          ==
+        ==
+      =/  oab=@ud  ab.ars.u.el
+      =.  ab.ars.u.el
+        ?~  vox.ars.u.el  ab.ars.u.el
+        ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
+          ?:  =(0 ab.ars.u.el)  0
+          ?:  =(1 h.size.res.u.el)
+            ?:  ?=(%cur-u lex)  0
+            ?:  (lte x.i.ars.u.el ab.ars.u.el)
+              (dec ab.ars.u.el)
+            ab.ars.u.el
+          ?:  (lth y.i.ars.u.el ab.ars.u.el)
             (dec ab.ars.u.el)
           ab.ars.u.el
-        ?:  (lth y.i.ars.u.el ab.ars.u.el)
-          (dec ab.ars.u.el)
-        ab.ars.u.el
-      ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
-        ?:  =(1 h.size.res.u.el)
-          ?:  (lth (sub x.i.ars.u.el ab.ars.u.el) w.size.res.u.el)
+        ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
+          ?:  =(1 h.size.res.u.el)
+            ?:  (lth (sub x.i.ars.u.el ab.ars.u.el) w.size.res.u.el)
+              ab.ars.u.el
+            ?:  ?=(%cur-d lex)
+              =/  l=@ud  (lent i.vox.ars.u.el)
+              ?:((lte w.size.res.u.el l) +((sub l w.size.res.u.el)) 0)
+            +(ab.ars.u.el)
+          ?:  (lth (sub y.i.ars.u.el ab.ars.u.el) h.size.res.u.el)
             ab.ars.u.el
-          ?:  ?=(%cur-d lex)
-            =/  l=@ud  (lent i.vox.ars.u.el)
-            ?:((lte w.size.res.u.el l) +((sub l w.size.res.u.el)) 0)
           +(ab.ars.u.el)
-        ?:  (lth (sub y.i.ars.u.el ab.ars.u.el) h.size.res.u.el)
-          ab.ars.u.el
-        +(ab.ars.u.el)
-      ab.ars.u.el
-    ?:  =(oab ab.ars.u.el)
-      =/  ansi=@t
-        %-  crip
-        %-  volo
-        (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
-      :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el))
-      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
-      ==
-    =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
-    =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
-    =.  visa.u.el  vi
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara vi)
+        ab.ars.u.el
+      ?:  =(oab ab.ars.u.el)
+        =/  ansi=@t
+          %-  crip
+          %-  volo
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
-      ==
-    :_  ego(esse.ara (~(put by esse.ara) k.rex.ara u.el), visa.ara (~(uni by visa.ara) vi))
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-    ==
-  ::
-  ?:  |(?=(%scr-u lex) ?=(%scr-d lex))
-    ?.  ?=(%whe -.zona)  [~ ego]
-    =/  mk=(unit rami)  (~(get by mus.ara) [x.zona y.zona])
-    ?~  mk  [~ ego]
-    =/  sk=$@(~ rami)  (ligo u.mk)
-    ?~  sk  [~ ego]
-    =/  upd=$@(~ [=esse cura])
-      ?:  |(?=(~ rex.ara) =(sk k.rex.ara))
-        (abeo sk lex)
-      =/  nrex=rex  (rogo sk ordo.ara)
-      ?~  nrex  ~
-      =/  prae=opus  (duco esse.ara k.rex.ara nrex)
-      =.  rex.ara  nrex
-      =:  esse.ara  ?~(esse.prae esse.ara (~(uni by esse.ara) ^-(esse esse.prae)))
-          visa.ara  ?~(visa.prae visa.ara (~(uni by visa.ara) ^-(visa visa.prae)))
+        :_  ara(esse (~(put by esse.ara) k.rex.ara u.el))
+        :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s ansi]))]
         ==
-      (abeo sk lex)
-    ?~  upd  [~ ego]
-    =:  esse.ara  esse.upd
-        rex.ara   rex.upd
-        mus.ara   mus.upd
-        omen.ara  omen.upd
-        ordo.ara  ordo.upd
-        equi.ara  equi.upd
+      =/  vi=visa  (rinp lar.u.el modi.u.el res.u.el ab.ars.u.el vox.ars.u.el)
+      =.  vi  (~(int by visa.u.el) (ruo iter.u.el vi))
+      =.  visa.u.el  vi
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara vi)
+            (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
+        ==
+      :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
+      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
       ==
-    =/  =lux
-      :-  %mor
-      :~  (dono visa.ara visa.upd)
-          (fero rex.ara esse.ara)
+    ::
+    ?:  |(?=(%scr-u lex) ?=(%scr-d lex))
+      ?.  ?=(%whe -.zon)  [~ ara]
+      =/  mk=(unit rami)  (~(get by mus.ara) [x.zon y.zon])
+      ?~  mk  [~ ara]
+      =/  sk=$@(~ rami)  (ligo u.mk equi.ara)
+      ?~  sk  [~ ara]
+      =/  upd=$@(~ [=esse cura])
+        ?:  |(?=(~ rex.ara) =(sk k.rex.ara))
+          (abeo sk lex)
+        =/  nrex=rex  (rogo sk ordo.ara)
+        ?~  nrex  ~
+        =/  prae=opus  (duco esse.ara k.rex.ara nrex)
+        =.  rex.ara  nrex
+        =:  esse.ara  ?~(esse.prae esse.ara (~(uni by esse.ara) ^-(esse esse.prae)))
+            visa.ara  ?~(visa.prae visa.ara (~(uni by visa.ara) ^-(visa visa.prae)))
+          ==
+        (abeo sk lex)
+      ?~  upd  [~ ara]
+      =:  esse.ara  esse.upd
+          rex.ara   rex.upd
+          mus.ara   mus.upd
+          omen.ara  omen.upd
+          ordo.ara  ordo.upd
+          equi.ara  equi.upd
+        ==
+      =/  =lux
+        :-  %mor
+        :~  (dono visa.ara visa.upd)
+            (fero rex.ara equi.ara esse.ara)
+        ==
+      :_  ara(visa visa.upd)
+      :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
       ==
-    :_  ego(visa.ara visa.upd)
-    :~  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
+    ::
+    [~ ara]
+  ::
+  ++  gero                  :: build an ordered list of navigation points
+    |=  [r=rex o=ordo]
+    ^-  ordo
+    ?~  r  o
+    =/  chis=ordo
+      ?.  |(=(%nav-r lex) =(%nav-d lex))
+        ~
+      %+  sort
+        ^-  ordo
+        %+  skim  ^-(ordo o)
+        |=  =dux
+        (alo k.r k.dux)
+      |=  [a=dux b=dux]
+      (lth (reor a r) (reor b r))
+    ?:  ?=(^ chis)
+      chis
+    =/  tars=ordo
+      %+  sort  ^-(ordo (skim ^-(ordo o) (cieo r)))
+      |=  [a=dux b=dux]
+      (lth (reor a r) (reor b r))
+    ?~  tars
+      ~
+    =/  pars=ordo
+      %+  sort
+        ^-  ordo
+        %+  skim  ^-(ordo o)
+        |=  =dux
+        ^-  bean
+        ?:  =(k.dux k.r)
+          |
+        ?:  (alo k.dux k.i.tars)
+          !(alo k.dux k.r)
+        |
+      |=  [a=dux b=dux]
+      (lth (lent k.a) (lent k.b))
+    ?~  pars
+      tars
+    ?:  ((cieo r) i.pars)
+      pars
+    ~
+  ::
+  ++  alo                   :: determine whether element b is a child of element a
+    |=  [a=rami b=rami]
+    ^-  bean
+    ?:  =(a b)
+      |
+    |-  ^-  bean
+    ?:  =(a b)
+      &
+    ?~  t.b
+      |
+    $(b t.b)
+  ::
+  ++  tego                  :: check whether element a or element b layers over the other
+    |=  [a=rami b=rami]
+    =/  a=$@(~ rami)  (flop a)
+    =/  b=$@(~ rami)  (flop b)
+    |-  ^-  ?(%a %b %~)
+    ?~  a  %~
+    ?~  b  %~
+    ?~  t.a  %~
+    ?~  t.b  %~
+    ?.  =(axis.i.t.a axis.i.t.b)
+      ?:  &(?=(%l axis.i.t.a) ?=(%~ axis.i.t.b))
+        %a
+      ?:  &(?=(%~ axis.i.t.a) ?=(%l axis.i.t.b))
+        %b
+      %~
+    ?.  =(ager.i.t.a ager.i.t.b)
+      ?:  &(?=(%l axis.i.t.a) ?=(%l axis.i.t.b))
+        ?:  (gth ager.i.t.a ager.i.t.b)
+          %b
+        %a
+      %~
+    $(a t.a, b t.b)
+  ::
+  ++  abdo                  :: determine if any coordinate in dux or rex overlap
+    |=  [=dux rex=dux]
+    ^-  bean
+    ?|  ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
+            (lte t.dux t.rex)  (gte b.dux t.rex)
+        ==
+        ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
+            (lte t.dux t.rex)  (gte b.dux t.rex)
+        ==
+        ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
+            (lte t.dux b.rex)  (gte b.dux b.rex)
+        ==
+        ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
+            (lte t.dux b.rex)  (gte b.dux b.rex)
+        ==
+        ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
+            (lte t.rex t.dux)  (gte b.rex t.dux)
+        ==
+        ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
+            (lte t.rex t.dux)  (gte b.rex t.dux)
+        ==
+        ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
+            (lte t.rex b.dux)  (gte b.rex b.dux)
+        ==
+        ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
+            (lte t.rex b.dux)  (gte b.rex b.dux)
+        ==
     ==
   ::
-  [~ ego]
-::
-++  abeo                    :: handle a scroll event for a scroll element by key
-  |=  [pk=rami =lex]        :: returns an update from the root
-  ^-  $@(~ [esse cura])
-  =/  par=(unit ens)  (~(get by esse.ara) pk)
-  ?~  par  ~
-  ?.  ?=(%scroll -.ars.u.par)  ~
-  ?:  ?|  &(?=(%scr-l lex) =(0 x.iter.ars.u.par))
-          &(?=(%scr-r lex) =(x.sola.ars.u.par x.iter.ars.u.par))
-          &(?=(%scr-u lex) =(0 y.iter.ars.u.par))
-          &(?=(%scr-d lex) =(y.sola.ars.u.par y.iter.ars.u.par))
+  ++  cieo                  :: check whether a navigation point is viable given the current selection
+    |=  rex=dux
+    |=  =dux
+    ^-  bean
+    ?:  =(k.dux k.rex)  |
+    ?+  lex  |
+        %nav-l
+      ?:  (abdo dux rex)
+        ?:  =(l.dux l.rex)
+          |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
+        (lth l.dux l.rex)
+      ?.  =(%~ (tego k.rex k.dux))
+        (lth l.dux l.rex)
+      (lth r.dux l.rex)
+        %nav-u
+      ?:  (abdo dux rex)
+        ?:  =(t.dux t.rex)
+          |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
+        (lth t.dux t.rex)
+      ?.  =(%~ (tego k.rex k.dux))
+        (lth t.dux t.rex)
+      (lth b.dux t.rex)
+        %nav-r
+      ?:  (abdo dux rex)
+        ?:  =(l.dux l.rex)
+          |((alo k.rex k.dux) =(%a (tego k.rex k.dux)))
+        (gth l.dux l.rex)
+      ?.  =(%~ (tego k.rex k.dux))
+        (gth l.dux l.rex)
+      (gth l.dux r.rex)
+        %nav-d
+      ?:  (abdo dux rex)
+        ?:  =(t.dux t.rex)
+          |((alo k.rex k.dux) =(%a (tego k.rex k.dux)))
+        (gth t.dux t.rex)
+      ?.  =(%~ (tego k.rex k.dux))
+        (gth t.dux t.rex)
+      (gth t.dux b.rex)
+    ==
+  ::
+  ++  reor                  :: get the euclidean distance between a selection and a navigation point
+    |=  [=dux rex=dux]
+    ^-  @ud
+    =;  pyt=(pair @ud @ud)
+      (add (mul 10 p.pyt) q.pyt)
+    ?+  lex  [0 0]
+        %nav-l
+      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+        %-  sqt  %+  add
+          (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
+        (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
+      %-  sqt  %+  add
+        (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
+      (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
+        %nav-u
+      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+        %-  sqt  %+  add
+          (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
+        (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
+      %-  sqt  %+  add
+        (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
+      (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
+        %nav-r
+      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+        %-  sqt  %+  add
+          (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
+        (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
+      %-  sqt  %+  add
+        (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
+      (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
+        %nav-d
+      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+        %-  sqt  %+  add
+          (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
+        (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
+      %-  sqt  %+  add
+        (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
+      (pow (mul ?:((lte b.rex t.dux) (sub t.dux b.rex) (sub b.rex t.dux)) 2) 2)
+    ==
+  ::
+  ++  rogo                  :: find a dux in ordo by key
+    |=  [k=rami o=ordo]
+    ^-  $@(~ dux)
+    ?~  o  ~
+    ?:  =(k k.i.o)
+      i.o
+    $(o t.o)
+  ::
+  ++  opto                  :: process a checkbox, potentially in a radio group
+    |=  [k=rami e=ens]
+    ^-  opus
+    ?.  ?=(%checkbox -.ars.e)  [~ ~]
+    =/  rad
+      |-  ^-  $@(~ [k=rami e=ens])
+      ?~  t.k  ~
+      =/  el=(unit ens)  (~(get by esse.ara) t.k)
+      ?~  el  $(k t.k)
+      ?:  ?=(%radio -.ars.u.el)
+        [t.k u.el]
+      $(k t.k)
+    ?:  |(?=(~ rad) v.ars.e)
+      =.  v.ars.e  !v.ars.e
+      =.  visa.e   (~(int by visa.e) (ruo iter.e (viso lar.e res.e ars.e modi.e)))
+      [^-(esse (malt ~[[k e]])) visa.e]
+    =/  opu
+      =/  [rk=rami acc=opus]  [[[%b 0] k.rad] [~ ~]]
+      |-  ^-  opus
+      =/  el=(unit ens)  (~(get by esse.ara) rk)
+      ?~  el
+        ?:  ?=(%b axis.i.rk)  $(rk [[%l 0] t.rk])
+        ?:  ?=(%l axis.i.rk)  $(rk [[%~ 0] t.rk])
+        acc
+      ?.  ?=(%checkbox -.ars.u.el)
+        $(ager.i.rk +(ager.i.rk), acc $(rk [[%b 0] rk]))
+      ?:  !v.ars.u.el
+        $(ager.i.rk +(ager.i.rk), acc $(rk [[%b 0] rk]))
+      =.  v.ars.u.el  |
+      =.  visa.u.el
+        (~(int by visa.u.el) (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el)))
+      %=  $
+        ager.i.rk  +(ager.i.rk)
+        esse.acc   (~(put by esse.acc) rk u.el)
+        visa.acc   (~(uni by visa.acc) visa.u.el)
       ==
-    ~
-  =.  iter.ars.u.par
-    ?+  lex  iter.ars.u.par
-      %scr-l  ?:(=(0 x.iter.ars.u.par) iter.ars.u.par [(dec x.iter.ars.u.par) y.iter.ars.u.par])
-      %scr-r  [+(x.iter.ars.u.par) y.iter.ars.u.par]  
-      %scr-u  ?:(=(0 y.iter.ars.u.par) iter.ars.u.par [x.iter.ars.u.par (dec y.iter.ars.u.par)])
-      %scr-d  [x.iter.ars.u.par +(y.iter.ars.u.par)]
-    ==
-  =/  prl=@ud
-    =/  l=@ud  ;:(add x.lar.u.par l.muri.ars.u.par l.padd.res.u.par)
-    ?:((lth x.iter.u.par l) (sub l x.iter.u.par) 1)
-  =/  prr=@ud
-    =/  r=@ud  +((add r.muri.ars.u.par r.padd.res.u.par))
-    =.  r  (add x.lar.u.par ?:((gth r w.size.res.u.par) 0 (sub w.size.res.u.par r)))
-    ?:((lth x.iter.u.par r) (sub r x.iter.u.par) 1)
-  =/  prt=@ud
-    =/  t=@ud  ;:(add y.lar.u.par t.muri.ars.u.par t.padd.res.u.par)
-    ?:((lth y.iter.u.par t) (sub t y.iter.u.par) 1)
-  =/  prb=@ud
-    =/  b=@ud  +((add b.muri.ars.u.par b.padd.res.u.par))
-    =.  b  (add y.lar.u.par ?:((gth b h.size.res.u.par) 0 (sub h.size.res.u.par b)))
-    ?:((lth y.iter.u.par b) (sub b y.iter.u.par) 1)
-  =/  opu=opus  (eo esse.ara visa.ara lex ~ pk visa.u.par prl prt prr prb)
-  =/  pvi=visa
-    %-  %~  dif
-          by
-        =.  lar.u.par
-          :-  ?:((lth x.iter.u.par x.lar.u.par) (sub x.lar.u.par x.iter.u.par) 1)
-          ?:((lth y.iter.u.par y.lar.u.par) (sub y.lar.u.par y.iter.u.par) 1)
-        %^  rbox  lar.u.par
-          [(add x.lar.u.par w.size.res.u.par) (add y.lar.u.par h.size.res.u.par)]
-        res.u.par
-    visa.opu
-  =.  visa.u.par  pvi
-  =:  esse.opu  (~(put by esse.opu) pk u.par)
-      visa.opu  (~(uni by visa.opu) visa.u.par)
-    ==
-  =/  dic=cura  (dico esse.opu)
-  [esse.opu dic]
+    =.  v.ars.e  !v.ars.e
+    =.  visa.e   (~(int by visa.e) (ruo iter.e (viso lar.e res.e ars.e modi.e)))
+    opu(esse (~(put by esse.opu) k e), visa (~(uni by visa.opu) visa.e))
+  ::
+  ++  lego                  :: reset and collect the values of inputs under a form element
+    |=  sk=rami
+    ^-  [opus form]
+    =|  acc=[opus =form]
+    =/  fk
+      |-  ^-  $@(~ rami)
+      ?~  t.sk  ~
+      =/  el=(unit ens)  (~(get by esse.ara) t.sk)
+      ?~  el  ~
+      ?:  ?=(%form -.ars.u.el)
+        t.sk
+      $(sk t.sk)
+    ?~  fk  acc
+    |-  ^-  [opus form]
+    =/  el=(unit ens)  (~(get by esse.ara) fk) 
+    ?~  el
+      ?:  ?=(%b axis.i.fk)  $(fk [[%l 0] t.fk])
+      ?:  ?=(%l axis.i.fk)  $(fk [[%~ 0] t.fk])
+      acc
+    ?:  &(?=(%form -.ars.u.el) =(~ p.form.acc))
+      =/  key=(unit @t)  (~(get by aves.u.el) %key)
+      %=  $
+        ager.i.fk  +(ager.i.fk)
+        acc        $(fk [[%b 0] fk], p.form.acc ?~(key '' u.key))
+      ==
+    ?:  ?=(%input -.ars.u.el)
+      =/  key=(unit @t)  (~(get by aves.u.el) %key)
+      ?~  key
+        ~&  'key missing on form submit'
+        $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+      =/  val=@t  (crip (tufa ^-(lina (zing vox.ars.u.el))))
+      =:  vox.ars.u.el  ~
+          ab.ars.u.el   0
+          i.ars.u.el    [0 0]
+          visa.u.el
+            %-  %~  int
+                  by
+                visa.u.el
+            (ruo iter.u.el (rinp lar.u.el modi.u.el res.u.el 0 ~))
+        ==
+      =:  esse.acc  (~(put by esse.acc) fk u.el)
+          visa.acc  (~(uni by visa.acc) visa.u.el)
+          q.form.acc  (~(put by q.form.acc) u.key val)
+        ==
+      $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+    ?:  ?=(%checkbox -.ars.u.el)
+      =/  key=(unit @t)  (~(get by aves.u.el) %key)
+      ?~  key
+        ~&  'key missing on form submit'
+        $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+      =/  val=@t  ?:(v.ars.u.el '%.y' '%.n')
+      =.  v.ars.u.el  |
+      =.  visa.u.el
+            %-  %~  int
+                  by
+                visa.u.el
+            (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el))
+      =:  esse.acc  (~(put by esse.acc) fk u.el)
+          visa.acc  (~(uni by visa.acc) visa.u.el)
+          q.form.acc  (~(put by q.form.acc) u.key val)
+        ==
+      $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+    $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
+  ::
+  ++  abeo                  :: handle a scroll event for a scroll element by key
+    |=  [pk=rami le=^lex]   :: returns an update from the root
+    ^-  $@(~ [esse cura])
+    =/  par=(unit ens)  (~(get by esse.ara) pk)
+    ?~  par  ~
+    ?.  ?=(%scroll -.ars.u.par)  ~
+    ?:  ?|  &(?=(%scr-l le) =(0 x.iter.ars.u.par))
+            &(?=(%scr-r le) =(x.sola.ars.u.par x.iter.ars.u.par))
+            &(?=(%scr-u le) =(0 y.iter.ars.u.par))
+            &(?=(%scr-d le) =(y.sola.ars.u.par y.iter.ars.u.par))
+        ==
+      ~
+    =.  iter.ars.u.par
+      ?+  le  iter.ars.u.par
+        %scr-l  ?:(=(0 x.iter.ars.u.par) iter.ars.u.par [(dec x.iter.ars.u.par) y.iter.ars.u.par])
+        %scr-r  [+(x.iter.ars.u.par) y.iter.ars.u.par]  
+        %scr-u  ?:(=(0 y.iter.ars.u.par) iter.ars.u.par [x.iter.ars.u.par (dec y.iter.ars.u.par)])
+        %scr-d  [x.iter.ars.u.par +(y.iter.ars.u.par)]
+      ==
+    =/  prl=@ud
+      =/  l=@ud  ;:(add x.lar.u.par l.muri.ars.u.par l.padd.res.u.par)
+      ?:((lth x.iter.u.par l) (sub l x.iter.u.par) 1)
+    =/  prr=@ud
+      =/  r=@ud  +((add r.muri.ars.u.par r.padd.res.u.par))
+      =.  r  (add x.lar.u.par ?:((gth r w.size.res.u.par) 0 (sub w.size.res.u.par r)))
+      ?:((lth x.iter.u.par r) (sub r x.iter.u.par) 1)
+    =/  prt=@ud
+      =/  t=@ud  ;:(add y.lar.u.par t.muri.ars.u.par t.padd.res.u.par)
+      ?:((lth y.iter.u.par t) (sub t y.iter.u.par) 1)
+    =/  prb=@ud
+      =/  b=@ud  +((add b.muri.ars.u.par b.padd.res.u.par))
+      =.  b  (add y.lar.u.par ?:((gth b h.size.res.u.par) 0 (sub h.size.res.u.par b)))
+      ?:((lth y.iter.u.par b) (sub b y.iter.u.par) 1)
+    =/  opu=opus  (eo esse.ara visa.ara le ~ pk visa.u.par prl prt prr prb)
+    =/  pvi=visa
+      %-  %~  dif
+            by
+          =.  lar.u.par
+            :-  ?:((lth x.iter.u.par x.lar.u.par) (sub x.lar.u.par x.iter.u.par) 1)
+            ?:((lth y.iter.u.par y.lar.u.par) (sub y.lar.u.par y.iter.u.par) 1)
+          %^  rbox  lar.u.par
+            [(add x.lar.u.par w.size.res.u.par) (add y.lar.u.par h.size.res.u.par)]
+          res.u.par
+      visa.opu
+    =.  visa.u.par  pvi
+    =:  esse.opu  (~(put by esse.opu) pk u.par)
+        visa.opu  (~(uni by visa.opu) visa.u.par)
+      ==
+    =/  dic=cura  (dico esse.opu ?^(rex.ara k.rex.ara ~))
+    [esse.opu dic]
+  ::
+  --
 ::
-++  eo                      :: perform a scroll on the elements within a scroll element
+++  eo                                  :: perform a scroll on the elements within a scroll element
   |=  $:  e=esse  v=visa  lx=$@(~ lex)  :: returns the esse and visa passed in with the update applied
           nitr=$@(~ loci)  pk=rami  pv=visa
           prl=@ud  prt=@ud  prr=@ud  prb=@ud
@@ -1194,9 +1354,9 @@
   $(ager.i.k +(ager.i.k))
 ::
 ++  ligo                    :: find the key of a potential scroll parent by child key
-  |=  r=rami
+  |=  [r=rami q=equi]
   ^-  $@(~ rami)
-  ?:  (~(has in equi.ara) r)
+  ?:  (~(has in q) r)
     r
   ?~  t.r  ~
   $(r t.r)
@@ -1256,7 +1416,7 @@
   ?:((lth y.iter y) (sub y y.iter) 1)
 ::
 ++  fero                    :: make a general cursor move update
-  |=  [r=rex e=esse]
+  |=  [r=rex q=equi e=esse]
   ^-  lux
   ?~  r  [%hop [1 1]]
   =/  el=(unit ens)  (~(get by e) k.r)
@@ -1265,123 +1425,11 @@
     (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
   ?:  &(=(0 x.iter.u.el) =(0 y.iter.u.el))
     [%hop [l.r t.r]]
-  =/  sk=$@(~ rami)  (ligo k.r)
+  =/  sk=$@(~ rami)  (ligo k.r q)
   ?~  sk  [%hop [l.r t.r]]
   =/  spar=(unit ens)  (~(get by e) sk)
   ?~  spar  [%hop [l.r t.r]]
   (cedo r sk u.spar)
-::
-++  rogo                    :: find a dux in ordo by key
-  |=  [k=rami o=ordo]
-  ^-  $@(~ dux)
-  ?~  o  ~
-  ?:  =(k k.i.o)
-    i.o
-  $(o t.o)
-::
-++  opto                    :: process a checkbox, potentially in a radio group
-  |=  [k=rami e=ens]
-  ^-  opus
-  ?.  ?=(%checkbox -.ars.e)  [~ ~]
-  =/  rad
-    |-  ^-  $@(~ [k=rami e=ens])
-    ?~  t.k  ~
-    =/  el=(unit ens)  (~(get by esse.ara) t.k)
-    ?~  el  $(k t.k)
-    ?:  ?=(%radio -.ars.u.el)
-      [t.k u.el]
-    $(k t.k)
-  ?:  |(?=(~ rad) v.ars.e)
-    =.  v.ars.e  !v.ars.e
-    =.  visa.e   (~(int by visa.e) (ruo iter.e (viso lar.e res.e ars.e modi.e)))
-    [^-(esse (malt ~[[k e]])) visa.e]
-  =/  opu
-    =/  [rk=rami acc=opus]  [[[%b 0] k.rad] [~ ~]]
-    |-  ^-  opus
-    =/  el=(unit ens)  (~(get by esse.ara) rk)
-    ?~  el
-      ?:  ?=(%b axis.i.rk)  $(rk [[%l 0] t.rk])
-      ?:  ?=(%l axis.i.rk)  $(rk [[%~ 0] t.rk])
-      acc
-    ?.  ?=(%checkbox -.ars.u.el)
-      $(ager.i.rk +(ager.i.rk), acc $(rk [[%b 0] rk]))
-    ?:  !v.ars.u.el
-      $(ager.i.rk +(ager.i.rk), acc $(rk [[%b 0] rk]))
-    =.  v.ars.u.el  |
-    =.  visa.u.el
-      (~(int by visa.u.el) (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el)))
-    %=  $
-      ager.i.rk  +(ager.i.rk)
-      esse.acc   (~(put by esse.acc) rk u.el)
-      visa.acc   (~(uni by visa.acc) visa.u.el)
-    ==
-  =.  v.ars.e  !v.ars.e
-  =.  visa.e   (~(int by visa.e) (ruo iter.e (viso lar.e res.e ars.e modi.e)))
-  opu(esse (~(put by esse.opu) k e), visa (~(uni by visa.opu) visa.e))
-::
-++  lego                    :: reset and collect the values of inputs under a form element
-  |=  sk=rami
-  ^-  [opus form]
-  =|  acc=[opus =form]
-  =/  fk
-    |-  ^-  $@(~ rami)
-    ?~  t.sk  ~
-    =/  el=(unit ens)  (~(get by esse.ara) t.sk)
-    ?~  el  ~
-    ?:  ?=(%form -.ars.u.el)
-      t.sk
-    $(sk t.sk)
-  ?~  fk  acc
-  |-  ^-  [opus form]
-  =/  el=(unit ens)  (~(get by esse.ara) fk) 
-  ?~  el
-    ?:  ?=(%b axis.i.fk)  $(fk [[%l 0] t.fk])
-    ?:  ?=(%l axis.i.fk)  $(fk [[%~ 0] t.fk])
-    acc
-  ?:  &(?=(%form -.ars.u.el) =(~ p.form.acc))
-    =/  key=(unit @t)  (~(get by aves.u.el) %key)
-    %=  $
-      ager.i.fk  +(ager.i.fk)
-      acc        $(fk [[%b 0] fk], p.form.acc ?~(key '' u.key))
-    ==
-  ?:  ?=(%input -.ars.u.el)
-    =/  key=(unit @t)  (~(get by aves.u.el) %key)
-    ?~  key
-      ~&  'key missing on form submit'
-      $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-    =/  val=@t  (crip (tufa ^-(lina (zing vox.ars.u.el))))
-    =:  vox.ars.u.el  ~
-        ab.ars.u.el   0
-        i.ars.u.el    [0 0]
-        visa.u.el
-          %-  %~  int
-                by
-              visa.u.el
-          (ruo iter.u.el (rinp lar.u.el modi.u.el res.u.el 0 ~))
-      ==
-    =:  esse.acc  (~(put by esse.acc) fk u.el)
-        visa.acc  (~(uni by visa.acc) visa.u.el)
-        q.form.acc  (~(put by q.form.acc) u.key val)
-      ==
-    $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-  ?:  ?=(%checkbox -.ars.u.el)
-    =/  key=(unit @t)  (~(get by aves.u.el) %key)
-    ?~  key
-      ~&  'key missing on form submit'
-      $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-    =/  val=@t  ?:(v.ars.u.el '%.y' '%.n')
-    =.  v.ars.u.el  |
-    =.  visa.u.el
-          %-  %~  int
-                by
-              visa.u.el
-          (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el))
-    =:  esse.acc  (~(put by esse.acc) fk u.el)
-        visa.acc  (~(uni by visa.acc) visa.u.el)
-        q.form.acc  (~(put by q.form.acc) u.key val)
-      ==
-    $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
-  $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
 ::
 ++  noto                    :: parse belt to nota
   |=  z=zona
@@ -1397,7 +1445,7 @@
 ::  ::  ::  ::  ::  ::  ::
 ++  dolo                    :: get default styles for a semantic element
   |=  el=@tas
-  ^-  rei
+  ^-  ovum
   ?+  el
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1498,7 +1546,7 @@
 ::
 ++  suo                     :: process a sail element's name and attribute list for geno
   |=  [n=mane a=mart]
-  =/  [=rei =aves =ars =lina velo=mart]
+  =/  [=ovum =aves =ars =lina velo=mart]
       ?+  n             [(dolo %$) ~ [%$ ~] ~ ~]
         %$              [(dolo %text) ~ [%text ~] ?~(a ~ (tuba v.i.a)) ~]
         %layer          [(dolo %layer) ~ [%layer ~] ~ ~]
@@ -1516,123 +1564,123 @@
         %form           [(dolo %$) ~ [%form ~] ~ ~]
         %submit         [(dolo %$) ~ [%select [~ ~ ~] %submit] ~ ~]
       ==
-  |-  ^-  [^rei ^aves ^ars ^lina mart]
-  ?~  a  [rei aves ars lina velo]
+  |-  ^-  [^ovum ^aves ^ars ^lina mart]
+  ?~  a  [ovum aves ars lina velo]
   ?+  n.i.a  $(a t.a)
       %w
     ?:  &(?=(%border -.ars) |(?=(%t ad.ars) ?=(%b ad.ars)))
       $(a t.a)
-    $(w.size.rei (pars v.i.a), a t.a)
+    $(w.size.ovum (pars v.i.a), a t.a)
       %h
     ?:  &(?=(%border -.ars) |(?=(%l ad.ars) ?=(%r ad.ars)))
       $(a t.a)
-    $(h.size.rei (pars v.i.a), a t.a)
+    $(h.size.ovum (pars v.i.a), a t.a)
       %p
     =/  v=as  (pars v.i.a)
-    $(padd.rei [v v v v], a t.a)
+    $(padd.ovum [v v v v], a t.a)
       %px
     =/  v=as  (pars v.i.a)
-    $(l.padd.rei v, r.padd.rei v, a t.a)
+    $(l.padd.ovum v, r.padd.ovum v, a t.a)
       %py
     =/  v=as  (pars v.i.a)
-    $(t.padd.rei v, b.padd.rei v, a t.a)
+    $(t.padd.ovum v, b.padd.ovum v, a t.a)
       %pl
-    $(l.padd.rei (pars v.i.a), a t.a)
+    $(l.padd.ovum (pars v.i.a), a t.a)
       %pr
-    $(r.padd.rei (pars v.i.a), a t.a)
+    $(r.padd.ovum (pars v.i.a), a t.a)
       %pt
-    $(t.padd.rei (pars v.i.a), a t.a)
+    $(t.padd.ovum (pars v.i.a), a t.a)
       %pb
-    $(b.padd.rei (pars v.i.a), a t.a)
+    $(b.padd.ovum (pars v.i.a), a t.a)
       %m
     ?:  ?=(%border -.ars)
       $(a t.a)
     =/  v=as  (pars v.i.a)
-    $(marg.rei [v v v v], a t.a)
+    $(marg.ovum [v v v v], a t.a)
       %mx
     ?:  ?=(%border -.ars)
       $(a t.a)
     =/  v=as  (pars v.i.a)
-    $(l.marg.rei v, r.marg.rei v, a t.a)
+    $(l.marg.ovum v, r.marg.ovum v, a t.a)
       %my
     ?:  ?=(%border -.ars)
       $(a t.a)
     =/  v=as  (pars v.i.a)
-    $(t.marg.rei v, b.marg.rei v, a t.a)
+    $(t.marg.ovum v, b.marg.ovum v, a t.a)
       %ml
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(l.marg.rei (pars v.i.a), a t.a)
+    $(l.marg.ovum (pars v.i.a), a t.a)
       %mr
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(r.marg.rei (pars v.i.a), a t.a)
+    $(r.marg.ovum (pars v.i.a), a t.a)
       %mt
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(t.marg.rei (pars v.i.a), a t.a)
+    $(t.marg.ovum (pars v.i.a), a t.a)
       %mb
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(b.marg.rei (pars v.i.a), a t.a)
+    $(b.marg.ovum (pars v.i.a), a t.a)
       %fx
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
     ?:  ?=(^ num)
-      $(x.flex.rei ?:((lte u.num 100) u.num 100), a t.a)
+      $(x.flex.ovum ?:((lte u.num 100) u.num 100), a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %start   $(x.flex.rei 0, a t.a)
-      %center  $(x.flex.rei 50, a t.a)
-      %end     $(x.flex.rei 100, a t.a)
+      %start   $(x.flex.ovum 0, a t.a)
+      %center  $(x.flex.ovum 50, a t.a)
+      %end     $(x.flex.ovum 100, a t.a)
     ==
       %fy
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
     ?:  ?=(^ num)
-      $(y.flex.rei ?:((lte u.num 100) u.num 100), a t.a)
+      $(y.flex.ovum ?:((lte u.num 100) u.num 100), a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %start   $(y.flex.rei 0, a t.a)
-      %center  $(y.flex.rei 50, a t.a)
-      %end     $(y.flex.rei 100, a t.a)
+      %start   $(y.flex.ovum 0, a t.a)
+      %center  $(y.flex.ovum 50, a t.a)
+      %end     $(y.flex.ovum 100, a t.a)
     ==
       %fl
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %row          $(flow.rei [%row %clip], a t.a)
-      %row-clip     $(flow.rei [%row %clip], a t.a)
-      %row-wrap     $(flow.rei [%row %wrap], a t.a)
-      %column       $(flow.rei [%col %clip], a t.a)
-      %column-clip  $(flow.rei [%col %clip], a t.a)
-      %column-wrap  $(flow.rei [%col %wrap], a t.a)
+      %row          $(flow.ovum [%row %clip], a t.a)
+      %row-clip     $(flow.ovum [%row %clip], a t.a)
+      %row-wrap     $(flow.ovum [%row %wrap], a t.a)
+      %column       $(flow.ovum [%col %clip], a t.a)
+      %column-clip  $(flow.ovum [%col %clip], a t.a)
+      %column-wrap  $(flow.ovum [%col %wrap], a t.a)
     ==
       %cb
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(b.look.rei [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(b.look.rei ~, a t.a)
-      %red      $(b.look.rei [~ %r], a t.a)
-      %green    $(b.look.rei [~ %g], a t.a)
-      %blue     $(b.look.rei [~ %b], a t.a)
-      %cyan     $(b.look.rei [~ %c], a t.a)
-      %magenta  $(b.look.rei [~ %m], a t.a)
-      %yellow   $(b.look.rei [~ %y], a t.a)
-      %black    $(b.look.rei [~ %k], a t.a)
-      %white    $(b.look.rei [~ %w], a t.a)
+      $(b.look.ovum [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(b.look.ovum ~, a t.a)
+      %red      $(b.look.ovum [~ %r], a t.a)
+      %green    $(b.look.ovum [~ %g], a t.a)
+      %blue     $(b.look.ovum [~ %b], a t.a)
+      %cyan     $(b.look.ovum [~ %c], a t.a)
+      %magenta  $(b.look.ovum [~ %m], a t.a)
+      %yellow   $(b.look.ovum [~ %y], a t.a)
+      %black    $(b.look.ovum [~ %k], a t.a)
+      %white    $(b.look.ovum [~ %w], a t.a)
     ==
       %cf
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(f.look.rei [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(f.look.rei ~, a t.a)
-      %red      $(f.look.rei [~ %r], a t.a)
-      %green    $(f.look.rei [~ %g], a t.a)
-      %blue     $(f.look.rei [~ %b], a t.a)
-      %cyan     $(f.look.rei [~ %c], a t.a)
-      %magenta  $(f.look.rei [~ %m], a t.a)
-      %yellow   $(f.look.rei [~ %y], a t.a)
-      %black    $(f.look.rei [~ %k], a t.a)
-      %white    $(f.look.rei [~ %w], a t.a)
+      $(f.look.ovum [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(f.look.ovum ~, a t.a)
+      %red      $(f.look.ovum [~ %r], a t.a)
+      %green    $(f.look.ovum [~ %g], a t.a)
+      %blue     $(f.look.ovum [~ %b], a t.a)
+      %cyan     $(f.look.ovum [~ %c], a t.a)
+      %magenta  $(f.look.ovum [~ %m], a t.a)
+      %yellow   $(f.look.ovum [~ %y], a t.a)
+      %black    $(f.look.ovum [~ %k], a t.a)
+      %white    $(f.look.ovum [~ %w], a t.a)
     ==
       %d
-    ?+  (@tas (crip v.i.a))  $(d.look.rei ~, a t.a)
-      %bold       $(d.look.rei [~ (silt ~[%br])], a t.a)
-      %blink      $(d.look.rei [~ (silt ~[%bl])], a t.a)
-      %underline  $(d.look.rei [~ (silt ~[%un])], a t.a)
+    ?+  (@tas (crip v.i.a))  $(d.look.ovum ~, a t.a)
+      %bold       $(d.look.ovum [~ (silt ~[%br])], a t.a)
+      %blink      $(d.look.ovum [~ (silt ~[%bl])], a t.a)
+      %underline  $(d.look.ovum [~ (silt ~[%un])], a t.a)
     ==
       %b
     ?.  ?=(%border -.ars)
@@ -1648,39 +1696,39 @@
     ?.  ?=(%border -.ars)
       $(velo [i.a velo], a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(b.look.rei [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(b.look.rei ~, a t.a)
-      %red      $(b.look.rei [~ %r], a t.a)
-      %green    $(b.look.rei [~ %g], a t.a)
-      %blue     $(b.look.rei [~ %b], a t.a)
-      %cyan     $(b.look.rei [~ %c], a t.a)
-      %magenta  $(b.look.rei [~ %m], a t.a)
-      %yellow   $(b.look.rei [~ %y], a t.a)
-      %black    $(b.look.rei [~ %k], a t.a)
-      %white    $(b.look.rei [~ %w], a t.a)
+      $(b.look.ovum [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(b.look.ovum ~, a t.a)
+      %red      $(b.look.ovum [~ %r], a t.a)
+      %green    $(b.look.ovum [~ %g], a t.a)
+      %blue     $(b.look.ovum [~ %b], a t.a)
+      %cyan     $(b.look.ovum [~ %c], a t.a)
+      %magenta  $(b.look.ovum [~ %m], a t.a)
+      %yellow   $(b.look.ovum [~ %y], a t.a)
+      %black    $(b.look.ovum [~ %k], a t.a)
+      %white    $(b.look.ovum [~ %w], a t.a)
     ==
       %b-cf
     ?.  ?=(%border -.ars)
       $(velo [i.a velo], a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(f.look.rei [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(f.look.rei ~, a t.a)
-      %red      $(f.look.rei [~ %r], a t.a)
-      %green    $(f.look.rei [~ %g], a t.a)
-      %blue     $(f.look.rei [~ %b], a t.a)
-      %cyan     $(f.look.rei [~ %c], a t.a)
-      %magenta  $(f.look.rei [~ %m], a t.a)
-      %yellow   $(f.look.rei [~ %y], a t.a)
-      %black    $(f.look.rei [~ %k], a t.a)
-      %white    $(f.look.rei [~ %w], a t.a)
+      $(f.look.ovum [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(f.look.ovum ~, a t.a)
+      %red      $(f.look.ovum [~ %r], a t.a)
+      %green    $(f.look.ovum [~ %g], a t.a)
+      %blue     $(f.look.ovum [~ %b], a t.a)
+      %cyan     $(f.look.ovum [~ %c], a t.a)
+      %magenta  $(f.look.ovum [~ %m], a t.a)
+      %yellow   $(f.look.ovum [~ %y], a t.a)
+      %black    $(f.look.ovum [~ %k], a t.a)
+      %white    $(f.look.ovum [~ %w], a t.a)
     ==
       %b-d
     ?.  ?=(%border -.ars)
       $(velo [i.a velo], a t.a)
-    ?+  (@tas (crip v.i.a))  $(d.look.rei ~, a t.a)
-      %bold       $(d.look.rei [~ (silt ~[%br])], a t.a)
-      %blink      $(d.look.rei [~ (silt ~[%bl])], a t.a)
-      %underline  $(d.look.rei [~ (silt ~[%un])], a t.a)
+    ?+  (@tas (crip v.i.a))  $(d.look.ovum ~, a t.a)
+      %bold       $(d.look.ovum [~ (silt ~[%br])], a t.a)
+      %blink      $(d.look.ovum [~ (silt ~[%bl])], a t.a)
+      %underline  $(d.look.ovum [~ (silt ~[%un])], a t.a)
     ==
       %l
     ?.  ?=(%line -.ars)  $(a t.a)
@@ -1830,7 +1878,7 @@
   ==
 ::
 ++  sero                    :: separate grow elements from the normal element list
-  |=  [plow=flow norm=marl]
+  |=  [plow=fuga norm=marl]
   =|  [i=@ud gro=marl aqu=aqua nor=marl]
   |-  ^-  [[marl aqua] marl]
   ?~  norm  [[(flop gro) (flop aqu)] (flop nor)]
@@ -1868,7 +1916,7 @@
     ==
   $(nor [i.norm nor], norm t.norm, i +(i))
 ::
-++  duco                    :: render a navigation style change update
+++  duco                     :: render a navigation style change update
   |=  [o=esse k=rami r=rex]  :: returns just the esse and visa of the updated elements
   ^-  opus
   ?~  r  [~ ~]
@@ -1960,7 +2008,7 @@
     0
   (sub +(u.bot) y.vlar)
 ::
-++  muto                    :: reposition an element
+++  mino                    :: reposition an element
   |=  [movx=@ud movy=@ud lim=modi vdif=visa el=ens]
   ^-  ens
   %_  el
@@ -2496,31 +2544,34 @@
     a  (~(put by a) [x y] [look.res c])
   ==
 ::
-++  geno                    :: turn sail into session display state
-  |=  x=manx
-  ^-  esse
-  ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
-    ~
-  =/  a=opus        [~ ~]
-  =/  m=marl        ~[x]
-  =/  k=rami        ~[[%~ 0]]
-  =/  pl=fila       [~ ~ %w]
-  =/  px=as         [%c (dec x.arx.ara)]
-  =/  py=as         [%c y.arx.ara]
-  =/  pow=flow      [%row %clip]
-  =/  prx=@ud       (dec x.arx.ara)
-  =/  pry=@ud       y.arx.ara
-  =/  plar=lar      lar.ara
-  =/  plim=modi     [(dec x.arx.ara) y.arx.ara]
-  =/  pitr=iter     [0 0]
-  =/  pscr=[x=bean y=bean]  [%.n %.n]
-  =/  slim=$@(~ loci)  ~
-  =/  vlar=lar      lar.ara
+++  geno                    :: turn sail into session state
+  |=  [x=manx =ara]
+  ^-  ^ara
+  =.  x.urbs  ?:(=(0 x.urbs) 0 (dec x.urbs))
+  =/  old=(unit ens)  (~(get by esse.ara) ~[[%~ 0]])
+  =/  a=opus                   [~ ~]
+  =/  m=marl                   ~[x]
+  =/  k=rami                   ~[[%~ 0]]
+  =/  pl=fila                  [~ ~ %w]
+  =/  px=as                    [%c x.urbs]
+  =/  py=as                    [%c y.urbs]
+  =/  pow=fuga                 [%row %clip]
+  =/  prx=@ud                  x.urbs
+  =/  pry=@ud                  y.urbs
+  =/  plar=lar                 ?^(old lar.u.old [1 1])
+  =/  plim=modi                [x.urbs y.urbs]
+  =/  pitr=iter                [0 0]
+  =/  pscr=[x=bean y=bean]     [%.n %.n]
+  =/  slim=$@(~ loci)          ~
+  =/  vlar=lar                 plar
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
-  =<  -
+  =;  =opus
+    :+  x
+      esse.opus
+    (dico esse.opus ?^(rex.ara k.rex.ara ~))
   |-  ^-  opus
   ?~  m  a
-  =/  [=rei =aves =ars =lina velo=mart]
+  =/  [=ovum =aves =ars =lina velo=mart]
     (suo g.i.m)
   =/  [bor=marl lay=marl nor=marl]
     ?:  ?=(%input -.ars)
@@ -2546,80 +2597,80 @@
   =/  [bl=@ud br=@ud bt=@ud bb=@ud]
     (obeo bor)
   =^  [gro=marl aqu=aqua]  nor
-    (sero flow.rei nor)
-  =/  wcen=bean  =(%p p.w.size.rei)
-  =/  hcen=bean  =(%p p.h.size.rei)
-  =?  w.size.rei  wcen
+    (sero flow.ovum nor)
+  =/  wcen=bean  =(%p p.w.size.ovum)
+  =/  hcen=bean  =(%p p.h.size.ovum)
+  =?  w.size.ovum  wcen
     ?:  &(=(%i p.px) ?=(%layer -.ars))
       [%i 0]
-    [%c (div (mul q.w.size.rei prx) 100)]
-  =?  h.size.rei  hcen
+    [%c (div (mul q.w.size.ovum prx) 100)]
+  =?  h.size.ovum  hcen
     ?:  &(=(%i p.py) ?=(%layer -.ars))
       [%i 0]
-    [%c (div (mul q.h.size.rei pry) 100)]
-  =?  t.marg.rei  =(%p p.t.marg.rei)
-    ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
+    [%c (div (mul q.h.size.ovum pry) 100)]
+  =?  t.marg.ovum  =(%p p.t.marg.ovum)
+    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
       [%c 0]
-    [%c (div (mul q.t.marg.rei q.h.size.rei) 100)]
-  =?  r.marg.rei  =(%p p.r.marg.rei)
-    ?:  |(=(%i p.w.size.rei) =(%p p.w.size.rei))
+    [%c (div (mul q.t.marg.ovum q.h.size.ovum) 100)]
+  =?  r.marg.ovum  =(%p p.r.marg.ovum)
+    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
       [%c 0]
-    [%c (div (mul q.r.marg.rei q.w.size.rei) 100)]
-  =?  b.marg.rei  =(%p p.b.marg.rei)
-    ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
+    [%c (div (mul q.r.marg.ovum q.w.size.ovum) 100)]
+  =?  b.marg.ovum  =(%p p.b.marg.ovum)
+    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
       [%c 0]
-    [%c (div (mul q.b.marg.rei q.h.size.rei) 100)]
-  =?  l.marg.rei  =(%p p.l.marg.rei)
-    ?:  |(=(%i p.w.size.rei) =(%p p.w.size.rei))
+    [%c (div (mul q.b.marg.ovum q.h.size.ovum) 100)]
+  =?  l.marg.ovum  =(%p p.l.marg.ovum)
+    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
       [%c 0]
-    [%c (div (mul q.l.marg.rei q.w.size.rei) 100)]
-  =?  t.padd.rei  =(%p p.t.padd.rei)
-    ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
+    [%c (div (mul q.l.marg.ovum q.w.size.ovum) 100)]
+  =?  t.padd.ovum  =(%p p.t.padd.ovum)
+    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
       [%c 0]
-    [%c (div (mul q.t.padd.rei q.h.size.rei) 100)]
-  =?  r.padd.rei  =(%p p.r.padd.rei)
-    ?:  |(=(%i p.w.size.rei) =(%p p.w.size.rei))
+    [%c (div (mul q.t.padd.ovum q.h.size.ovum) 100)]
+  =?  r.padd.ovum  =(%p p.r.padd.ovum)
+    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
       [%c 0]
-    [%c (div (mul q.r.padd.rei q.w.size.rei) 100)]
-  =?  b.padd.rei  =(%p p.b.padd.rei)
-    ?:  |(=(%i p.h.size.rei) =(%p p.h.size.rei))
+    [%c (div (mul q.r.padd.ovum q.w.size.ovum) 100)]
+  =?  b.padd.ovum  =(%p p.b.padd.ovum)
+    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
       [%c 0]
-    [%c (div (mul q.b.padd.rei q.h.size.rei) 100)]
-  =?  l.padd.rei  =(%p p.l.padd.rei)
-    ?:  |(=(%i p.w.size.rei) =(%p p.w.size.rei))
+    [%c (div (mul q.b.padd.ovum q.h.size.ovum) 100)]
+  =?  l.padd.ovum  =(%p p.l.padd.ovum)
+    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
       [%c 0]
-    [%c (div (mul q.l.padd.rei q.w.size.rei) 100)]
-  =?  q.w.size.rei  &(wcen !=(%i p.w.size.rei))
-    =/  m=@ud  (add q.l.marg.rei q.r.marg.rei)
-    ?:  (gth m q.w.size.rei)  0  (sub q.w.size.rei m)
-  =?  q.h.size.rei  &(hcen !=(%i p.h.size.rei))
-    =/  m=@ud  (add q.t.marg.rei q.b.marg.rei)
-    ?:  (gth m q.h.size.rei)  0  (sub q.h.size.rei m)
-  =?  x.flex.rei  =(%i p.w.size.rei)  0
-  =?  y.flex.rei  =(%i p.h.size.rei)  0
+    [%c (div (mul q.l.padd.ovum q.w.size.ovum) 100)]
+  =?  q.w.size.ovum  &(wcen !=(%i p.w.size.ovum))
+    =/  m=@ud  (add q.l.marg.ovum q.r.marg.ovum)
+    ?:  (gth m q.w.size.ovum)  0  (sub q.w.size.ovum m)
+  =?  q.h.size.ovum  &(hcen !=(%i p.h.size.ovum))
+    =/  m=@ud  (add q.t.marg.ovum q.b.marg.ovum)
+    ?:  (gth m q.h.size.ovum)  0  (sub q.h.size.ovum m)
+  =?  x.flex.ovum  =(%i p.w.size.ovum)  0
+  =?  y.flex.ovum  =(%i p.h.size.ovum)  0
   =/  imp=bean
     ?&  !?=(%text -.ars)
-        ?|  =(%i p.w.size.rei)
-            =(%i p.h.size.rei)
+        ?|  =(%i p.w.size.ovum)
+            =(%i p.h.size.ovum)
     ==  ==
   =/  fex=bean
-    ?|  &(!=(0 x.flex.rei) =(%c p.w.size.rei)) 
-        &(!=(0 y.flex.rei) =(%c p.h.size.rei))
+    ?|  &(!=(0 x.flex.ovum) =(%c p.w.size.ovum)) 
+        &(!=(0 y.flex.ovum) =(%c p.h.size.ovum))
     ==
   =/  wrap=bean
     ?&  !?=(%border -.ars)
-        ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.rei)
-                %+  gth  (add q.w.size.rei (add q.l.marg.rei q.r.marg.rei))
+        ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.ovum)
+                %+  gth  (add q.w.size.ovum (add q.l.marg.ovum q.r.marg.ovum))
                 ?:((lte n.vir prx) (sub prx n.vir) 0)
             ==
-            ?&  =([%col %wrap] pow)  =(%c p.h.size.rei)
-                %+  gth  (add q.h.size.rei (add q.t.marg.rei q.b.marg.rei))
+            ?&  =([%col %wrap] pow)  =(%c p.h.size.ovum)
+                %+  gth  (add q.h.size.ovum (add q.t.marg.ovum q.b.marg.ovum))
                 ?:((lte n.vir pry) (sub pry n.vir) 0)
     ==  ==  ==
   =/  wrim=bean
     ?&  !?=(%border -.ars)
-        ?|  &(=([%row %wrap] pow) =(%i p.w.size.rei))
-            &(=([%col %wrap] pow) =(%i p.h.size.rei))
+        ?|  &(=([%row %wrap] pow) =(%i p.w.size.ovum))
+            &(=([%col %wrap] pow) =(%i p.h.size.ovum))
     ==  ==
   =/  tvir=[n=@ud o=@ud i=@ud]  vir
   =?  vir  |(wrap wrim)
@@ -2628,7 +2679,7 @@
       ?:  wrap
         :-  0
         :-  i.vir
-        (add (add q.h.size.rei (add q.t.marg.rei q.b.marg.rei)) i.vir)
+        ;:(add q.h.size.ovum q.t.marg.ovum q.b.marg.ovum i.vir)
       ?:  wrim
         :-  0
         :-  o.vir
@@ -2638,7 +2689,7 @@
       ?:  wrap
         :-  0
         :-  i.vir
-        (add (add q.w.size.rei (add q.l.marg.rei q.r.marg.rei)) i.vir)
+        ;:(add q.w.size.ovum q.l.marg.ovum q.r.marg.ovum i.vir)
       ?:  wrim
         :-  0
         :-  o.vir
@@ -2653,14 +2704,14 @@
           %r
         :_  y.vlar
         =/  x=@ud  (add x.vlar ?:(=(0 q.px) 0 (dec q.px)))
-        =/  w=@ud  ?:(=(0 q.w.size.rei) 0 (dec q.w.size.rei))
+        =/  w=@ud  ?:(=(0 q.w.size.ovum) 0 (dec q.w.size.ovum))
         ?:((lth w x) (sub x w) 1)
           %t
         vlar
           %b
         :-  x.vlar
         =/  y=@ud  (add y.vlar ?:(=(0 q.py) 0 (dec q.py)))
-        =/  h=@ud  ?:(=(0 q.h.size.rei) 0 (dec q.h.size.rei))
+        =/  h=@ud  ?:(=(0 q.h.size.ovum) 0 (dec q.h.size.ovum))
         ?:((lth h y) (sub y h) 1)
       ==
     =?  vlar  |(wrap wrim)
@@ -2672,56 +2723,56 @@
         :_  y.plar
         (add x.plar o.vir)
       ==
-    :-  (add x.vlar q.l.marg.rei)
-    (add y.vlar q.t.marg.rei)
+    :-  (add x.vlar q.l.marg.ovum)
+    (add y.vlar q.t.marg.ovum)
   =/  alar=lar  vlar
   =.  vlar
-    :-  ;:(add bl q.l.padd.rei x.vlar)
-    ;:(add bt q.t.padd.rei y.vlar)
+    :-  ;:(add bl q.l.padd.ovum x.vlar)
+    ;:(add bt q.t.padd.ovum y.vlar)
   =/  arx=@ud
-    ?+  p.w.size.rei  0
+    ?+  p.w.size.ovum  0
         %c
-      =/  w=@ud  ;:(add bl br q.l.padd.rei q.r.padd.rei)
-      ?:((gth w q.w.size.rei) 0 (sub q.w.size.rei w))
+      =/  w=@ud  ;:(add bl br q.l.padd.ovum q.r.padd.ovum)
+      ?:((gth w q.w.size.ovum) 0 (sub q.w.size.ovum w))
         %i
       =/  w=@ud
         ;:  add
-          q.l.marg.rei  ?:(=(%row d.pow) n.vir o.vir)
-          bl  br  q.l.padd.rei  q.r.padd.rei
+          q.l.marg.ovum  ?:(=(%row d.pow) n.vir o.vir)
+          bl  br  q.l.padd.ovum  q.r.padd.ovum
         ==
       ?:((gth w prx) 0 (sub prx w))
     ==
   =/  ary=@ud
-    ?+  p.h.size.rei  0
+    ?+  p.h.size.ovum  0
         %c
-      =/  h=@ud  ;:(add bt bb q.t.padd.rei q.b.padd.rei)
-      ?:((gth h q.h.size.rei) 0 (sub q.h.size.rei h))
+      =/  h=@ud  ;:(add bt bb q.t.padd.ovum q.b.padd.ovum)
+      ?:((gth h q.h.size.ovum) 0 (sub q.h.size.ovum h))
         %i
       =/  h=@ud
         ;:  add 
-          q.t.marg.rei  ?:(=(%row d.pow) o.vir n.vir)
-          bt  bb  q.t.padd.rei  q.b.padd.rei
+          q.t.marg.ovum  ?:(=(%row d.pow) o.vir n.vir)
+          bt  bb  q.t.padd.ovum  q.b.padd.ovum
         ==
       ?:((gth h pry) 0 (sub pry h))
     ==
   =/  alim=loci
     :-  ?:  =(0 arx)  0
-        ?:  &(x.pscr ?=(%c p.w.size.rei))
-          ;:(add x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
-        =/  x=@ud  ;:(add x.alar bl q.l.padd.rei ?:(=(0 arx) 0 (dec arx)))
+        ?:  &(x.pscr ?=(%c p.w.size.ovum))
+          ;:(add x.alar bl q.l.padd.ovum ?:(=(0 arx) 0 (dec arx)))
+        =/  x=@ud  ;:(add x.alar bl q.l.padd.ovum ?:(=(0 arx) 0 (dec arx)))
         ?:  (gth x x.plim)
           x.plim
         x
     ?:  =(0 ary)  0
-    ?:  &(y.pscr ?=(%c p.h.size.rei))
-      ;:(add y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
-    =/  y=@ud  ;:(add y.alar bt q.t.padd.rei ?:(=(0 ary) 0 (dec ary)))
+    ?:  &(y.pscr ?=(%c p.h.size.ovum))
+      ;:(add y.alar bt q.t.padd.ovum ?:(=(0 ary) 0 (dec ary)))
+    =/  y=@ud  ;:(add y.alar bt q.t.padd.ovum ?:(=(0 ary) 0 (dec ary)))
     ?:  (gth y y.plim)
       y.plim
     y
   =/  nscr=[x=bean y=bean]
-    :-  |(?=(%scroll -.ars) &(x.pscr ?=(%i p.w.size.rei)))
-    |(?=(%scroll -.ars) &(y.pscr ?=(%i p.h.size.rei)))
+    :-  |(?=(%scroll -.ars) &(x.pscr ?=(%i p.w.size.ovum)))
+    |(?=(%scroll -.ars) &(y.pscr ?=(%i p.h.size.ovum)))
   =/  nsli=$@(~ modi)
     ?.  |(x.nscr y.nscr)
       slim
@@ -2730,9 +2781,9 @@
     :-  ?:((lth x.alim x.slim) x.alim x.slim)
     ?:((lth y.alim y.slim) y.alim y.slim)
   =/  fi=fila
-    :+  ?~(d.look.rei d.pl u.d.look.rei)
-      ?~(b.look.rei b.pl u.b.look.rei)
-    ?~(f.look.rei f.pl u.f.look.rei)
+    :+  ?~(d.look.ovum d.pl u.d.look.ovum)
+      ?~(b.look.ovum b.pl u.b.look.ovum)
+    ?~(f.look.ovum f.pl u.f.look.ovum)
   =|  [b=opus c=opus]
   =>  ?.  ?=(^ lay)
       .
@@ -2742,10 +2793,10 @@
         %=  $
           m     lay
           k     [[%l 0] k]
-          px    w.size.rei
-          py    h.size.rei
+          px    w.size.ovum
+          py    h.size.ovum
           pl    fi
-          pow   flow.rei
+          pow   flow.ovum
           prx   arx
           pry   ary
           plar  vlar
@@ -2760,10 +2811,10 @@
         a     b
         m     lay
         k     [[%l 0] k]
-        px    w.size.rei
-        py    h.size.rei
+        px    w.size.ovum
+        py    h.size.ovum
         pl    fi
-        pow   flow.rei
+        pow   flow.ovum
         prx   arx
         pry   ary
         plar  vlar
@@ -2781,10 +2832,10 @@
           a     c
           m     nor
           k     [[%~ 0] k]
-          px    w.size.rei
-          py    h.size.rei
+          px    w.size.ovum
+          py    h.size.ovum
           pl    fi
-          pow   flow.rei
+          pow   flow.ovum
           prx   arx
           pry   ary
           plar  vlar
@@ -2800,10 +2851,10 @@
           a     b
           m     nor
           k     [[%~ 0] k]
-          px    w.size.rei
-          py    h.size.rei
+          px    w.size.ovum
+          py    h.size.ovum
           pl    fi
-          pow   flow.rei
+          pow   flow.ovum
           prx   arx
           pry   ary
           plar  vlar
@@ -2817,10 +2868,10 @@
       %=  $
         m     nor
         k     [[%~ 0] k]
-        px    w.size.rei
-        py    h.size.rei
+        px    w.size.ovum
+        py    h.size.ovum
         pl    fi
-        pow   flow.rei
+        pow   flow.ovum
         prx   arx
         pry   ary
         plar  vlar
@@ -2835,8 +2886,8 @@
   =?  aqu  !=(~ aqu)
     =/  len=@ud  (lent aqu)
     =/  rom=@ud
-      ?:  ?=(%wrap b.flow.rei)  0
-      ?-  d.flow.rei
+      ?:  ?=(%wrap b.flow.ovum)  0
+      ?-  d.flow.ovum
         %row  ?:(?=(~ csiz) arx ?:((lte w.csiz arx) (sub arx w.csiz) 0))
         %col  ?:(?=(~ csiz) ary ?:((lte h.csiz ary) (sub ary h.csiz) 0))
       ==
@@ -2863,8 +2914,8 @@
     =/  el=(unit ens)  (~(get by esse.c) ek)
     ?~  el  [op (flop aq)]
     =?  u.el  !=(0 move)
-      %:  muto
-        ?-(d.flow.rei %row move, %col 0)  ?-(d.flow.rei %row 0, %col move)
+      %:  mino
+        ?-(d.flow.ovum %row move, %col 0)  ?-(d.flow.ovum %row 0, %col move)
         alim  ?:(fex ~ ?:(wrim visa.b visa.a))  u.el
       ==
     =:  esse.op  (~(put by esse.op) ek u.el)
@@ -2874,7 +2925,7 @@
       i          +(i)
       ager.i.ek  +(ager.i.ek)
       marg
-        ?-  d.flow.rei
+        ?-  d.flow.ovum
           %row  ;:(add marg l.marg.res.u.el r.marg.res.u.el w.size.res.u.el)
           %col  ;:(add marg t.marg.res.u.el b.marg.res.u.el h.size.res.u.el)
         ==
@@ -2887,8 +2938,8 @@
           ?:  ?=(%l axis.i.cek)  $(cek [[%~ 0] t.cek])
           op
         =?  u.cel  !=(0 move)
-          %:  muto
-            ?-(d.flow.rei %row move, %col 0)  ?-(d.flow.rei %row 0, %col move)
+          %:  mino
+            ?-(d.flow.ovum %row move, %col 0)  ?-(d.flow.ovum %row 0, %col move)
             alim  ?:(fex ~ ?:(wrim visa.b visa.a))  u.cel
           ==
         =:  esse.op  (~(put by esse.op) cek u.cel)
@@ -2908,7 +2959,7 @@
         a.g   
       %+  weld  a.g.i.gro
       ^-  mart
-      ?-  d.flow.rei
+      ?-  d.flow.ovum
           %row
         :~  [%w (trip (scot %ud size.i.aqu))]
             [%ml (trip (scot %ud marg.i.aqu))]
@@ -2928,10 +2979,10 @@
         a     c
         m     gro
         k     [[%~ (lent nor)] k]
-        px    w.size.rei
-        py    h.size.rei
+        px    w.size.ovum
+        py    h.size.ovum
         pl    fi
-        pow   flow.rei
+        pow   flow.ovum
         prx   arx
         pry   ary
         plar  vlar
@@ -2946,17 +2997,17 @@
     =/  [ek=rami op=opus]  [[[%~ 0] k] [~ ~]]
     =/  wra
       =|  [out=@ud siz=@ud acc=(map @ud @ud)]
-      ?:  ?=(%clip b.flow.rei)  acc
+      ?:  ?=(%clip b.flow.ovum)  acc
       |-  ^-  (map @ud @ud)
       =/  el=(unit ens)  (~(get by esse.c) ek)
       ?~  el  ?:(=(0 siz) acc (~(put by acc) out siz))
       =/  nut=@ud
-        ?-  d.flow.rei
+        ?-  d.flow.ovum
           %row  ?:((lth t.marg.res.u.el y.lar.u.el) (sub y.lar.u.el t.marg.res.u.el) 1)
           %col  ?:((lth l.marg.res.u.el x.lar.u.el) (sub x.lar.u.el l.marg.res.u.el) 1)
         ==
       =/  niz=@ud
-        ?-  d.flow.rei
+        ?-  d.flow.ovum
           %row  (add w.size.res.u.el (add l.marg.res.u.el r.marg.res.u.el))
           %col  (add h.size.res.u.el (add t.marg.res.u.el b.marg.res.u.el))
         ==
@@ -2974,12 +3025,12 @@
     =/  movx=@ud
       =;  x=@ud
         ?:  (gte x arx)  0
-        (div (mul x.flex.rei (sub arx x)) 100)
-      ?:  |(?=([%row %clip] flow.rei) ?=([%col %wrap] flow.rei))
+        (div (mul x.flex.ovum (sub arx x)) 100)
+      ?:  |(?=([%row %clip] flow.ovum) ?=([%col %wrap] flow.ovum))
         ?^(csiz w.csiz 0)
-      ?:  ?=([%col %clip] flow.rei)
+      ?:  ?=([%col %clip] flow.ovum)
         (add w.size.res.u.el (add l.marg.res.u.el r.marg.res.u.el))
-      ?:  ?=([%row %wrap] flow.rei)
+      ?:  ?=([%row %wrap] flow.ovum)
         =/  w=(unit @ud)
           %-  %~  get  by  wra
           ?:((lth t.marg.res.u.el y.lar.u.el) (sub y.lar.u.el t.marg.res.u.el) 1)
@@ -2988,19 +3039,19 @@
     =/  movy=@ud
       =;  y=@ud
         ?:  (gte y ary)  0
-        (div (mul y.flex.rei (sub ary y)) 100)
-      ?:  |(?=([%col %clip] flow.rei) ?=([%row %wrap] flow.rei))     
+        (div (mul y.flex.ovum (sub ary y)) 100)
+      ?:  |(?=([%col %clip] flow.ovum) ?=([%row %wrap] flow.ovum))     
         ?^(csiz h.csiz 0)
-      ?:  ?=([%row %clip] flow.rei)
+      ?:  ?=([%row %clip] flow.ovum)
         (add h.size.res.u.el (add t.marg.res.u.el b.marg.res.u.el))
-      ?:  ?=([%col %wrap] flow.rei)
+      ?:  ?=([%col %wrap] flow.ovum)
         =/  h=(unit @ud)
           %-  %~  get  by  wra
           ?:((lth l.marg.res.u.el x.lar.u.el) (sub x.lar.u.el l.marg.res.u.el) 1)
         ?^(h u.h 0)
       0
     =?  u.el  !&(=(0 movx) =(0 movy))
-      (muto movx movy alim ?:(wrim visa.b visa.a) u.el)
+      (mino movx movy alim ?:(wrim visa.b visa.a) u.el)
     =:  esse.op  (~(put by esse.op) ek u.el)
         visa.op  (~(uni by visa.u.el) visa.op)
       ==
@@ -3015,7 +3066,7 @@
           ?:  ?=(%l axis.i.cek)  $(cek [[%~ 0] t.cek])
           op
         =?  u.cel  !&(=(0 movx) =(0 movy))
-          (muto movx movy alim ?:(wrim visa.b visa.a) u.cel)
+          (mino movx movy alim ?:(wrim visa.b visa.a) u.cel)
         =:  esse.op  (~(put by esse.op) cek u.cel)
             visa.op  (~(uni by visa.u.cel) visa.op)
           ==
@@ -3030,22 +3081,22 @@
     [(~(uni by esse.c) esse.a) (~(uni by visa.c) visa.a)]
   =?  csiz  &(!?=([~ ~] c) |(imp ?=(%scroll -.ars)))
     (cogo vlar k ?:(wrim esse.b esse.a))
-  =?  size.rei  &(imp ?=(^ csiz))
-    :-  ?:  =(%i p.w.size.rei)  
-          [%c ;:(add bl br q.l.padd.rei q.r.padd.rei w.csiz)]
-        w.size.rei
-    ?:  =(%i p.h.size.rei)  
-      [%c ;:(add bt bb q.t.padd.rei q.b.padd.rei h.csiz)]
-    h.size.rei
+  =?  size.ovum  &(imp ?=(^ csiz))
+    :-  ?:  =(%i p.w.size.ovum)  
+          [%c ;:(add bl br q.l.padd.ovum q.r.padd.ovum w.csiz)]
+        w.size.ovum
+    ?:  =(%i p.h.size.ovum)  
+      [%c ;:(add bt bb q.t.padd.ovum q.b.padd.ovum h.csiz)]
+    h.size.ovum
   =/  wris=bean
     ?&  wrim
         ?|  (gth n.vir prx)  (gth n.vir pry)
             ?&  =(%row d.pow)
-                %+  gth  (add q.w.size.rei (add q.l.marg.rei q.r.marg.rei))
+                %+  gth  (add q.w.size.ovum (add q.l.marg.ovum q.r.marg.ovum))
                 ?:((lte n.tvir prx) (sub prx n.tvir) 0)
             ==
             ?&  =(%col d.pow)
-                %+  gth  (add q.h.size.rei (add q.t.marg.rei q.b.marg.rei))
+                %+  gth  (add q.h.size.ovum (add q.t.marg.ovum q.b.marg.ovum))
                 ?:((lte n.tvir pry) (sub pry n.tvir) 0)
     ==  ==  ==
   =?  vir  wrim
@@ -3054,11 +3105,11 @@
           %row
         :-  0
         :-  i.vir
-        (add i.vir (add q.h.size.rei (add q.t.marg.rei q.b.marg.rei)))
+        (add i.vir (add q.h.size.ovum (add q.t.marg.ovum q.b.marg.ovum)))
           %col
         :-  0
         :-  i.vir
-        (add i.vir (add q.w.size.rei (add q.l.marg.rei q.r.marg.rei)))
+        (add i.vir (add q.w.size.ovum (add q.l.marg.ovum q.r.marg.ovum)))
       ==
     tvir
   =?  vlar  wrim
@@ -3098,15 +3149,15 @@
       (add y.alar n.tvir)
     ==
   =?  arx  wrim
-    =/  bp=@ud  ;:(add bl br q.l.padd.rei q.r.padd.rei)
-    ?:((gth bp q.w.size.rei) 0 (sub q.w.size.rei bp))
+    =/  bp=@ud  ;:(add bl br q.l.padd.ovum q.r.padd.ovum)
+    ?:((gth bp q.w.size.ovum) 0 (sub q.w.size.ovum bp))
   =?  ary  wrim
-    =/  bp=@ud  ;:(add bt bb q.t.padd.rei q.b.padd.rei)
-    ?:((gth bp q.h.size.rei) 0 (sub q.h.size.rei bp))
+    =/  bp=@ud  ;:(add bt bb q.t.padd.ovum q.b.padd.ovum)
+    ?:((gth bp q.h.size.ovum) 0 (sub q.h.size.ovum bp))
   =?  alim  |(wrim x.pscr y.pscr)
     :-  ?:  x.pscr
-          =/  r=@ud  +((add br q.r.padd.rei))
-          ;:(add x.alar bl q.l.padd.rei ?:((gth r q.w.size.rei) 0 (sub q.w.size.rei r)))
+          =/  r=@ud  +((add br q.r.padd.ovum))
+          ;:(add x.alar bl q.l.padd.ovum ?:((gth r q.w.size.ovum) 0 (sub q.w.size.ovum r)))
         ?:  wrim
           =/  x=@ud  (add x.vlar ?:(=(0 arx) 0 (dec arx)))
           ?:  (gth x x.plim)
@@ -3114,8 +3165,8 @@
           x
         x.alim
     ?:  y.pscr
-      =/  b=@ud  +((add bb q.b.padd.rei))
-      ;:(add y.alar bt q.t.padd.rei ?:((gth b q.h.size.rei) 0 (sub q.h.size.rei b)))
+      =/  b=@ud  +((add bb q.b.padd.ovum))
+      ;:(add y.alar bt q.t.padd.ovum ?:((gth b q.h.size.ovum) 0 (sub q.h.size.ovum b)))
     ?:  wrim
       =/  y=@ud  (add y.vlar ?:(=(0 ary) 0 (dec ary)))
       ?:  (gth y y.plim)
@@ -3142,7 +3193,7 @@
       ?:  ?=(%b axis.i.ek)  $(ek [[%l 0] t.ek])
       ?:  ?=(%l axis.i.ek)  $(ek [[%~ 0] t.ek])
       a
-    =.  u.el  (muto movx movy alim visa.a u.el)
+    =.  u.el  (mino movx movy alim visa.a u.el)
     %=  $
       ager.i.ek  +(ager.i.ek)
       a
@@ -3160,11 +3211,11 @@
     lina
   =/  ares=res
     ?+  -.ars
-      :*  [q.w.size.rei q.h.size.rei]
-          [q.l.padd.rei q.r.padd.rei q.t.padd.rei q.b.padd.rei]
-          [q.l.marg.rei q.r.marg.rei q.t.marg.rei q.b.marg.rei]
-          flex.rei
-          flow.rei
+      :*  [q.w.size.ovum q.h.size.ovum]
+          [q.l.padd.ovum q.r.padd.ovum q.t.padd.ovum q.b.padd.ovum]
+          [q.l.marg.ovum q.r.marg.ovum q.t.marg.ovum q.b.marg.ovum]
+          flex.ovum
+          flow.ovum
           fi
       ==
         %text
@@ -3186,8 +3237,8 @@
     %=  $
       m     bor
       k     [[%b 0] k]
-      px    w.size.rei
-      py    h.size.rei
+      px    w.size.ovum
+      py    h.size.ovum
       pl    fi
       pow   flow.ares
       prx   w.size.ares
@@ -3292,13 +3343,10 @@
   ==
 ::  ::  ::  ::  ::  ::  ::
 ++  dico                    :: derive intersections, hotkeys, and navigation context from display state
-  |=  e=esse
+  |=  [e=esse rk=$@(~ rami)]
   ^-  cura
-  ?:  |(=(0 x.arx.ara) =(0 y.arx.ara))
-    [~ ~ ~ ~ rex.ara ~]
   =/  k=rami                      [[%~ 0] ~]
-  =/  rk=$@(~ rami)               ?~(rex.ara ~ k.rex.ara)
-  =/  plim=modi                   [(dec x.arx.ara) y.arx.ara]
+  =/  plim=modi                   [x.urbs y.urbs]
   =/  acc=[rend=bean =ossa cura]  [%.n ~ *cura]
   =;  dic
     =.  omen.dic
@@ -3323,7 +3371,7 @@
   =/  nacc=[rend=bean =ossa cura]
     %=  $
       k     [[%l 0] k]
-      acc   [%.n ~ ~ ~ ~ ~ rex.acc ~]
+      acc   [| ~ =+(*cura -(rex rex.acc))]
       plim  :-  ?:((gth x.modi.u.el x.plim) x.plim x.modi.u.el)
             ?:((gth y.modi.u.el y.plim) y.plim y.modi.u.el)
     ==
