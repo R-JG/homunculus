@@ -51,7 +51,7 @@
   $~  [%txt ~]
   $%  [%clk p=?(%d %u) x=@ud y=@ud]
       [%whe p=?(%d %u) x=@ud y=@ud]
-      [%mod mod=?(%ctl %met %hyp) key=$~([%txt ~] zona)]
+      [%mod mod=?(%ctl %alt %shf) key=$~([%txt ~] zona)]
       [%aro p=?(%d %l %r %u)]
       [%txt p=lina]
       [%bac ~]
@@ -60,7 +60,7 @@
   ==
 +$  nota
   $%  [%clk ?(%d %u)]  [%whe ?(%d %u)]
-      [%mod ?(%ctl %met %hyp) @tas]  [%aro ?(%d %l %r %u)]
+      [%mod ?(%ctl %alt %shf) @tas]  [%aro ?(%d %l %r %u)]
       [%txt ~]  [%bac ~]  [%del ~]  [%ret ~]
   ==
 +$  lex
@@ -200,13 +200,42 @@
       :_  ~
       :*  %give  %fact  ~[/homunculus-http]  %json
           !>  ^-  json  :-  %s  %-  crip  %-  volo
-          ^-(lux [%mor ?~(aru ~[lus] ~[lus (fero rex.u.aru equi.u.aru esse.u.aru)])])
+          ^-(lux [%mor ~[lus ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))]])
       ==
     ?.  ?=(%s -.jsn)  [~ hoc]
     =/  inp=tape  (trip p.jsn)
     ?:  =("\\" inp)  [~ hoc]
     =;  z=(unit zona)
       ?~  z  [~ hoc]
+      ?:  &(?=(%mod -.u.z) ?=(%aro -.key.u.z))
+        ?:  ?=(%ctl mod.u.z)
+          =/  ocor=@  cor
+          =.  cor
+            ?-  p.key.u.z
+              %l  ?:(=(0 cor) 0 (dec cor))
+              %r  ?:((lth +(cor) (lent aula)) +(cor) cor)
+              %u  0
+              %d  =/(l=@ (lent aula) ?:(=(0 l) 0 (dec l)))
+            ==
+          ?:  =(cor ocor)  [~ hoc]
+          =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
+          =.  fons  ?^(aul i.aul *^fons)
+          =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
+          =/  vis
+            |-  ^-  visa
+            ?~  aul  bac
+            =/  aru=(unit ara)  (~(get by arae) i.aul)
+            ?~  aru  $(aul t.aul)
+            (~(uni by $(aul t.aul)) visa.u.aru)
+          =/  aru=(unit ara)  (~(get by arae) fons)
+          :_  hoc
+          :_  ~
+          :*  %give  %fact  ~[/homunculus-http]  %json
+              !>  ^-  json  :-  %s  %-  crip  %-  volo
+              ^-  lux  :-  %mor
+              ~[(supo vis) ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))]
+          ==
+        [~ hoc]
       =/  arf=$@(~ (pair ara ^fons))
         ?.  |(?=(%clk -.u.z) ?=(%whe -.u.z))
           =/  aru=(unit ara)  (~(get by arae) fons)
@@ -246,15 +275,15 @@
       ?:  ?|  &(=('e' i.t.inp) =('[' i.t.t.inp))
               &(=('E' i.t.inp) =('[' i.t.t.inp))
           ==
-        t.t.t.inp 
+        t.t.t.inp
       ?:  ?&  ?=(^ t.t.t.t.inp)
-              ?|  ?&  =('0' i.t.inp)  =('3' i.t.t.inp) 
+              ?|  ?&  =('0' i.t.inp)  =('3' i.t.t.inp)
                       =('3' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
                   ==
-                  ?&  =('x' i.t.inp)  =('1' i.t.t.inp) 
+                  ?&  =('x' i.t.inp)  =('1' i.t.t.inp)
                       =('B' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
                   ==
-                  ?&  =('x' i.t.inp)  =('9' i.t.t.inp) 
+                  ?&  =('x' i.t.inp)  =('9' i.t.t.inp)
                       =('B' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
           ==  ==  ==
         t.t.t.t.inp
@@ -269,6 +298,17 @@
     ?~  t.t.seq
       ?:  =(['3' '~' ~] seq)  [~ [%del ~]]
       ~
+    ?:  &(=('1' i.seq) =(';' i.t.seq) ?=(^ t.t.t.seq))
+      :^  ~  %mod
+        ?:  =('2' i.t.t.seq)  %shf
+        ?:  =('3' i.t.t.seq)  %alt
+        ?:  =('5' i.t.t.seq)  %ctl
+        !!
+      ?:  =('A' i.t.t.t.seq)  [%aro %u]
+      ?:  =('B' i.t.t.t.seq)  [%aro %d]
+      ?:  =('C' i.t.t.t.seq)  [%aro %r]
+      ?:  =('D' i.t.t.t.seq)  [%aro %l]
+      !!
     ?:  ?|  =(['<' '0'] [i.seq i.t.seq])  =(['<' '6'] [i.seq i.t.seq])
             =(['3' '2'] [i.seq i.t.seq])  =(['3' '5'] [i.seq i.t.seq])
             =(['9' '6'] [i.seq i.t.seq])  =(['9' '7'] [i.seq i.t.seq])
@@ -311,7 +351,7 @@
         :-  ^-(@ud (slav %ud (crip ^-(tape (flop xt)))))
         ^-(@ud (slav %ud (crip ^-(tape (flop yt)))))
       ~
-    ~  :: TODO: parse mod+arrow
+    ~
     ::
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -1434,9 +1474,9 @@
 ++  noto                    :: parse belt to nota
   |=  z=zona
   ^-  nota
-  ?:  ?=(%mod -.z)  [-.z -.+.z -.+.+.z]
-  ?:  ?=(%clk -.z)  [-.z -.+.z]
-  ?:  ?=(%whe -.z)  [-.z -.+.z]
+  ?:  ?=(%mod -.z)  [-.z +<.z +>-.z]
+  ?:  ?=(%clk -.z)  [-.z +<.z]
+  ?:  ?=(%whe -.z)  [-.z +<.z]
   ?:  ?=(%txt -.z)  [-.z ~]
   ?:  ?=(%aro -.z)  z
   ?:  ?=(%bac -.z)  z
@@ -2547,7 +2587,6 @@
 ++  geno                    :: turn sail into session state
   |=  [x=manx =ara]
   ^-  ^ara
-  =.  x.urbs  ?:(=(0 x.urbs) 0 (dec x.urbs))
   =/  old=(unit ens)  (~(get by esse.ara) ~[[%~ 0]])
   =/  a=opus                   [~ ~]
   =/  m=marl                   ~[x]
@@ -3469,7 +3508,7 @@
   =/  nod=(list nodi)
     =/  x=@ud  1
     |-  ^-  (list nodi)
-    ?:  (gte x x.urbs)
+    ?:  (gth x x.urbs)
       ~
     =/  val=(unit nodi)  (~(get by v) [x y])
     [?~(val [[~ ~ ~] ~-x] u.val) $(x +(x))]
