@@ -72,7 +72,7 @@
 +$  omen  (map nota lex)
 +$  mus   (map loci rami)
 +$  equi  (set rami)
-+$  dux   [l=@ud r=@ud t=@ud b=@ud k=rami]
++$  dux   [k=rami muri]
 +$  rex   $@(~ dux)
 +$  ordo  (list dux)
 +$  gens  (map @t rami)
@@ -97,7 +97,7 @@
   ==
 +$  cor   @
 +$  fons  [@p @tas]
-+$  aula  (list (set fons))
++$  aula  $~(~[~] (list (set fons)))
 +$  vela  manx
 +$  ara
   $:  =vela
@@ -153,24 +153,47 @@
       [src.bowl ?:(&(?=(^ sap.bowl) ?=(^ t.sap.bowl)) i.t.sap.bowl %$)]
     =/  aru=(unit ara)  (~(get by arae) fon)
     ?^  aru
-      =/  gen=ara  (geno elem u.aru)
+      =/  roo=(unit ens)  (~(get by esse.u.aru) ~[[%~ 0]])
+      =/  gen=ara  (geno elem ?^(roo [~ lar.u.roo] ~) u.aru)
       :_  hoc(arae (~(put by arae) fon gen))
-      ?.  =/(aul=(set ^fons) (snag cor aula) (~(has in aul) fon))
+      ?.  =+(^-((set ^fons) (snag cor aula)) (~(has in -) fon))
         ~
+      =/  fer=lux
+        =/  ar=(unit ara)  (~(get by arae) fons)
+        ?~  ar  (fero rex.gen equi.gen esse.gen)
+        (fero rex.u.ar equi.u.ar esse.u.ar)
       :_  ~
       :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo
-          ^-(lux [%mor ~[(dono visa.u.aru visa.gen) (fero rex.gen equi.gen esse.gen)]])
+          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+          ~[(dono visa.u.aru visa.gen) fer]
       ==
-    =/  gen=ara  (geno elem *ara)
-    =:  aula  (into aula cor (silt ~[fon]))
-        fons  fon
+    =/  gen=ara  (geno elem ~ *ara)
+    =/  roo=(unit ens)  (~(get by esse.gen) ~[[%~ 0]])
+    ?~  roo  [~ hoc]
+    =/  mov=(unit loci)  (orno u.roo)
+    ?~  mov
+      =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
+      :_  %_  hoc
+            arae  (~(put by arae) fon gen)
+            aula  (into aula cor (silt ~[fon]))
+            fons  fon
+          ==
+      :_  ~
+      :*  %give  %fact  ~[/homunculus-http]  %json
+          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+          ~[(supo ^-(visa (~(uni by bac) visa.gen))) (fero rex.gen equi.gen esse.gen)]
       ==
-    :_  hoc(arae (~(put by arae) fon gen))
+    =?  gen  !=([1 1] u.mov)
+      (geno elem mov *ara)
+    :_  %_  hoc
+          arae  (~(put by arae) fon gen)
+          aula  (snap aula cor =+(^-((set ^fons) (snag cor aula)) (~(put in -) fon)))
+          fons  fon
+        ==
     :_  ~
     :*  %give  %fact  ~[/homunculus-http]  %json
-        !>  ^-  json  :-  %s  %-  crip  %-  volo
-        ^-(lux [%mor ~[(supo visa.gen) (fero rex.gen equi.gen esse.gen)]])
+        !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+        ~[(dono ~ visa.gen) (fero rex.gen equi.gen esse.gen)]
     ==
     ::
       %json
@@ -187,7 +210,8 @@
         ?~  kes  [vis arae]
         =/  aru=(unit ara)  (~(get by arae) i.kes)
         ?~  aru  $(kes t.kes)
-        =/  gen=ara  (geno vela.u.aru u.aru)
+        =/  roo=(unit ens)  (~(get by esse.u.aru) ~[[%~ 0]])
+        =/  gen=ara  (geno vela.u.aru ?^(roo [~ lar.u.roo] ~) u.aru)
         %=  $
           kes   t.kes
           arae  (~(put by arae) i.kes gen)
@@ -199,8 +223,8 @@
       :_  hoc
       :_  ~
       :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo
-          ^-(lux [%mor ~[lus ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))]])
+          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+          ~[lus ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))]
       ==
     ?.  ?=(%s -.jsn)  [~ hoc]
     =/  inp=tape  (trip p.jsn)
@@ -231,8 +255,7 @@
           :_  hoc
           :_  ~
           :*  %give  %fact  ~[/homunculus-http]  %json
-              !>  ^-  json  :-  %s  %-  crip  %-  volo
-              ^-  lux  :-  %mor
+              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
               ~[(supo vis) ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))]
           ==
         [~ hoc]
@@ -409,6 +432,81 @@
       [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
       [[%clk %u] %clk]  [[%clk %d] %clk]
       [[%txt ~] %inp]  [[%bac ~] %del]
+  ==
+::
+++  orno                    :: position a new window in the current frame or in a new one (null case)
+  |=  roo=ens
+  ^-  (unit loci)
+  =/  mur=muri
+    :^    x.lar.roo
+        (add x.lar.roo ?:(=(0 w.size.res.roo) 0 (dec w.size.res.roo)))
+      y.lar.roo
+    (add y.lar.roo ?:(=(0 h.size.res.roo) 0 (dec h.size.res.roo)))
+  =/  murs=(list muri)
+    =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
+    |-  ^-  (list muri)
+    ?~  aul  ~
+    =/  ar=(unit ara)  (~(get by arae) i.aul)
+    =/  ro=(unit ens)  ?^(ar (~(get by esse.u.ar) ~[[%~ 0]]) ~)
+    ?~  ro  $(aul t.aul)
+    :_  $(aul t.aul)
+    :^    x.lar.u.ro
+        (add x.lar.u.ro ?:(=(0 w.size.res.u.ro) 0 (dec w.size.res.u.ro)))
+      y.lar.u.ro
+    (add y.lar.u.ro ?:(=(0 h.size.res.u.ro) 0 (dec h.size.res.u.ro)))
+  ?:  &((gte r.mur x.urbs) (gte b.mur y.urbs))
+    ?^(murs ~ [~ [0 0]])
+  =|  [movx=@ud movy=@ud]
+  |-  ^-  (unit loci)
+  =/  murv=muri
+    [(add l.mur movx) (add r.mur movx) (add t.mur movy) (add b.mur movy)]
+  ?:  (gth r.murv x.urbs)
+    ?:  (gth b.murv y.urbs)  ~
+    $(movx 0, movy +(movy))
+  ?.  (abdo murv murs)
+    [~ [l.murv t.murv]]
+  $(movx +(movx))
+::
+++  abdo                    :: check one coordinate group against a list for any overlap
+  |=  [m=muri ms=(list muri)]
+  |-  ^-  bean
+  ?~  ms  |
+  ?:  (taxo m i.ms)  &
+  $(ms t.ms)
+::
+++  taxo                    :: compare two coordinate groups for an overlap
+  |=  [a=muri b=muri]
+  ^-  bean
+  ?|  ?&  (lte l.a l.b)  (gte r.a l.b)
+          (lte t.a t.b)  (gte b.a t.b)
+      ==
+      ?&  (lte l.a r.b)  (gte r.a r.b)
+          (lte t.a t.b)  (gte b.a t.b)
+      ==
+      ?&  (lte l.a l.b)  (gte r.a l.b)
+          (lte t.a b.b)  (gte b.a b.b)
+      ==
+      ?&  (lte l.a r.b)  (gte r.a r.b)
+          (lte t.a b.b)  (gte b.a b.b)
+      ==
+      ?&  (lte l.a l.b)  (gte r.a r.b)
+          (gte t.a t.b)  (lte b.a b.b)
+      ==
+      ?&  (lte l.b l.a)  (gte r.b l.a)
+          (lte t.b t.a)  (gte b.b t.a)
+      ==
+      ?&  (lte l.b r.a)  (gte r.b r.a)
+          (lte t.b t.a)  (gte b.b t.a)
+      ==
+      ?&  (lte l.b l.a)  (gte r.b l.a)
+          (lte t.b b.a)  (gte b.b b.a)
+      ==
+      ?&  (lte l.b r.a)  (gte r.b r.a)
+          (lte t.b b.a)  (gte b.b b.a)
+      ==
+      ?&  (lte l.b l.a)  (gte r.b r.a)
+          (gte t.b t.a)  (lte b.b b.a)
+      ==
   ==
 ::  ::  ::
 ++  muto                    :: handle an event from the hotkey context
@@ -948,7 +1046,7 @@
     ::
     [~ ara]
   ::
-  ++  gero                  :: build an ordered list of navigation points
+  ++  gero                  :: order a list of navigation points
     |=  [r=rex o=ordo]
     ^-  ordo
     ?~  r  o
@@ -1001,7 +1099,7 @@
       |
     $(b t.b)
   ::
-  ++  tego                  :: check whether element a or element b layers over the other
+  ++  tego                  :: check whether element a or element b is in a layer above the other
     |=  [a=rami b=rami]
     =/  a=$@(~ rami)  (flop a)
     =/  b=$@(~ rami)  (flop b)
@@ -1024,35 +1122,6 @@
       %~
     $(a t.a, b t.b)
   ::
-  ++  abdo                  :: determine if any coordinate in dux or rex overlap
-    |=  [=dux rex=dux]
-    ^-  bean
-    ?|  ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
-            (lte t.dux t.rex)  (gte b.dux t.rex)
-        ==
-        ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
-            (lte t.dux t.rex)  (gte b.dux t.rex)
-        ==
-        ?&  (lte l.dux l.rex)  (gte r.dux l.rex)
-            (lte t.dux b.rex)  (gte b.dux b.rex)
-        ==
-        ?&  (lte l.dux r.rex)  (gte r.dux r.rex)
-            (lte t.dux b.rex)  (gte b.dux b.rex)
-        ==
-        ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
-            (lte t.rex t.dux)  (gte b.rex t.dux)
-        ==
-        ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
-            (lte t.rex t.dux)  (gte b.rex t.dux)
-        ==
-        ?&  (lte l.rex l.dux)  (gte r.rex l.dux)
-            (lte t.rex b.dux)  (gte b.rex b.dux)
-        ==
-        ?&  (lte l.rex r.dux)  (gte r.rex r.dux)
-            (lte t.rex b.dux)  (gte b.rex b.dux)
-        ==
-    ==
-  ::
   ++  cieo                  :: check whether a navigation point is viable given the current selection
     |=  rex=dux
     |=  =dux
@@ -1060,7 +1129,7 @@
     ?:  =(k.dux k.rex)  |
     ?+  lex  |
         %nav-l
-      ?:  (abdo dux rex)
+      ?:  (taxo +.dux +.rex)
         ?:  =(l.dux l.rex)
           |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
         (lth l.dux l.rex)
@@ -1068,7 +1137,7 @@
         (lth l.dux l.rex)
       (lth r.dux l.rex)
         %nav-u
-      ?:  (abdo dux rex)
+      ?:  (taxo +.dux +.rex)
         ?:  =(t.dux t.rex)
           |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
         (lth t.dux t.rex)
@@ -1076,7 +1145,7 @@
         (lth t.dux t.rex)
       (lth b.dux t.rex)
         %nav-r
-      ?:  (abdo dux rex)
+      ?:  (taxo +.dux +.rex)
         ?:  =(l.dux l.rex)
           |((alo k.rex k.dux) =(%a (tego k.rex k.dux)))
         (gth l.dux l.rex)
@@ -1084,7 +1153,7 @@
         (gth l.dux l.rex)
       (gth l.dux r.rex)
         %nav-d
-      ?:  (abdo dux rex)
+      ?:  (taxo +.dux +.rex)
         ?:  =(t.dux t.rex)
           |((alo k.rex k.dux) =(%a (tego k.rex k.dux)))
         (gth t.dux t.rex)
@@ -1100,7 +1169,7 @@
       (add (mul 10 p.pyt) q.pyt)
     ?+  lex  [0 0]
         %nav-l
-      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
@@ -1108,7 +1177,7 @@
         (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
       (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
         %nav-u
-      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
@@ -1116,7 +1185,7 @@
         (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
       (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
         %nav-r
-      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
@@ -1124,7 +1193,7 @@
         (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
       (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
         %nav-d
-      ?:  |((abdo dux rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
@@ -1458,9 +1527,10 @@
 ++  fero                    :: make a general cursor move update
   |=  [r=rex q=equi e=esse]
   ^-  lux
-  ?~  r  [%hop [1 1]]
+  =/  roo=(unit ens)  (~(get by e) ~[[%~ 0]])
+  ?~  r  [%hop ?^(roo lar.u.roo [1 1])]
   =/  el=(unit ens)  (~(get by e) k.r)
-  ?~  el  [%hop [1 1]]
+  ?~  el  [%hop ?^(roo lar.u.roo [1 1])]
   ?:  ?=(%input -.ars.u.el)
     (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
   ?:  &(=(0 x.iter.u.el) =(0 y.iter.u.el))
@@ -2585,9 +2655,8 @@
   ==
 ::
 ++  geno                    :: turn sail into session state
-  |=  [x=manx =ara]
+  |=  [x=manx loc=(unit loci) =ara]
   ^-  ^ara
-  =/  old=(unit ens)  (~(get by esse.ara) ~[[%~ 0]])
   =/  a=opus                   [~ ~]
   =/  m=marl                   ~[x]
   =/  k=rami                   ~[[%~ 0]]
@@ -2597,7 +2666,7 @@
   =/  pow=fuga                 [%row %clip]
   =/  prx=@ud                  x.urbs
   =/  pry=@ud                  y.urbs
-  =/  plar=lar                 ?^(old lar.u.old [1 1])
+  =/  plar=lar                 ?^(loc u.loc *lar)
   =/  plim=modi                [x.urbs y.urbs]
   =/  pitr=iter                [0 0]
   =/  pscr=[x=bean y=bean]     [%.n %.n]
@@ -3428,13 +3497,13 @@
     %+  weld
       ^-  ordo
       :_  ordo.nacc
-      :*  ?:((lth x.iter.u.el x.lar.u.el) (sub x.lar.u.el x.iter.u.el) 1)
+      :*  k
+          ?:((lth x.iter.u.el x.lar.u.el) (sub x.lar.u.el x.iter.u.el) 1)
           =/  r=@ud  (add x.lar.u.el ?:(=(0 w.size.res.u.el) 0 (dec w.size.res.u.el)))
           ?:((lth x.iter.u.el r) (sub r x.iter.u.el) 1)
           ?:((lth y.iter.u.el y.lar.u.el) (sub y.lar.u.el y.iter.u.el) 1)
           =/  b=@ud  (add y.lar.u.el ?:(=(0 h.size.res.u.el) 0 (dec h.size.res.u.el)))
           ?:((lth y.iter.u.el b) (sub b y.iter.u.el) 1)
-          k
       ==
     ordo.acc
   =?  rex.acc  ?=(~ rex.acc) 
