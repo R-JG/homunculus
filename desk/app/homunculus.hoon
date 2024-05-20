@@ -246,12 +246,7 @@
         =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
         =.  fons  ?^(aul i.aul *^fons)
         =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
-        =/  vis
-          |-  ^-  visa
-          ?~  aul  bac
-          =/  aru=(unit ara)  (~(get by arae) i.aul)
-          ?~  aru  $(aul t.aul)
-          (~(uni by $(aul t.aul)) visa.u.aru)
+        =/  vis=visa  (gyro aul bac)
         =/  aru=(unit ara)  (~(get by arae) fons)
         :_  hoc
         :_  ~
@@ -266,8 +261,17 @@
         =/  roo=(unit ens)  (~(get by esse.u.aru) ~[[%~ 0]])
         ?~  roo  [~ hoc]
         =/  mov=(unit loci)
-          ?:  ?=(%shf mod.u.z)  (meo fons p.key.u.z u.roo)
-          ?:  ?=(%ctl mod.u.z)  (repo fons p.key.u.z u.roo)
+          ?:  ?=(%shf mod.u.z)
+            (meo fons p.key.u.z [1 1] urbs u.roo)
+          ?:  ?=(%ctl mod.u.z)
+            %:  meo
+              fons  p.key.u.z
+              :-  ?:((lte x.lar.u.roo 1) 1 (dec x.lar.u.roo))
+              ?:((lte y.lar.u.roo 1) 1 (dec y.lar.u.roo))
+              :-  ?:((gte x.modi.u.roo x.urbs) x.urbs +(x.modi.u.roo))
+              ?:((gte y.modi.u.roo y.urbs) y.urbs +(y.modi.u.roo))
+              u.roo
+            ==
           ~
         ?~  mov  [~ hoc]
         =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
@@ -278,6 +282,42 @@
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
             ~[(dono ~ (~(uni by bac) visa.u.aru)) (fero rex.u.aru equi.u.aru esse.u.aru)]
+        ==
+      ::
+      ?:  &(?=(%mod -.u.z) ?=(%alt mod.u.z) ?=(%txt -.key.u.z) =([~-c ~] p.key.u.z))
+        =/  aul=(set ^fons)  (snag cor aula)
+        =/  aru=(unit ara)  (~(get by arae) fons)
+        ?~  aru  [~ hoc]
+        ?:  |((gth ~(wyt in aul) 1) =(1 (lent aula)))
+          =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
+          =.  aul  (~(del in aul) fons)
+          =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
+          =/  arnu=(unit ara)  ?^(fonu (~(get by arae) u.fonu) ~)
+          :_  %_  hoc
+                aula  (snap aula cor aul)
+                arae  (~(del by arae) fons)
+                fons  ?^(fonu u.fonu *^fons)
+              ==
+          :_  ~
+          :*  %give  %fact  ~[/homunculus-http]  %json
+              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+              :~  (dono ~ (~(int by visa.u.aru) bac))
+                  ?^(arnu (fero rex.u.arnu equi.u.arnu esse.u.arnu) (fero ~ ~ ~))
+              ==
+          ==
+        =:  arae  (~(del by arae) fons)
+            aula  (oust [cor 1] aula)
+          ==
+        =.  aul  (snag cor aula)
+        =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
+        =/  arnu=(unit ara)  ?^(fonu (~(get by arae) u.fonu) ~)
+        =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
+        =/  vis=visa  (gyro ~(tap in aul) bac)
+        :_  hoc(fons ?^(fonu u.fonu *^fons))
+        :_  ~
+        :*  %give  %fact  ~[/homunculus-http]  %json
+            !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+            ~[(supo vis) ?^(arnu (fero rex.u.arnu equi.u.arnu esse.u.arnu) (fero ~ ~ ~))]
         ==
       ::
       =/  arf=$@(~ (pair ara ^fons))
@@ -314,7 +354,10 @@
       ?:  =('t' i.t.inp)  [~ [%mod %ctl [%txt ~[~-i]]]]
       ?:  =('n' i.t.inp)  [~ [%ret ~]]
       ~
-    ?~  t.t.t.inp  ~
+    ?~  t.t.t.inp
+      ?:  |(=('e' i.t.inp) =('E' i.t.inp))
+        [~ [%mod %alt [%txt (tuba t.t.inp)]]]
+      ~
     ?:  =(['1' '7' '7' ~] t.inp)  [~ [%bac ~]]
     =/  seq=tape
       ?:  ?|  &(=('e' i.t.inp) =('[' i.t.t.inp))
@@ -408,12 +451,7 @@
       [%homunculus-http ~]
     =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
     =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
-    =/  vis
-      |-  ^-  visa
-      ?~  aul  bac
-      =/  aru=(unit ara)  (~(get by arae) i.aul)
-      ?~  aru  $(aul t.aul)
-      (~(uni by $(aul t.aul)) visa.u.aru)
+    =/  vis=visa  (gyro aul bac)
     =/  aru=(unit ara)  (~(get by arae) fons)
     :_  hoc
     :_  ~
@@ -456,6 +494,14 @@
       [[%txt ~] %inp]  [[%bac ~] %del]
   ==
 ::
+++  gyro                    :: collect all characters in a frame
+  |=  [aul=(list ^fons) bac=visa]
+  ^-  visa
+  ?~  aul  bac
+  =/  aru=(unit ara)  (~(get by arae) i.aul)
+  ?~  aru  $(aul t.aul)
+  (~(uni by $(aul t.aul)) visa.u.aru)
+::
 ++  orno                    :: position a new window in the current frame or in a new one (null case)
   |=  roo=ens
   ^-  (unit loci)
@@ -474,8 +520,8 @@
     [~ [l.murv t.murv]]
   $(movx +(movx))
 ::
-++  meo                     :: position a window as far as possible in a given direction
-  |=  [fon=^fons dir=?(%l %r %u %d) roo=ens]
+++  meo                     :: move a window in a given direction
+  |=  [fon=^fons dir=?(%l %r %u %d) =lar mod=modi roo=ens]
   ^-  (unit loci)
   =/  mur=muri  [x.lar.roo x.modi.roo y.lar.roo y.modi.roo]
   =/  aul=(set ^fons)  (snag cor aula)
@@ -484,65 +530,32 @@
   ?-  dir
       %l
     |-  ^-  (unit loci)
-    ?:  (lte l.mur 1)  loc
+    ?:  (lte l.mur x.lar)  loc
     =:  l.mur  (dec l.mur)
         r.mur  (dec r.mur)
       ==
     $(loc ?.((abdo mur murs) [~ [l.mur t.mur]] loc))
       %r
     |-  ^-  (unit loci)
-    ?:  (gte r.mur x.urbs)  loc
+    ?:  (gte r.mur x.mod)  loc
     =:  l.mur  +(l.mur)
         r.mur  +(r.mur)
       ==
     $(loc ?.((abdo mur murs) [~ [l.mur t.mur]] loc))
       %u
     |-  ^-  (unit loci)
-    ?:  (lte t.mur 1)  loc
+    ?:  (lte t.mur y.lar)  loc
     =:  t.mur  (dec t.mur)
         b.mur  (dec b.mur)
       ==
     $(loc ?.((abdo mur murs) [~ [l.mur t.mur]] loc))
       %d
     |-  ^-  (unit loci)
-    ?:  (gte b.mur y.urbs)  loc
+    ?:  (gte b.mur y.mod)  loc
     =:  t.mur  +(t.mur)
         b.mur  +(b.mur)
       ==
     $(loc ?.((abdo mur murs) [~ [l.mur t.mur]] loc))
-  ==
-::
-++  repo                    :: position a window one character in a given direction
-  |=  [fon=^fons dir=?(%l %r %u %d) roo=ens]
-  ^-  (unit loci)
-  =/  mur=muri  [x.lar.roo x.modi.roo y.lar.roo y.modi.roo]
-  =/  aul=(set ^fons)  (snag cor aula)
-  =/  murs=(list muri)  (peto ~(tap in (~(del in aul) fon)))
-  ?-  dir
-      %l
-    ?:  (lte l.mur 1)  ~
-    =:  l.mur  (dec l.mur)
-        r.mur  (dec r.mur)
-      ==
-    ?.((abdo mur murs) [~ [l.mur t.mur]] ~)
-      %r
-    ?:  (gte r.mur x.urbs)  ~
-    =:  l.mur  +(l.mur)
-        r.mur  +(r.mur)
-      ==
-    ?.((abdo mur murs) [~ [l.mur t.mur]] ~)
-      %u
-    ?:  (lte t.mur 1)  ~
-    =:  t.mur  (dec t.mur)
-        b.mur  (dec b.mur)
-      ==
-    ?.((abdo mur murs) [~ [l.mur t.mur]] ~)
-      %d
-    ?:  (gte b.mur y.urbs)  ~
-    =:  t.mur  +(t.mur)
-        b.mur  +(b.mur)
-      ==
-    ?.((abdo mur murs) [~ [l.mur t.mur]] ~)
   ==
 ::
 ++  peto                    :: get the coordinates of each window in a given frame
