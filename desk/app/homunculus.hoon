@@ -234,6 +234,70 @@
       ?~  z  [~ hoc]
       ::
       ?:  &(?=(%mod -.u.z) ?=(%alt mod.u.z) ?=(%aro -.key.u.z))
+        =/  aul=(set ^fons)  (snag cor aula)
+        =/  aru=(unit ara)  (~(get by arae) fons)
+        =/  roo=(unit ens)  ?^(aru (~(get by esse.u.aru) ~[[%~ 0]]) ~)
+        =/  muf
+          =/  au=(list ^fons)  ~(tap in (~(del in aul) fons))
+          |-  ^-  (list (pair muri ^fons))
+          ?~  au  ~
+          =/  ar=(unit ara)  (~(get by arae) i.au)
+          =/  ro=(unit ens)  ?^(ar (~(get by esse.u.ar) ~[[%~ 0]]) ~)
+          ?~  ro  $(au t.au)
+          :-  [[x.lar.u.ro x.modi.u.ro y.lar.u.ro y.modi.u.ro] i.au]
+          $(au t.au)
+        =.  muf
+          ?~  roo  muf
+          %+  skim  muf
+          |=  i=(pair muri ^fons)
+          ^-  bean
+          ?-  p.key.u.z
+            %l  (lth r.p.i x.lar.u.roo)
+            %r  (gth l.p.i x.modi.u.roo)
+            %u  (lth b.p.i y.lar.u.roo)
+            %d  (gth t.p.i y.modi.u.roo)
+          ==
+        ?.  =(~ muf)
+          =.  muf
+            |^  ^-  (list (pair muri ^fons))
+            ?~  roo  muf
+            %+  sort  muf
+            |=  [a=(pair muri ^fons) b=(pair muri ^fons)]
+            ^-  bean
+            ?-  p.key.u.z
+                %l
+              %+  lth
+                (pyt [r.p.a t.p.a] lar.u.roo)
+              (pyt [r.p.b t.p.b] lar.u.roo)
+                %r
+              %+  lth
+                (pyt [l.p.a t.p.a] [x.modi.u.roo y.lar.u.roo])
+              (pyt [l.p.b t.p.b] [x.modi.u.roo y.lar.u.roo])
+                %u
+              %+  lth
+                (pyt [l.p.a b.p.a] lar.u.roo)
+              (pyt [l.p.b b.p.b] lar.u.roo)
+                %d
+              %+  lth
+                (pyt [l.p.a t.p.a] [x.lar.u.roo y.modi.u.roo])
+              (pyt [l.p.b t.p.b] [x.lar.u.roo y.modi.u.roo])
+            ==
+            ++  pyt
+              |=  [a=loci b=loci]
+              =;  p=(pair @ @)  (add (mul 10 p.p) q.p)
+              %-  sqt  %+  add
+              (pow ?:((lth x.a x.b) (sub x.b x.a) (sub x.a x.b)) 2)
+              (pow ?:((lth y.a y.b) (sub y.b y.a) (sub y.a y.b)) 2)
+            --
+          ?~  muf  [~ hoc]
+          =.  fons  q.i.muf
+          =.  aru  (~(get by arae) fons)
+          :_  hoc
+          :_  ~
+          :*  %give  %fact  ~[/homunculus-http]  %json
+              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux
+              ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))
+          ==
         =/  ocor=@  cor
         =.  cor
           ?-  p.key.u.z
@@ -243,11 +307,11 @@
             %d  =/(l=@ (lent aula) ?:(=(0 l) 0 (dec l)))
           ==
         ?:  =(cor ocor)  [~ hoc]
-        =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
-        =.  fons  ?^(aul i.aul *^fons)
+        =.  aul  (snag cor aula)
+        =.  fons  ?^(aul n.aul *^fons)
+        =.  aru  (~(get by arae) fons)
         =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
-        =/  vis=visa  (gyro aul bac)
-        =/  aru=(unit ara)  (~(get by arae) fons)
+        =/  vis=visa  (gyro ~(tap in aul) bac)
         :_  hoc
         :_  ~
         :*  %give  %fact  ~[/homunculus-http]  %json
