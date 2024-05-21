@@ -174,8 +174,9 @@
     ?~  mov
       =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
       :_  %_  hoc
+            cor   +(cor)
             arae  (~(put by arae) fon gen)
-            aula  (into aula cor (silt ~[fon]))
+            aula  (into aula +(cor) (silt ~[fon]))
             fons  fon
           ==
       :_  ~
@@ -372,6 +373,7 @@
         =:  arae  (~(del by arae) fons)
             aula  (oust [cor 1] aula)
           ==
+        =.  cor  ?:(=(0 cor) 0 (dec cor))
         =.  aul  (snag cor aula)
         =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
         =/  arnu=(unit ara)  ?^(fonu (~(get by arae) u.fonu) ~)
@@ -572,7 +574,7 @@
   =/  mur=muri  [x.lar.roo x.modi.roo y.lar.roo y.modi.roo]
   =/  murs=(list muri)  (peto ~(tap in ^-((set ^fons) (snag cor aula))))
   ?:  &((gte r.mur x.urbs) (gte b.mur y.urbs))
-    ?^(murs ~ [~ [0 0]])
+    ?^(murs ~ [~ [1 1]])
   =|  [movx=@ud movy=@ud]
   |-  ^-  (unit loci)
   =/  murv=muri
@@ -2220,7 +2222,8 @@
     %+  fuco  visa.u.chi
     ?.  sel
       look.res.u.par
-    :+  ?~(d.acia.ars.u.par d.look.res.u.chi u.d.acia.ars.u.par)
+    :+  ?~  d.acia.ars.u.par  d.look.res.u.chi
+        (~(uni in u.d.acia.ars.u.par) d.look.res.u.chi)
       ?~(b.acia.ars.u.par b.look.res.u.chi u.b.acia.ars.u.par)
     ?~(f.acia.ars.u.par f.look.res.u.chi u.f.acia.ars.u.par)
   %=  $
@@ -2309,6 +2312,9 @@
   |-  ^-  vox
   ?~  lin
     (flop ?:(&(?=(^ v) ?=(^ i.v)) v(i (flop i.v)) v))
+  ?:  =(~-~a. i.lin)
+    ?~  v  $(lin t.lin)
+    $(lin t.lin, col 0, wod 0, v [~ ^-(lina (flop i.v)) t.v])
   ?~  v
     ?:  (gte +(col) wid)
       $(lin t.lin, col 0, wod 0, v [~ [i.lin ~] ~])
