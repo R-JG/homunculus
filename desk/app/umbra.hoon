@@ -23,14 +23,14 @@
 +$  num  ?(%1 %2 %3 %4 %5 %6 %7 %8 %9 %0)
 +$  state
   $:  sel-poke-num=(unit num)
-      poke-form-message=tape
+      poke-message=tape
       poke-edit-mode=$~(| ?)
       =poke-keys
   ==
 ::
 +$  event-data
   $%  [%select p=@t]
-      [%active p=@t]
+      [%act p=@t]
       [%form p=@t q=(map @t @t)]
   ==
 ::
@@ -62,6 +62,14 @@
       %vela
     [[(sail-card our.bowl) ~] this]
     ::
+      %poke-key
+    =/  nu=num  !<(num vase)
+    =/  pok=poke-key  (get-poke-key nu)
+    ?~  pok  [~ this]
+    :_  this
+    :~  [%pass /poke-key %agent [ship.pok agent.pok] %poke mark.pok data.pok]
+    ==
+    ::
       %homunculus
     =/  dat  !<(event-data vase)
     ?-  -.dat
@@ -69,7 +77,7 @@
         %select
       [~ this]
       ::
-        %active
+        %act
       =/  pat=path  (stab p.dat)
       ?~  pat  !!
       ?+  i.pat  !!
@@ -85,14 +93,26 @@
         ::
           %unselect-poke
         =:  sel-poke-num  ~
-            poke-form-message  ~
+            poke-message  ~
             poke-edit-mode  |
           ==
         [[(sail-card our.bowl) ~] this]
         ::
           %edit-poke
-        =.  poke-edit-mode  &
+        =:  poke-edit-mode  &
+            poke-message  ~
+          ==
         [[(sail-card our.bowl) ~] this]
+        ::
+          %send-poke
+        ?~  sel-poke-num  [~ this]
+        =/  pok=poke-key  (get-poke-key u.sel-poke-num)
+        ?~  pok  [~ this]
+        =.  poke-message  "+ Poke sent"
+        :_  this
+        :~  (sail-card our.bowl)
+            [%pass /poke-key %agent [ship.pok agent.pok] %poke mark.pok data.pok]
+        ==
         ::
       ==
       ::
@@ -114,13 +134,13 @@
           ?~  hoo  ~
           [~ (slap !>(~) u.hoo)]
         ?~  sh
-          =.  poke-form-message  "Invalid ship"
+          =.  poke-message  "! Invalid ship"
           [[(sail-card our.bowl) ~] this]
         ?~  da
-          =.  poke-form-message  "Invalid poke data"
+          =.  poke-message  "! Invalid poke data"
           [[(sail-card our.bowl) ~] this]
         =:  poke-keys  (put-poke-key u.sel-poke-num [n u.sh ag ma u.da d])
-            poke-form-message  ~
+            poke-message  ~
             poke-edit-mode  |
           ==
         [[(sail-card our.bowl) ~] this]
@@ -213,6 +233,11 @@
   ;box(w "100%", fl "column")
     ;box(w "100%", px "1", fx "end")
       ;+  ?:  poke-edit-mode  ;null;
+        ;select(cb "#FFFFFF", cf red, select-d "underline")
+          =id  "/send-poke"
+          ;+  ;/  "☞ send poke"
+        ==
+      ;+  ?:  poke-edit-mode  ;null;
         ;select(mx "1", cb "#FFFFFF", cf red, select-d "underline")
           =id  "/edit-poke"
           ;+  ;/  "▤ edit"
@@ -222,6 +247,10 @@
         ;+  ;/  "◀ back"
       ==
     ==
+    ;+  ?~  poke-message  ;null;
+      ;txt(w "100%", cb ?:(=('!' i.poke-message) "#c70042" red), fx "center")
+        ;+  ;/  poke-message
+      ==
     ;scroll(w "100%", h "grow", px "1", b "arc")
       ;+  ?:  poke-edit-mode  poke-form  poke-info
     ==
@@ -232,15 +261,15 @@
   ?~  sel-poke-num  ;null;
   =/  sel-poke-key  (get-poke-key u.sel-poke-num)
   ;box(w "100%", fl "column")
-    ;txt: Poke Name:
+    ;txt(d "bold"): Poke Name:
     ;txt: {?^(sel-poke-key (trip name.sel-poke-key) "")}
-    ;txt: Ship:
+    ;txt(d "bold"): Ship:
     ;txt: {?^(sel-poke-key (trip (scot %p ship.sel-poke-key)) "")}
-    ;txt: Agent:
+    ;txt(d "bold"): Agent:
     ;txt: {?^(sel-poke-key ['%' (trip agent.sel-poke-key)] "")}
-    ;txt: Mark:
+    ;txt(d "bold"): Mark:
     ;txt: {?^(sel-poke-key ['%' (trip mark.sel-poke-key)] "")}
-    ;txt: Data:
+    ;txt(d "bold"): Data:
     ;txt: {?^(sel-poke-key (trip data-txt.sel-poke-key) "")}
   ==
 ::
@@ -249,10 +278,6 @@
   ?~  sel-poke-num  ;null;
   =/  sel-poke-key  (get-poke-key u.sel-poke-num)
   ;form(w "100%", id "/poke-form")
-    ;+  ?~  poke-form-message  ;null;
-      ;txt(w "100%", cb "#c70042", d "underline", fx "center")
-        ;+  ;/  poke-form-message
-      ==
     ;txt: Poke Name:
     ;input(w "100%", mb "1", id "/poke-form/name", default ?^(sel-poke-key (trip name.sel-poke-key) ""));
     ;txt: Ship:

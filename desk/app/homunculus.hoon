@@ -114,7 +114,7 @@
 ::
 +$  data
   $%  [%select p=@t]
-      [%active p=@t]
+      [%act p=@t]
       [%form form]
   ==
 +$  form  [p=@t q=(map @t @t)]
@@ -284,6 +284,16 @@
         =^  crds  q.luna
           =.(p.luna | (muto u.l u.z [our.bowl %umbra] q.luna))
         [crds hoc]
+      ::
+      ?:  ?&  ?=(%mod -.u.z)  ?=(%alt mod.u.z)  ?=(%txt -.key.u.z)
+              ?=(^ p.key.u.z)  ?=(~ t.p.key.u.z)
+              (gte i.p.key.u.z 48)  (lte i.p.key.u.z 57)
+          ==
+        :_  hoc
+        :_  ~
+        :*  %pass  /umbra  %agent  [our.bowl %umbra]  %poke  %poke-key
+            (slap !>(~) [%rock %ud (slav %ud ^-(@ i.p.key.u.z))])
+        ==
       ::
       ?:  &(?=(%mod -.u.z) ?=(%alt mod.u.z) ?=(%aro -.key.u.z))
         =/  aul=(set ^fons)  (snag cor aula)
@@ -841,7 +851,7 @@
       ?:  &(?=(~ fupd) ?=(~ cupd))
         ?~  avis.u.el  [~ ara]
         :_  ara
-        :~  [%pass /act %agent fon %poke %homunculus !>(^-(data [%active u.avis.u.el]))]
+        :~  [%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis.u.el]))]
         ==
       =.  esse.ara
         ?^  fupd
@@ -857,7 +867,7 @@
       :_  ara(visa (~(uni by visa.ara) ?^(fupd visa.fupd ?^(cupd visa.cupd ~))))
       :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
       ?^  fupd  [[%pass /act %agent fon %poke %homunculus !>(^-(data [%form form.fupd]))] ~]
-      ?^  avis.u.el  [[%pass /act %agent fon %poke %homunculus !>(^-(data [%active u.avis.u.el]))] ~]
+      ?^  avis.u.el  [[%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis.u.el]))] ~]
       ~
     ::
     ?:  ?=(%clk lex)
