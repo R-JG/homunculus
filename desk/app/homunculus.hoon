@@ -5,7 +5,7 @@
 ::
 |%
 +$  esse  (map rami ens)
-+$  ens   [=res =visa =lar =modi =iter =aves =ars]
++$  ens   [=res =visa =lar =modi =iter =avis =ars]
 +$  rami  (lest [=axis =ager])
 +$  res
   $:  size=[w=@ud h=@ud]
@@ -22,7 +22,7 @@
 +$  modi  loci
 +$  iter  [x=@ud y=@ud]
 +$  fuga  [d=?(%col %row) b=?(%wrap %clip)]
-+$  aves  (map ?(%sel %act %key) @t)
++$  avis  (unit @t)
 +$  ad    ?(%l %r %t %b)
 +$  via   ?(%h %v)
 +$  ora   ?(%light %heavy %double %arc %blank %~)
@@ -70,10 +70,10 @@
 +$  omen  (map nota lex)
 +$  mus   (map loci rami)
 +$  equi  (set rami)
++$  aves  (map @t rami)
 +$  dux   [k=rami muri]
 +$  rex   $@(~ dux)
 +$  ordo  (list dux)
-+$  gens  (map @t rami)
 +$  os
   $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora =visa]
       [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora =visa]
@@ -83,7 +83,7 @@
 +$  viae  (map loci (pair fila crux))
 +$  aqua  (list [i=@ud size=@ud marg=@ud])
 +$  opus  [=esse =visa]
-+$  cura  [=visa =omen =gens =ordo =rex =equi =mus]
++$  cura  [=visa =omen =aves =ordo =rex =equi =mus]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  ovum
   $:  size=[w=as h=as]
@@ -100,12 +100,12 @@
 +$  ara
   $:  =vela  =muri
       =esse  =visa
-      =omen  =gens
+      =omen  =aves
       =ordo  =rex
       =equi  =mus
   ==
 +$  arae  (map fons ara)
-+$  luna  $@(~ ara)
++$  luna  (pair $~(| bean) ara)
 +$  urbs  $~([50 25] [x=@ud y=@ud])
 +$  ego
   $:  =cor  =fons  =urbs
@@ -113,11 +113,11 @@
   ==
 ::
 +$  data
-  $%  [%sel p=@t]
-      [%act p=@t]
+  $%  [%select p=@t]
+      [%active p=@t]
       [%form form]
   ==
-+$  form  (pair @t (map @t @t))
++$  form  [p=@t q=(map @t @t)]
 ::
 +$  card  card:agent:gall
 --
@@ -139,7 +139,8 @@
   ^-  (quip card _hoc)
   =/  ol  !<(^urbs old)
   =/  siz=^urbs  ?:(=([0 0] ol) *^urbs ol)
-  [~ hoc(ego =+(*^ego -(urbs siz)))]
+  :_  hoc(ego =+(*^ego -(urbs siz)))
+  ~[[%pass /umbra %agent [our.bowl %umbra] %poke %vela !>(~)]]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -147,14 +148,12 @@
   ?+  mark  ~|("homunculus poke failed with mark: {<mark>}" !!)
     ::
       %elem
-    =/  elem  !<(manx vase)
+    =/  elem  !<(vela vase)
     =/  fon=^fons
       [src.bowl ?:(&(?=(^ sap.bowl) ?=(^ t.sap.bowl)) i.t.sap.bowl %$)]
     =/  aru=(unit ara)  (~(get by arae) fon)
     ?^  aru
-      =/  roo=(unit ens)  (~(get by esse.u.aru) ~[[%~ 0]])
-      ?~  roo  [~ hoc]
-      =/  gen=ara  (geno elem [~ lar.u.roo] u.aru)
+      =/  gen=ara  (geno elem [~ [l.muri.u.aru t.muri.u.aru]] u.aru)
       :_  hoc(arae (~(put by arae) fon gen))
       ?.  =+(^-((set ^fons) (snag cor aula)) (~(has in -) fon))
         ~
@@ -163,6 +162,7 @@
           !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
           :~  (supo muri.gen visa.u.aru visa.gen)
               =/  ar=(unit ara)  (~(get by arae) fons)
+              ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
               ?~  ar  (fero rex.gen equi.gen esse.gen)
               (fero rex.u.ar equi.u.ar esse.u.ar)
           ==
@@ -183,6 +183,7 @@
       :*  %give  %fact  ~[/homunculus-http]  %json
           !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
           :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.gen))
+              ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
               (fero rex.gen equi.gen esse.gen)
           ==
       ==
@@ -196,6 +197,20 @@
     :*  %give  %fact  ~[/homunculus-http]  %json
         !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
         :~  (supo muri.gen ~ visa.gen)
+            ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
+            (fero rex.gen equi.gen esse.gen)
+        ==
+    ==
+    ::
+      %umbra
+    =/  elem  !<(vela vase)
+    =/  gen=ara  (geno elem ~ q.luna)
+    :_  hoc(q.luna gen)
+    ?.  p.luna  ~
+    :_  ~
+    :*  %give  %fact  ~[/homunculus-http]  %json
+        !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+        :~  =.(p.luna | (supo muri.gen ~ visa.gen))
             (fero rex.gen equi.gen esse.gen)
         ==
     ==
@@ -221,14 +236,19 @@
           arae  (~(put by arae) i.kes gen)
           vis   ?:((~(has in aul) i.kes) (~(uni by vis) visa.gen) vis)
         ==
+      =/  una=(unit ara)
+        ?.  p.luna  ~
+        [~ (geno vela.q.luna ~ q.luna)]
       =/  aru=(unit ara)  (~(get by arae) fons)
       =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
-      :_  hoc
+      :_  hoc(q.luna ?^(una u.una q.luna))
       :_  ~
       :*  %give  %fact  ~[/homunculus-http]  %json
           !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
           :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) vis))
-              ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))
+              ?^  una  =.(p.luna | (supo muri.u.una ~ visa.u.una))
+              ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
+              ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
           ==
       ==
     ::
@@ -239,19 +259,31 @@
       ?~  z  [~ hoc]
       ::
       ?:  ?=(%esc -.u.z)
-        =.  luna  ?~  luna  *ara  ~
+        =.  p.luna  !p.luna
         =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
         =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
         =/  vis=visa  (gyro aul bac)
         =/  aru=(unit ara)  (~(get by arae) fons)
         :_  hoc
-        :_  ~
+        :_  ?.  p.luna  ~
+            ~[[%pass /umbra %agent [our.bowl %umbra] %poke %vela !>(~)]]
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-            :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
-                ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))
+            :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
+            ?:  p.luna
+              :~  =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
+                  (fero rex.q.luna equi.q.luna esse.q.luna)
+              ==
+            :~  ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
             ==
         ==
+      ::
+      ?:  p.luna
+        =/  l=(unit lex)  (~(get by omen.q.luna) (noto u.z))
+        ?~  l  [~ hoc]
+        =^  crds  q.luna
+          =.(p.luna | (muto u.l u.z [our.bowl %umbra] q.luna))
+        [crds hoc]
       ::
       ?:  &(?=(%mod -.u.z) ?=(%alt mod.u.z) ?=(%aro -.key.u.z))
         =/  aul=(set ^fons)  (snag cor aula)
@@ -313,7 +345,7 @@
           :_  ~
           :*  %give  %fact  ~[/homunculus-http]  %json
               !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux
-              ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))
+              ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
           ==
         =/  ocor=@  cor
         =.  cor
@@ -334,7 +366,7 @@
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
             :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
-                ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))
+                ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
             ==
         ==
       ::
@@ -384,7 +416,7 @@
           :*  %give  %fact  ~[/homunculus-http]  %json
               !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
               :~  (supo muri.u.aru ~ (~(int by visa.u.aru) bac))
-                  ?^(arnu (fero rex.u.arnu equi.u.arnu esse.u.arnu) (fero ~ ~ ~))
+                  ?^  arnu  (fero rex.u.arnu equi.u.arnu esse.u.arnu)  (fero ~ ~ ~)
               ==
           ==
         =:  arae  (~(del by arae) fons)
@@ -401,7 +433,7 @@
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
             :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
-                ?^(arnu (fero rex.u.arnu equi.u.arnu esse.u.arnu) (fero ~ ~ ~))
+                ?^  arnu  (fero rex.u.arnu equi.u.arnu esse.u.arnu)  (fero ~ ~ ~)
             ==
         ==
       ::
@@ -546,7 +578,8 @@
         ^-  tape  :-  '\\e[1;1H\\e[3J\\e[0J'
         %-  volo  ^-  lux  :-  %mor
         :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
-            ?^(aru (fero rex.u.aru equi.u.aru esse.u.aru) (fero ~ ~ ~))
+            ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
+            ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
         ==
     ==
     ::
@@ -787,11 +820,10 @@
               [%hop [l.rex.ara t.rex.ara]]
             (cedo rex.ara scr u.spar)
         ==
-      =/  avis=(unit @t)  ?:(|(?=(~ next) ?=(~ sel)) ~ (~(get by aves.u.sel) %sel))
       :_  ara(visa ?~(upd (~(uni by visa.ara) ppv) visa.upd))
       :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-      ?~  avis  ~
-      [[%pass /sel %agent fon %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
+      ?:  |(?=(~ next) ?=(~ sel) ?=(~ avis.u.sel))  ~
+      [[%pass /select %agent fon %poke %homunculus !>(^-(data [%select u.avis.u.sel]))] ~]
     ::
     ?:  ?=(%act lex)
       ?~  rex.ara  [~ ara]
@@ -806,11 +838,10 @@
         ?.  ?=(%checkbox -.ars.u.el)
           ~
         (opto k.rex.ara u.el)
-      =/  avis=(unit @t)  (~(get by aves.u.el) %act)
       ?:  &(?=(~ fupd) ?=(~ cupd))
-        ?~  avis  [~ ara]
+        ?~  avis.u.el  [~ ara]
         :_  ara
-        :~  [%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis]))]
+        :~  [%pass /act %agent fon %poke %homunculus !>(^-(data [%active u.avis.u.el]))]
         ==
       =.  esse.ara
         ?^  fupd
@@ -825,13 +856,8 @@
         ==
       :_  ara(visa (~(uni by visa.ara) ?^(fupd visa.fupd ?^(cupd visa.cupd ~))))
       :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-      ?:  &(?=(^ fupd) ?=(^ avis))
-        :-  [%pass /act %agent fon %poke %homunculus !>(^-(data [%form form.fupd]))]
-        [[%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis]))] ~]
-      ?^  fupd
-        [[%pass /act %agent fon %poke %homunculus !>(^-(data [%form form.fupd]))] ~]
-      ?^  avis
-        [[%pass /act %agent fon %poke %homunculus !>(^-(data [%act u.avis]))] ~]
+      ?^  fupd  [[%pass /act %agent fon %poke %homunculus !>(^-(data [%form form.fupd]))] ~]
+      ?^  avis.u.el  [[%pass /act %agent fon %poke %homunculus !>(^-(data [%active u.avis.u.el]))] ~]
       ~
     ::
     ?:  ?=(%clk lex)
@@ -888,11 +914,10 @@
         :~  (supo muri.ara visa.ara nvis)
             (fero rex.ara equi.ara esse.ara)
         ==
-      =/  avis=(unit @t)  (~(get by aves.u.el) %sel)
       :_  ara(visa ?~(nvis visa.ara (~(uni by visa.ara) ^-(visa nvis))))
       :-  [%give %fact ~[/homunculus-http] %json !>(^-(json [%s (crip (volo lux))]))]
-      ?~  avis  ~
-      [[%pass /sel %agent fon %poke %homunculus !>(^-(data [%sel u.avis]))] ~]
+      ?~  avis.u.el  ~
+      [[%pass /sel %agent fon %poke %homunculus !>(^-(data [%select u.avis.u.el]))] ~]
     ::
     ?:  ?=(%inp lex)
       ?.  ?=(%txt -.zon)  [~ ara]
@@ -1455,15 +1480,13 @@
       ?:  ?=(%l axis.i.fk)  $(fk [[%~ 0] t.fk])
       acc
     ?:  &(?=(%form -.ars.u.el) =(~ p.form.acc))
-      =/  key=(unit @t)  (~(get by aves.u.el) %key)
       %=  $
         ager.i.fk  +(ager.i.fk)
-        acc        $(fk [[%b 0] fk], p.form.acc ?~(key '' u.key))
+        acc        $(fk [[%b 0] fk], p.form.acc ?~(avis.u.el '' u.avis.u.el))
       ==
     ?:  ?=(%input -.ars.u.el)
-      =/  key=(unit @t)  (~(get by aves.u.el) %key)
-      ?~  key
-        ~&  'key missing on form submit'
+      ?~  avis.u.el
+        ~&  'id missing on form submit'
         $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
       =/  val=@t  (crip (tufa ^-(lina (zing vox.ars.u.el))))
       =:  vox.ars.u.el  ~
@@ -1477,13 +1500,12 @@
         ==
       =:  esse.acc  (~(put by esse.acc) fk u.el)
           visa.acc  (~(uni by visa.acc) visa.u.el)
-          q.form.acc  (~(put by q.form.acc) u.key val)
+          q.form.acc  (~(put by q.form.acc) u.avis.u.el val)
         ==
       $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
     ?:  ?=(%checkbox -.ars.u.el)
-      =/  key=(unit @t)  (~(get by aves.u.el) %key)
-      ?~  key
-        ~&  'key missing on form submit'
+      ?~  avis.u.el
+        ~&  'id missing on form submit'
         $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
       =/  val=@t  ?:(v.ars.u.el '%.y' '%.n')
       =.  v.ars.u.el  |
@@ -1494,7 +1516,7 @@
             (ruo iter.u.el (viso lar.u.el res.u.el ars.u.el modi.u.el))
       =:  esse.acc  (~(put by esse.acc) fk u.el)
           visa.acc  (~(uni by visa.acc) visa.u.el)
-          q.form.acc  (~(put by q.form.acc) u.key val)
+          q.form.acc  (~(put by q.form.acc) u.avis.u.el val)
         ==
       $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
     $(ager.i.fk +(ager.i.fk), acc $(fk [[%b 0] fk]))
@@ -1814,6 +1836,14 @@
         flow=[%col %clip]
         look=[~ ~ ~]
     ==
+      %form
+    :*  size=[[%i 0] [%i 0]]
+        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
+        flex=[0 0]
+        flow=[%col %clip]
+        look=[~ ~ ~]
+    ==
       %input
     :*  size=[[%c 10] [%c 1]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1842,7 +1872,7 @@
 ::
 ++  suo                     :: process a sail element's name and attribute list for geno
   |=  [n=mane a=mart]
-  =/  [=ovum =aves =ars =lina velo=mart]
+  =/  [=ovum =avis =ars =lina velo=mart]
       ?+  n             [(dolo %$) ~ [%$ ~] ~ ~]
         %$              [(dolo %text) ~ [%text ~] ?~(a ~ (tuba v.i.a)) ~]
         %layer          [(dolo %layer) ~ [%layer ~] ~ ~]
@@ -1854,14 +1884,14 @@
         %line-h         [(dolo %line-h) ~ [%line %h %light] ~ ~]
         %line-v         [(dolo %line-v) ~ [%line %v %light] ~ ~]
         %scroll         [(dolo %scroll) ~ [%scroll *iter *muri *sola] ~ ~]
+        %form           [(dolo %form) ~ [%form ~] ~ ~]
         %input          [(dolo %input) ~ [%input 0 [0 0] ~] ~ ~]
         %checkbox       [(dolo %checkbox) ~ [%checkbox %.n] ~ ~]
         %radio          [(dolo %$) ~ [%radio ~] ~ ~]
-        %form           [(dolo %$) ~ [%form ~] ~ ~]
         %submit         [(dolo %$) ~ [%select [~ ~ ~] %submit] ~ ~]
       ==
-  |-  ^-  [^ovum ^aves ^ars ^lina mart]
-  ?~  a  [ovum aves ars lina velo]
+  |-  ^-  [^ovum ^avis ^ars ^lina mart]
+  ?~  a  [ovum avis ars lina velo]
   ?+  n.i.a  $(a t.a)
       %w
     ?:  &(?=(%border -.ars) |(?=(%t ad.ars) ?=(%b ad.ars)))
@@ -1922,7 +1952,7 @@
       %fx
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
     ?:  ?=(^ num)
-      $(x.flex.ovum ?:((lte u.num 100) u.num 100), a t.a)
+      $(x.flex.ovum (min u.num 100), a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
       %start   $(x.flex.ovum 0, a t.a)
       %center  $(x.flex.ovum 50, a t.a)
@@ -1931,7 +1961,7 @@
       %fy
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
     ?:  ?=(^ num)
-      $(y.flex.ovum ?:((lte u.num 100) u.num 100), a t.a)
+      $(y.flex.ovum (min u.num 100), a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
       %start   $(y.flex.ovum 0, a t.a)
       %center  $(y.flex.ovum 50, a t.a)
@@ -2035,9 +2065,9 @@
       %arc     $(ora.ars %arc, a t.a)
       %blank   $(ora.ars %blank, a t.a)
     ==
-      %sel
-    $(aves (~(put by aves) %sel (crip v.i.a)), a t.a)
-      %sel-cb
+      %id
+    $(avis [~ (crip v.i.a)], a t.a)
+      %select-cb
     ?.  ?=(%select -.ars)  $(a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
       $(b.acia.ars [~ (seco v.i.a)], a t.a)
@@ -2051,7 +2081,7 @@
       %black    $(b.acia.ars [~ %k], a t.a)
       %white    $(b.acia.ars [~ %w], a t.a)
     ==
-      %sel-cf
+      %select-cf
     ?.  ?=(%select -.ars)  $(a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
       $(f.acia.ars [~ (seco v.i.a)], a t.a)
@@ -2065,17 +2095,16 @@
       %black    $(f.acia.ars [~ %k], a t.a)
       %white    $(f.acia.ars [~ %w], a t.a)
     ==
-      %sel-d
+      %select-d
     ?.  ?=(%select -.ars)  $(a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
       %bold       $(d.acia.ars [~ (silt ~[%br])], a t.a)
       %blink      $(d.acia.ars [~ (silt ~[%bl])], a t.a)
       %underline  $(d.acia.ars [~ (silt ~[%un])], a t.a)
     ==
-      %act
-    $(aves (~(put by aves) %act (crip v.i.a)), a t.a)
-      %key
-    $(aves (~(put by aves) %key (crip v.i.a)), a t.a)
+      %default
+    ?.  ?=(%input -.ars)  $(a t.a)
+    $(lina (tuba v.i.a), a t.a)
   ==
 ::
 ++  pars                    :: parse a tape to a sizing unit
@@ -2085,7 +2114,7 @@
   ?:  =('%' (rear v))
     =/  n=(unit @ud)  (slaw %ud (crip (snip v)))
     ?~  n  [%c 0]
-    [%p ?:((gth u.n 100) 100 u.n)]
+    [%p (min u.n 100)]
   =/  n=(unit @ud)  (slaw %ud (crip v))
   ?~  n  [%c 0]
   [%c u.n]
@@ -2845,10 +2874,10 @@
   ==
 ::
 ++  geno                    :: turn sail into session state
-  |=  [x=manx loc=(unit loci) =ara]
+  |=  [vel=vela loc=(unit loci) =ara]
   ^-  ^ara
   =/  a=opus                   [~ ~]
-  =/  m=marl                   ~[x]
+  =/  m=marl                   ~[vel]
   =/  k=rami                   ~[[%~ 0]]
   =/  pl=fila                  [~ ~ %w]
   =/  px=as                    [%c x.urbs]
@@ -2865,7 +2894,7 @@
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
   =;  =opus
     =/  r=ens  (~(got by esse.opus) ~[[%~ 0]])
-    :^    x
+    :^    vel
         :^    x.lar.r
             (add x.lar.r ?:(=(0 w.size.res.r) 0 (dec w.size.res.r)))
           y.lar.r
@@ -2874,7 +2903,7 @@
     (dico esse.opus ?^(rex.ara k.rex.ara ~))
   |-  ^-  opus
   ?~  m  a
-  =/  [=ovum =aves =ars =lina velo=mart]
+  =/  [=ovum =avis =ars =lina velo=mart]
     (suo g.i.m)
   =/  [bor=marl lay=marl nor=marl]
     ?:  ?=(%input -.ars)
@@ -3195,8 +3224,7 @@
         %col  ?:(?=(~ csiz) ary ?:((lte h.csiz ary) (sub ary h.csiz) 0))
       ==
     ?:  =(0 rom)  aqu
-    =/  bas=@ud  (div rom len)
-    =/  rem=@ud  (mod rom len)
+    =/  [bas=@ud rem=@ud]  (dvr rom len)
     |-  ^-  aqua
     ?~  aqu  ~
     :-  i.aqu(size ?:(=(0 rem) bas +(bas)))
@@ -3563,8 +3591,9 @@
   =?  ars  |(?=(%input -.ars) ?=(%scroll -.ars) ?=(%checkbox -.ars))
     ?:  ?=(%input -.ars)
       =/  old=(unit ens)  (~(get by esse.ara) k)
-      ?~  old  ars
-      ?.  ?=(%input -.ars.u.old)  ars
+      ?.  &(?=(^ old) ?=(%input -.ars.u.old))
+        ?~  lina  ars
+        ars(vox (oro w.size.ares h.size.ares lina))
       ?:  =(size.res.u.old size.ares)
         ars.u.old
       %_  ars.u.old
@@ -3635,7 +3664,7 @@
       (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares)))
     =?  mox  &(!x.pscr (lth x.plim mox))  x.plim
     =?  moy  &(!y.pscr (lth y.plim moy))  y.plim
-    :-  (~(put by esse.a) k ^-(ens [ares rend alar [mox moy] pitr aves ars]))
+    :-  (~(put by esse.a) k ^-(ens [ares rend alar [mox moy] pitr avis ars]))
     (~(uni by visa.a) rend)
   =?  a  &(?=(%select -.ars) ?=(^ rex.ara) =(k k.rex.ara))
     =/  opu=opus  (duco esse.a k rex.ara)
@@ -3681,10 +3710,8 @@
   =.  rend.nacc  |(?=(^ visa.u.el) rend.nacc)
   ?.  rend.nacc
     $(ager.i.k +(ager.i.k), acc acc(rend |(rend.acc rend.nacc)))
-  =/  sel=(unit @t)  (~(get by aves.u.el) %sel)
   =/  nav=bean
-    ?|  &(?=(^ sel) !?=(%layer -.ars.u.el))
-        ?=(%select -.ars.u.el)  ?=(%scroll -.ars.u.el)
+    ?|  ?=(%select -.ars.u.el)  ?=(%scroll -.ars.u.el)
         ?=(%input -.ars.u.el)  ?=(%checkbox -.ars.u.el)
     ==
   =.  ordo.acc  
@@ -3774,14 +3801,14 @@
   :-  [%hop [x1 y1]]
   |-  ^-  (list lux)
   =/  v=(unit nodi)
-    ?:  &(?=(~ old) ?=(~ luna))  (~(get by vis) [x1 y1])
+    ?:  &(?=(~ old) !p.luna)  (~(get by vis) [x1 y1])
     =/  nod=(unit nodi)  (~(get by vis) [x1 y1])
     ?~  nod  ~
     =/  lod=(unit nodi)  (~(get by old) [x1 y1])
     ?.  ?|  &(?=(^ lod) =(u.nod u.lod)) 
-            &(?=(^ luna) (~(has by visa.luna) [x1 y1]))
+            &(p.luna (~(has by visa.q.luna) [x1 y1]))
         ==
-      ?~  luna  nod
+      ?.  p.luna  nod
       nod(b.p.u (cubo b.p.u.nod), f.p.u (cubo f.p.u.nod))
     ~
   ?:  =(x1 x2)
