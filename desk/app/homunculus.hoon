@@ -94,7 +94,7 @@
       look=acia
   ==
 +$  cor   @
-+$  fons  [@p @tas]
++$  fons  (pair @p @tas)
 +$  aula  $~(~[~] (list (set fons)))
 +$  vela  manx
 +$  ara
@@ -140,7 +140,7 @@
   =/  ol  !<(^urbs old)
   =/  siz=^urbs  ?:(=([0 0] ol) *^urbs ol)
   :_  hoc(ego =+(*^ego -(urbs siz)))
-  ~[[%pass /umbra %agent [our.bowl %umbra] %poke %vela !>(~)]]
+  [(levo our.bowl) ~]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -173,13 +173,13 @@
     =/  mov=(unit loci)  (orno muri.gen u.roo)
     ?~  mov
       =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
-      :_  %_  hoc
-            cor   +(cor)
-            arae  (~(put by arae) fon gen)
-            aula  (into aula +(cor) (silt ~[fon]))
-            fons  fon
-          ==
-      :_  ~
+      =:  cor   +(cor)
+          arae  (~(put by arae) fon gen)
+          aula  (into aula +(cor) (silt ~[fon]))
+          fons  fon
+        ==
+      :_  hoc
+      :_  ?:(p.luna [(levo our.bowl) ~] ~)
       :*  %give  %fact  ~[/homunculus-http]  %json
           !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
           :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.gen))
@@ -188,12 +188,12 @@
           ==
       ==
     =?  gen  !=([1 1] u.mov)  (geno elem mov *ara)
-    :_  %_  hoc
-          arae  (~(put by arae) fon gen)
-          aula  (snap aula cor =+(^-((set ^fons) (snag cor aula)) (~(put in -) fon)))
-          fons  fon
-        ==
-    :_  ~
+    =:  arae  (~(put by arae) fon gen)
+        aula  (snap aula cor =+(^-((set ^fons) (snag cor aula)) (~(put in -) fon)))
+        fons  fon
+      ==
+    :_  hoc
+    :_  ?:(p.luna [(levo our.bowl) ~] ~)
     :*  %give  %fact  ~[/homunculus-http]  %json
         !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
         :~  (supo muri.gen ~ visa.gen)
@@ -265,8 +265,7 @@
         =/  vis=visa  (gyro aul bac)
         =/  aru=(unit ara)  (~(get by arae) fons)
         :_  hoc
-        :_  ?.  p.luna  ~
-            ~[[%pass /umbra %agent [our.bowl %umbra] %poke %vela !>(~)]]
+        :_  ?:(p.luna [(levo our.bowl) ~] ~)
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
             :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
@@ -736,6 +735,21 @@
           (gte t.b t.a)  (lte b.b b.a)
       ==
   ==
+::
+++  levo                    :: produce a card to refresh umbra's state
+  |=  orb=@p
+  ^-  card
+  :*  %pass  /umbra  %agent  [orb %umbra]  %poke  %refresh
+      !>  :-  urbs
+      |-  ^-  (list (list (pair term muri)))
+      ?~  aula  ~
+      :_  $(aula t.aula)
+      %-  %~  rep  in  i.aula
+      |=  [fon=^fons acc=(list (pair term muri))]
+      =/  aru=(unit ara)  (~(get by arae) fon)
+      ?~  aru  acc
+      [[q.fon muri.u.aru] acc]
+  ==
 ::  ::  ::
 ++  muto                    :: handle an event from the hotkey context
   |=  [=lex zon=zona fon=^fons =ara]
@@ -973,9 +987,8 @@
             %+  weld
               (scag (dec y.i.ars.u.el) vox.ars.u.el)
             %:  oro
-              w.size.res.u.el  h.size.res.u.el
-              ^-  lina
-              %-  zing
+              [~ w.size.res.u.el]  [~ h.size.res.u.el]
+              ^-  lina  %-  zing
               :+  ^-(lina (snag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
                 row
               (slag +(y.i.ars.u.el) vox.ars.u.el)
@@ -991,7 +1004,7 @@
           %+  weld
             (scag y.i.ars.u.el vox.ars.u.el)
           %:  oro
-            w.size.res.u.el  h.size.res.u.el
+            [~ w.size.res.u.el]  [~ h.size.res.u.el]
             ^-(lina (zing [row (slag +(y.i.ars.u.el) vox.ars.u.el)]))
           ==
         =.  i.ars.u.el
@@ -1058,9 +1071,8 @@
               ?:  =(0 y.i.ars.u.el)  ~
               ^-(vox (scag (dec y.i.ars.u.el) ^-(vox vox.ars.u.el)))
             %:  oro
-              w.size.res.u.el  h.size.res.u.el
-              ^-  lina
-              %-  zing
+              [~ w.size.res.u.el]  [~ h.size.res.u.el]
+              ^-  lina  %-  zing
               [arow row ^-(vox (slag +(y.i.ars.u.el) ^-(vox vox.ars.u.el)))]
             ==
           =.  i.ars.u.el
@@ -1093,7 +1105,7 @@
           %+  weld
             (scag y.i.ars.u.el vox.ars.u.el)
           %:  oro
-            w.size.res.u.el  h.size.res.u.el
+            [~ w.size.res.u.el]  [~ h.size.res.u.el]
             ^-(lina (zing [row brow (slag +(+(y.i.ars.u.el)) vox.ars.u.el)]))
           ==
         =.  i.ars.u.el
@@ -1783,7 +1795,7 @@
         look=[~ ~ ~]
     ==
       %text
-    :*  size=[[%i 0] [%i 0]]
+    :*  size=[[%c 0] [%c 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
@@ -2364,8 +2376,8 @@
   ==
 ::
 ++  oro                     :: turn lina into vox
-  |=  [wid=@ud hei=@ud lin=lina]
-  ?:  =(1 hei)  ^-(vox ~[lin])
+  |=  [wid=(unit @ud) hei=(unit @ud) lin=lina]
+  ?:  &(?=(^ hei) =(1 u.hei))  ^-(vox ~[lin])
   =|  [v=vox col=@ud wod=@ud]
   |-  ^-  vox
   ?~  lin
@@ -2374,17 +2386,17 @@
     ?~  v  $(lin t.lin)
     $(lin t.lin, col 0, wod 0, v [~ ^-(lina (flop i.v)) t.v])
   ?~  v
-    ?:  (gte +(col) wid)
+    ?:  &(?=(^ wid) (gte +(col) u.wid))
       $(lin t.lin, col 0, wod 0, v [~ [i.lin ~] ~])
     $(lin t.lin, col +(col), wod +(wod), v [[i.lin ~] ~])
   ?:  =(~-. i.lin)
     $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
   ?:  &(?=(^ i.v) =(~-. i.i.v))
-    ?:  |((gth col wid) &(=(wid col) !&(?=(^ t.lin) =(~-. i.t.lin))))
+    ?:  &(?=(^ wid) |((gth col u.wid) &(=(col u.wid) !&(?=(^ t.lin) =(~-. i.t.lin)))))
       $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
     $(lin t.lin, col +(col), wod 1, v [[i.lin i.v] t.v])
-  ?:  (gte col wid)
-    ?:  (lth +(wod) wid)
+  ?:  &(?=(^ wid) (gte col u.wid))
+    ?:  (lth +(wod) u.wid)
       %=  $
         lin  t.lin
         col  +(wod)
@@ -2394,7 +2406,7 @@
             ^-(lina (flop (oust [0 wod] ^-(lina i.v))))
           t.v
       ==
-    ?:  (gte col wid)
+    ?:  (gte col u.wid)
       $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
     $(lin t.lin, col 0, wod 0, v ?~(t.lin [[i.lin i.v] t.v] [~ ^-(lina (flop [i.lin i.v])) t.v]))
   $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
@@ -3116,12 +3128,9 @@
     :-  |(?=(%scroll -.ars) &(x.pscr ?=(%i p.w.size.ovum)))
     |(?=(%scroll -.ars) &(y.pscr ?=(%i p.h.size.ovum)))
   =/  nsli=$@(~ modi)
-    ?.  |(x.nscr y.nscr)
-      slim
-    ?:  ?=(~ slim)
-      alim
-    :-  ?:((lth x.alim x.slim) x.alim x.slim)
-    ?:((lth y.alim y.slim) y.alim y.slim)
+    ?.  |(x.nscr y.nscr)  slim
+    ?:  ?=(~ slim)  alim
+    [(min x.alim x.slim) (min y.alim y.slim)]
   =/  fi=fila
     :+  ?~(d.look.ovum d.pl u.d.look.ovum)
       ?~(b.look.ovum b.pl u.b.look.ovum)
@@ -3534,21 +3543,26 @@
       ?:  ?=(%b axis.i.ek)  $(ek [[%l 0] t.ek])
       ?:  ?=(%l axis.i.ek)  $(ek [[%~ 0] t.ek])
       a
-    =.  u.el  (mino movx movy alim visa.a u.el)
+    =.  u.el
+      %:  mino
+        movx  movy
+        ?~(slim alim [(min x.slim x.alim) (min y.slim y.alim)])
+        visa.a  u.el
+      ==
     %=  $
       ager.i.ek  +(ager.i.ek)
       a
         %=  $
           ek  [[%b 0] ek]
-          a  [(~(put by esse.a) ek u.el) (~(uni by visa.u.el) visa.a)]
+          a   [(~(put by esse.a) ek u.el) (~(uni by visa.u.el) visa.a)]
     ==  ==
   =?  ars  ?=(%text -.ars)
     :-  -.ars
     =/  [x=@ud y=@ud]
       :-  ?:(?=(%row d.pow) n.vir o.vir)
       ?:(?=(%col d.pow) n.vir o.vir)
-    %^  oro  ?:((lte x prx) (sub prx x) 0)
-      ?:((lte y pry) (sub pry y) 0)
+    %^  oro  ?:(?=(%i p.px) ~ [~ ?:((lte x prx) (sub prx x) 0)])
+      ?:(?=(%i p.py) ~ [~ ?:((lte y pry) (sub pry y) 0)])
     lina
   =/  ares=res
     ?+  -.ars
@@ -3561,9 +3575,10 @@
       ==
         %text
       =/  len=@ud
-        (roll ^-(vox vox.ars) |=([i=^lina a=@ud] =/(l=@ud (pono i) ?:((lth a l) l a))))
-      =/  lim=@ud  (sub prx ?:(?=(%row d.pow) n.vir o.vir))
-      :*  [?:((lth len lim) len lim) (lent vox.ars)]
+        (roll ^-(vox vox.ars) |=([i=^lina a=@ud] =/(l=@ud (pono i) (max a l))))
+      =/  lim=(unit @ud)
+        ?:(?=(%i p.px) ~ [~ (sub prx ?:(?=(%row d.pow) n.vir o.vir))])
+      :*  [?~(lim len (min len u.lim)) (lent vox.ars)]
           [0 0 0 0]
           [0 0 0 0]
           [0 0]
@@ -3571,9 +3586,6 @@
           pl
       ==
     ==
-  =?  alim  &(|(x.pscr y.pscr) ?=(%text -.ars))
-    :-  ?:(x.pscr (add x.alar ?:(=(0 w.size.ares) 0 (dec w.size.ares))) x.alim)
-    ?:(y.pscr (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares))) y.alim)
   =?  a  ?=(^ bor)
     %=  $
       m     bor
@@ -3590,10 +3602,10 @@
               ?:(y.pscr (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares))) y.plim)
             :-  ?:  =(0 arx)  0
                 =/  x=@ud  ;:(add x.alim bl br l.padd.ares r.padd.ares)
-                ?:((gth x x.plim) x.plim x)
+                (min x x.plim)
             ?:  =(0 ary)  0
             =/  y=@ud  ;:(add y.alim bt bb t.padd.ares b.padd.ares)
-            ?:((gth y y.plim) y.plim y)
+            (min y y.plim)
       pscr  nscr
       vlar  alar
       vir   [0 0 0]
@@ -3603,13 +3615,13 @@
       =/  old=(unit ens)  (~(get by esse.ara) k)
       ?.  &(?=(^ old) ?=(%input -.ars.u.old))
         ?~  lina  ars
-        ars(vox (oro w.size.ares h.size.ares lina))
+        ars(vox (oro [~ w.size.ares] [~ h.size.ares] lina))
       ?:  =(size.res.u.old size.ares)
         ars.u.old
       %_  ars.u.old
         ab   0
         i    [0 0]
-        vox  (oro w.size.ares h.size.ares ^-(^lina (zing vox.ars.u.old)))
+        vox  (oro [~ w.size.ares] [~ h.size.ares] ^-(^lina (zing vox.ars.u.old)))
       ==
     ?:  ?=(%checkbox -.ars)
       =/  old=(unit ens)  (~(get by esse.ara) k)
@@ -3627,8 +3639,8 @@
           [0 0]
         ?.  ?=(%scroll -.ars.u.old)
           [0 0]
-        :-  ?:((gth x.iter.ars.u.old x.sol) x.sol x.iter.ars.u.old)
-        ?:((gth y.iter.ars.u.old y.sol) y.sol y.iter.ars.u.old)
+        :-  (min x.iter.ars.u.old x.sol)
+        (min y.iter.ars.u.old y.sol)
       [%scroll itr [bl br bt bb] sol]
     ars
   =?  a  &(?=(%scroll -.ars) !&(=(0 x.iter.ars) =(0 y.iter.ars)))
@@ -3645,10 +3657,9 @@
       ares
       ars
       ?~  slim  plim
-      [?:((lth x.slim x.plim) x.slim x.plim) ?:((lth y.slim y.plim) y.slim y.plim)]
+      [(min x.slim x.plim) (min y.slim y.plim)]
     ==
-  =?  rend  !?=(%layer -.ars)
-    (~(dif by rend) visa.a)
+  =?  rend  !?=(%layer -.ars)  (~(dif by rend) visa.a)
   =.  vir
     ?:  |(?=(%layer -.ars) ?=(%border -.ars))  [0 0 0]
     =/  el-x=@ud  (add w.size.ares (add l.marg.ares r.marg.ares))
@@ -3758,8 +3769,8 @@
     (~(uni by mus.acc) mus.nacc)
   =.  equi.acc 
     ?.  ?=(%scroll -.ars.u.el)
-      (~(uni by equi.acc) equi.nacc)
-    (~(put in (~(uni by equi.acc) equi.nacc)) k)
+      (~(uni in equi.acc) equi.nacc)
+    (~(put in (~(uni in equi.acc) equi.nacc)) k)
   =.  visa.acc  (~(uni by visa.nacc) visa.acc)
   =?  ossa.acc  ?=(^ ossa.nacc)  (~(uni in ossa.acc) ^-(ossa ossa.nacc))
   =?  ossa.acc

@@ -1,4 +1,8 @@
 |%
++$  terminal-size  [x=@ud y=@ud]
++$  window  [agent=term l=@ud r=@ud t=@ud b=@ud]
++$  frame  (list window)
++$  frames  (list frame)
 +$  poke-key
   $@  ~
   $:  name=cord
@@ -22,7 +26,9 @@
   ==
 +$  num  ?(%1 %2 %3 %4 %5 %6 %7 %8 %9 %0)
 +$  state
-  $:  sel-poke-num=(unit num)
+  $:  =terminal-size
+      =frames
+      sel-poke-num=(unit num)
       poke-message=tape
       poke-edit-mode=$~(| ?)
       =poke-keys
@@ -59,7 +65,11 @@
   ^-  (quip card _this)
   ?+  mark  !!
     ::
-      %vela
+      %refresh
+    =/  ref  !<((pair ^terminal-size ^frames) vase)
+    =:  terminal-size  p.ref
+        frames         q.ref
+      ==
     [[(sail-card our.bowl) ~] this]
     ::
       %poke-key
@@ -191,6 +201,7 @@
     ;layer(fx "25", fy "75")
       ;box(w "25%", h "50%", cb red, fl "column")
         ;txt(w "100%", d "bold", fx "center"): Windows
+        ;+  frame-display
       ==
     ==
     ;layer(fx "75", fy "75")
@@ -199,6 +210,21 @@
         ;+  ?~  sel-poke-num  poke-list  poke-view
       ==
     ==
+  ==
+::
+++  frame-display
+  ^-  manx
+  ;scroll(w "100%", h "grow", b "light", fl "row-wrap")
+      ;*  %+  turn  frames
+        |=  =frame
+        ^-  manx
+        ;box(mx "2", my "1", cb "cyan")
+          ;*  %+  turn  frame
+            |=  =window
+            ^-  manx
+            ;box(mx "2", my "1", cb "blue"): {(trip agent.window)}
+        ==
+    :: ==
   ==
 ::
 ++  poke-list
@@ -313,6 +339,8 @@
   ==
 ::
 ++  red  "#DA4167"
+::
+++  frame-box-size  [w=30 h=15]
 ::
 ++  sail-card
   |=  orb=@p  ^-  card  [%pass /homunculus %agent [orb %homunculus] %poke %umbra !>(root)]
