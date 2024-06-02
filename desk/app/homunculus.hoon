@@ -399,12 +399,18 @@
         ?~  mov  [~ hoc]
         =/  bac=visa  (rbox [1 1] urbs =+(*res -(size urbs, look [~ ~ ~])))
         =.  bac  (~(int by visa.u.aru) bac)
+        =/  mur=muri  muri.u.aru
         =.  u.aru  (geno vela.u.aru mov u.aru)
+        =/  dim=muri
+          :^    (min l.mur l.muri.u.aru)
+              (max r.mur r.muri.u.aru)
+            (min t.mur t.muri.u.aru)
+          (max b.mur b.muri.u.aru)
         :_  hoc(arae (~(put by arae) fons u.aru))
         :_  ~
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-            :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.u.aru))
+            :~  (supo dim ~ (~(uni by bac) visa.u.aru))
                 (fero rex.u.aru equi.u.aru esse.u.aru)
             ==
         ==
@@ -817,7 +823,7 @@
             ==
           rex.ara
         (rogo scr ordo.ara)
-      =/  duc=opus  (duco orx rex.ara esse.ara)
+      =/  duc=opus  (duco orx rex.ara esse.ara ?~(abe visa.ara visa.abe))
       =/  sel=(unit ens)  ?~(rex.ara ~ (~(get by esse.ara) k.rex.ara))
       =.  omen.ara
         ?~  sel  omen.ara
@@ -890,7 +896,7 @@
         [~ ara]
       =/  orx  rex.ara
       =.  rex.ara  (rogo u.mk ordo.ara)
-      =/  duc=opus  (duco orx rex.ara esse.ara)
+      =/  duc=opus  (duco orx rex.ara esse.ara visa.ara)
       =?  esse.ara  ?=(^ esse.duc)  (~(uni by esse.ara) ^-(esse esse.duc))
       =?  u.el  ?=(^ esse.duc)
         =/  nel=(unit ens)  (~(get by esse.ara) u.mk)
@@ -1419,8 +1425,8 @@
       i.o
     $(o t.o)
   ::
-  ++  duco                        :: render a select style change update
-    |=  [oex=rex nex=rex e=esse]  :: returns just the esse and visa of the updated elements
+  ++  duco                               :: render a select style change update
+    |=  [oex=rex nex=rex e=esse v=visa]  :: returns just the esse and visa of the updated elements
     ^-  opus
     ?:  =(oex nex)  ~^~
     =/  ols=(unit (list rami))  ?~(oex ~ (~(get by gens.ara) k.oex))
@@ -1431,25 +1437,39 @@
       ?:  |(?=(~ nes) ?=(~ u.nes))  opu
       =/  nel=(unit ens)  (~(get by e) i.u.nes)
       ?~  nel  $(u.nes t.u.nes)
-      =.  visa.u.nel
-        =/  fil=fila
+      =/  fil=fila
           :+  ?~(d.acia.u.nel d.look.res.u.nel u.d.acia.u.nel)
             ?~(b.acia.u.nel b.look.res.u.nel u.b.acia.u.nel)
           ?~(f.acia.u.nel f.look.res.u.nel u.f.acia.u.nel)
+      =/  sect=visa
+        ?.  |(?=(%line -.ars.u.nel) ?=(%border -.ars.u.nel))  ~
+        (~(dif in (~(int by visa.u.nel) v)) visa.u.nel)
+      =.  visa.u.nel
         (~(urn by visa.u.nel) |=((pair loci nodi) [fil q.q]))
       %=  $
         u.nes     t.u.nes
         esse.opu  (~(put by esse.opu) i.u.nes u.nel)
-        visa.opu  (~(uni by visa.opu) visa.u.nel)
+        visa.opu
+          ?~  sect  (~(uni by visa.opu) visa.u.nel)
+          %-  %~  uni  by  visa.opu
+          %-  %~  uni  by  visa.u.nel
+          (~(urn by ^-(visa sect)) |=((pair loci nodi) [fil q.q]))
       ==
     =/  oel=(unit ens)  (~(get by e) i.u.ols)
     ?~  oel  $(u.ols t.u.ols)
+    =/  sect=visa
+      ?.  |(?=(%line -.ars.u.oel) ?=(%border -.ars.u.oel))  ~
+      (~(dif in (~(int by visa.u.oel) v)) visa.u.oel)
     =.  visa.u.oel
       (~(urn by visa.u.oel) |=((pair loci nodi) [look.res.u.oel q.q]))
     %=  $
       u.ols     t.u.ols
       esse.opu  (~(put by esse.opu) i.u.ols u.oel)
-      visa.opu  (~(uni by visa.opu) visa.u.oel)
+      visa.opu
+        ?~  sect  (~(uni by visa.opu) visa.u.oel)
+        %-  %~  uni  by  visa.opu
+        %-  %~  uni  by  visa.u.oel
+        (~(urn by ^-(visa sect)) |=((pair loci nodi) [look.res.u.oel q.q]))
     ==
   ::
   ++  opto                  :: process a checkbox, potentially in a radio group
@@ -1926,7 +1946,6 @@
 ++  suo                     :: process a sail element's name and attribute list for geno
   |=  [n=mane a=mart]
   =|  [=avis =acia marv=mart]
-  =/  =lina  ?~(a ~ (tuba v.i.a))
   =/  [=ovum =ars]
       ?+  n             [(dolo %$) [%$ ~]]
         %$              [(dolo %text) [%text ~]]
@@ -1945,6 +1964,7 @@
         %radio          [(dolo %$) [%radio ~]]
         %submit         [(dolo %$) [%select %submit]]
       ==
+  =/  =lina  ?.(?=(%text -.ars) ~ ?~(a ~ (tuba v.i.a))) 
   |-  ^-  [^ovum ^avis ^acia ^ars ^lina mart]
   ?~  a  [ovum avis acia ars lina marv]
   ?+  n.i.a  $(a t.a)
@@ -2058,10 +2078,10 @@
       %white    $(f.look.ovum [~ %w], a t.a)
     ==
       %d
-    ?+  (@tas (crip v.i.a))  $(d.look.ovum ~, a t.a)
-      %bold       $(d.look.ovum [~ (silt ~[%br])], a t.a)
-      %blink      $(d.look.ovum [~ (silt ~[%bl])], a t.a)
-      %underline  $(d.look.ovum [~ (silt ~[%un])], a t.a)
+    ?+  (@tas (crip v.i.a))  $(a t.a)
+      %bold       $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%br]) (~(put in u.d.look.ovum) %br))], a t.a)
+      %blink      $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%bl]) (~(put in u.d.look.ovum) %bl))], a t.a)
+      %underline  $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%un]) (~(put in u.d.look.ovum) %un))], a t.a)
     ==
       %b
     ?.  ?=(%border -.ars)
@@ -2150,9 +2170,9 @@
     ==
       %select-d
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %bold       $(d.acia [~ (silt ~[%br])], a t.a)
-      %blink      $(d.acia [~ (silt ~[%bl])], a t.a)
-      %underline  $(d.acia [~ (silt ~[%un])], a t.a)
+      %bold       $(d.acia [~ ?~(d.acia (silt ~[%br]) (~(put in u.d.acia) %br))], a t.a)
+      %blink      $(d.acia [~ ?~(d.acia (silt ~[%bl]) (~(put in u.d.acia) %bl))], a t.a)
+      %underline  $(d.acia [~ ?~(d.acia (silt ~[%un]) (~(put in u.d.acia) %un))], a t.a)
     ==
       %default
     ?.  ?=(%input -.ars)  $(a t.a)
@@ -3625,10 +3645,11 @@
     =/  key=(unit rami)
       ?~  avis  [~ k]
       (~(get by aves.ara) u.avis)
-    ?~  key  ars
     ?+  -.ars  ars
         %input
-      =/  old=(unit ens)  (~(get by esse.ara) u.key)
+      =/  old=(unit ens)
+        ?~  key  ~
+        (~(get by esse.ara) u.key)
       ?.  &(?=(^ old) ?=(%input -.ars.u.old))
         ?~  lina  ars
         ars(vox (oro [~ w.size.ares] [~ h.size.ares] lina))
@@ -3640,11 +3661,13 @@
         vox  (oro [~ w.size.ares] [~ h.size.ares] ^-(^lina (zing vox.ars.u.old)))
       ==
         %checkbox
+      ?~  key  ars
       =/  old=(unit ens)  (~(get by esse.ara) u.key)
       ?~  old  ars
       ?.  ?=(%checkbox -.ars.u.old)  ars
       ars.u.old
         %scroll
+      ?~  key  ars
       =/  sol=sola
         ?~  csiz  [0 0]
         :-  ?:((gth arx w.csiz) 0 (sub w.csiz arx))
@@ -3661,7 +3684,7 @@
     ==
   =?  a  &(?=(%scroll -.ars) !&(=(0 x.iter.ars) =(0 y.iter.ars)))
     =/  pv=visa  (~(dif by (rbox alar plim ares)) visa.a)
-    (eo rex.ara ~ iter.ars k pv x.vlar y.vlar x.alim y.alim esse.a visa.a) :: <-- now just this
+    (eo rex.ara ~ iter.ars k pv x.vlar y.vlar x.alim y.alim esse.a visa.a)
   =/  rend=visa
     %:  viso
       alar
@@ -3704,8 +3727,16 @@
         (add y.alar ?:(=(0 h.size.ares) 0 (dec h.size.ares)))
       =?  limx  &(!x.pscr (lth x.plim limx))  x.plim
       =?  limy  &(!y.pscr (lth y.plim limy))  y.plim
-      :-  (~(put by esse.a) k ^-(ens [ares alar [limx limy] pitr avis aci rend ars]))
-      (~(uni by visa.a) rend)
+      :_  (~(uni by visa.a) rend)
+      %+  %~  put
+            by
+          esse.a
+        k
+      ^-  ens
+      :*  ares  alar  [limx limy]  pitr  avis
+          aci(d ?:(?=(%text -.ars) d.aci ~))
+          rend  ars
+      ==
   ==
 ::  ::  ::  ::  ::  ::  ::  ::
 ++  dico                    :: derive intersections, hotkeys, and navigation context from display state
