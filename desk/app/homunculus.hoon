@@ -29,7 +29,8 @@
 +$  muri  [l=@ud r=@ud t=@ud b=@ud]
 +$  sola  [x=@ud y=@ud]
 +$  ars
-  $%  [%text =vox]  [%layer ~]  [%scroll =iter =muri =sola]
+  $%  [%text =vox]  [%pattern =vox]
+      [%layer ~]  [%scroll =iter =muri =sola]
       [%border =ad =ora]  [%line =via =ora]
       [%select pro=?(%submit %~)]
       [%input ab=@ud i=loci =vox]  [%checkbox v=bean]
@@ -749,8 +750,7 @@
 ++  levo                    :: produce a card to refresh umbra's state
   |=  orb=@p
   ^-  card
-  :*  %pass  /umbra  %agent  [orb %umbra]  %poke  %refresh
-      !>  :-  urbs
+  :*  %pass  /umbra  %agent  [orb %umbra]  %poke  %refresh  !>
       |-  ^-  (list (list (pair term muri)))
       ?~  aula  ~
       :_  $(aula t.aula)
@@ -1949,6 +1949,7 @@
   =/  [=ovum =ars]
       ?+  n             [(dolo %$) [%$ ~]]
         %$              [(dolo %text) [%text ~]]
+        %pattern        [(dolo %$) [%pattern ~]]
         %layer          [(dolo %layer) [%layer ~]]
         %select         [(dolo %$) [%select %~]]
         %border-left    [(dolo %border-left) [%border %l %~]]
@@ -2082,6 +2083,7 @@
       %bold       $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%br]) (~(put in u.d.look.ovum) %br))], a t.a)
       %blink      $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%bl]) (~(put in u.d.look.ovum) %bl))], a t.a)
       %underline  $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%un]) (~(put in u.d.look.ovum) %un))], a t.a)
+      %none       $(d.look.ovum [~ (silt ~[%~])], a t.a)
     ==
       %b
     ?.  ?=(%border -.ars)
@@ -2173,6 +2175,7 @@
       %bold       $(d.acia [~ ?~(d.acia (silt ~[%br]) (~(put in u.d.acia) %br))], a t.a)
       %blink      $(d.acia [~ ?~(d.acia (silt ~[%bl]) (~(put in u.d.acia) %bl))], a t.a)
       %underline  $(d.acia [~ ?~(d.acia (silt ~[%un]) (~(put in u.d.acia) %un))], a t.a)
+      %none       $(d.acia [~ (silt ~[%~])], a t.a)
     ==
       %default
     ?.  ?=(%input -.ars)  $(a t.a)
@@ -2416,6 +2419,31 @@
       $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
     $(lin t.lin, col 0, wod 0, v ?~(t.lin [[i.lin i.v] t.v] [~ ^-(lina (flop [i.lin i.v])) t.v]))
   $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
+::
+++  fuco                    :: cover a given area with a pattern
+  |=  [wid=@ud hei=@ud bas=vox]
+  ^-  vox
+  ?:  |(=(0 wid) =(0 hei))  ~
+  =/  cop=vox  bas
+  =/  [x=@ud y=@ud cx=@ud iy=@ud]  [1 1 1 0]
+  =/  len=@ud  (roll bas |=([i=lina a=@ud] (max a (lent i))))
+  |-  ^-  vox
+  ?~  bas  ~
+  :-  |-  ^-  lina
+      ?:  =(x +(wid))  ~
+      ?~  i.bas
+        :-  ~-.
+        ?:  =(cx len)
+          $(x +(x), cx 1, i.bas (snag iy cop))
+        $(x +(x), cx +(cx))
+      :-  i.i.bas
+      ?:  =(cx len)
+        $(x +(x), cx 1, i.bas (snag iy cop))
+      $(x +(x), cx +(cx), i.bas t.i.bas)
+  ?:  =(y hei)  ~
+  ?~  t.bas
+    $(y +(y), iy 0, bas cop)
+  $(y +(y), iy +(iy), bas t.bas)
 ::
 ++  iugo                    :: make a line intersection character
   |=  crux
@@ -2795,6 +2823,7 @@
   ^-  visa
   ?+  -.ars    (rbox lar lim res)
     %text      (rtxt lar lim look.res size.res vox.ars)
+    %pattern   (rtxb lar lim look.res size.res ^-(lina (zing vox.ars)))
     %border    (rlin lar lim res ?:(|(?=(%t ad.ars) ?=(%b ad.ars)) %h %v) ora.ars)
     %line      (rlin lar lim res +.ars)
     %input     (rinp lar lim res ab.ars vox.ars)
@@ -2935,28 +2964,6 @@
   ?~  m  a
   =/  [=ovum =avis =acia =ars =lina marv=mart]
     (suo g.i.m)
-  =/  [bor=marl lay=marl nor=marl]
-    ?:  |(?=(%text -.ars) ?=(%input -.ars))  [~ ~ ~]
-    =|  [bor=marl lay=marl nor=marl]
-    |-  ^-  [marl marl marl]
-    ?~  c.i.m  [bor (flop lay) (flop nor)]
-    ?+  n.g.i.c.i.m   $(nor [i.c.i.m nor], c.i.m t.c.i.m)
-      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
-    ==
-  =?  bor  &(?=(^ marv) !?=(%input -.ars))
-    %+  weld  bor
-    ^-  marl
-    :~  [[%border-left marv] ~]  [[%border-right marv] ~]
-        [[%border-top marv] ~]  [[%border-bottom marv] ~]
-    ==
-  =/  [bl=@ud br=@ud bt=@ud bb=@ud]
-    (obeo bor)
-  =^  [gro=marl aqu=aqua]  nor
-    (sero flow.ovum nor)
   =/  wcen=bean  =(%p p.w.size.ovum)
   =/  hcen=bean  =(%p p.h.size.ovum)
   =?  w.size.ovum  wcen
@@ -3007,6 +3014,41 @@
     ?:  (gth m q.h.size.ovum)  0  (sub q.h.size.ovum m)
   =?  x.flex.ovum  =(%i p.w.size.ovum)  0
   =?  y.flex.ovum  =(%i p.h.size.ovum)  0
+  =?  ars  ?=(%pattern -.ars)
+    ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
+    =/  bas=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
+    ?:  &(?=(%i p.w.size.ovum) ?=(%i p.h.size.ovum))
+      =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
+      ars(vox (fuco len (lent bas) bas))
+    ?:  ?=(%i p.w.size.ovum)
+      =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
+      ars(vox (fuco len q.h.size.ovum bas))
+    ?:  ?=(%i p.h.size.ovum)
+      ars(vox (fuco q.w.size.ovum (lent bas) bas))
+    ars(vox (fuco q.w.size.ovum q.h.size.ovum bas))
+  =/  [bor=marl lay=marl nor=marl]
+    ?:  |(?=(%text -.ars) ?=(%pattern -.ars) ?=(%input -.ars))
+      [~ ~ ~]
+    =|  [bor=marl lay=marl nor=marl]
+    |-  ^-  [marl marl marl]
+    ?~  c.i.m  [bor (flop lay) (flop nor)]
+    ?+  n.g.i.c.i.m   $(nor [i.c.i.m nor], c.i.m t.c.i.m)
+      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
+    ==
+  =?  bor  &(?=(^ marv) !?=(%input -.ars))
+    %+  weld  bor
+    ^-  marl
+    :~  [[%border-left marv] ~]  [[%border-right marv] ~]
+        [[%border-top marv] ~]  [[%border-bottom marv] ~]
+    ==
+  =/  [bl=@ud br=@ud bt=@ud bb=@ud]
+    (obeo bor)
+  =^  [gro=marl aqu=aqua]  nor
+    (sero flow.ovum nor)
   =/  crex=bean
     ?&  ?=(^ rex.ara)
         !&(brex ?=(%select -.ars))
@@ -3016,7 +3058,7 @@
                     &(?=(~ avis.rex.ara) =(k k.rex.ara))
     ==  ==  ==  ==
   =/  imp=bean
-    ?&  !?=(%text -.ars)
+    ?&  !|(?=(%text -.ars) ?=(%pattern -.ars))
         ?|  =(%i p.w.size.ovum)
             =(%i p.h.size.ovum)
     ==  ==
@@ -3594,26 +3636,25 @@
       ?:(?=(%i p.py) ~ [~ ?:((lte y pry) (sub pry y) 0)])
     lina
   =/  ares=res
-    ?+  -.ars
-      :*  [q.w.size.ovum q.h.size.ovum]
+    ?.  ?=(%text -.ars)
+      :*  ?.  ?=(%pattern -.ars)  [q.w.size.ovum q.h.size.ovum]
+          [?^(vox.ars (lent i.vox.ars) 0) (lent vox.ars)]
           [q.l.padd.ovum q.r.padd.ovum q.t.padd.ovum q.b.padd.ovum]
           [q.l.marg.ovum q.r.marg.ovum q.t.marg.ovum q.b.marg.ovum]
           flex.ovum
           flow.ovum
           fil
       ==
-        %text
-      =/  len=@ud
-        (roll ^-(vox vox.ars) |=([i=^lina a=@ud] =/(l=@ud (pono i) (max a l))))
-      =/  lim=(unit @ud)
-        ?:(?=(%i p.px) ~ [~ (sub prx ?:(?=(%row d.pow) n.vir o.vir))])
-      :*  [?~(lim len (min len u.lim)) (lent vox.ars)]
-          [0 0 0 0]
-          [0 0 0 0]
-          [0 0]
-          [%row %wrap]
-          pl
-      ==
+    =/  len=@ud
+      (roll ^-(vox vox.ars) |=([i=^lina a=@ud] =/(l=@ud (pono i) (max a l))))
+    =/  lim=(unit @ud)
+      ?:(?=(%i p.px) ~ [~ (sub prx ?:(?=(%row d.pow) n.vir o.vir))])
+    :*  [?~(lim len (min len u.lim)) (lent vox.ars)]
+        [0 0 0 0]
+        [0 0 0 0]
+        [0 0]
+        [%row %wrap]
+        pl
     ==
   =?  a  ?=(^ bor)
     %=  $

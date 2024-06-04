@@ -1,5 +1,4 @@
 |%
-+$  terminal-size  [x=@ud y=@ud]
 +$  window  [agent=term l=@ud r=@ud t=@ud b=@ud]
 +$  frame  (list window)
 +$  frames  (list frame)
@@ -26,8 +25,7 @@
   ==
 +$  num  ?(%1 %2 %3 %4 %5 %6 %7 %8 %9 %0)
 +$  state
-  $:  =terminal-size
-      =frames
+  $:  =frames
       sel-poke-num=(unit num)
       poke-message=tape
       poke-edit-mode=$~(| ?)
@@ -66,10 +64,7 @@
   ?+  mark  !!
     ::
       %refresh
-    =/  ref  !<((pair ^terminal-size ^frames) vase)
-    =:  terminal-size  p.ref
-        frames         q.ref
-      ==
+    =.  frames  !<(^frames vase)
     [[(sail-card our.bowl) ~] this]
     ::
       %poke-key
@@ -170,42 +165,41 @@
 |%
 ++  root
   ^-  manx
-  ;layer(w "100%", h "100%", cb "#000000", cf "#FFFFFF", fl "column")
-    ;layer(h "30%", pt "1", fx "center", fy "center")
-      ;asciiart(w "11", px "1", mr "2", cf red)
-        ;+  ;/
-          """
-           ▄▀▀▄  ▄▀
-          ▀    ▀▀
-          """
-      ==      
-      ;asciiart(cf red)
-        ;+  ;/
-          """
-          █ █ ██  ██  █ ███
-          █ █ █ █ █ █ █  █
-          █ █ █ █ █ █ █  █
-          █ █ ██  ██  █  █
-          █ █ █ █ █ █ █  █
-          ███ █ █ █ █ █  █
-           █  █ █ ██  █  █
-          """
-      ==
-      ;box(w "11", ml "2", cf red, fl "column")
-        ;txt: kelvin:
-        ;txt(mb "1"): 411
-        ;txt: homunculus:
-        ;txt: [1 0 0]
+  ;layer(w "100%", h "100%", px "5%", py "5%", cb black, cf orange, fl "column")
+    ;layer
+      ;box(w "47", px "2", pt "1", fl "column", fx "center", cb black, cf orange)
+        ;border-left(b "heavy");
+        ;border-right(b "heavy");
+        ;border-top(b "heavy");
+        ;border-bottom(b "blank", fx "center", cb cyan, cf black)
+          ;box(mx "2")
+            ;txt(mr "1"): kelvin:
+            ;txt: 411
+          ==
+          ;box(mx "2")
+            ;txt(mr "1"): homunculus:
+            ;txt: [1 0 0]
+          ==
+        ==
+        ;art
+          ;+  ;/
+            """
+            ╭     ╮ ╭─────╮ ╭────╮  ──┬── ╭──┬──╮
+            │     │ ├────┬╯ ├────┴╮   │      │   
+            ╰─────╯ ╰    ╰─ ╰─────╯ ──┴──    ┴    
+            """
+        ==
+        ;pattern(w "100%", h "1", mt "2", cf cyan): ⣶
       ==
     ==
-    ;layer(fx "25", fy "75")
-      ;box(w "25%", h "50%", cb red, fl "column")
+    ;layer(fx "start", fy "80")
+      ;box(w "40%", h "30%", cb cyan, cf black, fl "column")
         ;txt(w "100%", d "bold", fx "center"): Windows
         ;+  frame-display
       ==
     ==
     ;layer(fx "75", fy "75")
-      ;box(w "25%", h "50%", cb red, fl "column")
+      ;box(w "25%", h "50%", cb cyan, cf black, fl "column")
         ;txt(w "100%", d "bold", fx "center"): Pokes
         ;+  ?~  sel-poke-num  poke-list  poke-view
       ==
@@ -214,22 +208,21 @@
 ::
 ++  frame-display
   ^-  manx
-  ;scroll(w "100%", h "grow", b "light", fl "row-wrap")
-      ;*  %+  turn  frames
-        |=  =frame
-        ^-  manx
-        ;box(mx "2", my "1", cb "cyan")
-          ;*  %+  turn  frame
-            |=  =window
-            ^-  manx
-            ;box(mx "2", my "1", cb "blue"): {(trip agent.window)}
-        ==
-    :: ==
+  ;scroll(w "100%", h "grow", b "arc", cb black, cf orange, fl "row")
+    ;*  %+  turn  frames
+      |=  =frame
+      ^-  manx
+      ;box(mx "2", my "1", cb "cyan")
+        ;*  %+  turn  frame
+          |=  =window
+          ^-  manx
+          ;box(mx "2", my "1", cb "blue"): {(trip agent.window)}
+      ==
   ==
 ::
 ++  poke-list
   ^-  manx
-  ;scroll(w "100%", h "grow", b "arc")
+  ;scroll(w "100%", h "grow", b "arc", cb black, cf orange)
     ;*  ^-  marl
     :~  (poke-item %1)
         (poke-item %2)
@@ -249,7 +242,7 @@
   ^-  manx
   =/  nut=tape  (trip (scot %ud ^-(@ num)))
   =/  pok=poke-key  (get-poke-key num)
-  ;select(w "100%", cf ?~(pok "#FFABC0" "#FFFFFF"), select-cb "#FFFFFF", select-cf red)
+  ;select(w "100%", cf ?~(pok "#658867" cyan), select-cb cyan, select-cf black)
     =id  "/select-poke/{nut}"
     ;+  ;/  "{nut} — {?~(pok "empty" (trip name.pok))}"
   ==
@@ -259,22 +252,22 @@
   ;box(w "100%", fl "column")
     ;box(w "100%", px "1", fx "end")
       ;+  ?:  poke-edit-mode  ;null;
-        ;select(cb "#FFFFFF", cf red, select-d "underline")
+        ;select(cb "#FFFFFF", cf black, select-d "underline")
           =id  "/send-poke"
           ;+  ;/  "☞ send poke"
         ==
       ;+  ?:  poke-edit-mode  ;null;
-        ;select(mx "1", cb "#FFFFFF", cf red, select-d "underline")
+        ;select(mx "1", cb "#FFFFFF", cf black, select-d "underline")
           =id  "/edit-poke"
           ;+  ;/  "▤ edit"
         ==
-      ;select(cb "#FFFFFF", cf red, select-d "underline")
+      ;select(cb "#FFFFFF", cf black, select-d "underline")
         =id  "/unselect-poke"
         ;+  ;/  "◀ back"
       ==
     ==
     ;+  ?~  poke-message  ;null;
-      ;txt(w "100%", cb ?:(=('!' i.poke-message) "#c70042" red), fx "center")
+      ;txt(w "100%", cb ?:(=('!' i.poke-message) "#c70042" cyan), fx "center")
         ;+  ;/  poke-message
       ==
     ;scroll(w "100%", h "grow", px "1", b "arc")
@@ -314,7 +307,7 @@
     ;input(w "100%", id "/poke-form/mark", default ?^(sel-poke-key ['%' (trip mark.sel-poke-key)] ""));
     ;txt: Data:
     ;input(w "100%", h "3", id "/poke-form/data", default ?^(sel-poke-key (trip data-txt.sel-poke-key) ""));
-    ;submit(mt "1", cb "#FFFFFF", cf red, select-d "underline")
+    ;submit(mt "1", cb "#FFFFFF", cf black, select-d "underline")
       ;+  ;/  "Save Poke"
     ==
   ==
@@ -338,9 +331,15 @@
     %0  poke-keys(p0 pok)
   ==
 ::
-++  red  "#DA4167"
-::
-++  frame-box-size  [w=30 h=15]
+++  pink  "#da4167"
+++  red  "#e83313"
+++  orange  "#fc8021"
+++  light-green  "#5ae885"
+++  green  "#0dc40a"
+++  cyan  "#38d99b"
+++  purple  "#8364cc"
+++  white  "#ffffff"
+++  black  "#000000"
 ::
 ++  sail-card
   |=  orb=@p  ^-  card  [%pass /homunculus %agent [orb %homunculus] %poke %umbra !>(root)]
