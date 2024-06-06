@@ -1,3 +1,4 @@
+/-  homunculus
 |%
 +$  window  [agent=term l=@ud r=@ud t=@ud b=@ud]
 +$  frame  (list window)
@@ -32,12 +33,6 @@
       =poke-keys
   ==
 ::
-+$  event-data
-  $%  [%select p=@t]
-      [%act p=@t]
-      [%form p=@t q=(map @t @t)]
-  ==
-::
 +$  card  card:agent:gall
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -68,22 +63,18 @@
     [[(sail-card our.bowl) ~] this]
     ::
       %poke-key
-    =/  nu=num  !<(num vase)
-    =/  pok=poke-key  (get-poke-key nu)
+    =/  pok=poke-key  (get-poke-key !<(num vase))
     ?~  pok  [~ this]
     :_  this
     :~  [%pass /poke-key %agent [ship.pok agent.pok] %poke mark.pok data.pok]
     ==
     ::
-      %homunculus
-    =/  dat  !<(event-data vase)
-    ?-  -.dat
-      ::
-        %select
-      [~ this]
+      %homunculus-event
+    =/  eve  !<(event:homunculus vase)
+    ?+  -.eve  !!
       ::
         %act
-      =/  pat=path  (stab p.dat)
+      =/  pat=path  (stab id.eve)
       ?~  pat  !!
       ?+  i.pat  !!
         ::
@@ -122,15 +113,15 @@
       ==
       ::
         %form
-      =/  pat=path  (stab p.dat)
+      =/  pat=path  (stab id.eve)
       ?+  pat  !!
           [%poke-form ~]
         ?~  sel-poke-num  [~ this]
-        =/  n=@t  (~(got by q.dat) '/poke-form/name')
-        =/  s=@t  (~(got by q.dat) '/poke-form/ship')
-        =/  a=@t  (~(got by q.dat) '/poke-form/agent')
-        =/  m=@t  (~(got by q.dat) '/poke-form/mark')
-        =/  d=@t  (~(got by q.dat) '/poke-form/data')
+        =/  n=@t  (~(got by data.eve) '/poke-form/name')
+        =/  s=@t  (~(got by data.eve) '/poke-form/ship')
+        =/  a=@t  (~(got by data.eve) '/poke-form/agent')
+        =/  m=@t  (~(got by data.eve) '/poke-form/mark')
+        =/  d=@t  (~(got by data.eve) '/poke-form/data')
         =/  ag=@tas  =/(t (trip a) ?:(&(?=(^ t) =('%' i.t)) (crip t.t) a))
         =/  ma=@tas  =/(t (trip m) ?:(&(?=(^ t) =('%' i.t)) (crip t.t) m))
         =/  sh=(unit @p)  (slaw %p s)
@@ -342,6 +333,6 @@
 ++  black  "#000000"
 ::
 ++  sail-card
-  |=  orb=@p  ^-  card  [%pass /homunculus %agent [orb %homunculus] %poke %umbra !>(root)]
+  |=  orb=@p  ^-  card  [%pass /homunculus %agent [orb %homunculus] %poke %umbra !>([~ root])]
 ::
 --
