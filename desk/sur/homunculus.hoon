@@ -16,9 +16,12 @@
 ::                                  ::
 +$  metadata                        :: metadata ::
   $@  ~                             :: :: optionally null metadata, used for advanced session updates
-  $:  select-default=(unit id)      :: :: when select-default is included in an update,
-      hotkeys=(list [hotkey id])    :: :: it sets the currently selected element to the one matching the id.
+  $:  =select-default               :: :: when select-default is included in an update,
+      =hotkeys                      :: :: it sets the currently selected element to the one matching the id.
   ==                                :: :: the hotkey list defines events which are triggered by the key and contain the id.
+::                                  ::
++$  select-default  (unit id)       ::
++$  hotkeys  (list [hotkey id])     ::
 ::                                  ::
 +$  hotkey                          :: hotkey ::
   $@  @t                            :: :: this can be used to define a custom hotkey event.
