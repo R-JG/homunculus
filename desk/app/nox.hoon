@@ -48,6 +48,7 @@
   ?+  mark  !!
     ::
       %open
+    =.  history  ~
     :_  this
     :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
     ==
@@ -68,8 +69,16 @@
           :_  this
           :~  (~(render tui [nav bol]) [~ hotkeys])
           ==
-        :: to do: add center col select case
-        [~ this]
+        =/  his=(unit history-tree)  (~(get by history) des.nav)
+        =:  pax.nav  t.pav
+            history
+              %+  %~  put  by  history
+                des.nav
+              (put-history-tree (rear t.pav) [des.nav (snip ^-(path t.pav))] his)
+          ==
+        :_  this
+        :~  (~(render tui [nav bol]) [~ hotkeys])
+        ==
         ::
       ==
       ::
@@ -77,50 +86,44 @@
       ?+  ^-(@tas id.eve)  !!
         ::
           %nav-left
-        :: note: nav left does not transform history, unlike right and up/down select 
-        ~&  >  %left
-        [~ this]
+        =.  pax.nav  (snip pax.nav)
+        :_  this
+        :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
+        ==
         ::
           %nav-right
         =/  his=(unit history-tree)  (~(get by history) des.nav)
         =/  nex=(unit term)
           ?~  his  ~
-          (read-history-tree pax.nav u.his)
+          (read-history-tree nav u.his)
         =/  scy=cols  (do-scry nav bol)
         =.  state
           ?~  nex
             ?:  =(~ pax.nav)
-              ?~  rows.cen.scy  state
+              ?~  rows.cen.scy
+                state
               %_  state
                 pax.nav  ^-(path [i.rows.cen.scy ~])
                 history
-                  ?~  his  history  :: to do: if null, make put-history-tree populate a tree up to the current point.
                   %+  %~  put  by  history
                     des.nav
-                  (put-history-tree i.rows.cen.scy pax.nav u.his)
+                  (put-history-tree i.rows.cen.scy nav his)
               ==
-            ?~  rows.rig.scy  state
-              %_  state
-                pax.nav  (snoc pax.nav i.rows.rig.scy)
-                history
-                  ?~  his  history
-                  %+  %~  put  by  history
-                    des.nav
-                  (put-history-tree i.rows.rig.scy pax.nav u.his)
-              ==
-          ?~  (find [u.nex ~] ?~(pax.nav rows.cen.scy rows.rig.scy))
-            :: to do:
-            :: del-history --> delete the branch from his corresponding to the nex term, and set the recent to null in the parent.
-            :: nest inward based on the first row default like the above cases.
-            state
-            ::
+            ?~  rows.rig.scy
+              state
+            %_  state
+              pax.nav  (snoc pax.nav i.rows.rig.scy)
+              history
+                %+  %~  put  by  history
+                  des.nav
+                (put-history-tree i.rows.rig.scy nav his)
+            ==
           %_  state
             pax.nav  (snoc pax.nav u.nex)
             history
-              ?~  his  history
               %+  %~  put  by  history
                 des.nav
-              (put-history-tree u.nex pax.nav u.his)
+              (put-history-tree u.nex nav his)
           ==
         :_  this
         :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
@@ -158,30 +161,42 @@
   pax
 ::
 ++  read-history-tree
-  |=  [pax=path his=history-tree]
+  |=  [nav=path his=history-tree]
   ^-  (unit term)
-  ?~  pax  recent.his
+  ?~  nav  ~
+  ?.  =(i.nav name.his)  ~
+  =/  nav  t.nav
   |-  ^-  (unit term)
+  ?~  nav  recent.his
   ?~  branches.his  ~
-  ?:  =(i.pax name.i.branches.his)
-    ^$(his i.branches.his)
+  ?:  =(i.nav name.i.branches.his)
+    $(nav t.nav, his i.branches.his)
   $(branches.his t.branches.his)
 ::
 ++  put-history-tree
-  |=  [new=term pre=path his=history-tree]
+  |=  [new=term nav=path his=(unit history-tree)]
   ^-  history-tree
-  ?:  &(?=(^ pre) ?=(~ t.pre) =(i.pre name.his))
-    %_  his
-      recent    [~ new]
-      branches  [[new ~ ~] branches.his]
-    ==
-  ?~  pre  his
-  %_    his
-      branches
-    |-  ^-  (list history-tree)
-    ?~  branches.his  ~
-    :-  ^$(pre t.pre, his i.branches.his)
-    $(branches.his t.branches.his)
+  ?~  his
+    ?~  nav
+      [new ~ ~]
+    [i.nav ?^(t.nav [~ i.t.nav] ~) [$(nav t.nav) ~]]
+  ?~  nav  u.his
+  %_  u.his
+    recent  ?~(t.nav [~ new] recent.u.his)
+    branches
+      |-  ^-  (list history-tree)
+      ?~  branches.u.his
+        [^$(nav t.nav, his ~) ~]
+      ?~  t.nav
+        ?:  =(new name.i.branches.u.his)
+          branches.u.his
+        :-  i.branches.u.his
+        $(branches.u.his t.branches.u.his)
+      ?.  =(i.t.nav name.i.branches.u.his)
+        :-  i.branches.u.his
+        $(branches.u.his t.branches.u.his)
+      :-  ^$(nav t.nav, his [~ i.branches.u.his])
+      $(branches.u.his t.branches.u.his)
   ==
 ::
 ++  do-scry
@@ -253,6 +268,10 @@
   ++  root
     ^-  manx
     ;box(w "100%", h "100%", cb cb-1, cf cf-1)
+      ;border-top
+        ;txt: {(scow %p our.bol)}
+        ;txt: {(spud [des.nav pax.nav])}
+      ==
       ;+  columns
     ==
   ::
