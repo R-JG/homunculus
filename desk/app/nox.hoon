@@ -12,7 +12,8 @@
   ==
 +$  history  (map desk history-tree)
 +$  col  [prev=path rows=(list @t)]
-+$  cols  [lef=col cen=col rig=col]
++$  cols  [lef=col cen=col rig=col fil=path]
++$  file  (unit cord)
 +$  state
   $:  =nav
       =history
@@ -234,26 +235,38 @@
           xap
       ==
     aor
-  =/  rig=col
+  =/  [rig=col fil=path]
     ?:  &(?=(~ pax) ?=(~ rows.cen))
-      [~ ~]
+      [[~ ~] ~]
     =/  xap=path
       ?~  pax
         ?~  rows.cen  !!
         (snoc prev.cen i.rows.cen)
       pax
-    :-  xap
-    %+  sort
-      %~  tap  in
-      %~  key  by
-      =<  dir
+    =/  scy=arch
       .^  arch  %cy
           %-  en-beam
           :-  [our.bol des [%da now.bol]]
           xap
       ==
+    ?^  fil.scy
+      [[xap ~] xap]
+    :_  ~
+    :-  xap
+    %+  sort
+      %~  tap  in
+      %~  key  by
+      dir.scy
     aor
-  [lef cen rig]
+  [lef cen rig fil]
+::
+++  fi-scry
+  |=  [fil=path ^nav bol=bowl:gall]
+  ^-  file
+  %-  mole
+  |.
+  !<  cord
+  .^(vase %cr (en-beam [[our.bol des [%da now.bol]] fil]))
 ::
 ++  tui
   |_  [=^nav bol=bowl:gall]
@@ -278,37 +291,67 @@
   ++  columns
     ^-  manx
     =/  =cols  (do-scry nav bol)
+    =/  =file  ?~(fil.cols ~ (fi-scry fil.cols nav bol))
     ;box(w "100%", h "100%", b "arc")
-      ;+  (column-left lef.cols)
+      ;+  (column-left lef.cols ?=(^ file))
       ;line-v;
-      ;+  (column-center cen.cols)
+      ;+  (column-center cen.cols ?=(^ file))
       ;line-v;
-      ;+  (column-right rig.cols)
+      ;+  (column-right rig.cols file)
     ==
   ::
   ++  column-left
-    |=  =col
+    |=  [=col collapse=?]
     ^-  manx
-    ;scroll(w "30%", h "100%")
-      ;*  ?~  pax.nav
-            (rows-select col)
-          (rows-inert col)
+    =/  def-cf=tape  ?~(pax.nav cf-1 cf-2)
+    ;scroll(w ?:(collapse "10%" "30%"), h "100%", cf def-cf)
+      ;*  ?~  pax.nav  (rows-select col)
+          %+  turn  rows.col
+          |=  cod=cord
+          =/  hig=?
+            ?|  &(?=(~ t.pax.nav) =(cod des.nav))
+                &(?=(^ t.pax.nav) =(cod (rear (snip ^-(path pax.nav)))))
+            ==
+          ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
+            ;+  ;/  (trip cod)
+          ==
     ==
   ::
   ++  column-center
-    |=  =col
+    |=  [=col collapse=?]
     ^-  manx
-    ;scroll(w "40%", h "100%")
-      ;*  ?^  pax.nav
-            (rows-select col)
-          (rows-inert col)
+    =/  his=(unit history-tree)  (~(get by history) des.nav)
+    =/  nex=(unit term)  ?~(his ~ (read-history-tree nav u.his))
+    =/  def-cf=tape  ?^(pax.nav cf-1 cf-2)
+    ;scroll(w ?:(collapse "10%" "40%"), h "100%", cf def-cf)
+      ;*  ?^  pax.nav  (rows-select col)
+          %+  spun  rows.col
+          |=  [cod=cord i=@]
+          =/  hig=?  ?^(nex =(cod u.nex) =(0 i))
+          :_  +(i)
+          ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
+            ;+  ;/  (trip cod)
+          ==
     ==
   ::
   ++  column-right
-    |=  =col
+    |=  [=col =file]
     ^-  manx
-    ;scroll(w "grow", h "100%")
-      ;*  (rows-inert col)
+    =/  his=(unit history-tree)  (~(get by history) des.nav)
+    =/  nex=(unit term)  ?~(his ~ (read-history-tree nav u.his))
+    =/  def-cf=tape  cf-2
+    ;scroll(w "grow", h "100%", cb ?^(file cb-2 cb-1), cf ?^(file cf-1 def-cf))
+      ;*  ?^  file
+            ^-  marl
+            :~  ;box(w "100%", id (spud [%file prev.col])): {(trip u.file)}
+            ==
+          %+  spun  rows.col
+          |=  [cod=cord i=@]
+          =/  hig=?  ?:(|(?=(~ nex) ?=(~ pax.nav)) =(0 i) =(cod u.nex))
+          :_  +(i)
+          ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
+            ;+  ;/  (trip cod)
+          ==
     ==
   ::
   ++  rows-select
@@ -322,18 +365,10 @@
       ;+  ;/  (trip cod)
     ==
   ::
-  ++  rows-inert
-    |=  =col
-    ^-  marl
-    %+  turn
-      rows.col
-    |=  cod=cord
-    ;box(w "100%", h "1")
-      ;+  ;/  (trip cod)
-    ==
-  ::
   ++  cb-1  "#000000"
+  ++  cb-2  "#044303"
   ++  cf-1  "#0dc40a"
+  ++  cf-2  "#0a7a09"
   ::
   --
 --
