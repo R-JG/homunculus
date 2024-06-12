@@ -7,11 +7,11 @@
 +$  history-tree
   $~  [%$ ~ ~]
   $:  name=term
-      recent=(unit term)
+      recent=(unit knot)
       branches=(list history-tree)
   ==
 +$  history  (map desk history-tree)
-+$  col  [prev=path rows=(list @t)]
++$  col  [prev=path rows=(list knot)]
 +$  cols  [lef=col cen=col rig=col fil=path]
 +$  file  (unit cord)
 +$  state
@@ -94,7 +94,7 @@
         ::
           %nav-right
         =/  his=(unit history-tree)  (~(get by history) des.nav)
-        =/  nex=(unit term)
+        =/  nex=(unit knot)
           ?~  his  ~
           (read-history-tree nav u.his)
         =/  scy=cols  (do-scry nav bol)
@@ -125,6 +125,10 @@
               %+  %~  put  by  history
                 des.nav
               (put-history-tree u.nex nav his)
+          ==
+        ?^  fil.scy
+          :_  this
+          :~  (~(render tui [nav bol]) [[~ (spat [%file pax.nav])] hotkeys])
           ==
         :_  this
         :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
@@ -163,11 +167,11 @@
 ::
 ++  read-history-tree
   |=  [nav=path his=history-tree]
-  ^-  (unit term)
-  ?~  nav  ~
+  ^-  (unit knot)
+  ?~  nav  recent.his
   ?.  =(i.nav name.his)  ~
   =/  nav  t.nav
-  |-  ^-  (unit term)
+  |-  ^-  (unit knot)
   ?~  nav  recent.his
   ?~  branches.his  ~
   ?:  =(i.nav name.i.branches.his)
@@ -236,10 +240,11 @@
       ==
     aor
   =/  [rig=col fil=path]
-    ?:  &(?=(~ pax) ?=(~ rows.cen))
-      [[~ ~] ~]
     =/  xap=path
       ?~  pax
+        =/  his=(unit history-tree)  (~(get by history) des)
+        =/  rea=(unit knot)  ?~(his ~ (read-history-tree ~ u.his))
+        ?^  rea  (snoc prev.cen u.rea)
         ?~  rows.cen  !!
         (snoc prev.cen i.rows.cen)
       pax
@@ -321,7 +326,7 @@
     |=  [=col collapse=?]
     ^-  manx
     =/  his=(unit history-tree)  (~(get by history) des.nav)
-    =/  nex=(unit term)  ?~(his ~ (read-history-tree nav u.his))
+    =/  nex=(unit knot)  ?~(his ~ (read-history-tree nav u.his))
     =/  def-cf=tape  ?^(pax.nav cf-1 cf-2)
     ;scroll(w ?:(collapse "10%" "40%"), h "100%", cf def-cf)
       ;*  ?^  pax.nav  (rows-select col)
@@ -338,16 +343,24 @@
     |=  [=col =file]
     ^-  manx
     =/  his=(unit history-tree)  (~(get by history) des.nav)
-    =/  nex=(unit term)  ?~(his ~ (read-history-tree nav u.his))
+    =/  nex=(unit knot)  ?~(his ~ (read-history-tree nav u.his))
+    =/  las=(unit knot)
+      ?:(|(?=(~ his) ?=(~ nex)) ~ (read-history-tree (snoc nav u.nex) u.his))
     =/  def-cf=tape  cf-2
     ;scroll(w "grow", h "100%", cb ?^(file cb-2 cb-1), cf ?^(file cf-1 def-cf))
+      =id  ?^(file (spud [%file prev.col]) "")
       ;*  ?^  file
             ^-  marl
-            :~  ;box(w "100%", id (spud [%file prev.col])): {(trip u.file)}
+            :~  ;box: {(trip u.file)}
             ==
           %+  spun  rows.col
           |=  [cod=cord i=@]
-          =/  hig=?  ?:(|(?=(~ nex) ?=(~ pax.nav)) =(0 i) =(cod u.nex))
+          =/  hig=?
+            ?:  ?=(~ nex)  =(0 i)
+            ?:  ?=(~ pax.nav)
+              ?:  ?=(~ las)  =(0 i)
+              =(cod u.las)
+            =(cod u.nex)
           :_  +(i)
           ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
             ;+  ;/  (trip cod)
