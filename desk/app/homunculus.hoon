@@ -786,14 +786,13 @@
   |=  orb=@p
   ^-  card
   :*  %pass  /umbra  %agent  [orb %umbra]  %poke  %refresh  !>
-      |-  ^-  (list (list (pair term muri)))
+      :-  q.fons
+      |-  ^-  (list (list term))
       ?~  aula  ~
       :_  $(aula t.aula)
       %-  %~  rep  in  i.aula
-      |=  [fon=^fons acc=(list (pair term muri))]
-      =/  aru=(unit ara)  (~(get by arae) fon)
-      ?~  aru  acc
-      [[q.fon muri.u.aru] acc]
+      |=  [fon=^fons acc=(list term)]
+      [q.fon acc]
   ==
 ::  ::  ::
 ++  muto                    :: handle an event from the hotkey context
