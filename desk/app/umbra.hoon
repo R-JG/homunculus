@@ -21,6 +21,7 @@
   $:  base-kelvin=@
       active-window=window
       =frames
+      move-mode=?(%char %full)
       sel-poke-num=(unit num)
       poke-message=tape
       poke-edit-mode=$~(| ?)
@@ -81,6 +82,30 @@
         %act
       =/  pat=path  (stab id.eve)
       ?+  pat  !!
+        ::
+          [%change-window @ta ~]
+        :_  this
+        :~  :*  %pass  /homunculus  %agent  [our.bol %homunculus]
+                %poke  %umbra  !>([%change [our.bol i.t.pat]])
+        ==  ==
+        ::
+          [%close-window @ta ~]
+        :_  this
+        :~  :*  %pass  /homunculus  %agent  [our.bol %homunculus]
+                %poke  %umbra  !>([%close [our.bol i.t.pat]])
+        ==  ==
+        ::
+          [%move-window @ta @ta ~]
+        :_  this
+        :~  :*  %pass  /homunculus  %agent  [our.bol %homunculus]  %poke  %umbra  
+                !>([%move [our.bol i.t.pat] [move-mode (?(%l %r %u %d) i.t.t.pat)]])
+        ==  ==
+        ::
+          [%toggle-move-mode ~]
+        =.  move-mode  ?:(?=(%full move-mode) %char %full)
+        :_  this
+        :~  ~(render tui our.bol)
+        ==
         ::
           [%select-poke @ta ~]
         =/  =num  (num (slav %ud i.t.pat))
@@ -163,11 +188,11 @@
   ::
   ++  render
     ^-  card
-    [%pass /homunculus %agent [orb %homunculus] %poke %umbra !>([~ root])]
+    [%pass /homunculus %agent [orb %homunculus] %poke %umbra !>([%session [~ root]])]
   ::
   ++  root
     ^-  manx
-    ;layer(w "100%", h "100%", px "5%", py "5%", cb black, cf orange, fl "column")
+    ;layer(px "5%", py "5%", cb black, cf orange, fl "column")
       ;layer
         ;box(w "47", h "8", px "2", pt "1", fl "column", fx "center", cb black, cf orange)
           ;border-left(b "heavy");
@@ -255,6 +280,7 @@
   ::
   ++  frame-display
     ^-  manx
+    =/  act  (trip active-window)
     ;box(w "100%", h "grow")
       ;scroll(w "grow", h "100%", b "arc", cb black, cf orange, fl "row")
         ;*  %+  turn  frames
@@ -266,29 +292,47 @@
               ^-  manx
               =/  win  (trip window)
               ;select(cf ?:(=(active-window window) white orange), select-d "bold")
-                =id  "/window/{win}"
+                  =id  "/change-window/{win}"
                 ;+  ;/  ['%' win]
               ==
           ==
       ==
       ;box(w "18", h "100%", b "heavy", cf cyan, fl "column")
         ;border-top(fx "center"): Active Window:
-        ;txt(w "100%", cb "#1D6F4F", cf white, fx "center"): {['%' (trip active-window)]}
+        ;txt(w "100%", cb "#1D6F4F", cf white, fx "center"): {['%' act]}
         ;line-h(l "heavy", cf "#1D6F4F");
         ;box(w "100%", h "3", fy "center")
           ;txt(ml "1", mr "2"): Move:
           ;box(w "5", h "3", fl "column", fx "center")
-            ;select(select-cf white): ▲
-            ;box
-              ;select(select-cf white): ◀
-              ;c(w "3", h "1"): ╺╋╸
-              ;select(select-cf white): ▶
+            ;select(select-cf white)
+                =id  "/move-window/{act}/u"
+              ;+  ;/  "▲"
             ==
-            ;select(select-cf white): ▼
+            ;box
+              ;select(select-cf white)
+                  =id  "/move-window/{act}/l"
+                ;+  ;/  "◀"
+              ==
+              ;+  ;/  ?:(?=(%full move-mode) "╺" "╶")
+              ;select
+                  =id  "/toggle-move-mode"
+                ;+  ;/  ?:(?=(%full move-mode) "╋" "┼")
+              ==
+              ;+  ;/  ?:(?=(%full move-mode) "╸" "╴")
+              ;select(select-cf white)
+                  =id  "/move-window/{act}/r"
+                ;+  ;/  "▶"
+              ==
+            ==
+            ;select(select-cf white)
+                =id  "/move-window/{act}/d"
+              ;+  ;/  "▼"
+            ==
           ==
         ==
         ;line-h(l "heavy", cf "#1D6F4F");
         ;select(ml "1", select-d "bold", select-cf "#c70042")
+            =id  "/close-window/{act}"
           ;+  ;/   "Close ◉"
         ==
       ==
@@ -343,22 +387,22 @@
       ;box(w "100%", h "1", px "1")
         ;+  ?:  poke-edit-mode  ;null;
           ;select(cb white, cf black, select-cf orange, select-d "bold")
-            =id  "/send-poke"
+              =id  "/send-poke"
             ;+  ;/  "☛ send poke"
           ==
         ;box(w "grow", h "1");
         ;+  ?:  poke-edit-mode  ;null;
           ;select(mx "1", cb white, cf black, select-cf orange, select-d "bold")
-            =id  "/edit-poke"
+              =id  "/edit-poke"
             ;+  ;/  "▤ edit"
           ==
         ;select(cb white, cf black, select-cf orange, select-d "bold")
-          =id  "/unselect-poke"
+            =id  "/unselect-poke"
           ;+  ;/  "◀ back"
         ==
       ==
       ;+  ?~  poke-message  ;null;
-        ;txt(w "100%", h "1", cb ?:(=('!' i.poke-message) "#c70042" cyan), fx "center")
+        ;txt(w "100%", h "1", cb ?:(=('!' i.poke-message) "#c70042" orange), fx "center")
           ;+  ;/  poke-message
         ==
       ;+  ?:  poke-edit-mode  poke-form  poke-info
@@ -404,29 +448,33 @@
     ^-  manx
     ?~  sel-poke-num  ;null;
     =/  sel-poke-key  (get-poke-key u.sel-poke-num)
-    ;form(w "100%", h "grow", px "1", b "arc", cf white)
-      =id  "/poke-form"
-      ;box(w "100%", h "1", mb "1")
+    ;form(w "100%", h "grow", b "arc", cf white)
+        =id  "/poke-form"
+      ;box(w "100%", h "1", px "1")
         ;txt: Poke Name:
         ;box(w "grow", h "1");
         ;input(cb white, cf black, id "/poke-form/name", default ?^(sel-poke-key (trip name.sel-poke-key) ""));
       ==
-      ;box(w "100%", h "1", mb "1")
+      ;line-h;
+      ;box(w "100%", h "1", px "1")
         ;txt: Ship:
         ;box(w "grow", h "1");
         ;input(cb white, cf black, id "/poke-form/ship", default ?^(sel-poke-key (trip (scot %p ship.sel-poke-key)) ""));
       ==
-      ;box(w "100%", h "1", mb "1")
+      ;line-h;
+      ;box(w "100%", h "1", px "1")
         ;txt: Agent:
         ;box(w "grow", h "1");
         ;input(cb white, cf black, id "/poke-form/agent", default ?^(sel-poke-key ['%' (trip agent.sel-poke-key)] ""));
       ==
-      ;box(w "100%", h "1", mb "1")
+      ;line-h;
+      ;box(w "100%", h "1", px "1")
         ;txt: Mark:
         ;box(w "grow", h "1");
         ;input(cb white, cf black, id "/poke-form/mark", default ?^(sel-poke-key ['%' (trip mark.sel-poke-key)] ""));
       ==
-      ;box(w "100%", mb "1")
+      ;line-h;
+      ;box(w "100%", px "1")
         ;box(fl "column")
           ;txt: Data:
           ;submit(px "1", mt "1", cb "#FFFFFF", cf black, select-cf orange, select-d "bold"): + Save Poke

@@ -102,6 +102,12 @@
       flow=fuga
       look=acia
   ==
++$  vita
+  $%  [%session p=session:homunculus]
+      [%change p=fons]
+      [%close p=fons]
+      [%move p=fons q=(pair ?(%full %char) ?(%l %r %u %d))]
+  ==
 +$  cor   @
 +$  fons  (pair @p @tas)
 +$  aula  $~(~[~] (list (set fons)))
@@ -230,24 +236,115 @@
     ==
     ::
       %umbra
-    =/  ses  !<(session:homunculus vase)
-    =/  gen=ara
-      %:  geno
-        +.ses  ~
-        ?~  -.ses  q.luna
-        %_  q.luna
-          rex   ?^(select-default.-.ses =|(dux -(avis select-default.-.ses)) rex.q.luna)
-          ales  ?^(hotkeys.-.ses (uro hotkeys.-.ses) ~)
+    =/  umb  !<(vita vase)
+    ?-  -.umb
+      ::
+        %session
+      =/  gen=ara
+        %:  geno
+          +.p.umb  ~
+          ?~  -.p.umb  q.luna
+          %_  q.luna
+            rex   ?^(select-default.-.p.umb =|(dux -(avis select-default.-.p.umb)) rex.q.luna)
+            ales  ?^(hotkeys.-.p.umb (uro hotkeys.-.p.umb) ~)
+          ==
         ==
+      :_  hoc(q.luna gen)
+      ?.  p.luna  ~
+      :_  ~
+      :*  %give  %fact  ~[/homunculus-http]  %json
+          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+          :~  =.(p.luna | (supo muri.gen ~ visa.gen))
+              (fero rex.gen equi.gen esse.gen)
+          ==
       ==
-    :_  hoc(q.luna gen)
-    ?.  p.luna  ~
-    :_  ~
-    :*  %give  %fact  ~[/homunculus-http]  %json
-        !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-        :~  =.(p.luna | (supo muri.gen ~ visa.gen))
-            (fero rex.gen equi.gen esse.gen)
+      ::
+        %change
+      ?:  =(fons p.umb)  [~ hoc]
+      =/  i
+        =|  i=@
+        |-  ^-  (unit @)
+        ?~  aula  ~
+        ?:  (~(has in i.aula) p.umb)
+          [~ i]
+        $(aula t.aula, i +(i))
+      ?~  i  [~ hoc]
+      ?:  =(cor u.i)
+        =.  fons  p.umb
+        [[(levo our.bowl) ~] hoc]
+      =:  fons  p.umb
+          cor   u.i
         ==
+      =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
+      =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
+      :_  hoc
+      :~  :*  %give  %fact  ~[/homunculus-http]  %json
+              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+              [(supo [1 x.urbs 1 y.urbs] ~ (gyro aul bac)) ~]
+          ==
+          (levo our.bowl)
+      ==
+      ::
+        %close
+      =/  [i=(unit @) n=@]
+        =|  i=@
+        |-  ^-  [(unit @) @]
+        ?~  aula  [~ ~]
+        ?:  (~(has in i.aula) p.umb)
+          [[~ i] ~(wyt in i.aula)]
+        $(aula t.aula, i +(i))
+      ?~  i  [~ hoc]
+      ?.  =(cor u.i)  [~ hoc]
+      ?:  |((gth n 1) =(1 (lent aula)))
+        =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
+        =/  aru=(unit ara)  (~(get by arae) p.umb)
+        =/  aul=(set ^fons)  (~(del in (snag u.i aula)) p.umb)
+        =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
+        =:  aula  (snap aula cor aul)
+            fons  ?^(fonu u.fonu *^fons)
+            arae  (~(del by arae) p.umb)
+          ==
+        :_  hoc
+        :~  :*  %give  %fact  ~[/homunculus-http]  %json
+                !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+                ?^(aru [(supo muri.u.aru ~ (~(int by visa.u.aru) bac)) ~] ~)
+            ==
+            (levo our.bowl)
+        ==
+      =:  arae  (~(del by arae) p.umb)
+          aula  (oust [cor 1] aula)
+          cor   ?:(=(0 cor) 0 (dec cor))
+        ==
+      =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
+      =/  aul=(set ^fons)  (snag cor aula)
+      =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
+      =.  fons  ?^(fonu u.fonu *^fons)
+      :_  hoc
+      :~  :*  %give  %fact  ~[/homunculus-http]  %json
+              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+              [(supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac)) ~]
+          ==
+          (levo our.bowl)
+      ==
+      ::
+        %move
+      =/  aru=(unit ara)  (~(get by arae) p.umb)
+      ?~  aru  [~ hoc]
+      =/  mur=muri  muri.u.aru
+      =^  vis=visa  u.aru
+        (fluo q.q.umb p.q.umb p.umb u.aru)
+      =/  dim=muri
+        :^    (min l.mur l.muri.u.aru)
+            (max r.mur r.muri.u.aru)
+          (min t.mur t.muri.u.aru)
+        (max b.mur b.muri.u.aru)
+      :_  hoc(arae (~(put by arae) fons u.aru))
+      :~  :*  %give  %fact  ~[/homunculus-http]  %json
+              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
+              :~  (supo dim ~ vis)
+                  (fero rex.q.luna equi.q.luna esse.q.luna)
+      ==  ==  ==
+      ::
     ==
     ::
       %json
@@ -429,23 +526,9 @@
       ?:  &(?=(%mod -.u.z) |(?=(%shf mod.u.z) ?=(%ctl mod.u.z)) ?=(%aro -.key.u.z))
         =/  aru=(unit ara)  (~(get by arae) fons)
         ?~  aru  [~ hoc]
-        =/  mov=(unit loci)
-          ?:  ?=(%shf mod.u.z)
-            (meo fons p.key.u.z muri.u.aru [1 x.urbs 1 y.urbs])
-          ?:  ?=(%ctl mod.u.z)
-            %:  meo
-              fons  p.key.u.z  muri.u.aru
-              :^    ?:((lte l.muri.u.aru 1) 1 (dec l.muri.u.aru))
-                  ?:((gte r.muri.u.aru x.urbs) x.urbs +(r.muri.u.aru))
-                ?:((lte t.muri.u.aru 1) 1 (dec t.muri.u.aru))
-              ?:((gte b.muri.u.aru y.urbs) y.urbs +(b.muri.u.aru))
-            ==
-          ~
-        ?~  mov  [~ hoc]
-        =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
-        =.  bac  (~(int by visa.u.aru) bac)
         =/  mur=muri  muri.u.aru
-        =.  u.aru  (geno vela.u.aru mov u.aru)
+        =^  vis=visa  u.aru
+          (fluo p.key.u.z ?:(?=(%shf mod.u.z) %full %char) fons u.aru)
         =/  dim=muri
           :^    (min l.mur l.muri.u.aru)
               (max r.mur r.muri.u.aru)
@@ -455,7 +538,7 @@
         :_  ~
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-            :~  (supo dim ~ (~(uni by bac) visa.u.aru))
+            :~  (supo dim ~ vis)
                 (fero rex.u.aru equi.u.aru esse.u.aru)
             ==
         ==
@@ -483,18 +566,17 @@
           ==
         =:  arae  (~(del by arae) fons)
             aula  (oust [cor 1] aula)
+            cor   ?:(=(0 cor) 0 (dec cor))
           ==
-        =.  cor  ?:(=(0 cor) 0 (dec cor))
         =.  aul  (snag cor aula)
         =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
         =/  arnu=(unit ara)  ?^(fonu (~(get by arae) u.fonu) ~)
         =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
-        =/  vis=visa  (gyro ~(tap in aul) bac)
         :_  hoc(fons ?^(fonu u.fonu *^fons))
         :_  ~
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-            :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
+            :~  (supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac))
                 ?^  arnu  (fero rex.u.arnu equi.u.arnu esse.u.arnu)  (fero ~ ~ ~)
             ==
         ==
@@ -695,7 +777,29 @@
     [~ [l.murv t.murv]]
   $(movx +(movx))
 ::
-++  meo                     :: move a window in a given direction
+++  fluo                    :: move a window in a given direction
+  |=  [dir=?(%l %r %u %d) amo=?(%full %char) fon=^fons =ara]
+  ^-  [visa ^ara]
+  =/  mov=(unit loci)
+    ?-  amo
+        %full
+      (meo fon dir muri.ara [1 x.urbs 1 y.urbs])
+        %char
+      %:  meo
+        fon  dir  muri.ara
+        :^    ?:((lte l.muri.ara 1) 1 (dec l.muri.ara))
+            ?:((gte r.muri.ara x.urbs) x.urbs +(r.muri.ara))
+          ?:((lte t.muri.ara 1) 1 (dec t.muri.ara))
+        ?:((gte b.muri.ara y.urbs) y.urbs +(b.muri.ara))
+      ==
+    ==
+  ?~  mov  [~ ara]
+  =/  bac=visa
+    (~(int by visa.ara) (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~]))))
+  =.  ara  (geno vela.ara mov ara)
+  [(~(uni by bac) visa.ara) ara]
+::
+++  meo                     :: find a new location for a window
   |=  [fon=^fons dir=?(%l %r %u %d) mur=muri urb=muri]
   ^-  (unit loci)
   =/  aul=(set ^fons)  (snag cor aula)
