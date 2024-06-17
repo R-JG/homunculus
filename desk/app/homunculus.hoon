@@ -135,7 +135,7 @@
 =*  ego  -
 ^-  agent:gall
 =<
-|_  =bowl:gall
+|_  bol=bowl:gall
 +*  hoc  .
 ++  on-init
   ^-  (quip card _hoc)
@@ -149,17 +149,18 @@
   =/  ol  !<(^urbs old)
   =/  siz=^urbs  ?:(=([0 0] ol) *^urbs ol)
   :_  hoc(ego =|(^ego -(urbs siz)))
-  [(levo our.bowl) ~]
+  [(levo our.bol) ~]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _hoc)
-  ?+  mark  ~|("homunculus poke failed with mark: {<mark>}" !!)
+  ?>  =(our.bol src.bol)
+  ?+  mark  !!
     ::
       %homunculus-session
     =/  ses  !<(session:homunculus vase)
     =/  fon=^fons
-      [src.bowl ?:(&(?=(^ sap.bowl) ?=(^ t.sap.bowl)) i.t.sap.bowl %$)]
+      [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]
     =/  aru=(unit ara)  (~(get by arae) fon)
     ?^  aru
       =/  gen=ara
@@ -203,7 +204,7 @@
           fons  fon
         ==
       :_  hoc
-      :_  ?:(p.luna [(levo our.bowl) ~] ~)
+      :_  ?:(p.luna [(levo our.bol) ~] ~)
       :*  %give  %fact  ~[/homunculus-http]  %json
           !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
           :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.gen))
@@ -226,7 +227,7 @@
         fons  fon
       ==
     :_  hoc
-    :_  ?:(p.luna [(levo our.bowl) ~] ~)
+    :_  ?:(p.luna [(levo our.bol) ~] ~)
     :*  %give  %fact  ~[/homunculus-http]  %json
         !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
         :~  (supo muri.gen ~ visa.gen)
@@ -271,7 +272,7 @@
       ?~  i  [~ hoc]
       ?:  =(cor u.i)
         =.  fons  p.umb
-        [[(levo our.bowl) ~] hoc]
+        [[(levo our.bol) ~] hoc]
       =:  fons  p.umb
           cor   u.i
         ==
@@ -282,7 +283,7 @@
               !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
               [(supo [1 x.urbs 1 y.urbs] ~ (gyro aul bac)) ~]
           ==
-          (levo our.bowl)
+          (levo our.bol)
       ==
       ::
         %close
@@ -309,7 +310,7 @@
                 !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
                 ?^(aru [(supo muri.u.aru ~ (~(int by visa.u.aru) bac)) ~] ~)
             ==
-            (levo our.bowl)
+            (levo our.bol)
         ==
       =:  arae  (~(del by arae) p.umb)
           aula  (oust [cor 1] aula)
@@ -324,7 +325,7 @@
               !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
               [(supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac)) ~]
           ==
-          (levo our.bowl)
+          (levo our.bol)
       ==
       ::
         %move
@@ -397,7 +398,7 @@
         =/  vis=visa  (gyro aul bac)
         =/  aru=(unit ara)  (~(get by arae) fons)
         :_  hoc
-        :_  ?:(p.luna [(levo our.bowl) ~] ~)
+        :_  ?:(p.luna [(levo our.bol) ~] ~)
         :*  %give  %fact  ~[/homunculus-http]  %json
             !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
             :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
@@ -419,13 +420,13 @@
         ?^  avi
           :_  hoc
           :_  ~
-          :*  %pass  /hotkey  %agent  [our.bowl %umbra]  %poke  %homunculus-event
+          :*  %pass  /hotkey  %agent  [our.bol %umbra]  %poke  %homunculus-event
               !>(^-(event:homunculus [%hotkey u.avi]))
           ==
         =/  lek=(unit lex)  (~(get by omen.q.luna) noa)
         ?~  lek  [~ hoc]
         =^  crds  q.luna
-          =.(p.luna | (muto u.lek u.z [our.bowl %umbra] q.luna))
+          =.(p.luna | (muto u.lek u.z [our.bol %umbra] q.luna))
         [crds hoc]
       ::
       ?:  ?&  ?=(%mod -.u.z)  ?=(%alt mod.u.z)  ?=(%txt -.key.u.z)
@@ -434,7 +435,7 @@
           ==
         :_  hoc
         :_  ~
-        :*  %pass  /umbra  %agent  [our.bowl %umbra]  %poke  %poke-key
+        :*  %pass  /umbra  %agent  [our.bol %umbra]  %poke  %poke-key
             (slap !>(~) [%rock %ud (slav %ud ^-(@ i.p.key.u.z))])
         ==
       ::

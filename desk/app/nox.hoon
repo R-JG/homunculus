@@ -5,8 +5,8 @@
       pax=path
   ==
 +$  history-tree
-  $~  [%$ ~ ~]
-  $:  name=term
+  $~  [~. ~ ~]
+  $:  name=knot
       recent=(unit knot)
       branches=(list history-tree)
   ==
@@ -46,6 +46,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
+  ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
       %open

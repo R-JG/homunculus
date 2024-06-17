@@ -54,11 +54,14 @@
     =/  waf  .^(waft:clay %cx (en-beam [[our.bol %base [%da now.bol]] /sys/kelvin]))
     ?@  -.waf  num.waf
     (~(rep in p.waf) |=([i=weft a=$~(500 @)] (min a num.i)))
+  =.  p1.poke-keys
+    ['%nox' our.bol %nox %open !>(~) '~']
   [[~(render tui our.bol) ~] this]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
+  ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
       %refresh
@@ -154,6 +157,7 @@
         =/  ma=@tas  =/(t (trip m) ?:(&(?=(^ t) =('%' i.t)) (crip t.t) m))
         =/  sh=(unit @p)  (slaw %p s)
         =/  da=(unit ^vase)
+          ?:  =('' d)  [~ !>(~)]
           =/  hoo=(unit hoon)  (rush d vest)
           ?~  hoo  ~
           [~ (slap !>(~) u.hoo)]
