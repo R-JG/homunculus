@@ -139,7 +139,7 @@
 +*  hoc  .
 ++  on-init
   ^-  (quip card _hoc)
-  [~ hoc(ego *^ego)]
+  [~ hoc]
 ++  on-save
   ^-  vase
   !>(urbs)
@@ -149,7 +149,8 @@
   =/  ol  !<(^urbs old)
   =/  siz=^urbs  ?:(=([0 0] ol) *^urbs ol)
   :_  hoc(ego =|(^ego -(urbs siz)))
-  [(levo our.bol) ~]
+  :~  (levo our.bol)
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -173,7 +174,7 @@
           ==
         ==
       :_  hoc(arae (~(put by arae) fon gen))
-      ?.  =+(^-((set ^fons) (snag cor aula)) (~(has in -) fon))
+      ?.  (~(has in ^-((set ^fons) (snag cor aula))) fon)
         ~
       :_  ~
       :*  %give  %fact  ~[/homunculus-http]  %json
@@ -369,19 +370,20 @@
           arae  (~(put by arae) i.kes gen)
           vis   ?:((~(has in aul) i.kes) (~(uni by vis) visa.gen) vis)
         ==
-      =/  una=(unit ara)
-        ?.  p.luna  ~
-        [~ (geno vela.q.luna ~ q.luna)]
+      =.  q.luna  (geno vela.q.luna ~ q.luna)
       =/  aru=(unit ara)  (~(get by arae) fons)
       =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
-      :_  hoc(q.luna ?^(una u.una q.luna))
+      :_  hoc
       :_  ~
       :*  %give  %fact  ~[/homunculus-http]  %json
           !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
           :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) vis))
-              ?^  una  =.(p.luna | (supo muri.u.una ~ visa.u.una))
-              ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
-              ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
+              ?:  p.luna
+                =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
+                (fero rex.q.luna equi.q.luna esse.q.luna)
+              ?~  aru
+                (fero ~ ~ ~)
+              (fero rex.u.aru equi.u.aru esse.u.aru)
           ==
       ==
     ::
@@ -747,7 +749,7 @@
 ++  on-leave  |=(path ^-((quip card _hoc) !!))
 ++  on-peek   |=(path ^-((unit (unit cage)) !!))
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _hoc) !!))
-++  on-arvo   |=([=wire sign=sign-arvo] ^-((quip card _hoc) !!))
+++  on-arvo   |=([wire sign-arvo] ^-((quip card _hoc) !!))
 ++  on-fail   |=([term tang] ^-((quip card _hoc) !!))
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  

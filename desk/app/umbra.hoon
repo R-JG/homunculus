@@ -43,6 +43,8 @@
     =/  waf  .^(waft:clay %cx (en-beam [[our.bol %base [%da now.bol]] /sys/kelvin]))
     ?@  -.waf  num.waf
     (~(rep in p.waf) |=([i=weft a=$~(500 @)] (min a num.i)))
+  =.  p1.poke-keys
+    ['%nox' our.bol %nox %open !>(~) '']
   [[~(render tui our.bol) ~] this]
 ++  on-save
   ^-  vase
@@ -55,7 +57,7 @@
     ?@  -.waf  num.waf
     (~(rep in p.waf) |=([i=weft a=$~(500 @)] (min a num.i)))
   =.  p1.poke-keys
-    ['%nox' our.bol %nox %open !>(~) '~']
+    ['%nox' our.bol %nox %open !>(~) '']
   [[~(render tui our.bol) ~] this]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
@@ -196,7 +198,7 @@
   ::
   ++  root
     ^-  manx
-    ;layer(px "5%", py "5%", cb black, cf orange, fl "column")
+    ;layer(pl "10%", pt "10%", cb black, cf orange, fl "column")
       ;layer
         ;box(w "47", h "8", px "2", pt "1", fl "column", fx "center", cb black, cf orange)
           ;border-left(b "heavy");
