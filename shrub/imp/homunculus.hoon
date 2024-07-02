@@ -22,7 +22,7 @@
   :+  ~  %y
   ^-  lads:neo
   %-  my
-  :~  [[|/%umbra |] [only/%umbra (sy %homunculus-to-umbra ~)]]
+  :~  [[|/%umbra |] [only/%umbra (sy %homunculus-to-umbra %homunculus-event ~)]]
   ==
 ++  deps   *deps:neo
 ++  form

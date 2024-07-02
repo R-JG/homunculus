@@ -5,7 +5,7 @@
 ^-  kook:neo
 |%
 ++  state  pro/%umbra
-++  poke   (sy %homunculus-to-umbra ~)
+++  poke   (sy %homunculus-to-umbra %homunculus-event ~)
 ++  kids   *kids:neo
 ++  deps   *deps:neo
 ++  form
@@ -37,13 +37,19 @@
         ==
         ::
           %poke-key
-        !!
+        [~ umbra/!>(umbra-state)]
         ::
       ==
       ::
         %homunculus-event
       =/  eve  !<(event.homunculus-api vaz)
-      ?+  -.eve  !!
+      ?-  -.eve
+        ::
+          %hotkey
+        [~ umbra/!>(umbra-state)]
+        ::
+          %select
+        [~ umbra/!>(umbra-state)]
         ::
           %act
         =/  pat=path  (stab id.eve)
