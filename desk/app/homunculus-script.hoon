@@ -146,7 +146,8 @@
               event_id="${line:4}"
           elif [[ "${line:0:6}" = "data: " ]] &&  grep -q "json" <<< "$line"; then
               dat=$(echo "${line:6}" | jq -r '.json')
-              echo -e -n "$dat"
+              dat=${dat//%/%%}
+              printf "$dat"
               ack $event_id
           fi
       done
@@ -181,7 +182,7 @@
   
   PS1=
   stty -echo
-  echo -e "\e[?1000;1006;1015h"
+  printf "\e[?1000;1006;1015h"
   
   start_connection
   
@@ -193,7 +194,7 @@
   
   clear
   stty echo
-  echo -e "\e[?1000;1006;1015l"
+  printf "\e[?1000;1006;1015l"
   '''
 ::
 ++  on-watch
