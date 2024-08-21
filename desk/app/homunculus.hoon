@@ -163,6 +163,9 @@
       %dill-poke
     =+  !<([ses=@ta belt=dill-belt:dill] vase)
     ~&  >  [ses belt]
+    ?@  belt
+      :: char input
+      [~ hoc]
     ?+  -.belt  [~ hoc]
       ::
         %rez  :: -- TEST --
@@ -4203,8 +4206,8 @@
   ^-  lux
   =/  [x1=@ud y1=@ud]  [l.mur t.mur]
   =/  [x2=@ud y2=@ud]  [(min r.mur x.urbs) (min b.mur y.urbs)]
-  =/  decl=@ud  (dec l.mur)
-  =/  prex=@ud  decl
+  =|  fil=fila
+  =|  lin=lina
   :-  %mor
   :-  [%hop [x1 y1]]
   |-  ^-  (list lux)
@@ -4224,21 +4227,39 @@
     ~
   ?:  =(x1 x2)
     ?:  =(y1 y2)
-      ?~  v  ~
-      [[%klr ~[v]] ~]
+      ?~  v
+        ?~  lin
+          ~
+        [[%klr [[fil lin] ~]] ~]
+      ?~  lin
+        [[%hop x1 y1] [%klr [v ~]] ~]
+      [[%klr [[fil lin] ~]] [%hop x1 y1] [%klr [v ~]] ~]
     ?~  v
-      :-  [%hop [l.mur +(y1)]]
-      $(x1 l.mur, prex decl, y1 +(y1))
-    :+  [%klr ~[v]]
-      [%hop [l.mur +(y1)]]
-    $(x1 l.mur, prex decl, y1 +(y1))
-  ?~  v  $(x1 +(x1))
-  ?:  =(x1 +(prex))
-    :-  [%klr ~[v]]
-    $(x1 +(x1), prex x1)
-  :+  [%hop [x1 y1]]
-    [%klr ~[v]]
-  $(x1 +(x1), prex x1)
+      ?~  lin
+        $(x1 l.mur, y1 +(y1))
+      :-  [%klr [[fil lin] ~]]
+      $(x1 l.mur, y1 +(y1), lin ~)
+    ?~  lin
+      :+  [%hop x1 y1]
+        [%klr [v ~]]
+      $(x1 l.mur, y1 +(y1), lin ~)
+    :^    [%klr [[fil lin] ~]]
+        [%hop x1 y1]
+      [%klr [v ~]]
+    $(x1 l.mur, y1 +(y1), lin ~)
+  ?~  v
+    ?~  lin
+      $(x1 +(x1))
+    :-  [%klr [[fil lin] ~]]
+    $(x1 +(x1), lin ~)
+  ?~  lin
+    :-  [%hop x1 y1]
+    $(x1 +(x1), fil p.v, lin q.v)
+  ?:  =(fil p.v)
+    $(x1 +(x1), lin (weld lin q.v))
+  :+  [%klr [[fil lin] ~]]
+    [%hop x1 y1]
+  $(x1 +(x1), fil p.v, lin q.v)
 ::  ::  ::  ::  ::  ::  ::  ::
 ++  cubo                    :: turn a color gray
   |=  tin=tint
@@ -4295,10 +4316,7 @@
     =/  newf=(unit tint)  ?:(=(f.prev q.q.p.i.p.i.p.lux) ~ [~ q.q.p.i.p.i.p.lux])
     =/  oldd=(list deco)  ~(tap in (~(dif in d.prev) p.p.i.p.i.p.lux))
     =/  newd=(list deco)  ~(tap in (~(dif in p.p.i.p.i.p.lux) d.prev))
-    =/  newt=@t
-      ?~  q.i.p.i.p.lux  'x'
-      ?:  (lte i.q.i.p.i.p.lux 127)  ^-(@ i.q.i.p.i.p.lux)
-      (tuft i.q.i.p.i.p.lux)
+    =/  newt=tape         (tufa q.i.p.i.p.lux)
     |-  ^-  tape
     ?^  newb
       :^  '\\'  'e'  '['
@@ -4346,7 +4364,10 @@
       :+  ?-(i.newd %bl '5', %br '1', %un '4')
         'm'
       $(newd t.newd)
-    :-  newt
-    ^$(p.i.p.lux t.p.i.p.lux, prev p.i.p.i.p.lux)
+    |-  ^-  tape
+    ?^  newt
+      :-  i.newt
+      $(newt t.newt)
+    ^^$(p.i.p.lux t.p.i.p.lux, prev p.i.p.i.p.lux)
   ==
 --

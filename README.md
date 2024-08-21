@@ -12,7 +12,7 @@
 
 %homunculus is an agent that turns Sail elements into a terminal interface. For the user, %homunculus renders a desktop environment for your ship in the terminal — with interfaces that are not inherently CLIs — making the terminal an alternative to the browser. For the developer, %homunculus allows you to use XML/Sail to create interfaces as easily as if you were building for the Web.
 
-## Users 🌞︎︎
+## Users
 
 To use %homunculus in your terminal, a simple script must be run which connects to your ship via HTTP, meaning that you can interact with your ship remotely (or over localhost). With the %homunculus desk installed, you can fetch this script by running:
 
@@ -36,7 +36,7 @@ Windows may also have their own custom hotkeys implemented.
 
 You can exit %homunculus with `ctrl+c`.
 
-## Developers 🌜︎︎
+## Developers
 
 #### *Interface*
 
