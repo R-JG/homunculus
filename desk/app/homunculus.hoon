@@ -90,7 +90,6 @@
 +$  cura  [=visa =omen =aves =gens =ordo =rex =equi =mus]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  data  [p=@t q=(map @t @t)]
-+$  arca  ?(%http %dill)
 +$  ovum
   $:  size=[w=as h=as]
       padd=[l=as r=as t=as b=as]
@@ -107,7 +106,10 @@
   ==
 +$  cor   @
 +$  fons  (pair @p @tas)
-+$  acro  path
++$  acro
+  $%  [%dill p=path]
+      [%http ~]
+  ==
 +$  aula  $~(~[~] (list (set fons)))
 +$  vela  manx
 +$  ara
@@ -157,38 +159,6 @@
   ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
-      %dill-poke
-    =+  !<([ses=@ta belt=dill-belt:dill] vase)
-    ~&  >  [ses belt]
-    ?@  belt
-      :: char input
-      [~ hoc]
-    ?+  -.belt  [~ hoc]
-      ::
-        %rez  :: -- TEST --
-      [~ hoc]
-      ::
-        %mod  :: -- TEST --
-      ?.  =([%mod %ctl ~-i] belt)  [~ hoc]
-      =.  p.luna  !p.luna
-      =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
-      =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
-      =/  vis=visa  (gyro aul bac)
-      =/  aru=(unit ara)  (~(get by arae) fons)
-      :_  hoc
-      :_  ?:(p.luna [(levo our.bol) ~] ~)
-      %+  fio  %dill
-      :-  %mor
-      :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
-      ?:  p.luna
-        :~  =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
-            (fero rex.q.luna equi.q.luna esse.q.luna)
-        ==
-      :~  ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
-      ==
-      ::
-    ==
-    ::
       %homunculus-session
     =/  ses  !<(session:homunculus vase)
     =/  fon=^fons
@@ -208,13 +178,13 @@
       ?.  (~(has in ^-((set ^fons) (snag cor aula))) fon)
         ~
       :_  ~
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :~  (supo muri.gen visa.u.aru visa.gen)
-              ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
-              (fero rex.gen equi.gen esse.gen)
-          ==
-      ==
+      %+  fio  acro
+      ^-  lux
+      :-  %mor
+      :~  (supo muri.gen visa.u.aru visa.gen)
+          ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
+          (fero rex.gen equi.gen esse.gen)
+      ==   
     =/  gen=ara
       %:  geno
         +.ses  ~
@@ -237,12 +207,12 @@
         ==
       :_  hoc
       :_  ?:(p.luna [(levo our.bol) ~] ~)
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.gen))
-              ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
-              (fero rex.gen equi.gen esse.gen)
-          ==
+      %+  fio  acro
+      ^-  lux
+      :-  %mor
+      :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.gen))
+          ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
+          (fero rex.gen equi.gen esse.gen)
       ==
     =?  gen  !=([1 1] u.mov)
       %:  geno
@@ -260,12 +230,12 @@
       ==
     :_  hoc
     :_  ?:(p.luna [(levo our.bol) ~] ~)
-    :*  %give  %fact  ~[/homunculus-http]  %json
-        !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-        :~  (supo muri.gen ~ visa.gen)
-            ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
-            (fero rex.gen equi.gen esse.gen)
-        ==
+    %+  fio  acro
+    ^-  lux
+    :-  %mor
+    :~  (supo muri.gen ~ visa.gen)
+        ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
+        (fero rex.gen equi.gen esse.gen)
     ==
     ::
       %umbra
@@ -285,11 +255,11 @@
       :_  hoc(q.luna gen)
       ?.  p.luna  ~
       :_  ~
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :~  =.(p.luna | (supo muri.gen ~ visa.gen))
-              (fero rex.gen equi.gen esse.gen)
-          ==
+      %+  fio  acro
+      ^-  lux
+      :-  %mor
+      :~  =.(p.luna | (supo muri.gen ~ visa.gen))
+          (fero rex.gen equi.gen esse.gen)
       ==
       ::
         %change
@@ -311,10 +281,7 @@
       =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
       =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
       :_  hoc
-      :~  :*  %give  %fact  ~[/homunculus-http]  %json
-              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-              [(supo [1 x.urbs 1 y.urbs] ~ (gyro aul bac)) ~]
-          ==
+      :~  (fio acro [%mor [(supo [1 x.urbs 1 y.urbs] ~ (gyro aul bac)) ~]])
           (levo our.bol)
       ==
       ::
@@ -338,10 +305,8 @@
             arae  (~(del by arae) p.umb)
           ==
         :_  hoc
-        :~  :*  %give  %fact  ~[/homunculus-http]  %json
-                !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-                ?^(aru [(supo muri.u.aru ~ (~(int by visa.u.aru) bac)) ~] ~)
-            ==
+        ?~  aru  [(levo our.bol) ~]
+        :~  (fio acro [%mor [(supo muri.u.aru ~ (~(int by visa.u.aru) bac)) ~]])
             (levo our.bol)
         ==
       =:  arae  (~(del by arae) p.umb)
@@ -353,10 +318,7 @@
       =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
       =.  fons  ?^(fonu u.fonu *^fons)
       :_  hoc
-      :~  :*  %give  %fact  ~[/homunculus-http]  %json
-              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-              [(supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac)) ~]
-          ==
+      :~  (fio acro [%mor [(supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac)) ~]])
           (levo our.bol)
       ==
       ::
@@ -372,19 +334,56 @@
           (min t.mur t.muri.u.aru)
         (max b.mur b.muri.u.aru)
       :_  hoc(arae (~(put by arae) fons u.aru))
-      :~  :*  %give  %fact  ~[/homunculus-http]  %json
-              !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-              :~  (supo dim ~ vis)
-                  (fero rex.q.luna equi.q.luna esse.q.luna)
-      ==  ==  ==
+      :~  %+  fio  acro
+          :-  %mor
+          :~  (supo dim ~ vis)
+              (fero rex.q.luna equi.q.luna esse.q.luna)
+      ==  ==
       ::
+    ==
+    ::
+      %dill-poke
+    =+  !<([ses=@ta belt=dill-belt:dill] vase)
+    ?:  ?=([%hey ~] belt)
+      =.  acro  [%dill [%dill ses ~]]
+      [~ hoc]
+    =;  zon=(unit zona)
+      ?~  zon
+        [~ hoc]
+      (novo acro u.zon)
+    ?@  belt  [~ [%txt belt ~]]
+    ?+  -.belt  ~
+      %aro  [~ belt]
+      %rez  [~ belt]
+      %ret  [~ belt]
+      %bac  [~ belt]
+      %del  [~ belt]
+      %hit
+        [~ [%clk %d +.belt]]
+      %mod
+        ?:  =([%ctl ~-i] +.belt)
+          [~ [%esc ~]]
+        ~
+      %txt
+        ?.  ?&  ?=(^ p.belt)  ?=(^ t.p.belt)  ?=(^ t.t.p.belt)
+                =(~-~3b. i.p.belt)  |(=(~-2 i.t.p.belt) =(~-5 i.t.p.belt))
+            ==
+          [~ belt]
+        :+  ~  %mod
+        :-  ?:(=(~-2 i.t.p.belt) %shf ?:(=(~-5 i.t.p.belt) %alt !!))
+        ?:  =(~-~41. i.t.t.p.belt)  [%aro %u]
+        ?:  =(~-~42. i.t.t.p.belt)  [%aro %d]
+        ?:  =(~-~43. i.t.t.p.belt)  [%aro %r]
+        ?:  =(~-~44. i.t.t.p.belt)  [%aro %l]
+        !!
     ==
     ::
       %json
     =/  jsn  !<(json vase)
     =;  zon=(unit zona)
-      ?~  zon  [~ hoc]
-      (novo %http u.zon)
+      ?~  zon
+        [~ hoc]
+      (novo acro u.zon)
     ::
     ?:  ?=(%a -.jsn)
       ?.  &(?=(^ p.jsn) ?=(%n -.i.p.jsn) ?=(^ t.p.jsn) ?=(%n -.i.t.p.jsn))
@@ -495,7 +494,7 @@
   ==
   ::
   ++  novo                    :: handle terminal input
-    |=  [arc=arca zon=zona]
+    |=  [arc=^acro zon=zona]
     ^-  (quip card _hoc)
     ::
     ?:  ?=(%rez -.zon)
@@ -540,15 +539,15 @@
       =/  aru=(unit ara)  (~(get by arae) fons)
       :_  hoc
       :_  ?:(p.luna [(levo our.bol) ~] ~)
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
-          ?:  p.luna
-            :~  =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
-                (fero rex.q.luna equi.q.luna esse.q.luna)
-            ==
-          :~  ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
-          ==
+      %+  fio  arc
+      ^-  lux
+      :-  %mor
+      :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
+      ?:  p.luna
+        :~  =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
+            (fero rex.q.luna equi.q.luna esse.q.luna)
+        ==
+      :~  ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
       ==
     ::
     ?:  p.luna
@@ -640,10 +639,10 @@
         =.  aru  (~(get by arae) fons)
         :_  hoc
         :_  ~
-        :*  %give  %fact  ~[/homunculus-http]  %json
-            !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux
-            ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
-        ==
+        %+  fio  arc
+        ^-  lux
+        ?~  aru  (fero ~ ~ ~)
+        (fero rex.u.aru equi.u.aru esse.u.aru)
       =/  ocor=@  cor
       =.  cor
         ?-  p.key.zon
@@ -660,11 +659,12 @@
       =/  vis=visa  (gyro ~(tap in aul) bac)
       :_  hoc
       :_  ~
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
-              ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
-          ==
+      %+  fio  arc
+      ^-  lux
+      :-  %mor
+      :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
+          ?~  aru  (fero ~ ~ ~)
+          (fero rex.u.aru equi.u.aru esse.u.aru)
       ==
     ::
     ?:  &(?=(%mod -.zon) |(?=(%shf mod.zon) ?=(%ctl mod.zon)) ?=(%aro -.key.zon))
@@ -680,11 +680,11 @@
         (max b.mur b.muri.u.aru)
       :_  hoc(arae (~(put by arae) fons u.aru))
       :_  ~
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :~  (supo dim ~ vis)
-              (fero rex.u.aru equi.u.aru esse.u.aru)
-          ==
+      %+  fio  arc
+      ^-  lux
+      :-  %mor
+      :~  (supo dim ~ vis)
+          (fero rex.u.aru equi.u.aru esse.u.aru)
       ==
     ::
     ?:  &(?=(%mod -.zon) ?=(%alt mod.zon) ?=(%txt -.key.zon) =([~-c ~] p.key.zon))
@@ -702,11 +702,12 @@
               fons  ?^(fonu u.fonu *^fons)
             ==
         :_  ~
-        :*  %give  %fact  ~[/homunculus-http]  %json
-            !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-            :~  (supo muri.u.aru ~ (~(int by visa.u.aru) bac))
-                ?^  arnu  (fero rex.u.arnu equi.u.arnu esse.u.arnu)  (fero ~ ~ ~)
-            ==
+        %+  fio  arc
+        ^-  lux
+        :-  %mor
+        :~  (supo muri.u.aru ~ (~(int by visa.u.aru) bac))
+            ?~  arnu  (fero ~ ~ ~)
+            (fero rex.u.arnu equi.u.arnu esse.u.arnu)
         ==
       =:  arae  (~(del by arae) fons)
           aula  (oust [cor 1] aula)
@@ -718,11 +719,12 @@
       =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
       :_  hoc(fons ?^(fonu u.fonu *^fons))
       :_  ~
-      :*  %give  %fact  ~[/homunculus-http]  %json
-          !>  ^-  json  :-  %s  %-  crip  %-  volo  ^-  lux  :-  %mor
-          :~  (supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac))
-              ?^  arnu  (fero rex.u.arnu equi.u.arnu esse.u.arnu)  (fero ~ ~ ~)
-          ==
+      %+  fio  arc
+      ^-  lux
+      :-  %mor
+      :~  (supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac))
+          ?~  arnu  (fero ~ ~ ~)
+          (fero rex.u.arnu equi.u.arnu esse.u.arnu)
       ==
     ::
     =/  arf=$@(~ (pair ara ^fons))
@@ -775,11 +777,11 @@
   ?+  path  !!
     ::
       [%dill @ ~]
-    ~&  dill-watch/path
-    =.  acro  path
+    =.  acro  [%dill path]
     [~ hoc]
     ::
       [%homunculus-http ~]
+    =.  acro  [%http ~]
     =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
     =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
     =/  vis=visa  (gyro aul bac)
@@ -806,7 +808,6 @@
   ?+  path  !!
     ::
       [%dill @ ~]
-    ~&  dill-leave/path
     [~ hoc]
     ::
   ==
@@ -967,12 +968,12 @@
   ==
 ::
 ++  fio                     :: turn lux into a card containing either a dill or http update
-  |=  [=arca =lux]
+  |=  [=^acro =lux]
   ^-  card
-  ?-  arca
+  ?-  -.acro
     ::
       %dill
-    :*  %give  %fact  ~[acro]  %dill-blit
+    :*  %give  %fact  ~[p.acro]  %dill-blit
         !>(lux)
     ==
     ::
@@ -4189,7 +4190,6 @@
   =|  fil=fila
   =|  lin=lina
   :-  %mor
-  :-  [%hop [x1 y1]]
   |-  ^-  (list lux)
   =/  v=$@(~ (pair fila lina))
     =/  nod=(unit nodi)  (~(get by vis) [x1 y1])
