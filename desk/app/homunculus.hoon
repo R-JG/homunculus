@@ -354,16 +354,20 @@
     ?@  belt  [~ [%txt belt ~]]
     ?+  -.belt  ~
       %aro  [~ belt]
-      %rez  [~ belt]
       %ret  [~ belt]
       %bac  [~ belt]
       %del  [~ belt]
+      %rez
+        [~ belt(p (dec p.belt), q (dec q.belt))]  :: webterm nonsense
       %hit
         [~ [%clk %d +.belt]]
       %mod
         ?:  =([%ctl ~-i] +.belt)
           [~ [%esc ~]]
-        ~
+        :+  ~  %mod
+        :-  ?-(mod.belt %ctl %ctl, %hyp %shf, %met %alt)
+        ?^  key.belt  !!
+        [%txt [key.belt ~]]
       %txt
         ?.  ?&  ?=(^ p.belt)  ?=(^ t.p.belt)  ?=(^ t.t.p.belt)
                 =(~-~3b. i.p.belt)  |(=(~-2 i.t.p.belt) =(~-5 i.t.p.belt))
