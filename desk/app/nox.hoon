@@ -45,7 +45,7 @@
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
-  ^-  (quip card _this)
+  |^  ^-  (quip card _this)
   ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
@@ -63,83 +63,90 @@
       =/  pav=path  (stab id.eve)
       ?~  pav  !!
       ?+  i.pav  !!
-        ::
-          %row
-        ?~  t.pav  !!
-        ?~  pax.nav
-          =.  des.nav  i.t.pav
-          :_  this
-          :~  (~(render tui [nav bol]) [~ hotkeys])
-          ==
-        =/  his=(unit history-tree)  (~(get by history) des.nav)
-        =:  pax.nav  t.pav
-            history
-              %+  %~  put  by  history
-                des.nav
-              (put-history-tree (rear t.pav) [des.nav (snip ^-(path t.pav))] his)
-          ==
-        :_  this
-        :~  (~(render tui [nav bol]) [~ hotkeys])
-        ==
-        ::
+          %row  (do-row-select t.pav)
       ==
       ::
         %hotkey
       ?+  ^-(@tas id.eve)  !!
-        ::
-          %nav-left
-        =.  pax.nav  (snip pax.nav)
-        :_  this
-        :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
-        ==
-        ::
-          %nav-right
-        =/  his=(unit history-tree)  (~(get by history) des.nav)
-        =/  nex=(unit knot)
-          ?~  his  ~
-          (read-history-tree nav u.his)
-        =/  scy=cols  (do-scry nav bol)
-        =.  state
-          ?~  nex
-            ?:  =(~ pax.nav)
-              ?~  rows.cen.scy
-                state
-              %_  state
-                pax.nav  ^-(path [i.rows.cen.scy ~])
-                history
-                  %+  %~  put  by  history
-                    des.nav
-                  (put-history-tree i.rows.cen.scy nav his)
-              ==
-            ?~  rows.rig.scy
-              state
-            %_  state
-              pax.nav  (snoc pax.nav i.rows.rig.scy)
-              history
-                %+  %~  put  by  history
-                  des.nav
-                (put-history-tree i.rows.rig.scy nav his)
-            ==
-          %_  state
-            pax.nav  (snoc pax.nav u.nex)
-            history
-              %+  %~  put  by  history
-                des.nav
-              (put-history-tree u.nex nav his)
-          ==
-        ?^  fil.scy
-          :_  this
-          :~  (~(render tui [nav bol]) [[~ (spat [%file pax.nav])] hotkeys])
-          ==
-        :_  this
-        :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
-        ==
-        ::
+        %nav-left   do-nav-left
+        %nav-right  do-nav-right
       ==
       ::
     ==
     ::
   ==
+  ::
+  ++  do-row-select
+    |=  pav=path
+    ^-  (quip card _this)
+    ?~  pav  !!
+    ?~  pax.nav
+      =.  des.nav  i.pav
+      :_  this
+      :~  (~(render tui [nav bol]) [~ hotkeys])
+      ==
+    =/  his=(unit history-tree)  (~(get by history) des.nav)
+    =:  pax.nav  pav
+        history
+          %+  %~  put  by  history
+            des.nav
+          (put-history-tree (rear pav) [des.nav (snip `path`pav)] his)
+      ==
+    :_  this
+    :~  (~(render tui [nav bol]) [~ hotkeys])
+    ==
+  ::
+  ++  do-nav-left
+    ^-  (quip card _this)
+    =.  pax.nav  (snip pax.nav)
+    :_  this
+    :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
+    ==
+  ::
+  ++  do-nav-right
+    ^-  (quip card _this)
+    =/  his=(unit history-tree)  (~(get by history) des.nav)
+    =/  nex=(unit knot)
+      ?~  his  ~
+      (read-history-tree nav u.his)
+    =/  scy=cols  (do-scry nav bol)
+    =.  state
+      ?~  nex
+        ?:  =(~ pax.nav)
+          ?~  rows.cen.scy
+            state
+          %_  state
+            pax.nav  ^-(path [i.rows.cen.scy ~])
+            history
+              %+  %~  put  by  history
+                des.nav
+              (put-history-tree i.rows.cen.scy nav his)
+          ==
+        ?~  rows.rig.scy
+          state
+        %_  state
+          pax.nav  (snoc pax.nav i.rows.rig.scy)
+          history
+            %+  %~  put  by  history
+              des.nav
+            (put-history-tree i.rows.rig.scy nav his)
+        ==
+      %_  state
+        pax.nav  (snoc pax.nav u.nex)
+        history
+          %+  %~  put  by  history
+            des.nav
+          (put-history-tree u.nex nav his)
+      ==
+    ?^  fil.scy
+      :_  this
+      :~  (~(render tui [nav bol]) [[~ (spat [%file pax.nav])] hotkeys])
+      ==
+    :_  this
+    :~  (~(render tui [nav bol]) [(get-sel nav) hotkeys])
+    ==
+  ::
+  --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-watch  |=(path ^-((quip card _this) !!))
 ++  on-leave  |=(path ^-((quip card _this) !!))
@@ -286,8 +293,8 @@
   ::
   ++  root
     ^-  manx
-    ;box(w "100%", h "100%", cb cb-1, cf cf-1)
-      ;border-top
+    ;box(w "100%", h "100%", px "5%", pt "1", pb "5%", fl "column", cb cb-1, cf cf-1)
+      ;box(w "100%", h "1")
         ;txt: {(scow %p our.bol)}
         ;txt: {(spud [des.nav pax.nav])}
       ==
@@ -298,7 +305,7 @@
     ^-  manx
     =/  =cols  (do-scry nav bol)
     =/  =file  ?~(fil.cols ~ (fi-scry fil.cols nav bol))
-    ;box(w "100%", h "100%", b "arc")
+    ;box(w "100%", h "grow", b "arc")
       ;+  (column-left lef.cols ?=(^ file))
       ;line-v;
       ;+  (column-center cen.cols ?=(^ file))
@@ -311,14 +318,17 @@
     ^-  manx
     =/  def-cf=tape  ?~(pax.nav cf-1 cf-2)
     ;scroll(w ?:(collapse "10%" "30%"), h "100%", cf def-cf)
-      ;*  ?~  pax.nav  (rows-select col)
+        =id  ?:(|(?=(~ pax.nav) ?=(~ t.pax.nav)) "desks" (spud [des.nav prev.col]))
+      ;*  ?~  pax.nav  (rows-main col)
+          ^-  marl
           %+  turn  rows.col
           |=  cod=cord
-          =/  hig=?
+          ^-  manx
+          =/  light=?
             ?|  &(?=(~ t.pax.nav) =(cod des.nav))
                 &(?=(^ t.pax.nav) =(cod (rear (snip ^-(path pax.nav)))))
             ==
-          ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
+          ;box(w "100%", h "1", cb ?:(light cf-2 cb-1), cf ?:(light cb-1 def-cf))
             ;+  ;/  (trip cod)
           ==
     ==
@@ -330,12 +340,15 @@
     =/  nex=(unit knot)  ?~(his ~ (read-history-tree nav u.his))
     =/  def-cf=tape  ?^(pax.nav cf-1 cf-2)
     ;scroll(w ?:(collapse "10%" "40%"), h "100%", cf def-cf)
-      ;*  ?^  pax.nav  (rows-select col)
+        =id  (spud [des.nav prev.col])
+      ;*  ?^  pax.nav  (rows-main col)
+          ^-  marl
           %+  spun  rows.col
           |=  [cod=cord i=@]
-          =/  hig=?  ?^(nex =(cod u.nex) =(0 i))
+          ^-  [manx @]
+          =/  light=?  ?^(nex =(cod u.nex) =(0 i))
           :_  +(i)
-          ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
+          ;box(w "100%", h "1", cb ?:(light cf-2 cb-1), cf ?:(light cb-1 def-cf))
             ;+  ;/  (trip cod)
           ==
     ==
@@ -349,31 +362,33 @@
       ?:(|(?=(~ his) ?=(~ nex)) ~ (read-history-tree (snoc nav u.nex) u.his))
     =/  def-cf=tape  cf-2
     ;scroll(w "grow", h "100%", cb ?^(file cb-2 cb-1), cf ?^(file cf-1 def-cf))
-      =id  ?^(file (spud [%file prev.col]) "")
+        =id  ?^(file (spud [%file prev.col]) (spud [des.nav prev.col]))
       ;*  ?^  file
             ^-  marl
             :~  ;box: {(trip u.file)}
             ==
+          ^-  marl
           %+  spun  rows.col
           |=  [cod=cord i=@]
-          =/  hig=?
+          ^-  [manx @]
+          =/  light=?
             ?:  ?=(~ nex)  =(0 i)
             ?:  ?=(~ pax.nav)
               ?:  ?=(~ las)  =(0 i)
               =(cod u.las)
             =(cod u.nex)
           :_  +(i)
-          ;box(w "100%", h "1", cb ?:(hig cf-2 cb-1), cf ?:(hig cb-1 def-cf))
+          ;box(w "100%", h "1", cb ?:(light cf-2 cb-1), cf ?:(light cb-1 def-cf))
             ;+  ;/  (trip cod)
           ==
     ==
   ::
-  ++  rows-select
+  ++  rows-main
     |=  =col
     ^-  marl
-    %+  turn
-      rows.col
+    %+  turn  rows.col
     |=  cod=cord
+    ^-  manx
     ;select(w "100%", h "1", select-cb cf-1, select-cf cb-1)
       =id  (spud [%row (snoc prev.col cod)])
       ;+  ;/  (trip cod)

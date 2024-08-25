@@ -44,7 +44,7 @@
     ?@  -.waf  num.waf
     (~(rep in p.waf) |=([i=weft a=$~(500 @)] (min a num.i)))
   =.  p1.poke-keys
-    ['%nox' our.bol %nox %open !>(~) '']
+    ['File Manager' our.bol %nox %open !>(~) '']
   [[~(render tui our.bol) ~] this]
 ++  on-save
   ^-  vase
@@ -57,7 +57,7 @@
     ?@  -.waf  num.waf
     (~(rep in p.waf) |=([i=weft a=$~(500 @)] (min a num.i)))
   =.  p1.poke-keys
-    ['%nox' our.bol %nox %open !>(~) '']
+    ['File Manager' our.bol %nox %open !>(~) '']
   [[~(render tui our.bol) ~] this]
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
@@ -376,15 +376,18 @@
         %0  "#0d3525"
       ==
     ;select(w "100%", h "1", px "1")
+        =id         "/select-poke/{nut}"
         =cb         cul
         =cf         ?~(pok "#658867" cyan)
         =select-cb  ?~(pok sel cyan)
         =select-cf  white
-        =id         "/select-poke/{nut}"
       ;txt(mr "1"): {nut}
-      ;pattern(w "7", h "1"): ┈
-      ;txt(mx "1"): {?~(pok "empty" (trip name.pok))}
-      ;pattern(w "grow", h "1"): ┈
+      ;box(w "grow", h "1")
+        ;layer(fx "center")
+          ;txt(h "1", px "1"): {?~(pok "empty" (trip name.pok))}
+        ==
+        ;pattern(w "100%", h "1"): ┈
+      ==
     ==
   ::
   ++  poke-view
@@ -459,47 +462,81 @@
       ;box(w "100%", h "1", px "1")
         ;txt: Poke Name:
         ;box(w "grow", h "1");
-        ;input(cb white, cf black, id "/poke-form/name", default ?^(sel-poke-key (trip name.sel-poke-key) ""));
+        ;input
+          =id  "/poke-form/name"
+          =cb  "#1D6F4F"
+          =cf  cyan
+          =default  ?^(sel-poke-key (trip name.sel-poke-key) "")
+          ;*  ~
+        ==
       ==
       ;line-h;
       ;box(w "100%", h "1", px "1")
         ;txt: Ship:
         ;box(w "grow", h "1");
-        ;input(cb white, cf black, id "/poke-form/ship", default ?^(sel-poke-key (trip (scot %p ship.sel-poke-key)) ""));
+        ;input
+          =id  "/poke-form/ship"
+          =cb  "#1D6F4F"
+          =cf  cyan
+          =default  ?^(sel-poke-key (trip (scot %p ship.sel-poke-key)) "")
+          ;*  ~
+        ==
       ==
       ;line-h;
       ;box(w "100%", h "1", px "1")
         ;txt: Agent:
         ;box(w "grow", h "1");
-        ;input(cb white, cf black, id "/poke-form/agent", default ?^(sel-poke-key ['%' (trip agent.sel-poke-key)] ""));
+        ;input
+          =id  "/poke-form/agent"
+          =cb  "#1D6F4F"
+          =cf  cyan
+          =default  ?^(sel-poke-key ['%' (trip agent.sel-poke-key)] "")
+          ;*  ~
+        ==
       ==
       ;line-h;
       ;box(w "100%", h "1", px "1")
         ;txt: Mark:
         ;box(w "grow", h "1");
-        ;input(cb white, cf black, id "/poke-form/mark", default ?^(sel-poke-key ['%' (trip mark.sel-poke-key)] ""));
+        ;input
+          =id  "/poke-form/mark"
+          =cb  "#1D6F4F"
+          =cf  cyan
+          =default  ?^(sel-poke-key ['%' (trip mark.sel-poke-key)] "")
+          ;*  ~
+        ==
       ==
       ;line-h;
       ;box(w "100%", px "1")
         ;box(fl "column")
           ;txt: Data:
-          ;submit(px "1", mt "1", cb "#FFFFFF", cf black, select-cf orange, select-d "bold"): + Save Poke
+          ;submit(px "1", mt "1", cb "#FFFFFF", cf black, select-cf orange, select-d "bold")
+            ;+  ;/  "+ Save Poke"
+          ==
         ==
         ;box(w "grow", h "1");
-        ;input(h "3", cb white, cf black, id "/poke-form/data", default ?^(sel-poke-key (trip data-txt.sel-poke-key) ""));
+        ;input
+          =id  "/poke-form/data"
+          =h   "3"
+          =cb  "#1D6F4F"
+          =cf  cyan
+          =default  ?^(sel-poke-key (trip data-txt.sel-poke-key) "")
+          ;*  ~
+        ==
       ==
     ==
   ::
-  ++  pink  "#da4167"
-  ++  red  "#e83313"
-  ++  orange  "#fc8021"
+  ++  pink         "#da4167"
+  ++  red          "#e83313"
+  ++  orange       "#fc8021"
   ++  dark-orange  "#cc5a02"
   ++  light-green  "#5ae885"
-  ++  green  "#0dc40a"
-  ++  cyan  "#38d99b"
-  ++  purple  "#8364cc"
-  ++  white  "#ffffff"
-  ++  black  "#000000"
+  ++  green        "#0dc40a"
+  ++  cyan         "#38d99b"
+  ++  light-cyan   "#9effda"
+  ++  purple       "#8364cc"
+  ++  white        "#ffffff"
+  ++  black        "#000000"
   ::
   --
 ::
