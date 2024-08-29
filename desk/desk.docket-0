@@ -1,9 +1,0 @@
-:~
-  title+'Homunculus'
-  info+'A terminal graphics engine'
-  color+0x2f.11d6
-  website+'https://github.com/R-JG/homunculus'
-  version+[0 0 1]
-  license+'MIT'
-  site+/apps/webterm
-==
