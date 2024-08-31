@@ -1,0 +1,17 @@
+[package]
+name = "homunculus"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+sword = { git = "https://github.com/zorp-corp/sword.git", rev="eb4b5132a71302440101c5dd04528c2a875c3d0a" }
+sword_macros = { git = "https://github.com/zorp-corp/sword.git", rev="eb4b5132a71302440101c5dd04528c2a875c3d0a" }
+assert_no_alloc = { git = "https://github.com/zorp-corp/sword.git", rev="eb4b5132a71302440101c5dd04528c2a875c3d0a" }
+crown = { git = "https://github.com/zorp-corp/nockapp.git" }
+crossterm = "0.28.1"
+tokio = { version = "1.32", features = ["rt", "rt-multi-thread", "net", "macros", "io-util", "fs"] }
+clap = "4.4.4"
+
+[[bin]]
+name = "homunculus"
+path = "main.rs"
