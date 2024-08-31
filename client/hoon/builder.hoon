@@ -14,7 +14,7 @@
 ~&  "compiling kernel"
 =/  kernel-knob=[t=type form=nock]
   ~>  %bout
-  (~(mint ut t.wrapper-knob) %noun (rain /lib/choo/kernel/hoon kernel-hoon))
+  (~(mint ut t.wrapper-knob) %noun (rain /lib/homunculus/kernel/hoon kernel-hoon))
 =/  trap-nock=nock
   [%7 [%7 form.hoon-knob form.wrapper-knob] form.kernel-knob]
 ~&  %built-trap-nock

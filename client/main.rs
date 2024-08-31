@@ -53,22 +53,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 break;
             }
             Event::Key(key_event) => {
-                
-                println!("code: {}, modifiers: {}", key_event.code, key_event.modifiers);
-
+                // println!("code: {}, modifiers: {}", key_event.code, key_event.modifiers);
                 let poke = {
+                    let input = 
+                        match key_event.code {
+                            KeyCode::Char(char) => char.to_string(),
+                            _ => "default".to_string()
+                        };
                     let tag = make_tas(kernel.serf.stack(), "test");
-                    let dat = make_tas(kernel.serf.stack(), "hello?");
+                    let dat = make_tas(kernel.serf.stack(), &input);
                     create_poke(&mut kernel, &[tag.as_noun(), dat.as_noun()])
                 };
-            
                 let mut poke_result = kernel.poke(poke)?;
-
-                let effect_list = poke_result.as_cell()?; // I think this is (list effect)
-                // let effect = effect_list.head().as_cell()?; // this should be the first item of the list
-                // let effect_data = effect.tail().as_atom()?; // this should be the data in the first item of the list after the tag
-
-                
+                let effect_list = poke_result.as_cell()?;
+                let effect = effect_list.head().as_cell()?;
+                let effect_data = effect.tail().as_atom()?;
+                let effect_str = std::str::from_utf8(effect_data.as_bytes())?;
+                println!("product: {}", effect_str);
             }
         }
     }
