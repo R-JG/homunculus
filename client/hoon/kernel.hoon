@@ -31,15 +31,16 @@
 ::
 ++  poke
   |=  [eny=@ our=@ux now=@da dat=*]
-  ^-  (quip * state)
+  ^-  (quip effect state)
   =/  coz=(unit cause)  ((soft cause) dat)
   ?~  coz  ~&(%malformed-cause !!)
-  |^  ^-  (quip * state)
+  |^  ^-  (quip effect state)
   ?+  -.u.coz  ~&(%unhandled-cause !!)
     ::
       %test
-    =-  [[%jam - ~] sat]
-    (test p.u.coz)
+    :_  sat
+    :~  [%text (test p.u.coz)]
+    ==
     ::
   ==
   ::

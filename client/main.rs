@@ -18,8 +18,9 @@ struct TestCli {
     boot: BootCli,
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+// #[tokio::main]
+// async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = TestCli::parse();
     let mut kernel = boot::setup_form(KERNEL_JAM, Some(cli.boot))?;
     terminal::enable_raw_mode();
@@ -47,7 +48,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 kind: KeyEventKind,
                 state: KeyEventState
             }) => {
-                println!("exiting...");
+                terminal::disable_raw_mode();
+                println!("\x1b[2J");
                 break;
             }
             Event::Key(key_event) => {
@@ -62,6 +64,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             
                 let mut poke_result = kernel.poke(poke)?;
 
+                let effect_list = poke_result.as_cell()?; // I think this is (list effect)
+                // let effect = effect_list.head().as_cell()?; // this should be the first item of the list
+                // let effect_data = effect.tail().as_atom()?; // this should be the data in the first item of the list after the tag
+
+                
             }
         }
     }
