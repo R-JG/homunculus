@@ -27,12 +27,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (width, height) = terminal::size()?;
     let size_init_poke = make_resize_poke(&mut kernel, width, height);
     kernel.poke(size_init_poke)?;
+    let load_poke = make_load_poke(&mut kernel);
+    let effects = kernel.poke(load_poke)?;
+    handle_effects(effects)?;
     loop {
         let event = read()?;
         match event {
             Event::Resize(width, height) => {
                 let poke = make_resize_poke(&mut kernel, width, height);
-                kernel.poke(poke)?;
+                let effects = kernel.poke(poke)?;
+                handle_effects(effects)?;
             }
             Event::Mouse(mouse_event) => {
                 println!("mouse event");
@@ -48,14 +52,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 break;
             }
             Event::Key(key_event) => {
-                // println!("code: {}, modifiers: {}", key_event.code, key_event.modifiers);
                 let poke = make_input_poke(&mut kernel, key_event);
-                let poke_result = kernel.poke(poke)?;
-                // let effect_list = poke_result.as_cell()?;
-                // let effect = effect_list.head().as_cell()?;
-                // let effect_data = effect.tail().as_atom()?;
-                // let effect_str = std::str::from_utf8(effect_data.as_bytes())?;
-                // println!("product: {}", effect_str);
+                let effects = kernel.poke(poke)?;
+                handle_effects(effects)?;
             }
             _ => {}
         }
@@ -68,6 +67,12 @@ fn create_poke(kernel: &mut Kernel, args: &[Noun]) -> Noun {
         panic!("args must have at least 2 elements");
     }
     T(kernel.serf.stack(), args)
+}
+
+fn make_load_poke(kernel: &mut Kernel) -> Noun {
+    let tag = make_tas(kernel.serf.stack(), "load");
+    let sig = Atom::new(kernel.serf.stack(), 0);
+    create_poke(kernel, &[tag.as_noun(), sig.as_noun()])
 }
 
 fn make_resize_poke(kernel: &mut Kernel, width: u16, height: u16) -> Noun {
@@ -100,4 +105,13 @@ fn handle_key_input(key_event: KeyEvent) -> String {
         KeyCode::Left             =>  "\\e[D".to_string(),
         _                         =>  "".to_string()
     }
+}
+
+fn handle_effects(effects: Noun) -> Result<(), Box<dyn std::error::Error>> {
+    let list = effects.as_cell()?;
+    let i = list.head().as_cell()?;
+    let dat = i.tail().as_atom()?;
+    let output = std::str::from_utf8(dat.as_bytes())?;
+    print!("{}", output.replace("\\x1b", "\x1b"));
+    Ok(())
 }
