@@ -82,26 +82,81 @@
         ~&  "could not mold poke type: {<ovum>}"
         =+  (road |.(;;(^^ovum ovum)))
         ~^..poke
+      |^  ^-  [(list *) _..poke]
       ::
-      :: if cause.u.o is tagged with %homunculus, handle terminal input.
-      :: if homunculus determines that there is an event poke for the nested core, send it (do the same as below)
-      ?:  ?=([%homunculus *] cause.u.o)
-        =/  zon=(unit zona)
-          ?:  ?=([%input @] +.cause.u.o)     (ineo +>.cause.u.o)
-          ?:  ?=([%resize @ @] +.cause.u.o)  [~ [%rez +>.cause.u.o]]
-          ~
-        ~&  zon
-        [~ ..poke]
+      ?.  ?=([%homunculus *] cause.u.o)
+        =^  effects=(list *)  internal.outer
+          (poke:inner input.u.ovum)
+        =.  state.inner  internal.outer
+        =^  fex=(list *)  ara.homunculus.outer
+          (handle-effects effects ara.homunculus.outer)
+        [fex ..poke(internal.outer internal.outer)]
       ::
-      =^  effects  internal.outer
-        (poke:inner input.u.ovum)
-      =.  state.inner  internal.outer
-      :: 
-      :: loop through effects until @ checking whether the head is a cell and the head of that is %homunculus
-      :: this is a homunculus update card; handle it and proceed on to the next.
+      =^  don=dona  ara.homunculus.outer
+        ::
+        ?:  ?=([%input @] +.cause.u.o)
+          =/  zon=(unit zona)  (ineo +>.cause.u.o)
+          ?~  zon  [[~ ~] ara.homunculus.outer]
+          =/  noa=nota  (noto u.zon)
+          =/  les=(unit lex)  (~(get by omen.ara.homunculus.outer) noa)
+          ?~  les  [[~ ~] ara.homunculus.outer]
+          %:  muto
+            urbs.homunculus.outer  luna.homunculus.outer
+            u.zon  u.les  ara.homunculus.outer
+          ==
+        ::
+        ?:  ?=([%resize @ @] +.cause.u.o)
+          =/  gen=ara
+            (geno vela.ara.homunculus.outer ~ urbs.homunculus.outer ara.homunculus.outer)
+          [[[~ (supo muri.gen urbs.homunculus.outer luna.homunculus.outer ~ visa.gen)] ~] gen]
+        ::
+        [[~ ~] ara.homunculus.outer]
       ::
-      [effects ..poke(internal.outer internal.outer)]
+      =^  fex=(list *)  outer
+        =/  fex=(list *)
+          ?~  p.don  ~
+          [[%homunculus (crip (volo u.p.don))] ~]
+        |-  ^-  [(list *) outer-state]
+        ?~  q.don  [fex outer]
+        =^  effects=(list *)  internal.outer
+          (poke:inner u.o(cause [%homunculus i.q.don]))  :: input needs new eny?
+        =.  state.inner  internal.outer
+        =^  mor-fex=(list *)  ara.homunculus.outer
+          (handle-effects effects ara.homunculus.outer)
+        %=  $
+          fex    (welp fex mor-fex)
+          q.don  t.q.don
+        ==
+      [fex ..poke(homunculus.outer homunculus.outer)]
+      ::
+      ++  handle-effects
+        |=  [effects=(list *) =ara]
+        =|  fex=(list *)
+        |-  ^-  [(list *) ^ara]
+        ?~  effects
+          [(flop fex) ara]
+        ?.  ?=([%homunculus ^] i.effects)  :: for now assume inner only sends a card with sail
+          %=  $
+            fex      [i.effects fex]
+            effects  t.effects
+          ==
+        =/  vel=(unit vela)  ((soft vela) +.i.effects)
+        ?~  vel  $(effects t.effects)
+        =/  gen=^ara  (geno u.vel ~ urbs.homunculus.outer ara)
+        %=  $
+          ara  gen
+          fex
+            :_  fex
+            :-  %homunculus
+            %-  crip  %-  volo
+            (supo muri.gen urbs.homunculus.outer luna.homunculus.outer ~ visa.gen)
+          effects  t.effects
+        ==
+      ::
+      --
+    ::
     ==
+  ::
   --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::
 +$  esse  (map rami ens)
@@ -189,7 +244,7 @@
 +$  cura  [=visa =omen =aves =gens =ordo =rex =equi =mus]
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  data  [p=@t q=(map @t @t)]
-+$  vena                             :: THIS NAME HAS BEEN CHANGED FROM OVUM
++$  vena
   $:  size=[w=as h=as]
       padd=[l=as r=as t=as b=as]
       marg=[l=as r=as t=as b=as]
@@ -210,6 +265,7 @@
 ::       [%http ~]
 ::   ==
 :: +$  aula  $~(~[~] (list (set fons)))
++$  dona  (pair (unit lux) (list event))
 +$  vela  manx
 +$  ara
   $:  =vela  =muri
@@ -220,7 +276,7 @@
       =equi  =mus
   ==
 :: +$  arae  (map fons ara)
-+$  luna  (pair bean ara)
++$  luna  (pair $~(| bean) ara)
 +$  urbs  $~([50 25] [x=@ud y=@ud])
 :: +$  ego
 ::   $:  =cor  =fons  =acro
@@ -232,12 +288,21 @@
   ==
 ::  ::  ::  ::  ::  ::  ::
 +$  event
+  $:  %homunculus
   $%  [%select =id]
       [%act =id]
       [%form =id data=(map id @t)]
       [%hotkey =id]
+  ==  ==
++$  id  @t
++$  hotkey
+  $@  @t
+  $%  [%delete ~]
+      [%enter ~]
+      [%back ~]
+      [%tab ~]
+      [%arrow ?(%l %r %u %d)]
   ==
-+$  id  @t   
 ::  ::  COPIED  ::  ::
 +$  deco  ?(~ %bl %br %un)
 +$  tint
@@ -267,7 +332,7 @@
       [%s p=@t]
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::
-++  ineo
+++  ineo                    :: parse terminal input
   |=  cod=cord
   ^-  (unit zona)
   =/  inp=tape  (trip cod)
@@ -368,10 +433,10 @@
   ~
 ::
 ++  muto                    :: handle an event from the hotkey context
-  |_  [=lex zon=zona fon=^fons =ara]
+  |_  [=urbs =luna zon=zona =lex =ara]
   ::
   ++  $                     :: process an event update
-    ^-  (pair (pair (unit lux) (list card)) ^ara)
+    ^-  [dona ^ara]
     ?:  |(?=(%nav-l lex) ?=(%nav-r lex) ?=(%nav-u lex) ?=(%nav-d lex))
       =/  scr=$@(~ rami)  ?~(rex.ara ~ (ligo k.rex.ara equi.ara))
       =/  spar=(unit ens)  ?~(scr ~ (~(get by esse.ara) scr))
@@ -440,11 +505,10 @@
       :_  ara(visa ?~(abe (~(uni by visa.ara) visa.duc) visa.abe))
       :_  ?:  |(?=(~ nex) ?=(~ sel) ?=(~ avis.u.sel))
             ~
-          :~  :*  %pass  /select  %agent  fon  %poke  %homunculus-event
-                  !>(^-(event:homunculus [%select u.avis.u.sel]))
-          ==  ==
+          :~  [%homunculus %select u.avis.u.sel]
+          ==
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara ?~(abe visa.duc visa.abe))
+      :~  (supo muri.ara urbs luna visa.ara ?~(abe visa.duc visa.abe))
           ^-  lux
           ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
             (vado ab.ars.u.sel i.ars.u.sel size.res.u.sel lar.u.sel iter.u.sel)
@@ -471,9 +535,8 @@
         ?~  avis.u.el  [[~ ~] ara]
         :_  ara
         :-  ~
-        :~  :*  %pass  /act  %agent  fon  %poke  %homunculus-event
-                !>(^-(event:homunculus [%act u.avis.u.el]))
-        ==  ==
+        :~  [%homunculus %act u.avis.u.el]
+        ==
       =.  esse.ara
         ?^  fupd
           (~(uni by esse.ara) esse.fupd)
@@ -482,16 +545,14 @@
         esse.ara
       :_  ara(visa (~(uni by visa.ara) ?^(fupd visa.fupd ?^(cupd visa.cupd ~))))
       :_  ?^  fupd
-            :~  :*  %pass  /form  %agent  fon  %poke  %homunculus-event
-                    !>(^-(event:homunculus [%form data.fupd]))
-            ==  ==
+            :~  [%homunculus %form data.fupd]
+            ==
           ?^  avis.u.el
-            :~  :*  %pass  /act  %agent  fon  %poke  %homunculus-event
-                    !>(^-(event:homunculus [%act u.avis.u.el]))
-            ==  ==
+            :~  [%homunculus %act u.avis.u.el]
+            ==
           ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
+      :~  (supo muri.ara urbs luna visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
           (fero rex.ara equi.ara esse.ara)
       ==
     ::
@@ -501,7 +562,7 @@
       =/  mk=(unit rami)  (~(get by mus.ara) [x.zon y.zon])
       ?~  mk  [[~ ~] ara]
       ::
-      =^  sel=(pair (unit lux) (list card))  ara
+      =^  sel=dona  ara
         =/  el=(unit ens)  (~(get by esse.ara) u.mk)
         ?~  el  [[~ ~] ara]
         ?:  &(?=(^ rex.ara) =(u.mk k.rex.ara) !?=(%input -.ars.u.el))
@@ -542,13 +603,12 @@
           ==
         :_  ara(visa ?~(visa.duc visa.ara (~(uni by visa.ara) ^-(visa visa.duc))))
         :_  ?~  avis.u.el  ~
-            :~  :*  %pass  /select  %agent  fon  %poke  %homunculus-event
-                    !>(^-(event:homunculus [%select u.avis.u.el]))
-            ==  ==
+            :~  [%homunculus %select u.avis.u.el]
+            ==
         :-  ~
-        [%mor [(supo muri.ara visa.ara visa.duc) (fero rex.ara equi.ara esse.ara) ~]]
+        [%mor [(supo muri.ara urbs luna visa.ara visa.duc) (fero rex.ara equi.ara esse.ara) ~]]
       ::
-      =^  act=(pair (unit lux) (list card))  ara
+      =^  act=dona  ara
         %_($ lex %act)
       ::
       :_  ara
@@ -643,7 +703,7 @@
       :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara vi)
+      :~  (supo muri.ara urbs luna visa.ara vi)
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
       ==
     ::
@@ -738,7 +798,7 @@
       :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara vi)
+      :~  (supo muri.ara urbs luna visa.ara vi)
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
       ==
     ::
@@ -844,7 +904,7 @@
       :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara vi)
+      :~  (supo muri.ara urbs luna visa.ara vi)
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
       ==
     ::
@@ -870,7 +930,7 @@
       :_  ara(visa visa.abe)
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara visa.abe)
+      :~  (supo muri.ara urbs luna visa.ara visa.abe)
           (fero rex.ara equi.ara esse.ara)
       ==
     ::
@@ -1271,7 +1331,7 @@
     =:  esse.opu  (~(put by esse.opu) pk u.par)
         visa.opu  (~(uni by visa.opu) visa.u.par)
       ==
-    [esse.opu (dico esse.opu rex.ara)]
+    [esse.opu (dico urbs rex.ara esse.opu)]
   ::
   --
 ::
@@ -1487,7 +1547,7 @@
   !!
 ::
 ++  uro                     :: parse custom hotkey metadata to ales
-  |=  h=(list [hotkey:homunculus id:homunculus])
+  |=  h=(list [hotkey id])
   ^-  ales
   %-  malt
   |-  ^-  (list [nota @t])
@@ -1504,7 +1564,7 @@
 ::  ::  ::  ::  ::  ::  ::
 ++  dolo                    :: get default styles for a semantic element
   |=  el=@tas
-  ^-  ovum
+  ^-  vena
   ?+  el
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1614,7 +1674,7 @@
 ++  suo                     :: process a sail element's name and attribute list for geno
   |=  [n=mane a=mart]
   =|  [=avis =acia marv=mart]
-  =/  [=ovum =ars]
+  =/  [=vena =ars]
       ?+  n             [(dolo %$) [%$ ~]]
         %$              [(dolo %text) [%text ~]]
         %pattern        [(dolo %$) [%pattern ~]]
@@ -1634,124 +1694,124 @@
         %submit         [(dolo %$) [%select %submit]]
       ==
   =/  =lina  ?.(?=(%text -.ars) ~ ?~(a ~ (tuba v.i.a))) 
-  |-  ^-  [^ovum ^avis ^acia ^ars ^lina mart]
-  ?~  a  [ovum avis acia ars lina marv]
+  |-  ^-  [^vena ^avis ^acia ^ars ^lina mart]
+  ?~  a  [vena avis acia ars lina marv]
   ?+  n.i.a  $(a t.a)
       %w
     ?:  &(?=(%border -.ars) |(?=(%t ad.ars) ?=(%b ad.ars)))
       $(a t.a)
-    $(w.size.ovum (pars v.i.a), a t.a)
+    $(w.size.vena (pars v.i.a), a t.a)
       %h
     ?:  &(?=(%border -.ars) |(?=(%l ad.ars) ?=(%r ad.ars)))
       $(a t.a)
-    $(h.size.ovum (pars v.i.a), a t.a)
+    $(h.size.vena (pars v.i.a), a t.a)
       %p
     =/  v=as  (pars v.i.a)
-    $(padd.ovum [v v v v], a t.a)
+    $(padd.vena [v v v v], a t.a)
       %px
     =/  v=as  (pars v.i.a)
-    $(l.padd.ovum v, r.padd.ovum v, a t.a)
+    $(l.padd.vena v, r.padd.vena v, a t.a)
       %py
     =/  v=as  (pars v.i.a)
-    $(t.padd.ovum v, b.padd.ovum v, a t.a)
+    $(t.padd.vena v, b.padd.vena v, a t.a)
       %pl
-    $(l.padd.ovum (pars v.i.a), a t.a)
+    $(l.padd.vena (pars v.i.a), a t.a)
       %pr
-    $(r.padd.ovum (pars v.i.a), a t.a)
+    $(r.padd.vena (pars v.i.a), a t.a)
       %pt
-    $(t.padd.ovum (pars v.i.a), a t.a)
+    $(t.padd.vena (pars v.i.a), a t.a)
       %pb
-    $(b.padd.ovum (pars v.i.a), a t.a)
+    $(b.padd.vena (pars v.i.a), a t.a)
       %m
     ?:  ?=(%border -.ars)
       $(a t.a)
     =/  v=as  (pars v.i.a)
-    $(marg.ovum [v v v v], a t.a)
+    $(marg.vena [v v v v], a t.a)
       %mx
     ?:  ?=(%border -.ars)
       $(a t.a)
     =/  v=as  (pars v.i.a)
-    $(l.marg.ovum v, r.marg.ovum v, a t.a)
+    $(l.marg.vena v, r.marg.vena v, a t.a)
       %my
     ?:  ?=(%border -.ars)
       $(a t.a)
     =/  v=as  (pars v.i.a)
-    $(t.marg.ovum v, b.marg.ovum v, a t.a)
+    $(t.marg.vena v, b.marg.vena v, a t.a)
       %ml
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(l.marg.ovum (pars v.i.a), a t.a)
+    $(l.marg.vena (pars v.i.a), a t.a)
       %mr
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(r.marg.ovum (pars v.i.a), a t.a)
+    $(r.marg.vena (pars v.i.a), a t.a)
       %mt
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(t.marg.ovum (pars v.i.a), a t.a)
+    $(t.marg.vena (pars v.i.a), a t.a)
       %mb
     ?:  ?=(%border -.ars)
       $(a t.a)
-    $(b.marg.ovum (pars v.i.a), a t.a)
+    $(b.marg.vena (pars v.i.a), a t.a)
       %fx
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
     ?:  ?=(^ num)
-      $(x.flex.ovum (min u.num 100), a t.a)
+      $(x.flex.vena (min u.num 100), a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %start   $(x.flex.ovum 0, a t.a)
-      %center  $(x.flex.ovum 50, a t.a)
-      %end     $(x.flex.ovum 100, a t.a)
+      %start   $(x.flex.vena 0, a t.a)
+      %center  $(x.flex.vena 50, a t.a)
+      %end     $(x.flex.vena 100, a t.a)
     ==
       %fy
     =/  num=(unit @ud)  (slaw %ud (crip v.i.a))
     ?:  ?=(^ num)
-      $(y.flex.ovum (min u.num 100), a t.a)
+      $(y.flex.vena (min u.num 100), a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %start   $(y.flex.ovum 0, a t.a)
-      %center  $(y.flex.ovum 50, a t.a)
-      %end     $(y.flex.ovum 100, a t.a)
+      %start   $(y.flex.vena 0, a t.a)
+      %center  $(y.flex.vena 50, a t.a)
+      %end     $(y.flex.vena 100, a t.a)
     ==
       %fl
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %row          $(flow.ovum [%row %clip], a t.a)
-      %row-clip     $(flow.ovum [%row %clip], a t.a)
-      %row-wrap     $(flow.ovum [%row %wrap], a t.a)
-      %column       $(flow.ovum [%col %clip], a t.a)
-      %column-clip  $(flow.ovum [%col %clip], a t.a)
-      %column-wrap  $(flow.ovum [%col %wrap], a t.a)
+      %row          $(flow.vena [%row %clip], a t.a)
+      %row-clip     $(flow.vena [%row %clip], a t.a)
+      %row-wrap     $(flow.vena [%row %wrap], a t.a)
+      %column       $(flow.vena [%col %clip], a t.a)
+      %column-clip  $(flow.vena [%col %clip], a t.a)
+      %column-wrap  $(flow.vena [%col %wrap], a t.a)
     ==
       %cb
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(b.look.ovum [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(b.look.ovum ~, a t.a)
-      %red      $(b.look.ovum [~ %r], a t.a)
-      %green    $(b.look.ovum [~ %g], a t.a)
-      %blue     $(b.look.ovum [~ %b], a t.a)
-      %cyan     $(b.look.ovum [~ %c], a t.a)
-      %magenta  $(b.look.ovum [~ %m], a t.a)
-      %yellow   $(b.look.ovum [~ %y], a t.a)
-      %black    $(b.look.ovum [~ %k], a t.a)
-      %white    $(b.look.ovum [~ %w], a t.a)
+      $(b.look.vena [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(b.look.vena ~, a t.a)
+      %red      $(b.look.vena [~ %r], a t.a)
+      %green    $(b.look.vena [~ %g], a t.a)
+      %blue     $(b.look.vena [~ %b], a t.a)
+      %cyan     $(b.look.vena [~ %c], a t.a)
+      %magenta  $(b.look.vena [~ %m], a t.a)
+      %yellow   $(b.look.vena [~ %y], a t.a)
+      %black    $(b.look.vena [~ %k], a t.a)
+      %white    $(b.look.vena [~ %w], a t.a)
     ==
       %cf
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(f.look.ovum [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(f.look.ovum ~, a t.a)
-      %red      $(f.look.ovum [~ %r], a t.a)
-      %green    $(f.look.ovum [~ %g], a t.a)
-      %blue     $(f.look.ovum [~ %b], a t.a)
-      %cyan     $(f.look.ovum [~ %c], a t.a)
-      %magenta  $(f.look.ovum [~ %m], a t.a)
-      %yellow   $(f.look.ovum [~ %y], a t.a)
-      %black    $(f.look.ovum [~ %k], a t.a)
-      %white    $(f.look.ovum [~ %w], a t.a)
+      $(f.look.vena [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(f.look.vena ~, a t.a)
+      %red      $(f.look.vena [~ %r], a t.a)
+      %green    $(f.look.vena [~ %g], a t.a)
+      %blue     $(f.look.vena [~ %b], a t.a)
+      %cyan     $(f.look.vena [~ %c], a t.a)
+      %magenta  $(f.look.vena [~ %m], a t.a)
+      %yellow   $(f.look.vena [~ %y], a t.a)
+      %black    $(f.look.vena [~ %k], a t.a)
+      %white    $(f.look.vena [~ %w], a t.a)
     ==
       %d
     ?+  (@tas (crip v.i.a))  $(a t.a)
-      %bold       $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%br]) (~(put in u.d.look.ovum) %br))], a t.a)
-      %blink      $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%bl]) (~(put in u.d.look.ovum) %bl))], a t.a)
-      %underline  $(d.look.ovum [~ ?~(d.look.ovum (silt ~[%un]) (~(put in u.d.look.ovum) %un))], a t.a)
-      %none       $(d.look.ovum [~ (silt ~[%~])], a t.a)
+      %bold       $(d.look.vena [~ ?~(d.look.vena (silt ~[%br]) (~(put in u.d.look.vena) %br))], a t.a)
+      %blink      $(d.look.vena [~ ?~(d.look.vena (silt ~[%bl]) (~(put in u.d.look.vena) %bl))], a t.a)
+      %underline  $(d.look.vena [~ ?~(d.look.vena (silt ~[%un]) (~(put in u.d.look.vena) %un))], a t.a)
+      %none       $(d.look.vena [~ (silt ~[%~])], a t.a)
     ==
       %b
     ?.  ?=(%border -.ars)
@@ -1767,39 +1827,39 @@
     ?.  ?=(%border -.ars)
       $(marv [i.a marv], a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(b.look.ovum [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(b.look.ovum ~, a t.a)
-      %red      $(b.look.ovum [~ %r], a t.a)
-      %green    $(b.look.ovum [~ %g], a t.a)
-      %blue     $(b.look.ovum [~ %b], a t.a)
-      %cyan     $(b.look.ovum [~ %c], a t.a)
-      %magenta  $(b.look.ovum [~ %m], a t.a)
-      %yellow   $(b.look.ovum [~ %y], a t.a)
-      %black    $(b.look.ovum [~ %k], a t.a)
-      %white    $(b.look.ovum [~ %w], a t.a)
+      $(b.look.vena [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(b.look.vena ~, a t.a)
+      %red      $(b.look.vena [~ %r], a t.a)
+      %green    $(b.look.vena [~ %g], a t.a)
+      %blue     $(b.look.vena [~ %b], a t.a)
+      %cyan     $(b.look.vena [~ %c], a t.a)
+      %magenta  $(b.look.vena [~ %m], a t.a)
+      %yellow   $(b.look.vena [~ %y], a t.a)
+      %black    $(b.look.vena [~ %k], a t.a)
+      %white    $(b.look.vena [~ %w], a t.a)
     ==
       %b-cf
     ?.  ?=(%border -.ars)
       $(marv [i.a marv], a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
-      $(f.look.ovum [~ (seco v.i.a)], a t.a)
-    ?+  (@tas (crip v.i.a))  $(f.look.ovum ~, a t.a)
-      %red      $(f.look.ovum [~ %r], a t.a)
-      %green    $(f.look.ovum [~ %g], a t.a)
-      %blue     $(f.look.ovum [~ %b], a t.a)
-      %cyan     $(f.look.ovum [~ %c], a t.a)
-      %magenta  $(f.look.ovum [~ %m], a t.a)
-      %yellow   $(f.look.ovum [~ %y], a t.a)
-      %black    $(f.look.ovum [~ %k], a t.a)
-      %white    $(f.look.ovum [~ %w], a t.a)
+      $(f.look.vena [~ (seco v.i.a)], a t.a)
+    ?+  (@tas (crip v.i.a))  $(f.look.vena ~, a t.a)
+      %red      $(f.look.vena [~ %r], a t.a)
+      %green    $(f.look.vena [~ %g], a t.a)
+      %blue     $(f.look.vena [~ %b], a t.a)
+      %cyan     $(f.look.vena [~ %c], a t.a)
+      %magenta  $(f.look.vena [~ %m], a t.a)
+      %yellow   $(f.look.vena [~ %y], a t.a)
+      %black    $(f.look.vena [~ %k], a t.a)
+      %white    $(f.look.vena [~ %w], a t.a)
     ==
       %b-d
     ?.  ?=(%border -.ars)
       $(marv [i.a marv], a t.a)
-    ?+  (@tas (crip v.i.a))  $(d.look.ovum ~, a t.a)
-      %bold       $(d.look.ovum [~ (silt ~[%br])], a t.a)
-      %blink      $(d.look.ovum [~ (silt ~[%bl])], a t.a)
-      %underline  $(d.look.ovum [~ (silt ~[%un])], a t.a)
+    ?+  (@tas (crip v.i.a))  $(d.look.vena ~, a t.a)
+      %bold       $(d.look.vena [~ (silt ~[%br])], a t.a)
+      %blink      $(d.look.vena [~ (silt ~[%bl])], a t.a)
+      %underline  $(d.look.vena [~ (silt ~[%un])], a t.a)
     ==
       %l
     ?.  ?=(%line -.ars)  $(a t.a)
@@ -2599,7 +2659,7 @@
   ==
 ::
 ++  geno                    :: turn sail into session state
-  |=  [vel=vela loc=(unit loci) =ara]
+  |=  [vel=vela loc=(unit loci) =urbs =ara]
   ^-  ^ara
   =/  a=opus                   [~ ~]
   =/  m=marl                   ~[vel]
@@ -2628,73 +2688,73 @@
         (add y.lar.r ?:(=(0 h.size.res.r) 0 (dec h.size.res.r)))
       esse.opus
     :-  ales.ara
-    (dico esse.opus rex.ara)
+    (dico urbs rex.ara esse.opus)
   |-  ^-  opus
   ?~  m  a
-  =/  [=ovum =avis =acia =ars =lina marv=mart]
+  =/  [=vena =avis =acia =ars =lina marv=mart]
     (suo g.i.m)
-  =/  wcen=bean  =(%p p.w.size.ovum)
-  =/  hcen=bean  =(%p p.h.size.ovum)
-  =?  w.size.ovum  wcen
+  =/  wcen=bean  =(%p p.w.size.vena)
+  =/  hcen=bean  =(%p p.h.size.vena)
+  =?  w.size.vena  wcen
     ?:  &(=(%i p.px) ?=(%layer -.ars))
       [%i 0]
-    [%c (div (mul q.w.size.ovum prx) 100)]
-  =?  h.size.ovum  hcen
+    [%c (div (mul q.w.size.vena prx) 100)]
+  =?  h.size.vena  hcen
     ?:  &(=(%i p.py) ?=(%layer -.ars))
       [%i 0]
-    [%c (div (mul q.h.size.ovum pry) 100)]
-  =?  t.marg.ovum  =(%p p.t.marg.ovum)
-    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
+    [%c (div (mul q.h.size.vena pry) 100)]
+  =?  t.marg.vena  =(%p p.t.marg.vena)
+    ?:  |(=(%i p.h.size.vena) =(%p p.h.size.vena))
       [%c 0]
-    [%c (div (mul q.t.marg.ovum q.h.size.ovum) 100)]
-  =?  r.marg.ovum  =(%p p.r.marg.ovum)
-    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
+    [%c (div (mul q.t.marg.vena q.h.size.vena) 100)]
+  =?  r.marg.vena  =(%p p.r.marg.vena)
+    ?:  |(=(%i p.w.size.vena) =(%p p.w.size.vena))
       [%c 0]
-    [%c (div (mul q.r.marg.ovum q.w.size.ovum) 100)]
-  =?  b.marg.ovum  =(%p p.b.marg.ovum)
-    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
+    [%c (div (mul q.r.marg.vena q.w.size.vena) 100)]
+  =?  b.marg.vena  =(%p p.b.marg.vena)
+    ?:  |(=(%i p.h.size.vena) =(%p p.h.size.vena))
       [%c 0]
-    [%c (div (mul q.b.marg.ovum q.h.size.ovum) 100)]
-  =?  l.marg.ovum  =(%p p.l.marg.ovum)
-    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
+    [%c (div (mul q.b.marg.vena q.h.size.vena) 100)]
+  =?  l.marg.vena  =(%p p.l.marg.vena)
+    ?:  |(=(%i p.w.size.vena) =(%p p.w.size.vena))
       [%c 0]
-    [%c (div (mul q.l.marg.ovum q.w.size.ovum) 100)]
-  =?  t.padd.ovum  =(%p p.t.padd.ovum)
-    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
+    [%c (div (mul q.l.marg.vena q.w.size.vena) 100)]
+  =?  t.padd.vena  =(%p p.t.padd.vena)
+    ?:  |(=(%i p.h.size.vena) =(%p p.h.size.vena))
       [%c 0]
-    [%c (div (mul q.t.padd.ovum q.h.size.ovum) 100)]
-  =?  r.padd.ovum  =(%p p.r.padd.ovum)
-    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
+    [%c (div (mul q.t.padd.vena q.h.size.vena) 100)]
+  =?  r.padd.vena  =(%p p.r.padd.vena)
+    ?:  |(=(%i p.w.size.vena) =(%p p.w.size.vena))
       [%c 0]
-    [%c (div (mul q.r.padd.ovum q.w.size.ovum) 100)]
-  =?  b.padd.ovum  =(%p p.b.padd.ovum)
-    ?:  |(=(%i p.h.size.ovum) =(%p p.h.size.ovum))
+    [%c (div (mul q.r.padd.vena q.w.size.vena) 100)]
+  =?  b.padd.vena  =(%p p.b.padd.vena)
+    ?:  |(=(%i p.h.size.vena) =(%p p.h.size.vena))
       [%c 0]
-    [%c (div (mul q.b.padd.ovum q.h.size.ovum) 100)]
-  =?  l.padd.ovum  =(%p p.l.padd.ovum)
-    ?:  |(=(%i p.w.size.ovum) =(%p p.w.size.ovum))
+    [%c (div (mul q.b.padd.vena q.h.size.vena) 100)]
+  =?  l.padd.vena  =(%p p.l.padd.vena)
+    ?:  |(=(%i p.w.size.vena) =(%p p.w.size.vena))
       [%c 0]
-    [%c (div (mul q.l.padd.ovum q.w.size.ovum) 100)]
-  =?  q.w.size.ovum  &(wcen !=(%i p.w.size.ovum))
-    =/  m=@ud  (add q.l.marg.ovum q.r.marg.ovum)
-    ?:  (gth m q.w.size.ovum)  0  (sub q.w.size.ovum m)
-  =?  q.h.size.ovum  &(hcen !=(%i p.h.size.ovum))
-    =/  m=@ud  (add q.t.marg.ovum q.b.marg.ovum)
-    ?:  (gth m q.h.size.ovum)  0  (sub q.h.size.ovum m)
-  =?  x.flex.ovum  =(%i p.w.size.ovum)  0
-  =?  y.flex.ovum  =(%i p.h.size.ovum)  0
+    [%c (div (mul q.l.padd.vena q.w.size.vena) 100)]
+  =?  q.w.size.vena  &(wcen !=(%i p.w.size.vena))
+    =/  m=@ud  (add q.l.marg.vena q.r.marg.vena)
+    ?:  (gth m q.w.size.vena)  0  (sub q.w.size.vena m)
+  =?  q.h.size.vena  &(hcen !=(%i p.h.size.vena))
+    =/  m=@ud  (add q.t.marg.vena q.b.marg.vena)
+    ?:  (gth m q.h.size.vena)  0  (sub q.h.size.vena m)
+  =?  x.flex.vena  =(%i p.w.size.vena)  0
+  =?  y.flex.vena  =(%i p.h.size.vena)  0
   =?  ars  ?=(%pattern -.ars)
     ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
     =/  bas=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
-    ?:  &(?=(%i p.w.size.ovum) ?=(%i p.h.size.ovum))
+    ?:  &(?=(%i p.w.size.vena) ?=(%i p.h.size.vena))
       =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
       ars(vox (fuco len (lent bas) bas))
-    ?:  ?=(%i p.w.size.ovum)
+    ?:  ?=(%i p.w.size.vena)
       =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
-      ars(vox (fuco len q.h.size.ovum bas))
-    ?:  ?=(%i p.h.size.ovum)
-      ars(vox (fuco q.w.size.ovum (lent bas) bas))
-    ars(vox (fuco q.w.size.ovum q.h.size.ovum bas))
+      ars(vox (fuco len q.h.size.vena bas))
+    ?:  ?=(%i p.h.size.vena)
+      ars(vox (fuco q.w.size.vena (lent bas) bas))
+    ars(vox (fuco q.w.size.vena q.h.size.vena bas))
   =/  [bor=marl lay=marl nor=marl]
     ?:  |(?=(%text -.ars) ?=(%pattern -.ars) ?=(%input -.ars))
       [~ ~ ~]
@@ -2717,7 +2777,7 @@
   =/  [bl=@ud br=@ud bt=@ud bb=@ud]
     (obeo bor)
   =^  [gro=marl aqu=aqua]  nor
-    (sero flow.ovum nor)
+    (sero flow.vena nor)
   =/  crex=bean
     ?&  ?=(^ rex.ara)
         !&(brex ?=(%select -.ars))
@@ -2728,27 +2788,27 @@
     ==  ==  ==  ==
   =/  imp=bean
     ?&  !|(?=(%text -.ars) ?=(%pattern -.ars))
-        ?|  =(%i p.w.size.ovum)
-            =(%i p.h.size.ovum)
+        ?|  =(%i p.w.size.vena)
+            =(%i p.h.size.vena)
     ==  ==
   =/  fex=bean
-    ?|  &(!=(0 x.flex.ovum) =(%c p.w.size.ovum)) 
-        &(!=(0 y.flex.ovum) =(%c p.h.size.ovum))
+    ?|  &(!=(0 x.flex.vena) =(%c p.w.size.vena)) 
+        &(!=(0 y.flex.vena) =(%c p.h.size.vena))
     ==
   =/  wrap=bean
     ?&  !?=(%border -.ars)
-        ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.ovum)
-                %+  gth  (add q.w.size.ovum (add q.l.marg.ovum q.r.marg.ovum))
+        ?|  ?&  =([%row %wrap] pow)  =(%c p.w.size.vena)
+                %+  gth  (add q.w.size.vena (add q.l.marg.vena q.r.marg.vena))
                 ?:((lte n.vir prx) (sub prx n.vir) 0)
             ==
-            ?&  =([%col %wrap] pow)  =(%c p.h.size.ovum)
-                %+  gth  (add q.h.size.ovum (add q.t.marg.ovum q.b.marg.ovum))
+            ?&  =([%col %wrap] pow)  =(%c p.h.size.vena)
+                %+  gth  (add q.h.size.vena (add q.t.marg.vena q.b.marg.vena))
                 ?:((lte n.vir pry) (sub pry n.vir) 0)
     ==  ==  ==
   =/  wrim=bean
     ?&  !?=(%border -.ars)
-        ?|  &(=([%row %wrap] pow) =(%i p.w.size.ovum))
-            &(=([%col %wrap] pow) =(%i p.h.size.ovum))
+        ?|  &(=([%row %wrap] pow) =(%i p.w.size.vena))
+            &(=([%col %wrap] pow) =(%i p.h.size.vena))
     ==  ==
   =/  tvir=[n=@ud o=@ud i=@ud]  vir
   =?  vir  |(wrap wrim)
@@ -2757,7 +2817,7 @@
       ?:  wrap
         :-  0
         :-  i.vir
-        ;:(add q.h.size.ovum q.t.marg.ovum q.b.marg.ovum i.vir)
+        ;:(add q.h.size.vena q.t.marg.vena q.b.marg.vena i.vir)
       ?:  wrim
         :-  0
         :-  o.vir
@@ -2767,7 +2827,7 @@
       ?:  wrap
         :-  0
         :-  i.vir
-        ;:(add q.w.size.ovum q.l.marg.ovum q.r.marg.ovum i.vir)
+        ;:(add q.w.size.vena q.l.marg.vena q.r.marg.vena i.vir)
       ?:  wrim
         :-  0
         :-  o.vir
@@ -2782,14 +2842,14 @@
           %r
         :_  y.vlar
         =/  x=@ud  (add x.vlar ?:(=(0 q.px) 0 (dec q.px)))
-        =/  w=@ud  ?:(=(0 q.w.size.ovum) 0 (dec q.w.size.ovum))
+        =/  w=@ud  ?:(=(0 q.w.size.vena) 0 (dec q.w.size.vena))
         ?:((lth w x) (sub x w) 1)
           %t
         vlar
           %b
         :-  x.vlar
         =/  y=@ud  (add y.vlar ?:(=(0 q.py) 0 (dec q.py)))
-        =/  h=@ud  ?:(=(0 q.h.size.ovum) 0 (dec q.h.size.ovum))
+        =/  h=@ud  ?:(=(0 q.h.size.vena) 0 (dec q.h.size.vena))
         ?:((lth h y) (sub y h) 1)
       ==
     =?  vlar  |(wrap wrim)
@@ -2801,64 +2861,64 @@
         :_  y.plar
         (add x.plar o.vir)
       ==
-    :-  (add x.vlar q.l.marg.ovum)
-    (add y.vlar q.t.marg.ovum)
+    :-  (add x.vlar q.l.marg.vena)
+    (add y.vlar q.t.marg.vena)
   =/  alar=lar  vlar
   =.  vlar
-    :-  ;:(add bl q.l.padd.ovum x.vlar)
-    ;:(add bt q.t.padd.ovum y.vlar)
+    :-  ;:(add bl q.l.padd.vena x.vlar)
+    ;:(add bt q.t.padd.vena y.vlar)
   =/  arx=@ud
-    ?+  p.w.size.ovum  0
+    ?+  p.w.size.vena  0
         %c
-      =/  w=@ud  ;:(add bl br q.l.padd.ovum q.r.padd.ovum)
-      ?:((gth w q.w.size.ovum) 0 (sub q.w.size.ovum w))
+      =/  w=@ud  ;:(add bl br q.l.padd.vena q.r.padd.vena)
+      ?:((gth w q.w.size.vena) 0 (sub q.w.size.vena w))
         %i
       =/  w=@ud
         ;:  add
-          q.l.marg.ovum  ?:(=(%row d.pow) n.vir o.vir)
-          bl  br  q.l.padd.ovum  q.r.padd.ovum
+          q.l.marg.vena  ?:(=(%row d.pow) n.vir o.vir)
+          bl  br  q.l.padd.vena  q.r.padd.vena
         ==
       ?:((gth w prx) 0 (sub prx w))
     ==
   =/  ary=@ud
-    ?+  p.h.size.ovum  0
+    ?+  p.h.size.vena  0
         %c
-      =/  h=@ud  ;:(add bt bb q.t.padd.ovum q.b.padd.ovum)
-      ?:((gth h q.h.size.ovum) 0 (sub q.h.size.ovum h))
+      =/  h=@ud  ;:(add bt bb q.t.padd.vena q.b.padd.vena)
+      ?:((gth h q.h.size.vena) 0 (sub q.h.size.vena h))
         %i
       =/  h=@ud
         ;:  add 
-          q.t.marg.ovum  ?:(=(%row d.pow) o.vir n.vir)
-          bt  bb  q.t.padd.ovum  q.b.padd.ovum
+          q.t.marg.vena  ?:(=(%row d.pow) o.vir n.vir)
+          bt  bb  q.t.padd.vena  q.b.padd.vena
         ==
       ?:((gth h pry) 0 (sub pry h))
     ==
   =/  alim=loci
     :-  ?:  =(0 arx)  0
-        ?:  &(x.pscr ?=(%c p.w.size.ovum))
-          ;:(add x.alar bl q.l.padd.ovum ?:(=(0 arx) 0 (dec arx)))
-        =/  x=@ud  ;:(add x.alar bl q.l.padd.ovum ?:(=(0 arx) 0 (dec arx)))
+        ?:  &(x.pscr ?=(%c p.w.size.vena))
+          ;:(add x.alar bl q.l.padd.vena ?:(=(0 arx) 0 (dec arx)))
+        =/  x=@ud  ;:(add x.alar bl q.l.padd.vena ?:(=(0 arx) 0 (dec arx)))
         ?:  (gth x x.plim)
           x.plim
         x
     ?:  =(0 ary)  0
-    ?:  &(y.pscr ?=(%c p.h.size.ovum))
-      ;:(add y.alar bt q.t.padd.ovum ?:(=(0 ary) 0 (dec ary)))
-    =/  y=@ud  ;:(add y.alar bt q.t.padd.ovum ?:(=(0 ary) 0 (dec ary)))
+    ?:  &(y.pscr ?=(%c p.h.size.vena))
+      ;:(add y.alar bt q.t.padd.vena ?:(=(0 ary) 0 (dec ary)))
+    =/  y=@ud  ;:(add y.alar bt q.t.padd.vena ?:(=(0 ary) 0 (dec ary)))
     ?:  (gth y y.plim)
       y.plim
     y
   =/  nscr=[x=bean y=bean]
-    :-  |(?=(%scroll -.ars) &(x.pscr ?=(%i p.w.size.ovum)))
-    |(?=(%scroll -.ars) &(y.pscr ?=(%i p.h.size.ovum)))
+    :-  |(?=(%scroll -.ars) &(x.pscr ?=(%i p.w.size.vena)))
+    |(?=(%scroll -.ars) &(y.pscr ?=(%i p.h.size.vena)))
   =/  nsli=$@(~ modi)
     ?.  |(x.nscr y.nscr)  slim
     ?:  ?=(~ slim)  alim
     [(min x.alim x.slim) (min y.alim y.slim)]
   =/  fil=fila
-    :+  ?~(d.look.ovum d.pl u.d.look.ovum)
-      ?~(b.look.ovum b.pl u.b.look.ovum)
-    ?~(f.look.ovum f.pl u.f.look.ovum)
+    :+  ?~(d.look.vena d.pl u.d.look.vena)
+      ?~(b.look.vena b.pl u.b.look.vena)
+    ?~(f.look.vena f.pl u.f.look.vena)
   =/  aci=^acia
     :+  ?~(d.acia d.pa d.acia)
       ?~(b.acia b.pa b.acia)
@@ -2872,11 +2932,11 @@
         %=  $
           m     lay
           k     [[%l 0] k]
-          px    w.size.ovum
-          py    h.size.ovum
+          px    w.size.vena
+          py    h.size.vena
           pl    fil
           pa    aci
-          pow   flow.ovum
+          pow   flow.vena
           prx   arx
           pry   ary
           plar  vlar
@@ -2892,11 +2952,11 @@
         a     b
         m     lay
         k     [[%l 0] k]
-        px    w.size.ovum
-        py    h.size.ovum
+        px    w.size.vena
+        py    h.size.vena
         pl    fil
         pa    aci
-        pow   flow.ovum
+        pow   flow.vena
         prx   arx
         pry   ary
         plar  vlar
@@ -2915,11 +2975,11 @@
           a     c
           m     nor
           k     [[%~ 0] k]
-          px    w.size.ovum
-          py    h.size.ovum
+          px    w.size.vena
+          py    h.size.vena
           pl    fil
           pa    aci
-          pow   flow.ovum
+          pow   flow.vena
           prx   arx
           pry   ary
           plar  vlar
@@ -2936,11 +2996,11 @@
           a     b
           m     nor
           k     [[%~ 0] k]
-          px    w.size.ovum
-          py    h.size.ovum
+          px    w.size.vena
+          py    h.size.vena
           pl    fil
           pa    aci
-          pow   flow.ovum
+          pow   flow.vena
           prx   arx
           pry   ary
           plar  vlar
@@ -2955,11 +3015,11 @@
       %=  $
         m     nor
         k     [[%~ 0] k]
-        px    w.size.ovum
-        py    h.size.ovum
+        px    w.size.vena
+        py    h.size.vena
         pl    fil
         pa    aci
-        pow   flow.ovum
+        pow   flow.vena
         prx   arx
         pry   ary
         plar  vlar
@@ -2975,8 +3035,8 @@
   =?  aqu  !=(~ aqu)
     =/  len=@ud  (lent aqu)
     =/  rom=@ud
-      ?:  ?=(%wrap b.flow.ovum)  0
-      ?-  d.flow.ovum
+      ?:  ?=(%wrap b.flow.vena)  0
+      ?-  d.flow.vena
         %row  ?:(?=(~ csiz) arx ?:((lte w.csiz arx) (sub arx w.csiz) 0))
         %col  ?:(?=(~ csiz) ary ?:((lte h.csiz ary) (sub ary h.csiz) 0))
       ==
@@ -3003,7 +3063,7 @@
     ?~  el  [op (flop aq)]
     =?  u.el  !=(0 move)
       %:  mino
-        ?-(d.flow.ovum %row move, %col 0)  ?-(d.flow.ovum %row 0, %col move)
+        ?-(d.flow.vena %row move, %col 0)  ?-(d.flow.vena %row 0, %col move)
         alim  ?:(fex ~ ?:(wrim visa.b visa.a))  u.el
       ==
     =:  esse.op  (~(put by esse.op) ek u.el)
@@ -3013,7 +3073,7 @@
       i          +(i)
       ager.i.ek  +(ager.i.ek)
       marg
-        ?-  d.flow.ovum
+        ?-  d.flow.vena
           %row  ;:(add marg l.marg.res.u.el r.marg.res.u.el w.size.res.u.el)
           %col  ;:(add marg t.marg.res.u.el b.marg.res.u.el h.size.res.u.el)
         ==
@@ -3027,7 +3087,7 @@
           op
         =?  u.cel  !=(0 move)
           %:  mino
-            ?-(d.flow.ovum %row move, %col 0)  ?-(d.flow.ovum %row 0, %col move)
+            ?-(d.flow.vena %row move, %col 0)  ?-(d.flow.vena %row 0, %col move)
             alim  ?:(fex ~ ?:(wrim visa.b visa.a))  u.cel
           ==
         =:  esse.op  (~(put by esse.op) cek u.cel)
@@ -3047,7 +3107,7 @@
         a.g   
       %+  weld  a.g.i.gro
       ^-  mart
-      ?-  d.flow.ovum
+      ?-  d.flow.vena
           %row
         :~  [%w (trip (scot %ud size.i.aqu))]
             [%ml (trip (scot %ud marg.i.aqu))]
@@ -3067,11 +3127,11 @@
         a     c
         m     gro
         k     [[%~ (lent nor)] k]
-        px    w.size.ovum
-        py    h.size.ovum
+        px    w.size.vena
+        py    h.size.vena
         pl    fil
         pa    aci
-        pow   flow.ovum
+        pow   flow.vena
         prx   arx
         pry   ary
         plar  vlar
@@ -3087,17 +3147,17 @@
     =/  [ek=rami op=opus]  [[[%~ 0] k] [~ ~]]
     =/  wra
       =|  [out=@ud siz=@ud acc=(map @ud @ud)]
-      ?:  ?=(%clip b.flow.ovum)  acc
+      ?:  ?=(%clip b.flow.vena)  acc
       |-  ^-  (map @ud @ud)
       =/  el=(unit ens)  (~(get by esse.c) ek)
       ?~  el  ?:(=(0 siz) acc (~(put by acc) out siz))
       =/  nut=@ud
-        ?-  d.flow.ovum
+        ?-  d.flow.vena
           %row  ?:((lth t.marg.res.u.el y.lar.u.el) (sub y.lar.u.el t.marg.res.u.el) 1)
           %col  ?:((lth l.marg.res.u.el x.lar.u.el) (sub x.lar.u.el l.marg.res.u.el) 1)
         ==
       =/  niz=@ud
-        ?-  d.flow.ovum
+        ?-  d.flow.vena
           %row  (add w.size.res.u.el (add l.marg.res.u.el r.marg.res.u.el))
           %col  (add h.size.res.u.el (add t.marg.res.u.el b.marg.res.u.el))
         ==
@@ -3115,12 +3175,12 @@
     =/  movx=@ud
       =;  x=@ud
         ?:  (gte x arx)  0
-        (div (mul x.flex.ovum (sub arx x)) 100)
-      ?:  |(?=([%row %clip] flow.ovum) ?=([%col %wrap] flow.ovum))
+        (div (mul x.flex.vena (sub arx x)) 100)
+      ?:  |(?=([%row %clip] flow.vena) ?=([%col %wrap] flow.vena))
         ?^(csiz w.csiz 0)
-      ?:  ?=([%col %clip] flow.ovum)
+      ?:  ?=([%col %clip] flow.vena)
         (add w.size.res.u.el (add l.marg.res.u.el r.marg.res.u.el))
-      ?:  ?=([%row %wrap] flow.ovum)
+      ?:  ?=([%row %wrap] flow.vena)
         =/  w=(unit @ud)
           %-  %~  get  by  wra
           ?:((lth t.marg.res.u.el y.lar.u.el) (sub y.lar.u.el t.marg.res.u.el) 1)
@@ -3129,12 +3189,12 @@
     =/  movy=@ud
       =;  y=@ud
         ?:  (gte y ary)  0
-        (div (mul y.flex.ovum (sub ary y)) 100)
-      ?:  |(?=([%col %clip] flow.ovum) ?=([%row %wrap] flow.ovum))     
+        (div (mul y.flex.vena (sub ary y)) 100)
+      ?:  |(?=([%col %clip] flow.vena) ?=([%row %wrap] flow.vena))     
         ?^(csiz h.csiz 0)
-      ?:  ?=([%row %clip] flow.ovum)
+      ?:  ?=([%row %clip] flow.vena)
         (add h.size.res.u.el (add t.marg.res.u.el b.marg.res.u.el))
-      ?:  ?=([%col %wrap] flow.ovum)
+      ?:  ?=([%col %wrap] flow.vena)
         =/  h=(unit @ud)
           %-  %~  get  by  wra
           ?:((lth l.marg.res.u.el x.lar.u.el) (sub x.lar.u.el l.marg.res.u.el) 1)
@@ -3171,22 +3231,22 @@
     [(~(uni by esse.c) esse.a) (~(uni by visa.c) visa.a)]
   =?  csiz  &(!?=([~ ~] c) |(imp ?=(%scroll -.ars)))
     (cogo vlar k ?:(wrim esse.b esse.a))
-  =?  size.ovum  &(imp ?=(^ csiz))
-    :-  ?:  =(%i p.w.size.ovum)  
-          [%c ;:(add bl br q.l.padd.ovum q.r.padd.ovum w.csiz)]
-        w.size.ovum
-    ?:  =(%i p.h.size.ovum)  
-      [%c ;:(add bt bb q.t.padd.ovum q.b.padd.ovum h.csiz)]
-    h.size.ovum
+  =?  size.vena  &(imp ?=(^ csiz))
+    :-  ?:  =(%i p.w.size.vena)  
+          [%c ;:(add bl br q.l.padd.vena q.r.padd.vena w.csiz)]
+        w.size.vena
+    ?:  =(%i p.h.size.vena)  
+      [%c ;:(add bt bb q.t.padd.vena q.b.padd.vena h.csiz)]
+    h.size.vena
   =/  wris=bean
     ?&  wrim
         ?|  (gth n.vir prx)  (gth n.vir pry)
             ?&  =(%row d.pow)
-                %+  gth  (add q.w.size.ovum (add q.l.marg.ovum q.r.marg.ovum))
+                %+  gth  (add q.w.size.vena (add q.l.marg.vena q.r.marg.vena))
                 ?:((lte n.tvir prx) (sub prx n.tvir) 0)
             ==
             ?&  =(%col d.pow)
-                %+  gth  (add q.h.size.ovum (add q.t.marg.ovum q.b.marg.ovum))
+                %+  gth  (add q.h.size.vena (add q.t.marg.vena q.b.marg.vena))
                 ?:((lte n.tvir pry) (sub pry n.tvir) 0)
     ==  ==  ==
   =?  vir  wrim
@@ -3195,11 +3255,11 @@
           %row
         :-  0
         :-  i.vir
-        (add i.vir (add q.h.size.ovum (add q.t.marg.ovum q.b.marg.ovum)))
+        (add i.vir (add q.h.size.vena (add q.t.marg.vena q.b.marg.vena)))
           %col
         :-  0
         :-  i.vir
-        (add i.vir (add q.w.size.ovum (add q.l.marg.ovum q.r.marg.ovum)))
+        (add i.vir (add q.w.size.vena (add q.l.marg.vena q.r.marg.vena)))
       ==
     tvir
   =?  vlar  wrim
@@ -3239,15 +3299,15 @@
       (add y.alar n.tvir)
     ==
   =?  arx  wrim
-    =/  bp=@ud  ;:(add bl br q.l.padd.ovum q.r.padd.ovum)
-    ?:((gth bp q.w.size.ovum) 0 (sub q.w.size.ovum bp))
+    =/  bp=@ud  ;:(add bl br q.l.padd.vena q.r.padd.vena)
+    ?:((gth bp q.w.size.vena) 0 (sub q.w.size.vena bp))
   =?  ary  wrim
-    =/  bp=@ud  ;:(add bt bb q.t.padd.ovum q.b.padd.ovum)
-    ?:((gth bp q.h.size.ovum) 0 (sub q.h.size.ovum bp))
+    =/  bp=@ud  ;:(add bt bb q.t.padd.vena q.b.padd.vena)
+    ?:((gth bp q.h.size.vena) 0 (sub q.h.size.vena bp))
   =?  alim  |(wrim x.pscr y.pscr)
     :-  ?:  x.pscr
-          =/  r=@ud  +((add br q.r.padd.ovum))
-          ;:(add x.alar bl q.l.padd.ovum ?:((gth r q.w.size.ovum) 0 (sub q.w.size.ovum r)))
+          =/  r=@ud  +((add br q.r.padd.vena))
+          ;:(add x.alar bl q.l.padd.vena ?:((gth r q.w.size.vena) 0 (sub q.w.size.vena r)))
         ?:  wrim
           =/  x=@ud  (add x.vlar ?:(=(0 arx) 0 (dec arx)))
           ?:  (gth x x.plim)
@@ -3255,8 +3315,8 @@
           x
         x.alim
     ?:  y.pscr
-      =/  b=@ud  +((add bb q.b.padd.ovum))
-      ;:(add y.alar bt q.t.padd.ovum ?:((gth b q.h.size.ovum) 0 (sub q.h.size.ovum b)))
+      =/  b=@ud  +((add bb q.b.padd.vena))
+      ;:(add y.alar bt q.t.padd.vena ?:((gth b q.h.size.vena) 0 (sub q.h.size.vena b)))
     ?:  wrim
       =/  y=@ud  (add y.vlar ?:(=(0 ary) 0 (dec ary)))
       ?:  (gth y y.plim)
@@ -3306,12 +3366,12 @@
     lina
   =/  ares=res
     ?.  ?=(%text -.ars)
-      :*  ?.  ?=(%pattern -.ars)  [q.w.size.ovum q.h.size.ovum]
+      :*  ?.  ?=(%pattern -.ars)  [q.w.size.vena q.h.size.vena]
           [?^(vox.ars (lent i.vox.ars) 0) (lent vox.ars)]
-          [q.l.padd.ovum q.r.padd.ovum q.t.padd.ovum q.b.padd.ovum]
-          [q.l.marg.ovum q.r.marg.ovum q.t.marg.ovum q.b.marg.ovum]
-          flex.ovum
-          flow.ovum
+          [q.l.padd.vena q.r.padd.vena q.t.padd.vena q.b.padd.vena]
+          [q.l.marg.vena q.r.marg.vena q.t.marg.vena q.b.marg.vena]
+          flex.vena
+          flow.vena
           fil
       ==
     =/  len=@ud
@@ -3329,8 +3389,8 @@
     %=  $
       m     bor
       k     [[%b 0] k]
-      px    w.size.ovum
-      py    h.size.ovum
+      px    w.size.vena
+      py    h.size.vena
       pl    fil
       pa    aci
       pow   flow.ares
@@ -3472,7 +3532,7 @@
   ==
 ::
 ++  dico                    :: derive intersections, hotkeys, and navigation context from display state
-  |=  [e=esse xer=rex]
+  |=  [=urbs xer=rex e=esse]
   ^-  cura
   =/  k=rami                      [[%~ 0] ~]
   =/  plim=modi                   [x.urbs y.urbs]
@@ -3611,7 +3671,7 @@
   ==
 ::  ::  ::  ::  ::  ::  ::  ::
 ++  supo                    :: make a display update
-  |=  [mur=muri old=visa vis=visa]
+  |=  [mur=muri =urbs =luna old=visa vis=visa]
   ^-  lux
   =/  [x1=@ud y1=@ud]  [l.mur t.mur]
   =/  [x2=@ud y2=@ud]  [(min r.mur x.urbs) (min b.mur y.urbs)]

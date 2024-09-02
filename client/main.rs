@@ -9,7 +9,7 @@ use crossterm::terminal;
 use crossterm::event::{read, Event, KeyEvent, KeyCode, KeyModifiers};
 
 static KERNEL_JAM: &[u8] =
-    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/jam/homunculus.jam"));
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/jam/kernel.jam"));
 
 #[derive(Parser, Debug)]
 #[command(about = "", author = "", version, color = ColorChoice::Auto)]
