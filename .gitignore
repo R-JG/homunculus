@@ -1,4 +1,5 @@
 copy.sh
+/client/target
 
 desk/app/tester.hoon
 desk/app/tester-two.hoon
