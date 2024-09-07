@@ -6,6 +6,8 @@
 #include <errno.h>
 // #include <curl/curl.h>
 
+#define CTRL_KEY(k) ((k) & 0x1f)
+
 struct termios old_termios;
 
 void die(const char *s) {
@@ -29,18 +31,41 @@ void enableRawMode() {
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
 }
 
+void clearScreen() {
+  write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
+char readKey() {
+  int cs;
+  char c;
+  while ((cs = read(STDIN_FILENO, &c, 1)) != 1) {
+    if (cs == -1 && errno != EAGAIN) die("read");
+  }
+  return c;
+}
+
+void handleInput() {
+  char c = readKey();
+
+  if (iscntrl(c)) {
+    printf("%d\r\n", c);
+  } else {
+    printf("%d ('%c')\r\n", c, c);
+  }
+
+  switch (c) {
+    case CTRL_KEY('q'):
+      exit(0);
+      break;
+  }
+}
+
 int main(void) {
+  clearScreen();
   enableRawMode();
   char c;
   while (1) {
-    char c = '\0';
-    if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
-    if (iscntrl(c)) {
-      printf("%d\r\n", c);
-    } else {
-      printf("%d ('%c')\r\n", c, c);
-    }
-    if (c == 'q') break;
+    handleInput();
   }
   return 0;
 }
