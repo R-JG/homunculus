@@ -2,6 +2,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crossterm::terminal;
 use crossterm::event::{read, Event, KeyEvent, KeyCode, KeyModifiers};
 use reqwest::Client;
+use futures::stream::StreamExt;
 use serde::{Serialize, Deserialize};
 use serde_json::{to_string, from_str};
 
@@ -144,31 +145,47 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 async fn stream_output(reqw: &Client, msg_id: &mut u32, channel_url: &String, auth: &String) -> Result<(), Box<dyn std::error::Error>>  {
-  let mut resp = reqw
+  let resp = reqw
     .get(channel_url)
     .header("Content-Type", "text/event-stream")
     .header("cookie", auth)
     .send()
     .await?;
-  while let Some(chunk) = resp.chunk().await? {
-    let chunk_str = String::from_utf8(chunk.to_vec())?;
-    match chunk_str.split_once('\n') {
-      Some((str_one, str_two)) => {
-        // let event_id = id_str.strip_prefix("id: ").unwrap().parse::<u32>()?;
-        // let dat = data_str.strip_prefix("data: ").unwrap();
-        // let event = from_str::<ResBody>(dat);
-        // match event {
-        //   Ok(ResBody::Diff(diff)) => {
-        //     // print!("{}", diff.json);
-        //     reqw.put(channel_url)
-        //       .header("cookie", auth)
-        //       .body(make_ack_body(msg_id, &event_id)?)
-        //       .send();
-        //   },
-        //   _ => println!("nope 2")
-        // }
+  let mut stream = resp.bytes_stream();
+  let mut buffer = String::new();
+  while let Some(chunk) = stream.next().await {
+    match chunk {
+      Ok(bytes) => {
+        let chunk_str = String::from_utf8(bytes.to_vec())?;
+        buffer.push_str(&chunk_str);
+        while let Some(pos) = buffer.find("\n\n") {
+          let message = buffer[..pos].to_string();
+          buffer.drain(..pos + 2);
+          let mut event_id: u32 = 0;
+          let mut dat: &str = "";
+          for line in message.lines() {
+            if line.starts_with(':') {
+              continue;
+            } else if let Some(id_str) = line.strip_prefix("id: ") {
+              event_id = id_str.trim().parse::<u32>()?;
+            } else if let Some(dat_str) = line.strip_prefix("data: ") {
+              dat = dat_str;
+            }
+          }
+          let event = from_str::<ResBody>(dat);
+          match event {
+            Ok(ResBody::Diff(diff)) => {
+              print!("{}", diff.json);
+              reqw.put(channel_url)
+                .header("cookie", auth)
+                .body(make_ack_body(msg_id, &event_id)?)
+                .send();
+            },
+            _ => ()
+          }
+        }
       }
-      None => println!("nope 1")
+      Err(_err) => ()
     }
   }
   Ok(())

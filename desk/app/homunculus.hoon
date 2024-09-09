@@ -4284,13 +4284,13 @@
   ^-  tape
   ?:  ?=(%hop -.lux)
     ?@  p.lux  ~
-    ['\\' 'e' '[' (scot %ud y.p.lux) ';' (scot %ud x.p.lux) 'H' ~]
+    ['\\' 'x1b' '[' (scot %ud y.p.lux) ';' (scot %ud x.p.lux) 'H' ~]
   ?.  ?=(%mor -.lux)  ~
   =/  prev=fila  [~ ~ ~]
   |-  ^-  tape
   ?~  p.lux
     ?.  =([~ ~ ~] prev)
-      :^  '\\'  'e'  '['
+      :^  '\\'  'x1b'  '['
       :+  '0'  'm'  ~
     ~
   ?+  -.i.p.lux  $(p.lux t.p.lux)
@@ -4298,7 +4298,7 @@
     $(p.lux ^-((list ^lux) (weld p.i.p.lux t.p.lux)))
       %hop
     ?@  p.i.p.lux  $(p.lux t.p.lux)
-    :*  '\\'  'e'  '['
+    :*  '\\'  'x1b'  '['
         (scot %ud y.p.i.p.lux)  ';'
         (scot %ud x.p.i.p.lux)  'H'
         $(p.lux t.p.lux)
@@ -4313,7 +4313,7 @@
     =/  newt=tape         (tufa q.i.p.i.p.lux)
     |-  ^-  tape
     ?^  newb
-      :^  '\\'  'e'  '['
+      :^  '\\'  'x1b'  '['
       ?@  u.newb
         :^    '4'
             ?-  u.newb
@@ -4330,7 +4330,7 @@
       :+  (scot %ud (@ b.u.newb))  'm'
       $(newb ~)
     ?^  newf
-      :^  '\\'  'e'  '['
+      :^  '\\'  'x1b'  '['
       ?@  u.newf
         :^    '3'
             ?-  u.newf
@@ -4348,13 +4348,13 @@
       $(newf ~)
     ?^  oldd
       ?:  ?=(~ i.oldd)  $(oldd t.oldd)
-      :^  '\\'  'e'  '['
+      :^  '\\'  'x1b'  '['
       :+  ?-(i.oldd %bl '25', %br '22', %un '24')
         'm'
       $(oldd t.oldd)
     ?^  newd
       ?:  ?=(~ i.newd)  $(newd t.newd)
-      :^  '\\'  'e'  '['
+      :^  '\\'  'x1b'  '['
       :+  ?-(i.newd %bl '5', %br '1', %un '4')
         'm'
       $(newd t.newd)
