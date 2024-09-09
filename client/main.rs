@@ -1,91 +1,219 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 use crossterm::terminal;
 use crossterm::event::{read, Event, KeyEvent, KeyCode, KeyModifiers};
-use reqwest;
+use reqwest::Client;
+use serde::{Serialize, Deserialize};
+use serde_json::{to_string, from_str};
 
+#[derive(Serialize)]
+struct Subscribe {
+  id: u32,
+  action: String,
+  ship: String,
+  app: String,
+  path: String
+}
+
+#[derive(Serialize)]
+struct Poke {
+  id: u32,
+  action: String,
+  ship: String,
+  app: String,
+  mark: String,
+  json: String
+}
+
+#[derive(Serialize)]
+struct ReqAck {
+  id: u32,
+  action: String,
+  #[serde(rename = "event-id")]
+  eventid: u32
+}
+
+#[derive(Serialize)]
+struct Delete {
+  id: u32,
+  action: String,
+}
+
+#[derive(Serialize)]
+#[serde(untagged)]
+enum ReqOptions {
+  Subscribe(Subscribe),
+  Poke(Poke),
+  Ack(ReqAck),
+  Delete(Delete)
+}
+
+#[derive(Serialize)]
+#[serde(transparent)]
+struct ReqBody {
+  body: Vec<ReqOptions>
+}
+
+#[derive(Deserialize)]
+struct Diff {
+  id: u32,
+  response: String,
+  json: String
+}
+
+#[derive(Deserialize)]
+struct Quit {
+  id: u32,
+  response: String
+}
+
+#[derive(Deserialize)]
+struct ResAck {
+  ok: String,
+  id: u32,
+  response: String
+}
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum ResBody {
+  Diff(Diff),
+  Quit(Quit),
+  Ack(ResAck)
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let channel_id = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs().to_string();
-    let ship = "zod";
-    let code = "password=lidlut-tabwed-pillex-ridrup";
-    let base_url = "http://localhost:8080/";
-    let login_url = format!("{}/~/login", base_url);
-    let channel_url = format!("{}/~/channel/{}", base_url, channel_id);
+  let ship = "zod".to_string();
+  let code = "lidlut-tabwed-pillex-ridrup";
+  let base_url = "http://localhost:8080";
+  //
+  let mut msg_id = 0;
+  let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+  let channel_id = format!("homunculus-{}", now.to_string());
+  let login_url = format!("{}/~/login", base_url);
+  let channel_url = format!("{}/~/channel/{}", base_url, channel_id);
+  // get auth
+  let reqw = Client::new();
+  let resp = reqw.post(login_url)
+    .body(format!("password={}", code))
+    .send()
+    .await?;
+  let auth = resp
+    .headers().get("set-cookie").unwrap().to_str()?
+    .split(";").next().unwrap().to_string();
+  // create channel
+  reqw.put(&channel_url)
+    .body(make_subscribe_body(&ship, &mut msg_id)?)
+    .header("cookie", &auth)
+    .send()
+    .await?;
+  // start sse
+  stream_output(&reqw, &mut msg_id, &channel_url, &auth).await?;
 
-    let reqw = reqwest::Client::new();
-    let resp = reqw.post(login_url)
-        .body(code)
-        .send()
-        .await?;
-    let auth = resp.headers().get("set-cookie").unwrap().to_str()?.to_string();
-    stream_output(channel_url, auth);
-
-    //reqw = reqwest::Client::builder()
-    //let eventsource = Client::new_with_client(
-    //    reqwest::Url::parse(&channel_url)?,
-    //    reqw
-    //);
 
 
-
-
-    // terminal::enable_raw_mode()?;
-    // println!("\x1b[2J");
-    // let (width, height) = terminal::size()?;
-    // loop {
-    //     let event = read()?;
-    //     match event {
-    //         Event::Resize(width, height) => {
-    //             //
-    //         }
-    //         Event::Mouse(mouse_event) => {
-    //             println!("mouse event");
-    //         }
-    //         Event::Key(KeyEvent {
-    //             code: KeyCode::Char('c'),
-    //             modifiers: KeyModifiers::CONTROL,
-    //             kind: _,
-    //             state: _
-    //         }) => {
-    //             terminal::disable_raw_mode()?;
-    //             println!("\x1b[2J");
-    //             break;
-    //         }
-    //         Event::Key(key_event) => {
-    //             //
-    //         }
-    //         _ => {}
-    //     }
-    // }
-    Ok(())
+  // terminal::enable_raw_mode()?;
+  // println!("\x1b[2J");
+  // let (width, height) = terminal::size()?;
+  // loop {
+  //     let event = read()?;
+  //     match event {
+  //         Event::Resize(width, height) => {
+  //             //
+  //         }
+  //         Event::Mouse(mouse_event) => {
+  //             println!("mouse event");
+  //         }
+  //         Event::Key(KeyEvent {
+  //             code: KeyCode::Char('c'),
+  //             modifiers: KeyModifiers::CONTROL,
+  //             kind: _,
+  //             state: _
+  //         }) => {
+  //             terminal::disable_raw_mode()?;
+  //             println!("\x1b[2J");
+  //             break;
+  //         }
+  //         Event::Key(key_event) => {
+  //             //
+  //         }
+  //         _ => {}
+  //     }
+  // }
+  Ok(())
 }
 
-async fn stream_output(channel_url: String, auth: String) -> Result<(), Box<dyn std::error::Error>>  {
-    let client = reqwest::Client::new();
-    let mut resp = client
-        .get(channel_url)
-        .header("cookie", auth)
-        .send()
-        .await?;
-    while let Some(chunk) = resp.chunk().await? {
-        println!("Chunk: {chunk:?}");
+async fn stream_output(reqw: &Client, msg_id: &mut u32, channel_url: &String, auth: &String) -> Result<(), Box<dyn std::error::Error>>  {
+  let mut resp = reqw
+    .get(channel_url)
+    .header("Content-Type", "text/event-stream")
+    .header("cookie", auth)
+    .send()
+    .await?;
+  while let Some(chunk) = resp.chunk().await? {
+    let chunk_str = String::from_utf8(chunk.to_vec())?;
+    match chunk_str.split_once('\n') {
+      Some((str_one, str_two)) => {
+        // let event_id = id_str.strip_prefix("id: ").unwrap().parse::<u32>()?;
+        // let dat = data_str.strip_prefix("data: ").unwrap();
+        // let event = from_str::<ResBody>(dat);
+        // match event {
+        //   Ok(ResBody::Diff(diff)) => {
+        //     // print!("{}", diff.json);
+        //     reqw.put(channel_url)
+        //       .header("cookie", auth)
+        //       .body(make_ack_body(msg_id, &event_id)?)
+        //       .send();
+        //   },
+        //   _ => println!("nope 2")
+        // }
+      }
+      None => println!("nope 1")
     }
-    Ok(())
+  }
+  Ok(())
 }
 
-fn handle_key_input(key_event: KeyEvent) -> String {
-    match key_event.code {
-        KeyCode::Char(char) =>  char.to_string(),
-        KeyCode::Tab              =>  "\\t".to_string(),
-        KeyCode::Enter            =>  "\\n".to_string(),
-        KeyCode::Esc              =>  "\\e".to_string(),
-        KeyCode::Backspace        =>  "\\177".to_string(),
-        KeyCode::Delete           =>  "\\e[3~".to_string(),
-        KeyCode::Up               =>  "\\e[A".to_string(),
-        KeyCode::Down             =>  "\\e[B".to_string(),
-        KeyCode::Right            =>  "\\e[C".to_string(),
-        KeyCode::Left             =>  "\\e[D".to_string(),
-        _                         =>  "".to_string()
-    }
+fn make_subscribe_body(ship: &String, msg_id: &mut u32) -> Result<String, serde_json::Error> {
+  let subscribe = Subscribe{
+    id: *msg_id,
+    action: "subscribe".to_string(),
+    ship: ship.to_owned(),
+    app: "homunculus".to_string(),
+    path: "/homunculus-http".to_string()
+  };
+  let body = ReqBody{
+    body: vec![ReqOptions::Subscribe(subscribe)]
+  };
+  *msg_id += 1;
+  return to_string(&body);
+}
+
+fn make_ack_body(msg_id: &mut u32, eventid: &u32) -> Result<String, serde_json::Error> {
+  let ack = ReqAck{
+    id: *msg_id,
+    action: "ack".to_string(),
+    eventid: *eventid
+  };
+  let body = ReqBody{
+    body: vec![ReqOptions::Ack(ack)]
+  };
+  *msg_id += 1;
+  return to_string(&body);
+}
+
+fn handle_key(key_event: KeyEvent) -> String {
+  match key_event.code {
+    KeyCode::Char(char) =>  char.to_string(),
+    KeyCode::Tab              =>  "\\t".to_string(),
+    KeyCode::Enter            =>  "\\n".to_string(),
+    KeyCode::Esc              =>  "\\e".to_string(),
+    KeyCode::Backspace        =>  "\\177".to_string(),
+    KeyCode::Delete           =>  "\\e[3~".to_string(),
+    KeyCode::Up               =>  "\\e[A".to_string(),
+    KeyCode::Down             =>  "\\e[B".to_string(),
+    KeyCode::Right            =>  "\\e[C".to_string(),
+    KeyCode::Left             =>  "\\e[D".to_string(),
+    _                         =>  "".to_string()
+  }
 }

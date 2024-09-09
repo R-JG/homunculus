@@ -275,6 +275,8 @@ version = "0.0.1"
 dependencies = [
  "crossterm",
  "reqwest",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
