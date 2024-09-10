@@ -385,6 +385,7 @@
       %json
     =/  jsn  !<(json vase)
     =;  zon=(unit zona)
+      ~&  >>>  zon
       ?~  zon
         [~ hoc]
       (novo acro u.zon)
@@ -419,11 +420,11 @@
           ==
         t.t.t.inp
       ?:  ?&  ?=(^ t.t.t.t.inp)
-              ?|  ?&  =('0' i.t.inp)  =('3' i.t.t.inp)
-                      =('3' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
-                  ==
-                  ?&  =('x' i.t.inp)  =('1' i.t.t.inp)
+              ?|  ?&  =('x' i.t.inp)  =('1' i.t.t.inp)
                       =('B' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
+                  ==
+                  ?&  =('0' i.t.inp)  =('3' i.t.t.inp)
+                      =('3' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
                   ==
                   ?&  =('x' i.t.inp)  =('9' i.t.t.inp)
                       =('B' i.t.t.t.inp)  =('[' i.t.t.t.t.inp)
@@ -793,8 +794,8 @@
     :_  hoc
     :_  ~
     :*  %give  %fact  ~[/homunculus-http]  %json
-        !>  ^-  json  :-  %s  %-  crip  
-        ^-  tape  :-  '\\e[1;1H\\e[3J\\e[0J'
+        !>  ^-  json  :-  %s  %-  crip
+        ^-  tape  :-  '\\x1b[1;1H\\x1b[3J\\x1b[0J'
         %-  volo  ^-  lux  :-  %mor
         :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
             ?:  p.luna
@@ -977,8 +978,12 @@
   ?-  -.acro
     ::
       %dill
-    :*  %give  %fact  ~[p.acro]  %dill-blit
-        !>(lux)
+    :: :*  %give  %fact  ~[p.acro]  %dill-blit
+    ::     !>(lux)
+    :: ==
+    :: ------------TEST-----------
+    :*  %give  %fact  ~[/homunculus-http]  %json
+        !>(`json`[%s (crip (volo lux))])
     ==
     ::
       %http
@@ -4284,21 +4289,20 @@
   ^-  tape
   ?:  ?=(%hop -.lux)
     ?@  p.lux  ~
-    ['\\' 'x1b' '[' (scot %ud y.p.lux) ';' (scot %ud x.p.lux) 'H' ~]
+    ['\\x1b[' (scot %ud y.p.lux) ';' (scot %ud x.p.lux) 'H' ~]
   ?.  ?=(%mor -.lux)  ~
   =/  prev=fila  [~ ~ ~]
   |-  ^-  tape
   ?~  p.lux
     ?.  =([~ ~ ~] prev)
-      :^  '\\'  'x1b'  '['
-      :+  '0'  'm'  ~
+      ['\\x1b[' '0' 'm' ~]
     ~
   ?+  -.i.p.lux  $(p.lux t.p.lux)
       %mor
     $(p.lux ^-((list ^lux) (weld p.i.p.lux t.p.lux)))
       %hop
     ?@  p.i.p.lux  $(p.lux t.p.lux)
-    :*  '\\'  'x1b'  '['
+    :*  '\\x1b['
         (scot %ud y.p.i.p.lux)  ';'
         (scot %ud x.p.i.p.lux)  'H'
         $(p.lux t.p.lux)
@@ -4313,7 +4317,7 @@
     =/  newt=tape         (tufa q.i.p.i.p.lux)
     |-  ^-  tape
     ?^  newb
-      :^  '\\'  'x1b'  '['
+      :-  '\\x1b['
       ?@  u.newb
         :^    '4'
             ?-  u.newb
@@ -4330,7 +4334,7 @@
       :+  (scot %ud (@ b.u.newb))  'm'
       $(newb ~)
     ?^  newf
-      :^  '\\'  'x1b'  '['
+      :-  '\\x1b['
       ?@  u.newf
         :^    '3'
             ?-  u.newf
@@ -4348,13 +4352,13 @@
       $(newf ~)
     ?^  oldd
       ?:  ?=(~ i.oldd)  $(oldd t.oldd)
-      :^  '\\'  'x1b'  '['
+      :-  '\\x1b['
       :+  ?-(i.oldd %bl '25', %br '22', %un '24')
         'm'
       $(oldd t.oldd)
     ?^  newd
       ?:  ?=(~ i.newd)  $(newd t.newd)
-      :^  '\\'  'x1b'  '['
+      :-  '\\x1b['
       :+  ?-(i.newd %bl '5', %br '1', %un '4')
         'm'
       $(newd t.newd)
