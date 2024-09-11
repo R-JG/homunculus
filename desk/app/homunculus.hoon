@@ -358,7 +358,7 @@
       %bac  [~ belt]
       %del  [~ belt]
       %rez
-        [~ belt(p (dec p.belt), q (dec q.belt))]  :: webterm nonsense
+        [~ belt(p (dec p.belt), q (dec q.belt))]
       %hit
         [~ [%clk %d +.belt]]
       %mod
@@ -977,18 +977,14 @@
   ^-  card
   ?-  -.acro
     ::
-      %dill
-    :: :*  %give  %fact  ~[p.acro]  %dill-blit
-    ::     !>(lux)
-    :: ==
-    :: ------------TEST-----------
+      %http
     :*  %give  %fact  ~[/homunculus-http]  %json
         !>(`json`[%s (crip (volo lux))])
     ==
     ::
-      %http
-    :*  %give  %fact  ~[/homunculus-http]  %json
-        !>(`json`[%s (crip (volo lux))])
+      %dill
+    :*  %give  %fact  ~[p.acro]  %dill-blit
+        !>(lux)
     ==
     ::
   ==

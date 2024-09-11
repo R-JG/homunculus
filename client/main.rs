@@ -197,18 +197,23 @@ async fn stream_output(reqw: Client, msg_id: Arc<AtomicU32>, channel_url: String
         while let Some(pos) = buffer.find("\n\n") {
           let message = buffer[..pos].to_string();
           buffer.drain(..pos + 2);
-          let mut event_id: u32 = 0;
-          let mut dat: &str = "";
+          let mut event_id: Option<u32> = None;
+          let mut dat: Option<&str> = None;
           for line in message.lines() {
             if line.starts_with(':') {
               continue;
             } else if let Some(id_str) = line.strip_prefix("id: ") {
-              event_id = id_str.trim().parse::<u32>()?;
+              event_id = Some(id_str.trim().parse::<u32>()?);
             } else if let Some(dat_str) = line.strip_prefix("data: ") {
-              dat = dat_str;
+              dat = Some(dat_str);
+            } else {
+              continue;
             }
           }
-          let event = from_str::<ResBody>(dat);
+          if event_id == None || dat == None {
+            continue;
+          }
+          let event = from_str::<ResBody>(dat.unwrap());
           match event {
             Ok(ResBody::Diff(diff)) => {
               let out = diff.json.replace("\\x1b", "\x1b");
@@ -216,11 +221,11 @@ async fn stream_output(reqw: Client, msg_id: Arc<AtomicU32>, channel_url: String
               std::io::stdout().flush().unwrap();
               reqw.put(&channel_url)
                 .header("cookie", &auth)
-                .body(make_ack_body(&msg_id, &event_id)?)
+                .body(make_ack_body(&msg_id, &event_id.unwrap())?)
                 .send()
                 .await?;
             },
-            _ => ()
+            _ => continue
           }
         }
       }
