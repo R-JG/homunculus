@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::string::FromUtf8Error;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -188,22 +189,28 @@ async fn stream_output(reqw: Client, msg_id: Arc<AtomicU32>, channel_url: String
     .send()
     .await?;
   let mut stream = resp.bytes_stream();
-  let mut buffer = String::new();
+  let mut buffer = Vec::<u8>::new();
+  let mut bufstr = String::new();
   while let Some(chunk) = stream.next().await {
     match chunk {
       Ok(bytes) => {
-        let chunk_str = String::from_utf8(bytes.to_vec())?;
-        buffer.push_str(&chunk_str);
-        while let Some(pos) = buffer.find("\n\n") {
-          let message = buffer[..pos].to_string();
-          buffer.drain(..pos + 2);
+        buffer.append(&mut bytes.to_vec());
+        let Ok(newstr) = String::from_utf8(buffer.clone())
+          else { continue; };
+        buffer.clear();
+        bufstr.push_str(&newstr);
+        while let Some(pos) = bufstr.find("\n\n") {
+          let message = bufstr[..pos].to_string();
+          bufstr.drain(..pos + 2);
           let mut event_id: Option<u32> = None;
           let mut dat: Option<&str> = None;
           for line in message.lines() {
             if line.starts_with(':') {
               continue;
             } else if let Some(id_str) = line.strip_prefix("id: ") {
-              event_id = Some(id_str.trim().parse::<u32>()?);
+              let Ok(num) = id_str.trim().parse::<u32>()
+                else { continue; };
+              event_id = Some(num);
             } else if let Some(dat_str) = line.strip_prefix("data: ") {
               dat = Some(dat_str);
             } else {
@@ -219,17 +226,20 @@ async fn stream_output(reqw: Client, msg_id: Arc<AtomicU32>, channel_url: String
               let out = diff.json.replace("\\x1b", "\x1b");
               print!("{}", out);
               std::io::stdout().flush().unwrap();
-              reqw.put(&channel_url)
+              let Ok(ack_body) = make_ack_body(&msg_id, &event_id.unwrap())
+                else { continue; };
+              let Ok(_) = reqw.put(&channel_url)
                 .header("cookie", &auth)
-                .body(make_ack_body(&msg_id, &event_id.unwrap())?)
+                .body(ack_body)
                 .send()
-                .await?;
+                .await
+              else { continue; };
             },
             _ => continue
           }
         }
       }
-      Err(_err) => ()
+      Err(_err) => continue
     }
   }
   Ok(())

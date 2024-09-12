@@ -385,7 +385,6 @@
       %json
     =/  jsn  !<(json vase)
     =;  zon=(unit zona)
-      ~&  >>>  zon
       ?~  zon
         [~ hoc]
       (novo acro u.zon)
