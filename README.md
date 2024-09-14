@@ -10,31 +10,21 @@
 > 
 > ~ Goethe, *Faust*, 6850
 
-%homunculus is an agent that turns Sail elements into a terminal interface. For the user, %homunculus renders a desktop environment for your ship in the terminal — with interfaces that are not inherently CLIs — making the terminal an alternative to the browser. For the developer, %homunculus allows you to use XML/Sail to create interfaces as easily as if you were building for the Web.
+%homunculus is an agent that turns Sail elements into a terminal interface. For the user, %homunculus transforms the terminal into a UI for your ship, laid out in 2D space and interacted with similarly to the browser. For the developer, %homunculus allows you to use XML/Sail to create non-CLI TUIs as easily as if you were building a Web UI.
 
 ## Users
 
-The simplest way to use %homunculus from your ship is with %webterm. Install the %homunculus desk, and then in %webterm press the plus button to open up a new tab and enter `homunculus!homunculus`.
+Note: %homunculus is under active development. Currently, you can test it out using either the Rust client or the Bash script. This will establish an Eyre channel connection to your ship in order to send terminal input, and stream rendered output from %homunculus.
 
 Most app windows can be interacted with using the `arrow` keys to move around to different selection points. Pressing `enter` on a selection point activates it (which may or may not have an implementation in the app). %homunculus also supports mouse events; clicking on a selection point will select and activate it.
 
-You can change which window is active by pressing `alt+arrow`. Additionally, you can move windows (if they are smaller than the terminal size) with `shift+arrow` and `ctrl+arrow`. Pressing `alt+c` will close whichever window is active.
+You can change which window is active by pressing `alt+arrow`. Pressing `alt+c` will close whichever window is active, and `ctrl+c` will exit the client.
 
-Pressing `tab` will bring up a menu that provides an interface for all of the above functionality as an alternative to the hotkeys. Importantly, the menu also contains a series of customizable poke forms associated with each number key. This is useful for opening app windows within %homunculus.
+Pressing `esc` will bring up a menu providing various window management options and a series of customizable poke forms associated with each number key.
 
 Windows may also have their own custom hotkeys implemented.
 
-As an alternative to webterm, %homunculus can be used in the terminal as a remote http session. To do this, run the following with the %homunculus desk installed: 
-
-```bash
-bash <( curl -s {your-ship-url}/homunculus -d {your-auth-code} )
-```
-
-*Note:  compatibility with different terminal emulators may vary.*
-
 ## Developers
-
-#### *Interface*
 
 In order for an app to open a session with %homunculus — or update an existing session — it must send a poke with the `%homunculus-session` mark, where the vase contains a cell with optional hotkeys at the head, and manx at the tail. (Currently, session updates must contain the whole manx representing your interface from the root.)
 
