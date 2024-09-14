@@ -181,7 +181,7 @@
       %+  fio  acro
       ^-  lux
       :-  %mor
-      :~  (supo muri.gen visa.u.aru visa.gen)
+      :~  (supo visa.u.aru visa.gen)
           ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
           (fero rex.gen equi.gen esse.gen)
       ==   
@@ -210,7 +210,7 @@
       %+  fio  acro
       ^-  lux
       :-  %mor
-      :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) visa.gen))
+      :~  (supo ~ (~(uni by bac) visa.gen))
           ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
           (fero rex.gen equi.gen esse.gen)
       ==
@@ -233,7 +233,7 @@
     %+  fio  acro
     ^-  lux
     :-  %mor
-    :~  (supo muri.gen ~ visa.gen)
+    :~  (supo ~ visa.gen)
         ?:  p.luna  (fero rex.q.luna equi.q.luna esse.q.luna)
         (fero rex.gen equi.gen esse.gen)
     ==
@@ -258,7 +258,7 @@
       %+  fio  acro
       ^-  lux
       :-  %mor
-      :~  =.(p.luna | (supo muri.gen ~ visa.gen))
+      :~  =.(p.luna | (supo ~ visa.gen))
           (fero rex.gen equi.gen esse.gen)
       ==
       ::
@@ -281,7 +281,7 @@
       =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
       =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
       :_  hoc
-      :~  (fio acro [%mor [(supo [1 x.urbs 1 y.urbs] ~ (gyro aul bac)) ~]])
+      :~  (fio acro [%mor [(supo ~ (gyro aul bac)) ~]])
           (levo our.bol)
       ==
       ::
@@ -306,7 +306,7 @@
           ==
         :_  hoc
         ?~  aru  [(levo our.bol) ~]
-        :~  (fio acro [%mor [(supo muri.u.aru ~ (~(int by visa.u.aru) bac)) ~]])
+        :~  (fio acro [%mor [(supo ~ (~(int by visa.u.aru) bac)) ~]])
             (levo our.bol)
         ==
       =:  arae  (~(del by arae) p.umb)
@@ -318,25 +318,19 @@
       =/  fonu=(unit ^fons)  ?^(aul [~ n.aul] ~)
       =.  fons  ?^(fonu u.fonu *^fons)
       :_  hoc
-      :~  (fio acro [%mor [(supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac)) ~]])
+      :~  (fio acro [%mor [(supo ~ (gyro ~(tap in aul) bac)) ~]])
           (levo our.bol)
       ==
       ::
         %move
       =/  aru=(unit ara)  (~(get by arae) p.umb)
       ?~  aru  [~ hoc]
-      =/  mur=muri  muri.u.aru
       =^  vis=visa  u.aru
         (fluo q.q.umb p.q.umb p.umb u.aru)
-      =/  dim=muri
-        :^    (min l.mur l.muri.u.aru)
-            (max r.mur r.muri.u.aru)
-          (min t.mur t.muri.u.aru)
-        (max b.mur b.muri.u.aru)
       :_  hoc(arae (~(put by arae) fons u.aru))
       :~  %+  fio  acro
           :-  %mor
-          :~  (supo dim ~ vis)
+          :~  (supo ~ vis)
               (fero rex.q.luna equi.q.luna esse.q.luna)
       ==  ==
       ::
@@ -526,9 +520,9 @@
       %+  fio  arc
       ^-  lux
       :-  %mor
-      :~  (supo [1 x.urbs 1 y.urbs] ~ (~(uni by bac) vis))
+      :~  (supo ~ (~(uni by bac) vis))
           ?:  p.luna
-            =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
+            =.(p.luna | (supo ~ visa.q.luna))
             (fero rex.q.luna equi.q.luna esse.q.luna)
           ?~  aru
             (fero ~ ~ ~)
@@ -546,9 +540,9 @@
       %+  fio  arc
       ^-  lux
       :-  %mor
-      :-  (supo [1 x.urbs 1 y.urbs] ~ vis)
+      :-  (supo ~ vis)
       ?:  p.luna
-        :~  =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
+        :~  =.(p.luna | (supo ~ visa.q.luna))
             (fero rex.q.luna equi.q.luna esse.q.luna)
         ==
       :~  ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
@@ -666,7 +660,7 @@
       %+  fio  arc
       ^-  lux
       :-  %mor
-      :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
+      :~  (supo ~ vis)
           ?~  aru  (fero ~ ~ ~)
           (fero rex.u.aru equi.u.aru esse.u.aru)
       ==
@@ -687,7 +681,7 @@
       %+  fio  arc
       ^-  lux
       :-  %mor
-      :~  (supo dim ~ vis)
+      :~  (supo ~ vis)
           (fero rex.u.aru equi.u.aru esse.u.aru)
       ==
     ::
@@ -709,7 +703,7 @@
         %+  fio  arc
         ^-  lux
         :-  %mor
-        :~  (supo muri.u.aru ~ (~(int by visa.u.aru) bac))
+        :~  (supo ~ (~(int by visa.u.aru) bac))
             ?~  arnu  (fero ~ ~ ~)
             (fero rex.u.arnu equi.u.arnu esse.u.arnu)
         ==
@@ -726,7 +720,7 @@
       %+  fio  arc
       ^-  lux
       :-  %mor
-      :~  (supo [1 x.urbs 1 y.urbs] ~ (gyro ~(tap in aul) bac))
+      :~  (supo ~ (gyro ~(tap in aul) bac))
           ?~  arnu  (fero ~ ~ ~)
           (fero rex.u.arnu equi.u.arnu esse.u.arnu)
       ==
@@ -796,9 +790,9 @@
         !>  ^-  json  :-  %s  %-  crip
         ^-  tape  :-  '\\x1b[1;1H\\x1b[3J\\x1b[0J'
         %-  volo  ^-  lux  :-  %mor
-        :~  (supo [1 x.urbs 1 y.urbs] ~ vis)
+        :~  (supo ~ vis)
             ?:  p.luna
-              =.(p.luna | (supo muri.q.luna ~ visa.q.luna))
+              =.(p.luna | (supo ~ visa.q.luna))
               (fero rex.q.luna equi.q.luna esse.q.luna)
             ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
         ==
@@ -1065,7 +1059,7 @@
                   !>(^-(event:homunculus [%select u.avis.u.sel]))
           ==  ==
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara ?~(abe visa.duc visa.abe))
+      :~  (supo visa.ara ?~(abe visa.duc visa.abe))
           ^-  lux
           ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
             (vado ab.ars.u.sel i.ars.u.sel size.res.u.sel lar.u.sel iter.u.sel)
@@ -1112,7 +1106,7 @@
             ==  ==
           ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
+      :~  (supo visa.ara ?^(fupd visa.fupd ?^(cupd visa.cupd ~)))
           (fero rex.ara equi.ara esse.ara)
       ==
     ::
@@ -1167,7 +1161,7 @@
                     !>(^-(event:homunculus [%select u.avis.u.el]))
             ==  ==
         :-  ~
-        [%mor [(supo muri.ara visa.ara visa.duc) (fero rex.ara equi.ara esse.ara) ~]]
+        [%mor [(supo visa.ara visa.duc) (fero rex.ara equi.ara esse.ara) ~]]
       ::
       =^  act=(pair (unit lux) (list card))  ara
         %_($ lex %act)
@@ -1264,7 +1258,7 @@
       :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara vi)
+      :~  (supo visa.ara vi)
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
       ==
     ::
@@ -1359,7 +1353,7 @@
       :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara vi)
+      :~  (supo visa.ara vi)
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
       ==
     ::
@@ -1465,7 +1459,7 @@
       :_  ara(esse (~(put by esse.ara) k.rex.ara u.el), visa (~(uni by visa.ara) vi))
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara vi)
+      :~  (supo visa.ara vi)
           (vado ab.ars.u.el i.ars.u.el size.res.u.el lar.u.el iter.u.el)
       ==
     ::
@@ -1491,7 +1485,7 @@
       :_  ara(visa visa.abe)
       :_  ~
       :+  ~  %mor
-      :~  (supo muri.ara visa.ara visa.abe)
+      :~  (supo visa.ara visa.abe)
           (fero rex.ara equi.ara esse.ara)
       ==
     ::
@@ -4197,63 +4191,96 @@
   ==
 ::  ::  ::  ::  ::  ::  ::  ::
 ++  supo                    :: make a display update
-  |=  [mur=muri old=visa vis=visa]
+  |=  [old=visa new=visa]
   ^-  lux
-  =/  [x1=@ud y1=@ud]  [l.mur t.mur]
-  =/  [x2=@ud y2=@ud]  [(min r.mur x.urbs) (min b.mur y.urbs)]
-  =|  fil=fila
-  =|  lin=lina
+  =.  new
+    ?:  ?=(^ old)
+      ?:  p.luna
+        %-  %~  dif
+              in
+            %-  %~  dif
+                  in
+                `(set [loci nodi])`new
+            `(set [loci nodi])`visa.q.luna
+        `(set [loci nodi])`old
+      %-  %~  dif
+            in
+          `(set [loci nodi])`new
+      `(set [loci nodi])`old
+    ?:  p.luna
+      %-  %~  dif
+            in
+          `(set [loci nodi])`new
+      `(set [loci nodi])`visa.q.luna
+    new
   :-  %mor
-  |-  ^-  (list lux)
-  =/  v=$@(~ (pair fila lina))
-    =/  nod=(unit nodi)  (~(get by vis) [x1 y1])
-    ?~  nod  ~
-    ?:  &(?=(~ old) !p.luna)
-      [p.u.nod q.u.nod ~]
-    =/  lod=(unit nodi)  (~(get by old) [x1 y1])
-    ?.  ?|  &(?=(^ lod) =(u.nod u.lod)) 
-            &(p.luna (~(has by visa.q.luna) [x1 y1]))
+  =;  acc
+    ^-  (list lux)
+    ?.  .?(lin.acc)
+      (flop lix.acc)
+    (flop `(list lux)`[[%klr [[fil.acc (flop lin.acc)] ~]] lix.acc])
+  %+  roll
+    ^-  (list (pair loci nodi))
+    %+  sort  ~(tap by new)
+    |=  $:  a=(pair loci nodi)
+            b=(pair loci nodi)
         ==
-      ?.  p.luna
-        [p.u.nod q.u.nod ~]
-      :-  p.u.nod(b (cubo b.p.u.nod), f (cubo f.p.u.nod))
-      [q.u.nod ~]
-    ~
-  ?:  =(x1 x2)
-    ?:  =(y1 y2)
-      ?~  v
-        ?~  lin
-          ~
-        [[%klr [[fil lin] ~]] ~]
-      ?~  lin
-        [[%hop x1 y1] [%klr [v ~]] ~]
-      [[%klr [[fil lin] ~]] [%hop x1 y1] [%klr [v ~]] ~]
-    ?~  v
-      ?~  lin
-        $(x1 l.mur, y1 +(y1))
-      :-  [%klr [[fil lin] ~]]
-      $(x1 l.mur, y1 +(y1), lin ~)
-    ?~  lin
-      :+  [%hop x1 y1]
-        [%klr [v ~]]
-      $(x1 l.mur, y1 +(y1), lin ~)
-    :^    [%klr [[fil lin] ~]]
-        [%hop x1 y1]
-      [%klr [v ~]]
-    $(x1 l.mur, y1 +(y1), lin ~)
-  ?~  v
-    ?~  lin
-      $(x1 +(x1))
-    :-  [%klr [[fil lin] ~]]
-    $(x1 +(x1), lin ~)
-  ?~  lin
-    :-  [%hop x1 y1]
-    $(x1 +(x1), fil p.v, lin q.v)
-  ?:  =(fil p.v)
-    $(x1 +(x1), lin (weld lin q.v))
-  :+  [%klr [[fil lin] ~]]
-    [%hop x1 y1]
-  $(x1 +(x1), fil p.v, lin q.v)
+    ?|  (lth y.p.a y.p.b)
+        ?&  =(y.p.a y.p.b)
+            (lth x.p.a x.p.b)
+    ==  ==
+  |=  $:  i=(pair loci nodi)
+          acc=[xpre=@ud ypre=@ud fil=fila lin=lina lix=(list lux)]
+      ==
+  ^+  acc
+  =?  p.q.i  p.luna
+    %_  p.q.i
+      b  (cubo b.p.q.i)
+      f  (cubo f.p.q.i)
+    ==
+  ?:  ?&  =(x.p.i +(xpre.acc))
+          =(y.p.i ypre.acc)
+      ==
+    ?:  .?(lin.acc)
+      ?:  =(fil p.q.i)
+        %_  acc
+          xpre  x.p.i
+          ypre  y.p.i
+          lin   [q.q.i lin.acc]
+        ==
+      %_  acc
+        xpre  x.p.i
+        ypre  y.p.i
+        fil   p.q.i
+        lin   [q.q.i ~]
+        lix
+          :_  lix.acc
+          [%klr [[fil.acc (flop lin.acc)] ~]]
+      ==
+    %_  acc
+      xpre  x.p.i
+      ypre  y.p.i
+      fil   p.q.i
+      lin   [q.q.i ~]
+    ==
+  ?:  .?(lin.acc)
+    %_  acc
+      xpre  x.p.i
+      ypre  y.p.i
+      fil   p.q.i
+      lin   [q.q.i ~]
+      lix
+        :+  [%hop p.i]
+          [%klr [[fil.acc (flop lin.acc)] ~]]
+        lix.acc
+    ==
+  %_  acc
+    xpre  x.p.i
+    ypre  y.p.i
+    fil   p.q.i
+    lin   [q.q.i ~]
+    lix   [[%hop p.i] lix.acc]
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::
 ++  cubo                    :: turn a color gray
   |=  tin=tint
