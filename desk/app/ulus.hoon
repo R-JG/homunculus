@@ -37,11 +37,12 @@
 +$  loci  [x=@ud y=@ud]                                                :: coordinates
 +$  modi  [x=@ud y=@ud]                                                :: box extent
 +$  muri  [l=@ud r=@ud t=@ud b=@ud]                                    :: box perimeter widths
-+$  rami  (lest [=axis =ager])                                         :: element key
++$  rami  (list [=axis =ager])                                         :: element key (null is root)
 +$  axis  ?(%b %l %n)                                                  :: element positioning category
 +$  ager  @ud                                                          :: element number
 +$  vox   (list lina)                                                  :: rows of text
 +$  lina  (list @c)                                                    :: a row of text
+:: +$  nodi  (pair fila @c)                                               ::
 +$  fila  [d=(set deco) b=tint f=tint]                                 :: element style
 +$  acia  [d=(unit (set deco)) b=(unit tint) f=(unit tint)]            :: alternate element style
 +$  fuga  [d=?(%col %row) b=?(%wrap %clip)]                            :: positioning flow
@@ -50,8 +51,15 @@
 +$  ad    ?(%l %r %t %b)                                               :: direction
 +$  via   ?(%h %v)                                                     :: orientation
 +$  ora   ?(%light %heavy %double %arc %blank %~)                      :: line style
-+$  nodi  (pair fila @c)
-+$  lux   blit:dill
++$  nox   (map @ud (list [x1=@ud x2=@ud]))
++$  lux
+  $:  x1=@ud
+      x2=@ud
+      fil=fila
+      nav=(unit rami)
+      txt=lina
+  ==
++$  opus  (list (list lux))
 +$  zona
   $~  [%txt ~]
   $%  [%rez p=@ud q=@ud]
@@ -98,7 +106,6 @@
   ==
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  data  [p=@t q=(map @t @t)]
-::  +$  opus  ... opus will be the name for the render schematic type
 :: ...
 +$  vela  manx
 +$  urbs  $~([50 25] [x=@ud y=@ud])
@@ -134,6 +141,18 @@
   ^-  (quip card _hoc)
   ?>  =(our.bol src.bol)
   ?+  mark  !!
+    ::
+      %noun
+    =;  =vela
+      =/  gen  (geno vela ~)
+      ?^  gen
+        =.  deus.ego  i.gen
+        ~&  >  (viso ~)
+        [~ hoc]
+      [~ hoc]
+    ;box(w "100%", h "100%", cb "red", cf "white", fx "end", fy "end", fl "column")
+      ;+  ;/  "test"
+    ==
     ::
       %json
     =/  zon  (ineo !<(json vase))
@@ -653,6 +672,15 @@
     $(lina (tuba v.i.a), a t.a)
   ==
 ::
+++  paro                           :: check whether an element is a navigation point
+  |=  typ=%term
+  ^-  ?
+  ?|  =(%select typ)
+      =(%scroll typ)
+      =(%input typ)
+      =(%checkbox typ)
+  ==
+::
 ++  pars                           :: parse a tape to a sizing unit
   |=  v=tape
   ^-  as
@@ -786,7 +814,6 @@
       i     +(i)
     ==
   $(nor [i.norm nor], norm t.norm, i +(i))
-::
 ::
 ++  oro                            :: turn lina into vox
   |=  [wid=(unit @ud) hei=(unit @ud) lin=lina]
@@ -1531,7 +1558,204 @@
   :-  ^-(deus [[aape avis ares ars] [bdei ldei ndei]])
   $(m t.m)
 ::
-
-
+++  velo                           :: build layer context for rendering a branch
+  |=  key=rami
+  ^-  nox
+  =|  xon=nox
+  ?~  key  ~
+  =:    xon
+      ?~  l.gens.deus.ego  xon
+      :: get coordinates of children of l.gens and add to nox 
+      :: further issue: if the next deus is a layer in l.gens, then only the layers above are to be added
+      =/  els=dei
+        %+  roll
+          ?.  ?=(%l axis.i.key)
+            l.gens.deus.ego
+          (scag ager.i.key `dei`l.gens.deus.ego)
+        |=  [d=deus a=dei]
+        (weld a n.gens.d)
+      |-  ^-  nox
+      ?~  els  xon
+      :: for each i.els, reap using h.res for n, and the x1 and x2 coordinates as v,
+      :: then recurse through this list and track the coordinate that each i represents,
+      :: and use this y coordinate to get from the xon map,
+      :: then prepend the list [x1 x2] item onto the value of the map and put it back.
+      ?:  |(=(0 w.size.res.cor.i.els) =(0 h.size.res.cor.i.els))
+        $(els t.els)
+      =/  ros=(list [@ud @ud])
+        %+  reap  h.size.res.cor.i.els
+        :-  x.apex.cor.i.els
+        (add x.apex.cor.i.els (dec w.size.res.cor.i.els))
+      %=  $
+        els  t.els
+        xon
+          =<  nox
+          %+  roll  ros
+          |=  $:  i=[@ud @ud]
+                  a=[y=$~(y.apex.cor.i.els @ud) =nox]
+              ==
+          ^-  [@ud nox]
+          =/  x  (~(get by xon) y.a)
+          :-  +(y.a)
+          %+  %~  put  by  xon
+            y.a
+          :-  i
+          ?~  x
+            ~
+          u.x
+      ==
+        deus.ego
+      %+  snag  ager.i.key
+      ?-  axis.i.key
+        %n  n.gens.deus.ego
+        %b  b.gens.deus.ego
+        %l  l.gens.deus.ego
+      ==
+    ==
+  ?~  t.key
+    xon
+  $(key t.key)
+::
+++  viso                           :: build a render schematic for a branch
+  |=  key=rami
+  ^-  opus
+  =^  [ier=iter lim=modi]  deus.ego
+    =|  it=iter
+    =/  li=modi
+      ?:  ?=(%scroll -.ars.cor.deus.ego)  sola.ars.cor.deus.ego
+      :-  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
+      (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+    ?~  key
+      [[it li] deus.ego]
+    |-  ^-  [[iter modi] deus]
+    =:  it
+          ?.  ?=(%scroll -.ars.cor.deus.ego)  it
+          :-  (add x.it x.iter.ars.cor.deus.ego)
+          (add y.it y.iter.ars.cor.deus.ego)
+        li
+          :-  (min x.li (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego)))
+          (min y.li (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego)))
+        deus.ego
+          %+  snag  ager.i.key
+          ?-  axis.i.key
+            %n  n.gens.deus.ego
+            %b  b.gens.deus.ego
+            %l  l.gens.deus.ego
+          ==
+      ==
+    ?~  t.key
+      [[it li] deus.ego]
+    $(key t.key)
+  ?:  ?|  =(0 w.size.res.cor.deus.ego)
+          =(0 h.size.res.cor.deus.ego)
+      ==
+    ~
+  =/  top=@ud  y.apex.cor.deus.ego
+  =/  bot=@ud
+    %+  min  y.lim
+    (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+  ?:  (lte bot y.apex.cor.deus.ego)
+    ~
+  =/  acc=opus
+    %+  reap
+      +((sub bot top))
+    *(list lux)
+  |-  ^-  opus
+  ?:  ?|  (lth x.lim x.apex.cor.deus.ego)
+          (lth y.lim y.apex.cor.deus.ego)
+      ==
+    acc
+  =/  x1=@ud  x.apex.cor.deus.ego
+  =/  y1=@ud  y.apex.cor.deus.ego
+  =/  x2=@ud  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
+  =/  y2=@ud  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+  =.  lim     [(min x.lim x2) (min y.lim y2)]
+  =.  acc
+    =.  ier
+      ?.  ?=(%scroll -.ars.cor.deus.ego)  ier
+      :-  (add x.ier x.iter.ars.cor.deus.ego)
+      (add y.ier y.iter.ars.cor.deus.ego)
+    %+  roll
+      ;:  weld
+        b.gens.deus.ego
+        l.gens.deus.ego
+        n.gens.deus.ego
+      ==
+    |=  [d=deus a=_acc]
+    ^$(deus.ego d, acc a)
+  =/  a-y1=@ud   (sub y1 top)
+  =/  a-y2=@ud   (sub y.lim top)
+  =/  rend=opus  (swag [a-y1 +((sub a-y2 a-y1))] acc)
+  =.  rend
+    =<  p
+    %^  spin  rend
+      ?+  -.ars.cor.deus.ego  ~
+        %text      vox.ars.cor.deus.ego
+        %pattern   vox.ars.cor.deus.ego
+        %input     vox.ars.cor.deus.ego
+        %checkbox  ?:(v.ars.cor.deus.ego [[~-~2588. ~] ~] ~)
+      ==
+    |=  [l=(list lux) txt=vox]
+    :_  ?^(txt t.txt ~)
+    |-  ^-  (list lux)
+    =/  tok=lux
+      :*  x1  x2
+          look.res.cor.deus.ego
+          ~                      :: TODO add nav key
+          ?^(txt i.txt ~)
+      ==
+    ?~  l  
+      :: then produce the token and end.
+      [tok l]
+    ?:  (lth x2 x1.i.l)
+      :: then produce the token and end.
+      [tok l]
+    ?:  (gth x1 x2.i.l)
+      :: then move on to the next token.
+      [i.l $(l t.l)]
+    ?:  ?&  (gte x1 x1.i.l)
+            (lte x2 x2.i.l)
+        ==
+      :: then the element is completely blocked; end without producing a token.
+      l
+    ?:  ?&  (lth x1 x1.i.l)
+            (gth x2 x2.i.l)
+        ==
+      :: then the element exceeds both sides of the existing token;
+      :: produce a token for the first part where x2 is shortened, move x1 down, and continue;
+      :: and also chop up txt similarly
+      :+  %_  tok
+            x2   (dec x1.i.l)
+            txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+          ==
+        i.l
+      %=  $
+        l    t.l
+        x1   +(x2.i.l)
+        txt
+          ?~  txt  ~
+          txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
+      ==
+    ?:  (lth x1 x1.i.l)
+      :: then the element partially has room before the token and the rest is blocked;
+      :: produce a token and end (also if txt, take a section of it).
+      :_  l
+      %_  tok
+        x2   (dec x1.i.l)
+        txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+      ==
+    :: else the element partially exceeds the token and the first part is blocked;
+    :: recurse to the next token where the prospective token and txt are modified.
+    :-  i.l
+    %=  $
+      l    t.l
+      x1   +(x2.i.l)
+      txt
+        ?~  txt  ~
+        txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
+    ==
+  %+  weld  (scag +(a-y1) acc)
+  %+  weld  rend
+  (slag +(a-y2) acc)
 ::
 --
