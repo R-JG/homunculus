@@ -160,8 +160,22 @@
     ::
       %json
     =/  zon  (ineo !<(json vase))
+    ?~  zon  [~ hoc]
     ~&  >  zon
-    [~ hoc]
+    ?.  ?=(%rez -.u.zon)  [~ hoc]
+    =.  urbs.ego  +.u.zon
+    =;  =vela
+      =/  gen  (geno vela ~)
+      ?~  gen  [~ hoc]
+      =.  deus.ego  i.gen
+      =/  vis  (viso ~)
+      =/  txt  (dico apex.cor.i.gen vis)
+      :_  hoc
+      :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
+      ==
+    ;box(w "100%", h "100%", cb "green", cf "white")
+      ;+  ;/  "test"
+    ==
     ::
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -689,12 +703,9 @@
   |=  [t=term i=@]
   ^-  [axis ager]
   :_  i
-  ?+  t             %n
-    %layer          %l
-    %border-left    %b
-    %border-right   %b
-    %border-top     %b
-    %border-bottom  %b
+  ?+  t      %n
+    %layer   %l
+    %border  %b
   ==
 ::
 ++  pars                           :: parse a tape to a sizing unit
@@ -1717,6 +1728,8 @@
           acc       sol.a
         ==
     ==
+  ?:  ?=(%layer -.ars.cor.deus.ego)
+    acc
   =/  a-i1=@ud   (sub y1 top)
   =/  a-i2=@ud   (sub y2 top)
   =;  rend=sol
@@ -1798,22 +1811,29 @@
     :_  p
     ^-  tape
     :~  '\\x1b['
-        (scot %ud x.apex)  ';'
-        (scot %ud y.acc)   'H'
+        (scot %ud y.acc)   ';'
+        (scot %ud x.apex)  'H'
     ==
   %^  spin  lis  f.acc
   |=  [=lux fil=fila]
   ^-  [tape fila]
   :_  fil.lux
-  =/  od=?  .?(d.fil.lux)
-  =/  nd=?  .?(d.fil)
+  =/  od=?  .?(d.fil)
+  =/  nd=?  .?(d.fil.lux)
   =/  nb=(unit tint)  ?.(=(b.fil b.fil.lux) [~ b.fil.lux] ~)
   =/  nf=(unit tint)  ?.(=(f.fil f.fil.lux) [~ f.fil.lux] ~)
   |-  ^-  tape
   ?:  od
-    ['\\x1b[0m' $(od |)]
-  ?:  nd
     =/  ds=(list deco)  ~(tap in d.fil)
+    |-  ^-  tape
+    ?~  ds  ^$(od |)
+    ?:  ?=(%~ i.ds)  $(ds t.ds)
+    :-  '\\x1b['
+    :+  ?-(i.ds %bl '25', %br '22', %un '24')
+      'm'
+    $(ds t.ds)
+  ?:  nd
+    =/  ds=(list deco)  ~(tap in d.fil.lux)
     |-  ^-  tape
     ?~  ds  ^$(nd |)
     ?:  ?=(%~ i.ds)  $(ds t.ds)
