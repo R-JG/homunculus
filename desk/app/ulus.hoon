@@ -59,7 +59,7 @@
       nav=(unit rami)
       txt=lina
   ==
-+$  opus  (list (list lux))
++$  sol  (list (list lux))
 +$  zona
   $~  [%txt ~]
   $%  [%rez p=@ud q=@ud]
@@ -147,10 +147,16 @@
       =/  gen  (geno vela ~)
       ?^  gen
         =.  deus.ego  i.gen
-        ~&  >  (viso ~)
+        =/  vis  (viso ~)
+        ~&  i.gen
+        ~&  >>  (lent vis)
+        ~&  >  vis
         [~ hoc]
       [~ hoc]
-    ;box(w "100%", h "100%", cb "red", cf "white", fx "end", fy "end", fl "column")
+    ;box(w "100%", h "100%", cb "red", cf "white", fx "center", fy "center", fl "column")
+      ;select(w "6", h "3", cb "black", cf "blue", fx "end")
+        ;box(cb "#FFFFFF", d "underline"): select
+      ==
       ;+  ;/  "test"
     ==
     ::
@@ -673,12 +679,24 @@
   ==
 ::
 ++  paro                           :: check whether an element is a navigation point
-  |=  typ=%term
+  |=  t=term
   ^-  ?
-  ?|  =(%select typ)
-      =(%scroll typ)
-      =(%input typ)
-      =(%checkbox typ)
+  ?|  =(%select t)
+      =(%scroll t)
+      =(%input t)
+      =(%checkbox t)
+  ==
+::
+++  apo                            :: make a key segment
+  |=  [t=term i=@]
+  ^-  [axis ager]
+  :_  i
+  ?+  t             %n
+    %layer          %l
+    %border-left    %b
+    %border-right   %b
+    %border-top     %b
+    %border-bottom  %b
   ==
 ::
 ++  pars                           :: parse a tape to a sizing unit
@@ -1618,34 +1636,39 @@
 ::
 ++  viso                           :: build a render schematic for a branch
   |=  key=rami
-  ^-  opus
-  =^  [ier=iter lim=modi]  deus.ego
+  ^-  sol
+  =^  [ier=iter lim=modi nav=(unit rami)]  deus.ego
+    =|  ki=rami
+    =|  na=(unit rami)
     =|  it=iter
     =/  li=modi
       ?:  ?=(%scroll -.ars.cor.deus.ego)  sola.ars.cor.deus.ego
       :-  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
       (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-    ?~  key
-      [[it li] deus.ego]
-    |-  ^-  [[iter modi] deus]
-    =:  it
-          ?.  ?=(%scroll -.ars.cor.deus.ego)  it
-          :-  (add x.it x.iter.ars.cor.deus.ego)
-          (add y.it y.iter.ars.cor.deus.ego)
-        li
-          :-  (min x.li (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego)))
-          (min y.li (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego)))
-        deus.ego
-          %+  snag  ager.i.key
-          ?-  axis.i.key
-            %n  n.gens.deus.ego
-            %b  b.gens.deus.ego
-            %l  l.gens.deus.ego
-          ==
-      ==
-    ?~  t.key
-      [[it li] deus.ego]
-    $(key t.key)
+    ?~  key  [[it li na] deus.ego]
+    |-  ^-  [[iter modi (unit rami)] deus]
+    =<  ?~  t.key
+          [[it li na] deus.ego]
+        $(key t.key, ki [i.key ki])
+    %_  .
+      it
+        ?.  ?=(%scroll -.ars.cor.deus.ego)  it
+        :-  (add x.it x.iter.ars.cor.deus.ego)
+        (add y.it y.iter.ars.cor.deus.ego)
+      li
+        :-  (min x.li (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego)))
+        (min y.li (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego)))
+      na
+        ?.  (paro -.ars.cor.deus.ego)  na
+        [~ (flop ki)]
+      deus.ego
+        %+  snag  ager.i.key
+        ?-  axis.i.key
+          %n  n.gens.deus.ego
+          %b  b.gens.deus.ego
+          %l  l.gens.deus.ego
+        ==
+    ==
   ?:  ?|  =(0 w.size.res.cor.deus.ego)
           =(0 h.size.res.cor.deus.ego)
       ==
@@ -1656,97 +1679,94 @@
     (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
   ?:  (lte bot y.apex.cor.deus.ego)
     ~
-  =/  acc=opus
+  =/  acc=sol
     %+  reap
       +((sub bot top))
     *(list lux)
-  |-  ^-  opus
-  ?:  ?|  (lth x.lim x.apex.cor.deus.ego)
-          (lth y.lim y.apex.cor.deus.ego)
-      ==
-    acc
+  |-  ^-  sol
   =/  x1=@ud  x.apex.cor.deus.ego
   =/  y1=@ud  y.apex.cor.deus.ego
-  =/  x2=@ud  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
-  =/  y2=@ud  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-  =.  lim     [(min x.lim x2) (min y.lim y2)]
+  ?:  ?|  (gth x1 x.lim)
+          (gth y1 y.lim)
+      ==
+    acc
+  =/  x2=@ud  (min x.lim (add x1 (dec w.size.res.cor.deus.ego)))
+  =/  y2=@ud  (min y.lim (add y1 (dec h.size.res.cor.deus.ego)))
+  =:  lim  [x2 y2]
+      nav  ?:((paro -.ars.cor.deus.ego) [~ key] nav)
+    ==
   =.  acc
     =.  ier
       ?.  ?=(%scroll -.ars.cor.deus.ego)  ier
       :-  (add x.ier x.iter.ars.cor.deus.ego)
       (add y.ier y.iter.ars.cor.deus.ego)
-    %+  roll
-      ;:  weld
-        b.gens.deus.ego
-        l.gens.deus.ego
-        n.gens.deus.ego
-      ==
-    |=  [d=deus a=_acc]
-    ^$(deus.ego d, acc a)
-  =/  a-y1=@ud   (sub y1 top)
-  =/  a-y2=@ud   (sub y.lim top)
-  =/  rend=opus  (swag [a-y1 +((sub a-y2 a-y1))] acc)
-  =.  rend
-    =<  p
-    %^  spin  rend
-      ?+  -.ars.cor.deus.ego  ~
-        %text      vox.ars.cor.deus.ego
-        %pattern   vox.ars.cor.deus.ego
-        %input     vox.ars.cor.deus.ego
-        %checkbox  ?:(v.ars.cor.deus.ego [[~-~2588. ~] ~] ~)
-      ==
-    |=  [l=(list lux) txt=vox]
-    :_  ?^(txt t.txt ~)
-    |-  ^-  (list lux)
-    =/  tok=lux
-      :*  x1  x2
-          look.res.cor.deus.ego
-          ~                      :: TODO add nav key
-          ?^(txt i.txt ~)
-      ==
-    ?~  l  
-      :: then produce the token and end.
-      [tok l]
-    ?:  (lth x2 x1.i.l)
-      :: then produce the token and end.
-      [tok l]
-    ?:  (gth x1 x2.i.l)
-      :: then move on to the next token.
-      [i.l $(l t.l)]
-    ?:  ?&  (gte x1 x1.i.l)
-            (lte x2 x2.i.l)
+    =<  +.q
+    %^  spin
+        ;:  weld
+          b.gens.deus.ego
+          l.gens.deus.ego
+          n.gens.deus.ego
         ==
-      :: then the element is completely blocked; end without producing a token.
-      l
-    ?:  ?&  (lth x1 x1.i.l)
-            (gth x2 x2.i.l)
+      [0 acc]
+    |=  [d=deus a=[i=@ =sol]]
+    :-  d
+    %_  a
+      i  +(i.a)
+      sol
+        %=  ^$
+          deus.ego  d
+          key       (snoc key (apo -.ars.cor.d i.a))
+          acc       sol.a
         ==
-      :: then the element exceeds both sides of the existing token;
-      :: produce a token for the first part where x2 is shortened, move x1 down, and continue;
-      :: and also chop up txt similarly
-      :+  %_  tok
-            x2   (dec x1.i.l)
-            txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
-          ==
-        i.l
-      %=  $
-        l    t.l
-        x1   +(x2.i.l)
-        txt
-          ?~  txt  ~
-          txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
+    ==
+  =/  a-i1=@ud   (sub y1 top)
+  =/  a-i2=@ud   (sub y2 top)
+  =;  rend=sol
+    %+  weld  (scag a-i1 acc)
+    %+  weld  rend
+    (slag +(a-i2) acc)
+  =<  p
+  %^  spin  `sol`(swag [a-i1 +((sub a-i2 a-i1))] acc)
+    ?+  -.ars.cor.deus.ego  ~
+      %text      vox.ars.cor.deus.ego
+      %pattern   vox.ars.cor.deus.ego
+      %input     vox.ars.cor.deus.ego
+      %checkbox  ?:(v.ars.cor.deus.ego [[~-~2588. ~] ~] ~)
+    ==
+  |=  [l=(list lux) txt=vox]
+  :_  ?^(txt t.txt ~)
+  |-  ^-  (list lux)
+  =/  tok=lux
+    :*  x1  x2
+        look.res.cor.deus.ego
+        nav
+        ?^(txt ?:(.?(i.txt) (scag +((sub x2 x1)) i.txt) ~) ~)
+    ==
+  ?~  l  
+    :: then produce the token and end.
+    [tok l]
+  ?:  (lth x2 x1.i.l)
+    :: then produce the token and end.
+    [tok l]
+  ?:  (gth x1 x2.i.l)
+    :: then move on to the next token.
+    [i.l $(l t.l)]
+  ?:  ?&  (gte x1 x1.i.l)
+          (lte x2 x2.i.l)
       ==
-    ?:  (lth x1 x1.i.l)
-      :: then the element partially has room before the token and the rest is blocked;
-      :: produce a token and end (also if txt, take a section of it).
-      :_  l
-      %_  tok
-        x2   (dec x1.i.l)
-        txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+    :: then the element is completely blocked; end without producing a token.
+    l
+  ?:  ?&  (lth x1 x1.i.l)
+          (gth x2 x2.i.l)
       ==
-    :: else the element partially exceeds the token and the first part is blocked;
-    :: recurse to the next token where the prospective token and txt are modified.
-    :-  i.l
+    :: then the element exceeds both sides of the existing token;
+    :: produce a token for the first part where x2 is shortened, move x1 down, and continue;
+    :: and also chop up txt similarly
+    :+  %_  tok
+          x2   (dec x1.i.l)
+          txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+        ==
+      i.l
     %=  $
       l    t.l
       x1   +(x2.i.l)
@@ -1754,8 +1774,23 @@
         ?~  txt  ~
         txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
     ==
-  %+  weld  (scag +(a-y1) acc)
-  %+  weld  rend
-  (slag +(a-y2) acc)
+  ?:  (lth x1 x1.i.l)
+    :: then the element partially has room before the token and the rest is blocked;
+    :: produce a token and end (also if txt, take a section of it).
+    :_  l
+    %_  tok
+      x2   (dec x1.i.l)
+      txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+    ==
+  :: else the element partially exceeds the token and the first part is blocked;
+  :: recurse to the next token where the prospective token and txt are modified.
+  :-  i.l
+  %=  $
+    l    t.l
+    x1   +(x2.i.l)
+    txt
+      ?~  txt  ~
+      txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
+  ==
 ::
 --
