@@ -148,9 +148,7 @@
       ?^  gen
         =.  deus.ego  i.gen
         =/  vis  (viso ~)
-        ~&  i.gen
-        ~&  >>  (lent vis)
-        ~&  >  vis
+        ~&  >>  (dico apex.cor.i.gen vis)
         [~ hoc]
       [~ hoc]
     ;box(w "100%", h "100%", cb "red", cf "white", fx "center", fy "center", fl "column")
@@ -1743,25 +1741,18 @@
         ?^(txt ?:(.?(i.txt) (scag +((sub x2 x1)) i.txt) ~) ~)
     ==
   ?~  l  
-    :: then produce the token and end.
     [tok l]
   ?:  (lth x2 x1.i.l)
-    :: then produce the token and end.
     [tok l]
   ?:  (gth x1 x2.i.l)
-    :: then move on to the next token.
     [i.l $(l t.l)]
   ?:  ?&  (gte x1 x1.i.l)
           (lte x2 x2.i.l)
       ==
-    :: then the element is completely blocked; end without producing a token.
     l
   ?:  ?&  (lth x1 x1.i.l)
           (gth x2 x2.i.l)
       ==
-    :: then the element exceeds both sides of the existing token;
-    :: produce a token for the first part where x2 is shortened, move x1 down, and continue;
-    :: and also chop up txt similarly
     :+  %_  tok
           x2   (dec x1.i.l)
           txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
@@ -1775,15 +1766,11 @@
         txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
     ==
   ?:  (lth x1 x1.i.l)
-    :: then the element partially has room before the token and the rest is blocked;
-    :: produce a token and end (also if txt, take a section of it).
     :_  l
     %_  tok
       x2   (dec x1.i.l)
       txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
     ==
-  :: else the element partially exceeds the token and the first part is blocked;
-  :: recurse to the next token where the prospective token and txt are modified.
   :-  i.l
   %=  $
     l    t.l
@@ -1792,5 +1779,84 @@
       ?~  txt  ~
       txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
   ==
+::
+++  dico                           :: turn a render schematic into text
+  |=  [=apex =sol]
+  ^-  @t
+  %-  crip
+  %-  zing
+  =;  [p=wall q=[y=@ f=fila]]
+    ^-  wall
+    ?~  d.f.q  p
+    (snoc p "\\x1b[0m")
+  %^  spin  sol  [y.apex *fila]
+  |=  [lis=(list lux) acc=[y=@ f=fila]]
+  =;  [p=wall q=fila]
+    ^-  [tape [@ fila]]
+    :_  [+(y.acc) q]
+    %-  zing
+    :_  p
+    ^-  tape
+    :~  '\\x1b['
+        (scot %ud x.apex)  ';'
+        (scot %ud y.acc)   'H'
+    ==
+  %^  spin  lis  f.acc
+  |=  [=lux fil=fila]
+  ^-  [tape fila]
+  :_  fil.lux
+  =/  od=?  .?(d.fil.lux)
+  =/  nd=?  .?(d.fil)
+  =/  nb=(unit tint)  ?.(=(b.fil b.fil.lux) [~ b.fil.lux] ~)
+  =/  nf=(unit tint)  ?.(=(f.fil f.fil.lux) [~ f.fil.lux] ~)
+  |-  ^-  tape
+  ?:  od
+    ['\\x1b[0m' $(od |)]
+  ?:  nd
+    =/  ds=(list deco)  ~(tap in d.fil)
+    |-  ^-  tape
+    ?~  ds  ^$(nd |)
+    ?:  ?=(%~ i.ds)  $(ds t.ds)
+    :-  '\\x1b['
+    :+  ?-(i.ds %bl '5', %br '1', %un '4')
+      'm'
+    $(ds t.ds)
+  ?^  nb
+    :-  '\\x1b['
+    ?@  u.nb
+      :^    '4'
+          ?-  u.nb
+            %r  '1'  %g  '2'  %b  '4'
+            %c  '6'  %m  '5'  %y  '3'
+            %k  '0'  %w  '7'  %~  '9'
+          ==
+        'm'
+      $(nb ~)
+    :^  '4'  '8'  ';'
+    :+  '2'  ';'
+    :+  (scot %ud (@ r.u.nb))  ';'
+    :+  (scot %ud (@ g.u.nb))  ';'
+    :+  (scot %ud (@ b.u.nb))  'm'
+    $(nb ~)
+  ?^  nf
+    :-  '\\x1b['
+    ?@  u.nf
+      :^    '3'
+          ?-  u.nf
+            %r  '1'  %g  '2'  %b  '4'
+            %c  '6'  %m  '5'  %y  '3'
+            %k  '0'  %w  '7'  %~  '9'
+          ==
+        'm'
+      $(nf ~)
+    :^  '3'  '8'  ';'
+    :+  '2'  ';'
+    :+  (scot %ud (@ r.u.nf))  ';'
+    :+  (scot %ud (@ g.u.nf))  ';'
+    :+  (scot %ud (@ b.u.nf))  'm'
+    $(nf ~)
+  ?~  txt.lux
+    (reap +((sub x2.lux x1.lux)) ' ')
+  (tufa txt.lux)
 ::
 --
