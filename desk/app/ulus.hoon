@@ -19,19 +19,19 @@
       sele=acia                                                        :: select style
   ==                                                                   ::
 +$  ars                                                                :: special element types
-  $%  [%text =vox]
-      [%pattern =vox]
-      [%layer ~]
-      [%scroll =iter =muri =sola]
-      [%border =ad =ora]
-      [%line =via =ora]
-      [%select pro=?(%submit %~)]
-      [%input ab=@ud i=loci =vox]
-      [%checkbox v=bean]
-      [%radio ~]
-      [%form ~]
-      [%$ ~]
-  ==
+  $%  [%text =vox]                                                     ::
+      [%pattern =vox]                                                  ::
+      [%layer ~]                                                       ::
+      [%scroll =iter =muri =sola]                                      ::
+      [%border =ad =ora]                                               ::
+      [%line =via =ora]                                                ::
+      [%select pro=?(%submit %~)]                                      ::
+      [%input ab=@ud i=loci =vox]                                      ::
+      [%checkbox v=bean]                                               ::
+      [%radio ~]                                                       ::
+      [%form ~]                                                        ::
+      [%$ ~]                                                           ::
+  ==                                                                   ::
 +$  avis  (unit @t)                                                    :: element id
 +$  apex  $~([1 1] loci)                                               :: top left coordinate of an element
 +$  loci  [x=@ud y=@ud]                                                :: coordinates
@@ -50,7 +50,7 @@
 +$  sola  modi                                                         :: scroll content dimensions
 +$  ad    ?(%l %r %t %b)                                               :: direction
 +$  via   ?(%h %v)                                                     :: orientation
-+$  ora   ?(%light %heavy %double %arc %blank %~)                      :: line style
++$  ora   ?(%light %heavy %double %arc %~)                             :: line style
 +$  nox   (map @ud (list [x1=@ud x2=@ud]))
 +$  lux
   $:  x1=@ud
@@ -169,12 +169,14 @@
       ?~  gen  [~ hoc]
       =.  deus.ego  i.gen
       =/  vis  (viso ~)
+      :: ~&  >>>  i.gen
+      :: ~&  >  vis
       =/  txt  (dico apex.cor.i.gen vis)
       :_  hoc
       :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
       ==
-    ;box(w "100%", h "100%", cb "green", cf "white")
-      ;+  ;/  "test"
+    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "center", fy "center")
+      ;box(b "double", cb "blue", cf "yellow"): woooo homunculus!
     ==
     ::
   ==
@@ -601,7 +603,6 @@
       %heavy   $(ora.ars %heavy, a t.a)
       %double  $(ora.ars %double, a t.a)
       %arc     $(ora.ars %arc, a t.a)
-      %blank   $(ora.ars %blank, a t.a)
     ==
       %b-cb
     ?.  ?=(%border -.ars)
@@ -648,7 +649,6 @@
       %heavy   $(ora.ars %heavy, a t.a)
       %double  $(ora.ars %double, a t.a)
       %arc     $(ora.ars %arc, a t.a)
-      %blank   $(ora.ars %blank, a t.a)
     ==
       %id
     $(avis [~ (crip v.i.a)], a t.a)
@@ -902,6 +902,31 @@
   ?~  t.bas
     $(y +(y), iy 0, bas cop)
   $(y +(y), iy +(iy), bas t.bas)
+::
+++  orno                           :: make a line as vox
+  |=  [siz=[w=@ud h=@ud] dir=term =ora]
+  ^-  vox
+  ?:  |(?=(%t dir) ?=(%b dir) ?=(%h dir))
+    :_  ~
+    %+  reap  w.siz
+    ?-  ora
+      %light   ~-~2500.  :: ─
+      %heavy   ~-~2501.  :: ━
+      %double  ~-~2550.  :: ═
+      %arc     ~-~2500.  :: ─
+      %~       ~-.       ::  
+    ==
+  ?:  |(?=(%l dir) ?=(%r dir) ?=(%v dir))
+    %+  reap  h.siz
+    :_  ~
+    ?-  ora
+      %light   ~-~2502.  :: │
+      %heavy   ~-~2503.  :: ┃
+      %double  ~-~2551.  :: ║
+      %arc     ~-~2502.  :: │
+      %~       ~-.       ::  
+    ==
+  ~
 ::
 ++  cogo                           :: get the collective size of elements in a list
   |=  =dei
@@ -1743,6 +1768,8 @@
       %pattern   vox.ars.cor.deus.ego
       %input     vox.ars.cor.deus.ego
       %checkbox  ?:(v.ars.cor.deus.ego [[~-~2588. ~] ~] ~)
+      %border    (orno size.res.cor.deus.ego [ad ora]:ars.cor.deus.ego)
+      %line      (orno size.res.cor.deus.ego [via ora]:ars.cor.deus.ego)
     ==
   |=  [l=(list lux) txt=vox]
   :_  ?^(txt t.txt ~)
