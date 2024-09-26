@@ -94,7 +94,13 @@
       %inp  %del  %tog  %act  %clk  %def
   ==
 :: ... interactivity context
-:: ... intersection types
++$  os
+  $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora]
+      [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora]
+  ==
++$  ossa  (set os)
++$  crux  [c=(pair via ora) l=ora r=ora t=ora b=ora]
++$  viae  (map @ud [x=@ud =crux])
 +$  aqua  (list [i=@ud size=@ud marg=@ud])
 +$  vena
   $:  size=[w=as h=as]
@@ -978,10 +984,6 @@
     n.gens      (turn n.gens.deu |=(d=deus ^$(deu d)))
   ==
 ::
-
-
-
-::
 ++  geno                           :: turn sail into element state
   |=  [vel=vela loc=(unit loci)]
   ^-  dei
@@ -1691,7 +1693,9 @@
         (add y.it y.iter.ars.cor.deus.ego)
       li
         :-  (min x.li (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego)))
-        (min y.li (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego)))
+        =/  y  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+        =?  y  !=(0 y.it)  ?:((lte y.it y.li) (sub y.li y.it) 0)
+        (min y.li y)
       na
         ?.  (paro -.ars.cor.deus.ego)  na
         [~ (flop ki)]
@@ -1707,11 +1711,17 @@
           =(0 h.size.res.cor.deus.ego)
       ==
     ~
-  =/  top=@ud  y.apex.cor.deus.ego
+  =/  top=@ud
+    ?:  =(0 y.ier)  y.apex.cor.deus.ego
+    ?.  (lth y.ier y.apex.cor.deus.ego)  1
+    (sub y.apex.cor.deus.ego y.ier)
   =/  bot=@ud
-    %+  min  y.lim
-    (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-  ?:  (lte bot y.apex.cor.deus.ego)
+    =/  b  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+    =?  b  !=(0 y.ier)
+      ?.  (lte y.ier b)  0
+      (sub b y.ier)
+    (min b y.lim)
+  ?:  (lth bot top)
     ~
   =/  acc=sol
     %+  reap
@@ -1719,13 +1729,23 @@
     *(list lux)
   |-  ^-  sol
   =/  x1=@ud  x.apex.cor.deus.ego
-  =/  y1=@ud  y.apex.cor.deus.ego
+  =/  y1=@ud
+    ?:  =(0 y.ier)  y.apex.cor.deus.ego
+    ?.  (lth y.ier y.apex.cor.deus.ego)  1
+    (sub y.apex.cor.deus.ego y.ier)
   ?:  ?|  (gth x1 x.lim)
           (gth y1 y.lim)
       ==
     acc
   =/  x2=@ud  (min x.lim (add x1 (dec w.size.res.cor.deus.ego)))
-  =/  y2=@ud  (min y.lim (add y1 (dec h.size.res.cor.deus.ego)))
+  =/  y2=@ud
+    =/  y  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+    =?  y  !=(0 y.ier)
+      ?.  (lte y.ier y)  0
+      (sub y y.ier)
+    (min y y.lim)
+  ?:  =(0 y2)
+    acc
   =:  lim  [x2 y2]
       nav  ?:((paro -.ars.cor.deus.ego) [~ key] nav)
     ==
@@ -1763,6 +1783,10 @@
     (slag +(a-i2) acc)
   =<  p
   %^  spin  `sol`(swag [a-i1 +((sub a-i2 a-i1))] acc)
+    =;  v=vox
+      ?:  =(0 y.ier)  v
+      =/  n  (sub y.apex.cor.deus.ego y1)
+      (oust [0 n] v)
     ?+  -.ars.cor.deus.ego  ~
       %text      vox.ars.cor.deus.ego
       %pattern   vox.ars.cor.deus.ego
