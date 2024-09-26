@@ -38,7 +38,7 @@
 +$  modi  [x=@ud y=@ud]                                                :: box extent
 +$  muri  [l=@ud r=@ud t=@ud b=@ud]                                    :: box perimeter widths
 +$  rami  (list [=axis =ager])                                         :: element key (null is root)
-+$  axis  ?(%b %l %n)                                                  :: element positioning category
++$  axis  ?(%n %l %b)                                                  :: element positioning category
 +$  ager  @ud                                                          :: element number
 +$  vox   (list lina)                                                  :: rows of text
 +$  lina  (list @c)                                                    :: a row of text
@@ -94,13 +94,12 @@
       %inp  %del  %tog  %act  %clk  %def
   ==
 :: ... interactivity context
++$  ossa  (map rami (map rami os))
 +$  os
   $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora]
       [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora]
   ==
-+$  ossa  (set os)
-+$  crux  [c=(pair via ora) l=ora r=ora t=ora b=ora]
-+$  viae  (map @ud [x=@ud =crux])
++$  crux  [v=via i=@ud c=ora l=ora r=ora t=ora b=ora]
 +$  aqua  (list [i=@ud size=@ud marg=@ud])
 +$  vena
   $:  size=[w=as h=as]
@@ -148,22 +147,6 @@
   ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
-      %noun
-    =;  =vela
-      =/  gen  (geno vela ~)
-      ?^  gen
-        =.  deus.ego  i.gen
-        =/  vis  (viso ~)
-        ~&  >>  (dico apex.cor.i.gen vis)
-        [~ hoc]
-      [~ hoc]
-    ;box(w "100%", h "100%", cb "red", cf "white", fx "center", fy "center", fl "column")
-      ;select(w "6", h "3", cb "black", cf "blue", fx "end")
-        ;box(cb "#FFFFFF", d "underline"): select
-      ==
-      ;+  ;/  "test"
-    ==
-    ::
       %json
     =/  zon  (ineo !<(json vase))
     ?~  zon  [~ hoc]
@@ -174,14 +157,23 @@
       =/  gen  (geno vela ~)
       ?~  gen  [~ hoc]
       =.  deus.ego  i.gen
-      =/  vis  (viso ~)
+      =/  osa  humo
+      =/  vis  (viso ~ osa)
       :: ~&  >>>  i.gen
+      :: ~&  >>  osa
       :: ~&  >  vis
       =/  txt  (dico apex.cor.i.gen vis)
       :_  hoc
       :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
       ==
     ;box(w "100%", h "100%", cb "cyan", cf "black", fx "center", fy "center")
+      ;layer
+        ;box(h "5", w "15", mx "6", my "3", cb "green", b "heavy")
+          ;border-top(fx "center")
+            ;box: test
+          ==
+        ==
+      ==
       ;box(b "double", cb "blue", cf "yellow"): woooo homunculus!
     ==
     ::
@@ -705,10 +697,9 @@
       =(%checkbox t)
   ==
 ::
-++  apo                            :: make a key segment
-  |=  [t=term i=@]
-  ^-  [axis ager]
-  :_  i
+++  apo                            :: make axis for a key
+  |=  t=term
+  ^-  axis
   ?+  t      %n
     %layer   %l
     %border  %b
@@ -912,6 +903,7 @@
 ++  orno                           :: make a line as vox
   |=  [siz=[w=@ud h=@ud] dir=term =ora]
   ^-  vox
+  ?:  ?=(%~ ora)  ~
   ?:  |(?=(%t dir) ?=(%b dir) ?=(%h dir))
     :_  ~
     %+  reap  w.siz
@@ -920,7 +912,6 @@
       %heavy   ~-~2501.  :: ━
       %double  ~-~2550.  :: ═
       %arc     ~-~2500.  :: ─
-      %~       ~-.       ::  
     ==
   ?:  |(?=(%l dir) ?=(%r dir) ?=(%v dir))
     %+  reap  h.siz
@@ -930,7 +921,6 @@
       %heavy   ~-~2503.  :: ┃
       %double  ~-~2551.  :: ║
       %arc     ~-~2502.  :: │
-      %~       ~-.       ::  
     ==
   ~
 ::
@@ -982,6 +972,460 @@
     b.gens      (turn b.gens.deu |=(d=deus ^$(deu d)))
     l.gens      (turn l.gens.deu |=(d=deus ^$(deu d)))
     n.gens      (turn n.gens.deu |=(d=deus ^$(deu d)))
+  ==
+::
+++  iugo                           :: make a line intersection character
+  |=  crux
+  ^-  @c
+  ?:  ?&  ?=(%~ l)  ?=(%~ t)
+          ?|  &(?=(%arc r) ?=(%arc b))
+              &(?=(%arc r) ?=(%light b))
+              &(?=(%light r) ?=(%arc b))
+      ==  ==
+    ~-~256d.  ::  ╭
+  ?:  ?&  ?=(%~ r)  ?=(%~ t)
+          ?|  &(?=(%arc l) ?=(%arc b))
+              &(?=(%arc l) ?=(%light b))
+              &(?=(%light l) ?=(%arc b))
+      ==  ==
+    ~-~256e.  ::  ╮
+  ?:  ?&  ?=(%~ l)  ?=(%~ b)
+          ?|  &(?=(%arc r) ?=(%arc t))
+              &(?=(%arc r) ?=(%light t))
+              &(?=(%light r) ?=(%arc t))
+      ==  ==
+    ~-~2570.  ::  ╰
+  ?:  ?&  ?=(%~ r)  ?=(%~ b)
+          ?|  &(?=(%arc l) ?=(%arc t))
+              &(?=(%arc l) ?=(%light t))
+              &(?=(%light l) ?=(%arc t))
+      ==  ==
+    ~-~256f.  ::  ╯
+  =?  +<  |(?=(%arc c) ?=(%arc l) ?=(%arc r) ?=(%arc t) ?=(%arc b))
+    %_  +<
+      c    ?:(?=(%arc c) %light c)
+      l    ?:(?=(%arc l) %light l)
+      r    ?:(?=(%arc r) %light r)
+      t    ?:(?=(%arc t) %light t)
+      b    ?:(?=(%arc b) %light b)
+    ==
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%light b))  ~-~250c.  ::  ┌
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%light b))  ~-~250d.  ::  ┍
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%heavy b))  ~-~250e.  ::  ┎
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%heavy b))  ~-~250f.  ::  ┏
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%double r) ?=(%light b))  ~-~2552.  ::  ╒
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%double b))  ~-~2553.  ::  ╓
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%double r) ?=(%double b))  ~-~2554.  ::  ╔
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%light b))  ~-~2510.  ::  ┐
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%heavy l) ?=(%light b))  ~-~2511.  ::  ┑
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%heavy b))  ~-~2512.  ::  ┒
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%heavy l) ?=(%heavy b))  ~-~2513.  ::  ┓
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%double l) ?=(%light b))  ~-~2555.  ::  ╕
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%double b))  ~-~2556.  ::  ╖
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%double l) ?=(%double b))  ~-~2557.  ::  ╗
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%light t))  ~-~2514.  ::  └
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%heavy r) ?=(%light t))  ~-~2515.  ::  ┕
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%heavy t))  ~-~2516.  ::  ┖
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%heavy r) ?=(%heavy t))  ~-~2517.  ::  ┗
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%double r) ?=(%light t))  ~-~2558.  ::  ╘
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%double t))  ~-~2559.  ::  ╙
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%double r) ?=(%double t))  ~-~255a.  ::  ╚
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%light t))  ~-~2518.  ::  ┘
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%heavy l) ?=(%light t))  ~-~2519.  ::  ┙
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%heavy t))  ~-~251a.  ::  ┚
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%heavy l) ?=(%heavy t))  ~-~251b.  ::  ┛
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%double l) ?=(%light t))  ~-~255b.  ::  ╛
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%double t))  ~-~255c.  ::  ╜
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%double l) ?=(%double t))  ~-~255d.  ::  ╝
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%light t) ?=(%light b) ?=(%light r))
+              &(?=(%~ t) ?=(%~ b) ?=(%light r) ?=([%v %light] [v c]))
+      ==  ==
+    ~-~251c.  ::  ├
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%light t) ?=(%light b) ?=(%heavy r))
+              &(?=(%~ t) ?=(%~ b) ?=(%heavy r) ?=([%v %light] [v c]))
+      ==  ==
+    ~-~251d.  ::  ┝
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%light t) ?=(%light b) ?=(%double r))
+              &(?=(%~ t) ?=(%~ b) ?=(%double r) ?=([%v %light] [v c]))
+      ==  ==
+    ~-~255e.  ::  ╞
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%heavy r))
+              &(?=(%~ t) ?=(%~ b) ?=(%heavy r) ?=([%v %heavy] [v c]))
+      ==  ==
+    ~-~2523.  ::  ┣
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%light r))
+              &(?=(%~ t) ?=(%~ b) ?=(%light r) ?=([%v %heavy] [v c]))
+      ==  ==
+    ~-~2520.  ::  ┠
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%double t) ?=(%double b) ?=(%double r))
+              &(?=(%~ t) ?=(%~ b) ?=(%double r) ?=([%v %double] [v c]))
+      ==  ==
+    ~-~2560.  ::  ╠
+  ?:  ?&  ?=(%~ l)
+          ?|  &(?=(%double t) ?=(%double b) ?=(%light r))
+              &(?=(%~ t) ?=(%~ b) ?=(%light r) ?=([%v %double] [v c]))
+      ==  ==
+    ~-~255f.  ::  ╟
+  ?:  &(?=(%~ l) ?=(%heavy t) ?=(%light b) ?=(%light r))  ~-~251e.  ::  ┞
+  ?:  &(?=(%~ l) ?=(%light t) ?=(%heavy b) ?=(%light r))  ~-~251f.  ::  ┟
+  ?:  &(?=(%~ l) ?=(%heavy t) ?=(%light b) ?=(%heavy r))  ~-~2521.  ::  ┡
+  ?:  &(?=(%~ l) ?=(%light t) ?=(%heavy b) ?=(%heavy r))  ~-~2522.  ::  ┢
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%light t) ?=(%light b) ?=(%light l))
+              &(?=(%~ t) ?=(%~ b) ?=(%light l) ?=([%v %light] [v c]))
+      ==  ==
+    ~-~2524.  ::  ┤
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%light t) ?=(%light b) ?=(%heavy l))
+              &(?=(%~ t) ?=(%~ b) ?=(%heavy l) ?=([%v %light] [v c]))
+      ==  ==
+    ~-~2525.  ::  ┥
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%light t) ?=(%light b) ?=(%double l))
+              &(?=(%~ t) ?=(%~ b) ?=(%double l) ?=([%v %light] [v c]))
+      ==  ==
+    ~-~2561.  ::  ╡
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%heavy l))
+              &(?=(%~ t) ?=(%~ b) ?=(%heavy l) ?=([%v %heavy] [v c]))
+      ==  ==
+    ~-~252b.  ::  ┫
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%light l))
+              &(?=(%~ t) ?=(%~ b) ?=(%light l) ?=([%v %heavy] [v c]))
+      ==  ==
+    ~-~2528.  ::  ┨
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%double t) ?=(%double b) ?=(%double l))
+              &(?=(%~ t) ?=(%~ b) ?=(%double l) ?=([%v %double] [v c]))
+      ==  ==
+    ~-~2563.  ::  ╣
+  ?:  ?&  ?=(%~ r)
+          ?|  &(?=(%double t) ?=(%double b) ?=(%light l))
+              &(?=(%~ t) ?=(%~ b) ?=(%light l) ?=([%v %double] [v c]))
+      ==  ==
+      ~-~2562.  ::  ╢
+  ?:  &(?=(%~ r) ?=(%heavy t) ?=(%light b) ?=(%light l))  ~-~2526.  ::  ┦
+  ?:  &(?=(%~ r) ?=(%light t) ?=(%heavy b) ?=(%light l))  ~-~2527.  ::  ┧
+  ?:  &(?=(%~ r) ?=(%heavy t) ?=(%light b) ?=(%heavy l))  ~-~2529.  ::  ┩
+  ?:  &(?=(%~ r) ?=(%light t) ?=(%heavy b) ?=(%heavy l))  ~-~252a.  ::  ┪
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%light l) ?=(%light r) ?=(%light b))
+              &(?=(%~ l) ?=(%~ r) ?=(%light b) ?=([%h %light] [v c]))
+      ==  ==
+    ~-~252c.  ::  ┬
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%light l) ?=(%light r) ?=(%heavy b))
+              &(?=(%~ l) ?=(%~ r) ?=(%heavy b) ?=([%h %light] [v c]))
+      ==  ==
+    ~-~2530.  ::  ┰
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%light l) ?=(%light r) ?=(%double b))
+              &(?=(%~ l) ?=(%~ r) ?=(%double b) ?=([%h %light] [v c]))
+      ==  ==
+    ~-~2565.  ::  ╥
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%heavy b))
+              &(?=(%~ l) ?=(%~ r) ?=(%heavy b) ?=([%h %heavy] [v c]))
+      ==  ==
+    ~-~2533.  ::  ┳
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%light b))
+              &(?=(%~ l) ?=(%~ r) ?=(%light b) ?=([%h %heavy] [v c]))
+      ==  ==
+    ~-~252f.  ::  ┯
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%double l) ?=(%double r) ?=(%double b))
+              &(?=(%~ l) ?=(%~ r) ?=(%double b) ?=([%h %double] [v c]))
+      ==  ==
+    ~-~2566.  ::  ╦
+  ?:  ?&  ?=(%~ t)
+          ?|  &(?=(%double l) ?=(%double r) ?=(%light b))
+              &(?=(%~ l) ?=(%~ r) ?=(%light b) ?=([%h %double] [v c]))
+      ==  ==
+    ~-~2564.  ::  ╤
+  ?:  &(?=(%~ t) ?=(%heavy l) ?=(%light r) ?=(%light b))  ~-~252d.  ::  ┭
+  ?:  &(?=(%~ t) ?=(%light l) ?=(%heavy r) ?=(%light b))  ~-~252e.  ::  ┮
+  ?:  &(?=(%~ t) ?=(%heavy l) ?=(%light r) ?=(%heavy b))  ~-~2531.  ::  ┱
+  ?:  &(?=(%~ t) ?=(%light l) ?=(%heavy r) ?=(%heavy b))  ~-~2532.  ::  ┲
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%light l) ?=(%light r) ?=(%light t))
+              &(?=(%~ l) ?=(%~ r) ?=(%light t) ?=([%h %light] [v c]))
+      ==  ==
+    ~-~2534.  ::  ┴
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%light l) ?=(%light r) ?=(%heavy t))
+              &(?=(%~ l) ?=(%~ r) ?=(%heavy t) ?=([%h %light] [v c]))
+      ==  ==
+    ~-~2538.  ::  ┸
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%light l) ?=(%light r) ?=(%double t))
+              &(?=(%~ l) ?=(%~ r) ?=(%double t) ?=([%h %light] [v c]))
+      ==  ==
+    ~-~2568.  ::  ╨
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%heavy t))
+              &(?=(%~ l) ?=(%~ r) ?=(%heavy t) ?=([%h %heavy] [v c]))
+      ==  ==
+    ~-~253b.  ::  ┻
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%light t))
+              &(?=(%~ l) ?=(%~ r) ?=(%light t) ?=([%h %heavy] [v c]))
+      ==  ==
+    ~-~2537.  ::  ┷
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%double l) ?=(%double r) ?=(%double t))
+              &(?=(%~ l) ?=(%~ r) ?=(%double t) ?=([%h %double] [v c]))
+      ==  ==
+    ~-~2569.  ::  ╩
+  ?:  ?&  ?=(%~ b)
+          ?|  &(?=(%double l) ?=(%double r) ?=(%light t))
+              &(?=(%~ l) ?=(%~ r) ?=(%light t) ?=([%h %double] [v c]))
+      ==  ==
+    ~-~2567.  ::  ╧
+  ?:  &(?=(%~ b) ?=(%heavy l) ?=(%light r) ?=(%light t))  ~-~2535.  ::  ┵
+  ?:  &(?=(%~ b) ?=(%light l) ?=(%heavy r) ?=(%light t))  ~-~2536.  ::  ┶
+  ?:  &(?=(%~ b) ?=(%heavy l) ?=(%light r) ?=(%heavy t))  ~-~2539.  ::  ┹
+  ?:  &(?=(%~ b) ?=(%light l) ?=(%heavy r) ?=(%heavy t))  ~-~253a.  ::  ┺
+  ?:  ?|  &(?=(%light l) ?=(%light r) ?=(%light t) ?=(%light b))
+          &(?=(%light l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
+          &(?=(%light t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
+      ==
+    ~-~253c.  ::  ┼
+  ?:  ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%heavy t) ?=(%heavy b))
+          &(?=(%heavy l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
+          &(?=(%heavy t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
+      ==
+    ~-~254b.  ::  ╋
+  ?:  ?|  &(?=(%double l) ?=(%double r) ?=(%double t) ?=(%double b))
+          &(?=(%double l) ?=(%double r) ?=(%~ t) ?=(%~ b) ?=([%v %double] [v c]))
+          &(?=(%double t) ?=(%double b) ?=(%~ l) ?=(%~ r) ?=([%h %double] [v c]))
+      ==
+    ~-~256c.  ::  ╬
+  ?:  ?|  &(?=(%light l) ?=(%light r) ?=(%heavy t) ?=(%heavy b))
+          &(?=(%light l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
+          &(?=(%heavy t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
+      ==
+    ~-~2542.  ::  ╂
+  ?:  ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%light t) ?=(%light b))
+          &(?=(%heavy l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
+          &(?=(%light t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
+      ==
+    ~-~253f.  ::  ┿
+  ?:  ?|  &(?=(%light l) ?=(%light r) ?=(%double t) ?=(%double b))
+          &(?=(%light l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %double] [v c]))
+          &(?=(%double t) ?=(%double b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
+      ==
+    ~-~256b.  ::  ╫
+  ?:  ?|  &(?=(%double l) ?=(%double r) ?=(%light t) ?=(%light b))
+          &(?=(%double l) ?=(%double r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
+          &(?=(%light t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %double] [v c]))
+      ==
+    ~-~256a.  ::  ╪
+  ?:  ?|  &(?=(%light l) ?=(%heavy r) ?=(%light t) ?=(%light b))
+          &(?=(%light l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
+      ==
+    ~-~253e.  ::  ┾
+  ?:  ?|  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%light b))
+          &(?=(%heavy l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
+      ==
+    ~-~253d.  ::  ┽
+  ?:  ?|  &(?=(%heavy l) ?=(%light r) ?=(%heavy t) ?=(%heavy b))
+          &(?=(%heavy l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
+      ==
+    ~-~2549.  ::  ╉
+  ?:  ?|  &(?=(%light l) ?=(%heavy r) ?=(%heavy t) ?=(%heavy b))
+          &(?=(%light l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
+      ==
+    ~-~254a.  ::  ╊
+  ?:  ?|  &(?=(%light t) ?=(%heavy b) ?=(%light l) ?=(%light r))
+          &(?=(%light t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
+      ==
+    ~-~2541.  ::  ╁
+  ?:  ?|  &(?=(%heavy t) ?=(%light b) ?=(%light l) ?=(%light r))
+          &(?=(%heavy t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
+      ==
+    ~-~2540.  ::  ╀
+  ?:  ?|  &(?=(%heavy t) ?=(%light b) ?=(%heavy l) ?=(%heavy r))
+          &(?=(%heavy t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
+      ==
+    ~-~2547.  ::  ╇
+  ?:  ?|  &(?=(%light t) ?=(%heavy b) ?=(%heavy l) ?=(%heavy r))
+          &(?=(%light t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
+      ==
+    ~-~2548.  ::  ╈
+  ?:  &(?=(%light l) ?=(%heavy r) ?=(%light t) ?=(%heavy b))  ~-~2546.  ::  ╆
+  ?:  &(?=(%light l) ?=(%heavy r) ?=(%heavy t) ?=(%light b))  ~-~2544.  ::  ╄
+  ?:  &(?=(%heavy l) ?=(%light r) ?=(%heavy t) ?=(%light b))  ~-~2543.  ::  ╃
+  ?:  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%heavy b))  ~-~2545.  ::  ╅
+  ~-.
+::
+++  humo                           :: collect line intersection groups from the element tree
+  =/  osa=ossa  [~^~ ~^~]
+  =|  key=rami
+  |-  ^-  ossa
+  =.  osa
+    ?:  ?|  ?=(%layer -.ars.cor.deus.ego)
+            ?=(%scroll -.ars.cor.deus.ego)
+        ==
+      (~(put by osa) key ~)
+    ?.  ?|  ?=(%border -.ars.cor.deus.ego)
+            ?=(%line -.ars.cor.deus.ego)
+        ==
+      osa
+    =/  ki  (eruo key osa)
+    =/  oz  (~(get by osa) ki)
+    ?~  oz  osa
+    %+  %~  put  by  osa  ki
+    %+  %~  put  by  u.oz  key
+    ^-  os
+    =/  x  x.apex.cor.deus.ego
+    =/  y  y.apex.cor.deus.ego
+    =/  [w=@ h=@]  size.res.cor.deus.ego
+    ?+  -.ars.cor.deus.ego  !!
+      ::
+        %border
+      =/  o  ora.ars.cor.deus.ego
+      ?:  |(?=(%t ad.ars.cor.deus.ego) ?=(%b ad.ars.cor.deus.ego))
+        [%h %border x ?.(=(0 w) (add x (dec w)) x) y o]
+      [%v %border x y ?.(=(0 h) (add y (dec h)) y) o]
+      ::
+        %line
+      =/  o  ora.ars.cor.deus.ego
+      ?:  ?=(%h via.ars.cor.deus.ego)
+        [%h %line x ?.(=(0 w) (add x (dec w)) x) y o]
+      [%v %line x y ?.(=(0 h) (add y (dec h)) y) o]
+      ::
+    ==
+  ?.  ?|  .?(b.gens.deus.ego)
+          .?(l.gens.deus.ego)
+          .?(n.gens.deus.ego)
+      ==
+    osa
+  =<  +>.q
+  %^  spin
+      ^-  dei
+      %-  zing
+      :~  b.gens.deus.ego
+          l.gens.deus.ego
+          n.gens.deus.ego
+      ==
+    [*axis *ager osa]
+  |=  [d=deus a=[n=axis i=ager o=ossa]]
+  ^-  [deus axis ager ossa]
+  =/  x  (apo -.ars.cor.d)
+  =?  i.a  !=(n.a x)  0
+  :-  d
+  %_  a
+    n  x
+    i  +(i.a)
+    o
+      %=  ^$
+        deus.ego  d
+        key       (snoc key [x i.a])
+        osa       o.a
+      ==
+  ==
+::
+++  eruo                           :: find the key of the line intersection group to which a line belongs
+  |=  [key=rami osa=ossa]
+  ^-  rami
+  =/  kez=(list rami)
+    %+  sort  ~(tap in ~(key by osa))
+    |=  [a=rami b=rami]
+    (gth (lent a) (lent b))
+  |-  ^-  rami
+  ?~  kez  ~
+  ?^  (find `(list *)`[%~ i.kez] `(list *)`[%~ key])
+    i.kez
+  $(kez t.kez)
+::
+++  coeo                           :: produce a line in vox with any intersections applied
+  |=  [=cor key=rami osa=ossa]
+  ^-  vox
+  ?:  ?|  &(?=(%border -.ars.cor) ?=(%~ ora.ars.cor))
+          &(?=(%line -.ars.cor) ?=(%~ ora.ars.cor))
+      ==
+    ~
+  =/  k  (eruo key osa)
+  =/  o  (~(get by osa) k)
+  ?~  o  ~
+  =/  l  ~(val by u.o)
+  =/  c
+    ^-  (list crux)
+    =/  [=via =ora]
+      ?+  -.ars.cor  !!
+        %border  [?:(|(?=(%t ad.ars.cor) ?=(%b ad.ars.cor)) %h %v) ora.ars.cor]
+        %line    [via.ars.cor ora.ars.cor]
+      ==
+    =/  [x1=@ud x2=@ud]
+      :-  x.apex.cor
+      ?-(via %h (add x.apex.cor (dec w.size.res.cor)), %v x.apex.cor)
+    =/  [y1=@ud y2=@ud]
+      :-  y.apex.cor
+      ?-(via %v (add y.apex.cor (dec h.size.res.cor)), %h y.apex.cor)
+    %+  roll  l
+    |=  [i=os a=(list crux)]
+    =;  cru=(unit crux)
+      ?~  cru  a
+      |-  ^-  (list crux)
+      ?~  a  [u.cru ~]
+      ?.  =(i.u.cru i.i.a)  [i.a $(a t.a)]
+      :_  t.a
+      %_  i.a
+        l  ?~(l.u.cru l.i.a l.u.cru)
+        r  ?~(r.u.cru r.i.a r.u.cru)
+        t  ?~(t.u.cru t.i.a t.u.cru)
+        b  ?~(b.u.cru b.i.a b.u.cru)
+      ==
+    ?-  via
+        %h
+      ?.  ?=(%v -.i)  ~
+      ?:  |((lth x.i x1) (gth x.i x2))  ~
+      ?:  |(&(?=(%border p.i) =(y1 y2.i)) &(?=(%line p.i) =(y1 +(y2.i))))
+        :^  ~  via  (sub x.i x1)
+        ?:  =(x1 x.i)  [ora %~ ora ora.i %~]
+        ?:  =(x2 x.i)  [ora ora %~ ora.i %~]
+        [ora ora ora ora.i %~]
+      ?:  |(&(?=(%border p.i) =(y2 y1.i)) &(?=(%line p.i) !=(0 y1.i) =(y2 (dec y1.i))))
+        :^  ~  via  (sub x.i x1)
+        ?:  =(x1 x.i)  [ora %~ ora %~ ora.i]
+        ?:  =(x2 x.i)  [ora ora %~ %~ ora.i]
+        [ora ora ora %~ ora.i]
+      ~
+        %v
+      ?.  ?=(%h -.i)  ~
+      ?:  |((lth y.i y1) (gth y.i y2))  ~
+      ?:  |(&(?=(%border p.i) =(x1 x2.i)) &(?=(%line p.i) =(x1 +(x2.i))))
+        :^  ~  via  (sub y.i y1)
+        ?:  =(y1 y.i)  [ora ora.i %~ %~ ora]
+        ?:  =(y2 y.i)  [ora ora.i %~ ora %~]
+        [ora ora.i %~ ora ora]
+      ?:  |(&(?=(%border p.i) =(x2 x1.i)) &(?=(%line p.i) !=(0 x1.i) =(x2 (dec x1.i))))
+        :^  ~  via  (sub y.i y1)
+        ?:  =(y1 y.i)  [ora %~ ora.i %~ ora]
+        ?:  =(y2 y.i)  [ora %~ ora.i ora %~]
+        [ora %~ ora.i ora ora]
+      ~
+    ==
+  =<  q
+  %^  spin  c
+    ?+  -.ars.cor  ~
+      %border  (orno size.res.cor [ad ora]:ars.cor)
+      %line    (orno size.res.cor [via ora]:ars.cor)
+    ==
+  |=  [i=crux v=vox]
+  ^-  [crux vox]
+  :-  i
+  ?-  -.i
+    %h  ?~(v ~ v(i (snap i.v i.i (iugo i))))
+    %v  (snap v i.i `lina`[(iugo i) ~])
   ==
 ::
 ++  geno                           :: turn sail into element state
@@ -1671,7 +2115,7 @@
   $(key t.key)
 ::
 ++  viso                           :: build a render schematic for a branch
-  |=  key=rami
+  |=  [key=rami osa=ossa]
   ^-  sol
   =^  [ier=iter lim=modi nav=(unit rami)]  deus.ego
     =|  ki=rami
@@ -1754,26 +2198,33 @@
       ?.  ?=(%scroll -.ars.cor.deus.ego)  ier
       :-  (add x.ier x.iter.ars.cor.deus.ego)
       (add y.ier y.iter.ars.cor.deus.ego)
-    =<  +.q
+    =<  +>.q
     %^  spin
-        ;:  weld
-          b.gens.deus.ego
-          l.gens.deus.ego
-          n.gens.deus.ego
+        ^-  dei
+        %-  zing
+        :~  b.gens.deus.ego
+            l.gens.deus.ego
+            n.gens.deus.ego
         ==
-      [0 acc]
-    |=  [d=deus a=[i=@ =sol]]
+      [*axis *ager acc]
+    |=  [d=deus a=[n=axis i=ager s=sol]]
+    ^-  [deus axis ager sol]
+    =/  x  (apo -.ars.cor.d)
+    =?  i.a  !=(n.a x)  0
     :-  d
     %_  a
+      n  x
       i  +(i.a)
-      sol
+      s
         %=  ^$
           deus.ego  d
-          key       (snoc key (apo -.ars.cor.d i.a))
-          acc       sol.a
+          key       (snoc key [x i.a])
+          acc       s.a
         ==
     ==
-  ?:  ?=(%layer -.ars.cor.deus.ego)
+  ?:  ?|  ?=(%layer -.ars.cor.deus.ego)
+          &(?=(%border -.ars.cor.deus.ego) ?=(%~ ora.ars.cor.deus.ego))
+      ==
     acc
   =/  a-i1=@ud   (sub y1 top)
   =/  a-i2=@ud   (sub y2 top)
@@ -1792,8 +2243,8 @@
       %pattern   vox.ars.cor.deus.ego
       %input     vox.ars.cor.deus.ego
       %checkbox  ?:(v.ars.cor.deus.ego [[~-~2588. ~] ~] ~)
-      %border    (orno size.res.cor.deus.ego [ad ora]:ars.cor.deus.ego)
-      %line      (orno size.res.cor.deus.ego [via ora]:ars.cor.deus.ego)
+      %border    (coeo cor.deus.ego key osa)
+      %line      (coeo cor.deus.ego key osa)
     ==
   |=  [l=(list lux) txt=vox]
   :_  ?^(txt t.txt ~)
