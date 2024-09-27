@@ -39,7 +39,7 @@
 +$  muri  [l=@ud r=@ud t=@ud b=@ud]                                    :: box perimeter widths
 +$  rami  (list [=axis =ager])                                         :: element key (null is root)
 +$  axis  ?(%n %l %b)                                                  :: element positioning category
-+$  ager  @ud                                                          :: element number
++$  ager  @ud                                                          :: element list index
 +$  vox   (list lina)                                                  :: rows of text
 +$  lina  (list @c)                                                    :: a row of text
 :: +$  nodi  (pair fila @c)                                               ::
@@ -51,15 +51,17 @@
 +$  ad    ?(%l %r %t %b)                                               :: direction
 +$  via   ?(%h %v)                                                     :: orientation
 +$  ora   ?(%light %heavy %double %arc %~)                             :: line style
-+$  nox   (map @ud (list [x1=@ud x2=@ud]))
-+$  lux
-  $:  x1=@ud
-      x2=@ud
-      fil=fila
-      nav=(unit rami)
-      txt=lina
-  ==
-+$  sol  (list (list lux))
++$  luna  (map @ud (list lux))                                         :: render blocking context
++$  sol   (list (list lux))                                            :: render schematic
++$  lux                                                                :: render token
+  $:  x1=@ud                                                           ::
+      x2=@ud                                                           ::
+      $=  p                                                            ::
+      $@  ~                                                            ::
+      $:  fil=fila                                                     ::
+          nav=(unit rami)                                              ::
+          txt=lina                                                     ::
+  ==  ==                                                               ::
 +$  zona
   $~  [%txt ~]
   $%  [%rez p=@ud q=@ud]
@@ -94,6 +96,7 @@
       %inp  %del  %tog  %act  %clk  %def
   ==
 :: ... interactivity context
++$  aer   [=iter =modi nav=(unit rami) =luna]
 +$  ossa  (map rami (map rami os))
 +$  os
   $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora]
@@ -159,10 +162,13 @@
       ?~  gen  [~ hoc]
       =.  deus.ego  i.gen
       =/  osa  humo
+      =/  key=rami  ~
+      =^  =aer  deus.ego  (creo key)
+      :: ~&  >>  aer
       :: ~&  >>  osa
-      =/  vis  (viso ~ osa)
+      =/  vis  (viso key osa aer deus.ego)
       :: ~&  >  vis
-      =/  txt  (dico apex.cor.i.gen vis)
+      =/  txt  (dico apex.cor.deus.ego vis)
       :_  hoc
       :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
       ==
@@ -2052,15 +2058,50 @@
   :-  ^-(deus [[aape avis ares ars] [bdei ldei ndei]])
   $(m t.m)
 ::
-++  velo                           :: build layer context for rendering a branch
+++  creo                           :: produce an element branch by key, along with rendering context
   |=  key=rami
-  ^-  nox
-  =|  xon=nox
-  ?~  key  ~
-  =:    xon
-      ?~  l.gens.deus.ego  xon
-      :: get coordinates of children of l.gens and add to nox 
-      :: further issue: if the next deus is a layer in l.gens, then only the layers above are to be added
+  ^-  [aer deus]
+  =|  ki=rami
+  =|  ayr=aer
+  =.  modi.ayr
+    :-  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
+    (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+  ?~  key
+    [ayr deus.ego]
+  |-  ^-  [aer deus]
+  =<  ?~  t.key
+        [ayr deus.ego]
+      $(key t.key, ki [i.key ki])
+  %_  .
+    ::
+    deus.ego
+      %+  snag  ager.i.key
+      ?-  axis.i.key
+        %n  n.gens.deus.ego
+        %b  b.gens.deus.ego
+        %l  l.gens.deus.ego
+      ==
+    ::
+    iter.ayr
+      ?.  ?=(%scroll -.ars.cor.deus.ego)  iter.ayr
+      :-  (add x.iter.ayr x.iter.ars.cor.deus.ego)
+      (add y.iter.ayr y.iter.ars.cor.deus.ego)
+    ::
+    modi.ayr
+      :-  %+  min  x.modi.ayr
+          %+  add  x.apex.cor.deus.ego
+          (dec w.size.res.cor.deus.ego)
+      =/  y  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+      =?  y  !=(0 y.iter.ayr)
+        ?:((lte y.iter.ayr y.modi.ayr) (sub y.modi.ayr y.iter.ayr) 0)
+      (min y.modi.ayr y)
+    ::
+    nav.ayr
+      ?.  (paro -.ars.cor.deus.ego)  nav.ayr
+      [~ (flop ki)]
+    ::
+    luna.ayr
+      ?~  l.gens.deus.ego  luna.ayr
       =/  els=dei
         %+  roll
           ?.  ?=(%l axis.i.key)
@@ -2068,143 +2109,121 @@
           (scag ager.i.key `dei`l.gens.deus.ego)
         |=  [d=deus a=dei]
         (weld a n.gens.d)
-      |-  ^-  nox
-      ?~  els  xon
-      :: for each i.els, reap using h.res for n, and the x1 and x2 coordinates as v,
-      :: then recurse through this list and track the coordinate that each i represents,
-      :: and use this y coordinate to get from the xon map,
-      :: then prepend the list [x1 x2] item onto the value of the map and put it back.
+      |-  ^-  luna
+      ?~  els  luna.ayr
       ?:  |(=(0 w.size.res.cor.i.els) =(0 h.size.res.cor.i.els))
         $(els t.els)
-      =/  ros=(list [@ud @ud])
+      =/  ros=(list lux)
         %+  reap  h.size.res.cor.i.els
-        :-  x.apex.cor.i.els
-        (add x.apex.cor.i.els (dec w.size.res.cor.i.els))
+        :+  x.apex.cor.i.els
+          (add x.apex.cor.i.els (dec w.size.res.cor.i.els))
+        ~
       %=  $
         els  t.els
-        xon
-          =<  nox
-          %+  roll  ros
-          |=  $:  i=[@ud @ud]
-                  a=[y=$~(y.apex.cor.i.els @ud) =nox]
-              ==
-          ^-  [@ud nox]
-          =/  x  (~(get by xon) y.a)
-          :-  +(y.a)
-          %+  %~  put  by  xon
-            y.a
+        luna.ayr
+          =<  +.q
+          %^  spin  ros
+            [y.apex.cor.i.els luna.ayr]
+          |=  [i=lux a=[y=@ud =luna]]
+          ^-  [lux [@ud luna]]
+          ?:  (gte y.iter.ayr y.a)
+            [i +(y.a) luna.a]
+          =/  y  (sub y.a y.iter.ayr)
+          =/  l  (~(get by luna.a) y)
           :-  i
-          ?~  x
-            ~
-          u.x
+          :-  +(y.a)
+          %+  %~  put
+                by
+              luna.a
+            y
+          ?~  l  [i ~]
+          |-  ^-  (list lux)
+          ?~  u.l
+            [i ~]
+          ?:  |((lth x2.i x1.i.u.l) (gth x1.i x2.i.u.l))
+            [i u.l]
+          ?:  &((gte x1.i x1.i.u.l) (lte x2.i x2.i.u.l))
+            u.l
+          ?:  (lth x1.i x1.i.u.l)
+            u.l(x1.i x1.i)
+          u.l(x2.i x2.i)
       ==
-        deus.ego
-      %+  snag  ager.i.key
-      ?-  axis.i.key
-        %n  n.gens.deus.ego
-        %b  b.gens.deus.ego
-        %l  l.gens.deus.ego
-      ==
-    ==
-  ?~  t.key
-    xon
-  $(key t.key)
+    ::
+  ==
 ::
-++  viso                           :: build a render schematic for a branch
-  |=  [key=rami osa=ossa]
+++  viso                           :: build a render schematic from a branch
+  |=  [key=rami osa=ossa ayr=aer deu=deus]
   ^-  sol
-  =^  [ier=iter lim=modi nav=(unit rami)]  deus.ego
-    =|  ki=rami
-    =|  na=(unit rami)
-    =|  it=iter
-    =/  li=modi
-      ?:  ?=(%scroll -.ars.cor.deus.ego)  sola.ars.cor.deus.ego
-      :-  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
-      (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-    ?~  key  [[it li na] deus.ego]
-    |-  ^-  [[iter modi (unit rami)] deus]
-    =<  ?~  t.key
-          [[it li na] deus.ego]
-        $(key t.key, ki [i.key ki])
-    %_  .
-      it
-        ?.  ?=(%scroll -.ars.cor.deus.ego)  it
-        :-  (add x.it x.iter.ars.cor.deus.ego)
-        (add y.it y.iter.ars.cor.deus.ego)
-      li
-        :-  (min x.li (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego)))
-        =/  y  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-        =?  y  !=(0 y.it)  ?:((lte y.it y.li) (sub y.li y.it) 0)
-        (min y.li y)
-      na
-        ?.  (paro -.ars.cor.deus.ego)  na
-        [~ (flop ki)]
-      deus.ego
-        %+  snag  ager.i.key
-        ?-  axis.i.key
-          %n  n.gens.deus.ego
-          %b  b.gens.deus.ego
-          %l  l.gens.deus.ego
-        ==
-    ==
-  ?:  ?|  =(0 w.size.res.cor.deus.ego)
-          =(0 h.size.res.cor.deus.ego)
+  ?:  ?|  =(0 w.size.res.cor.deu)
+          =(0 h.size.res.cor.deu)
       ==
     ~
-  =/  top=@ud
-    ?:  =(0 y.ier)  y.apex.cor.deus.ego
-    ?.  (lth y.ier y.apex.cor.deus.ego)  1
-    (sub y.apex.cor.deus.ego y.ier)
-  =/  bot=@ud
-    =/  b  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-    =?  b  !=(0 y.ier)
-      ?.  (lte y.ier b)  0
-      (sub b y.ier)
-    (min b y.lim)
-  ?:  (lth bot top)
+  =/  a-y1=@ud
+    ?:  =(0 y.iter.ayr)  y.apex.cor.deu
+    ?.  (lth y.iter.ayr y.apex.cor.deu)  1
+    (sub y.apex.cor.deu y.iter.ayr)
+  =/  a-y2=@ud
+    =/  b  (add y.apex.cor.deu (dec h.size.res.cor.deu))
+    =?  b  !=(0 y.iter.ayr)
+      ?.  (lte y.iter.ayr b)  0
+      (sub b y.iter.ayr)
+    (min b y.modi.ayr)
+  ?:  (lth a-y2 a-y1)
     ~
   =/  acc=sol
     %+  reap
-      +((sub bot top))
+      +((sub a-y2 a-y1))
     *(list lux)
+  =?  acc  .?(luna.ayr)
+    %+  spun  acc
+    |=  [i=(list lux) n=@ud]
+    ^-  [(list lux) @ud]
+    =/  y  (add y.apex.cor.deu n)
+    ?:  (gte y.iter.ayr y)
+      [i +(n)]
+    =.  y  (sub y y.iter.ayr)
+    =/  l  (~(get by luna.ayr) y)
+    ?~  l
+      [i +(n)]
+    [u.l +(n)]
   |-  ^-  sol
-  ?:  ?|  =(0 w.size.res.cor.deus.ego)
-          =(0 h.size.res.cor.deus.ego)
+  ?:  ?|  =(0 w.size.res.cor.deu)
+          =(0 h.size.res.cor.deu)
       ==
     acc
-  =/  x1=@ud  x.apex.cor.deus.ego
+  =/  x1=@ud  x.apex.cor.deu
   =/  y1=@ud
-    ?:  =(0 y.ier)  y.apex.cor.deus.ego
-    ?.  (lth y.ier y.apex.cor.deus.ego)  1
-    (sub y.apex.cor.deus.ego y.ier)
-  ?:  ?|  (gth x1 x.lim)
-          (gth y1 y.lim)
+    ?:  =(0 y.iter.ayr)  y.apex.cor.deu
+    ?.  (lth y.iter.ayr y.apex.cor.deu)  1
+    (sub y.apex.cor.deu y.iter.ayr)
+  ?:  ?|  (gth x1 x.modi.ayr)
+          (gth y1 y.modi.ayr)
       ==
     acc
-  =/  x2=@ud  (min x.lim (add x1 (dec w.size.res.cor.deus.ego)))
+  =/  x2=@ud  (min x.modi.ayr (add x1 (dec w.size.res.cor.deu)))
   =/  y2=@ud
-    =/  y  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
-    =?  y  !=(0 y.ier)
-      ?.  (lte y.ier y)  0
-      (sub y y.ier)
-    (min y y.lim)
+    =/  y  (add y.apex.cor.deu (dec h.size.res.cor.deu))
+    =?  y  !=(0 y.iter.ayr)
+      ?.  (lte y.iter.ayr y)  0
+      (sub y y.iter.ayr)
+    (min y y.modi.ayr)
   ?:  =(0 y2)
     acc
-  =:  lim  [x2 y2]
-      nav  ?:((paro -.ars.cor.deus.ego) [~ key] nav)
+  =:  modi.ayr  [x2 y2]
+      nav.ayr  ?:((paro -.ars.cor.deu) [~ key] nav.ayr)
     ==
   =.  acc
-    =.  ier
-      ?.  ?=(%scroll -.ars.cor.deus.ego)  ier
-      :-  (add x.ier x.iter.ars.cor.deus.ego)
-      (add y.ier y.iter.ars.cor.deus.ego)
+    =.  iter.ayr
+      ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
+      :-  (add x.iter.ayr x.iter.ars.cor.deu)
+      (add y.iter.ayr y.iter.ars.cor.deu)
     =<  +>.q
     %^  spin
         ^-  dei
         %-  zing
-        :~  b.gens.deus.ego
-            l.gens.deus.ego
-            n.gens.deus.ego
+        :~  b.gens.deu
+            l.gens.deu
+            n.gens.deu
         ==
       [*axis *ager acc]
     |=  [d=deus a=[n=axis i=ager s=sol]]
@@ -2217,17 +2236,17 @@
       i  +(i.a)
       s
         %=  ^$
-          deus.ego  d
-          key       (snoc key [x i.a])
-          acc       s.a
+          deu  d
+          key  (snoc key [x i.a])
+          acc  s.a
         ==
     ==
-  ?:  ?|  ?=(%layer -.ars.cor.deus.ego)
-          &(?=(%border -.ars.cor.deus.ego) ?=(%~ ora.ars.cor.deus.ego))
+  ?:  ?|  ?=(%layer -.ars.cor.deu)
+          &(?=(%border -.ars.cor.deu) ?=(%~ ora.ars.cor.deu))
       ==
     acc
-  =/  a-i1=@ud   (sub y1 top)
-  =/  a-i2=@ud   (sub y2 top)
+  =/  a-i1=@ud   (sub y1 a-y1)
+  =/  a-i2=@ud   (sub y2 a-y1)
   =;  rend=sol
     %+  weld  (scag a-i1 acc)
     %+  weld  rend
@@ -2235,27 +2254,28 @@
   =<  p
   %^  spin  `sol`(swag [a-i1 +((sub a-i2 a-i1))] acc)
     =;  v=vox
-      ?:  =(0 y.ier)  v
-      =/  n  (sub y.apex.cor.deus.ego y1)
+      ?:  =(0 y.iter.ayr)  v
+      =/  n  (sub y.apex.cor.deu y1)
       (oust [0 n] v)
-    ?+  -.ars.cor.deus.ego  ~
-      %text      vox.ars.cor.deus.ego
-      %pattern   vox.ars.cor.deus.ego
-      %input     vox.ars.cor.deus.ego
-      %checkbox  ?:(v.ars.cor.deus.ego [[~-~2588. ~] ~] ~)
-      %border    (coeo cor.deus.ego key osa)
-      %line      (coeo cor.deus.ego key osa)
+    ?+  -.ars.cor.deu  ~
+      %text      vox.ars.cor.deu
+      %pattern   vox.ars.cor.deu
+      %input     vox.ars.cor.deu
+      %checkbox  ?:(v.ars.cor.deu [[~-~2588. ~] ~] ~)
+      %border    (coeo cor.deu key osa)
+      %line      (coeo cor.deu key osa)
     ==
-  |=  [l=(list lux) txt=vox]
-  :_  ?^(txt t.txt ~)
+  |=  [l=(list lux) xov=vox]
+  :_  ?^(xov t.xov ~)
   |-  ^-  (list lux)
   =/  tok=lux
     :*  x1  x2
-        look.res.cor.deus.ego
-        nav
-        ?^(txt ?:(.?(i.txt) (scag +((sub x2 x1)) i.txt) ~) ~)
+        look.res.cor.deu
+        nav.ayr
+        ?^(xov ?:(.?(i.xov) (scag +((sub x2 x1)) i.xov) ~) ~)
     ==
-  ?~  l  
+  ?>  ?=(^ p.tok)
+  ?~  l
     [tok l]
   ?:  (lth x2 x1.i.l)
     [tok l]
@@ -2269,30 +2289,30 @@
           (gth x2 x2.i.l)
       ==
     :+  %_  tok
-          x2   (dec x1.i.l)
-          txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+          x2     (dec x1.i.l)
+          txt.p  ?:(.?(txt.p.tok) (scag (sub x1.i.l x1) txt.p.tok) ~)
         ==
       i.l
     %=  $
       l    t.l
       x1   +(x2.i.l)
-      txt
-        ?~  txt  ~
-        txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
+      xov
+        ?~  xov  ~
+        xov(i (oust [0 +((sub x2.i.l x1))] i.xov))
     ==
   ?:  (lth x1 x1.i.l)
     :_  l
     %_  tok
-      x2   (dec x1.i.l)
-      txt  ?:(.?(txt.tok) (scag (sub x1.i.l x1) txt.tok) ~)
+      x2     (dec x1.i.l)
+      txt.p  ?:(.?(txt.p.tok) (scag (sub x1.i.l x1) txt.p.tok) ~)
     ==
   :-  i.l
   %=  $
     l    t.l
     x1   +(x2.i.l)
-    txt
-      ?~  txt  ~
-      txt(i (oust [0 +((sub x2.i.l x1))] i.txt))
+    xov
+      ?~  xov  ~
+      xov(i (oust [0 +((sub x2.i.l x1))] i.xov))
   ==
 ::
 ++  dico                           :: turn a render schematic into text
@@ -2306,9 +2326,9 @@
     (snoc p "\\x1b[0m")
   %^  spin  sol  [y.apex *fila]
   |=  [lis=(list lux) acc=[y=@ f=fila]]
-  =;  [p=wall q=fila]
+  =;  [p=wall q=[? fil=fila]]
     ^-  [tape [@ fila]]
-    :_  [+(y.acc) q]
+    :_  [+(y.acc) fil.q]
     %-  zing
     :_  p
     ^-  tape
@@ -2316,15 +2336,23 @@
         (scot %ud y.acc)   ';'
         (scot %ud x.apex)  'H'
     ==
-  %^  spin  lis  f.acc
-  |=  [=lux fil=fila]
-  ^-  [tape fila]
-  :_  fil.lux
+  %^  spin  lis
+    [| f.acc]
+  |=  [=lux [jump=? fil=fila]]
+  ^-  [tape [? fila]]
+  ?~  p.lux
+    [~ & fil]
+  :_  [| fil.p.lux]
   =/  od=?  .?(d.fil)
-  =/  nd=?  .?(d.fil.lux)
-  =/  nb=(unit tint)  ?.(=(b.fil b.fil.lux) [~ b.fil.lux] ~)
-  =/  nf=(unit tint)  ?.(=(f.fil f.fil.lux) [~ f.fil.lux] ~)
+  =/  nd=?  .?(d.fil.p.lux)
+  =/  nb=(unit tint)  ?.(=(b.fil b.fil.p.lux) [~ b.fil.p.lux] ~)
+  =/  nf=(unit tint)  ?.(=(f.fil f.fil.p.lux) [~ f.fil.p.lux] ~)
   |-  ^-  tape
+  ?:  jump
+    :-  '\\x1b['
+    :+  (scot %ud y.acc)   ';'
+    :+  (scot %ud x1.lux)  'H'
+    $(jump |)
   ?:  od
     =/  ds=(list deco)  ~(tap in d.fil)
     |-  ^-  tape
@@ -2335,7 +2363,7 @@
       'm'
     $(ds t.ds)
   ?:  nd
-    =/  ds=(list deco)  ~(tap in d.fil.lux)
+    =/  ds=(list deco)  ~(tap in d.fil.p.lux)
     |-  ^-  tape
     ?~  ds  ^$(nd |)
     ?:  ?=(%~ i.ds)  $(ds t.ds)
@@ -2377,8 +2405,8 @@
     :+  (scot %ud (@ g.u.nf))  ';'
     :+  (scot %ud (@ b.u.nf))  'm'
     $(nf ~)
-  ?~  txt.lux
+  ?~  txt.p.lux
     (reap +((sub x2.lux x1.lux)) ' ')
-  (tufa txt.lux)
+  (tufa txt.p.lux)
 ::
 --
