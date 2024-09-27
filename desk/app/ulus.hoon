@@ -155,25 +155,29 @@
     =.  urbs.ego  +.u.zon
     =;  =vela
       =/  gen  (geno vela ~)
+      :: ~&  >>>  gen
       ?~  gen  [~ hoc]
       =.  deus.ego  i.gen
       =/  osa  humo
-      =/  vis  (viso ~ osa)
-      :: ~&  >>>  i.gen
       :: ~&  >>  osa
+      =/  vis  (viso ~ osa)
       :: ~&  >  vis
       =/  txt  (dico apex.cor.i.gen vis)
       :_  hoc
       :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
       ==
-    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "center", fy "center")
+    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "start", fy "end", fl "row")
       ;layer
-        ;box(h "5", w "15", mx "6", my "3", cb "green", b "heavy")
+        ;box(h "50%", w "50%", mx "6", my "3", cb "green", b "heavy", fy "center", fx "center")
           ;border-top(fx "center")
             ;box: test
           ==
+          ;line-h(l "double", mt "2");
+          ;line-v(l "arc", h "grow");
+          ;pattern(w "20%", h "30%", cb "red"): ~.
         ==
       ==
+      ;box(w "grow", cb "yellow", cf "black"): hello
       ;box(b "double", cb "blue", cf "yellow"): woooo homunculus!
     ==
     ::
@@ -350,7 +354,7 @@
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
-        flow=[%row %clip]
+        flow=[%col %clip]
         look=[~ ~ ~]
     ==
       %text
@@ -366,7 +370,7 @@
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
         flex=[0 0]
-        flow=[%row %clip]
+        flow=[%col %clip]
         look=[~ ~ ~]
     ==
       %border-left
@@ -1423,9 +1427,11 @@
   |=  [i=crux v=vox]
   ^-  [crux vox]
   :-  i
+  =/  char  (iugo i)
+  ?:  =(~-. char)  v
   ?-  -.i
-    %h  ?~(v ~ v(i (snap i.v i.i (iugo i))))
-    %v  (snap v i.i `lina`[(iugo i) ~])
+    %h  ?~(v ~ v(i (snap i.v i.i char)))
+    %v  (snap v i.i `lina`[char ~])
   ==
 ::
 ++  geno                           :: turn sail into element state
@@ -1488,14 +1494,6 @@
     ?:  |(=(%i p.w.size.vena) =(%p p.w.size.vena))
       [%c 0]
     [%c (div (mul q.l.padd.vena q.w.size.vena) 100)]
-  =?  q.w.size.vena  &(wcen !=(%i p.w.size.vena))
-    =/  m=@ud  (add q.l.marg.vena q.r.marg.vena)
-    ?:  (gth m q.w.size.vena)  0
-    (sub q.w.size.vena m)
-  =?  q.h.size.vena  &(hcen !=(%i p.h.size.vena))
-    =/  m=@ud  (add q.t.marg.vena q.b.marg.vena)
-    ?:  (gth m q.h.size.vena)  0
-    (sub q.h.size.vena m)
   =?  x.flex.vena  =(%i p.w.size.vena)  0
   =?  y.flex.vena  =(%i p.h.size.vena)  0
   =?  ars  ?=(%pattern -.ars)
@@ -1678,8 +1676,7 @@
       vir   [0 0 0]
     ==
   =^  aqu  ndei
-    ?.  .?(aqu)
-      [~ ndei]
+    ?.  .?(aqu)  [~ ndei]
     =.  aqu
       =/  nsiz  (cogo ndei)
       =/  len=@ud  (lent aqu)
@@ -1708,7 +1705,8 @@
         move  (add move size.i.aqu)
         marg  0
       ==
-    ?~  aqu  [(flop aq) (flop de)]
+    ?:  &(?=(~ aqu) ?=(~ ndei))
+      [(flop aq) (flop de)]
     =/  [movx=@ movy=@]
       :-  ?-(d.flow.vena %row move, %col 0)
       ?-(d.flow.vena %row 0, %col move)
@@ -1844,8 +1842,6 @@
       ?.  (lth l.marg.res.cor.i x.apex.cor.i)  1
       (sub x.apex.cor.i l.marg.res.cor.i)
     ?^(h u.h 0)
-  :: child size needs to be redefined for imp or scroll only if there are layers to include
-  :: (layers needed to be ommitted in the previous step)
   =?  csiz  &(|(imp ?=(%scroll -.ars)) ?=(^ ldei))
     (cogo (weld ndei ldei))
   =?  size.vena  &(imp ?=(^ csiz))
@@ -2172,6 +2168,10 @@
       +((sub bot top))
     *(list lux)
   |-  ^-  sol
+  ?:  ?|  =(0 w.size.res.cor.deus.ego)
+          =(0 h.size.res.cor.deus.ego)
+      ==
+    acc
   =/  x1=@ud  x.apex.cor.deus.ego
   =/  y1=@ud
     ?:  =(0 y.ier)  y.apex.cor.deus.ego
