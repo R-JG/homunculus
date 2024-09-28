@@ -57,7 +57,7 @@
   $:  x1=@ud                                                           ::
       x2=@ud                                                           ::
       $=  p                                                            ::
-      $@  ~                                                            ::
+      $@  ~                                                            :: in rendering, null is skipped
       $:  fil=fila                                                     ::
           nav=(unit rami)                                              ::
           txt=lina                                                     ::
@@ -172,7 +172,7 @@
       :_  hoc
       :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
       ==
-    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "start", fy "end", fl "row")
+    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "center", fy "center", fl "column")
       ;layer
         ;box(h "50%", w "50%", mx "6", my "3", cb "green", b "heavy", fy "center", fx "center")
           ;border-top(fx "center")
@@ -183,8 +183,17 @@
           ;pattern(w "20%", h "30%", cb "red"): ~.
         ==
       ==
-      ;box(w "grow", cb "yellow", cf "black"): hello
-      ;box(b "double", cb "blue", cf "yellow"): woooo homunculus!
+      ;box(px "4", py "2", mx "1", cb "black", cf "yellow")
+        ;+  ;/
+          """
+           .      .        .            *
+           .     *      *        *    .
+            *    .  *      .        .  *   .
+            ..    *    .      *  .  ..  *
+            *    *            .      *   *
+            .        .        .   *    ..
+          """
+      ==
     ==
     ::
   ==
@@ -2269,10 +2278,20 @@
   :_  ?^(xov t.xov ~)
   |-  ^-  (list lux)
   =/  tok=lux
-    :*  x1  x2
+    :*  x1
+        x2
         look.res.cor.deu
         nav.ayr
-        ?^(xov ?:(.?(i.xov) (scag +((sub x2 x1)) i.xov) ~) ~)
+        ^-  lina
+        ?~  xov  ~
+        ?~  i.xov  ~
+        =/  len  (lent i.xov)
+        =/  wid  +((sub x2 x1))
+        ?:  =(len wid)  i.xov
+        ?:  (gth len wid)  (scag wid `lina`i.xov)
+        %+  weld  i.xov
+        %+  reap  (sub wid len)
+        ~-.
     ==
   ?>  ?=(^ p.tok)
   ?~  l
