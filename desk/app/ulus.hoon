@@ -62,6 +62,10 @@
           nav=(unit rami)                                              ::
           txt=lina                                                     ::
   ==  ==                                                               ::
++$  dux   [=apex =rami]
++$  rex   $@(~ dux)
++$  ordo  (list dux)
++$  omen  (map nota lex)
 +$  zona
   $~  [%txt ~]
   $%  [%rez p=@ud q=@ud]
@@ -95,7 +99,6 @@
       %scr-l  %scr-r  %scr-u  %scr-d
       %inp  %del  %tog  %act  %clk  %def
   ==
-:: ... interactivity context
 +$  aer   [=iter =modi nav=(unit rami) =luna]
 +$  ossa  (map rami (map rami os))
 +$  os
@@ -168,21 +171,25 @@
       :: ~&  >>  osa
       =/  vis  (viso key osa aer deus.ego)
       :: ~&  >  vis
+      =/  ord  (gyro apex.cor.deus.ego vis)
+      ~&  >>  ord
       =/  txt  (dico apex.cor.deus.ego vis)
       :_  hoc
       :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
       ==
-    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "center", fy "center", fl "column")
+    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "end", fy "center", fl "column")
       ;layer
         ;box(h "50%", w "50%", mx "6", my "3", cb "green", b "heavy", fy "center", fx "center")
           ;border-top(fx "center")
-            ;box: test
+            ;select(mx "2"): test1
+            ;select(mx "2"): test2
           ==
           ;line-h(l "double", mt "2");
           ;line-v(l "arc", h "grow");
           ;pattern(w "20%", h "30%", cb "red"): ~.
         ==
       ==
+      ;select(cb "white", cf "green"): woop
       ;box(px "4", py "2", mx "1", cb "black", cf "yellow")
         ;+  ;/
           """
@@ -1337,7 +1344,7 @@
       ==
     [*axis *ager osa]
   |=  [d=deus a=[n=axis i=ager o=ossa]]
-  ^-  [deus axis ager ossa]
+  ^+  +<
   =/  x  (apo -.ars.cor.d)
   =?  i.a  !=(n.a x)  0
   :-  d
@@ -1440,7 +1447,7 @@
       %line    (orno size.res.cor [via ora]:ars.cor)
     ==
   |=  [i=crux v=vox]
-  ^-  [crux vox]
+  ^+  +<
   :-  i
   =/  char  (iugo i)
   ?:  =(~-. char)  v
@@ -1708,6 +1715,7 @@
       |=  $:  n=[i=@ud size=@ud marg=@ud]
               a=[bas=@ud rem=@ud]
           ==
+      ^+  +<
       :-  n(size ?:(=(0 rem) bas +(bas)))
       a(rem ?:(=(0 rem) 0 (dec rem)))
     =|  [i=@ud marg=@ud move=@ud de=dei aq=aqua]
@@ -1752,6 +1760,7 @@
     =<  p
     %^  spin  gro  aqu
     |=  [m=manx a=aqua]
+    ^+  +<
     ?~  a  [m a]
     :_  t.a
     %_    m
@@ -2134,7 +2143,7 @@
           %^  spin  ros
             [y.apex.cor.i.els luna.ayr]
           |=  [i=lux a=[y=@ud =luna]]
-          ^-  [lux [@ud luna]]
+          ^+  +<
           ?:  (gte y.iter.ayr y.a)
             [i +(y.a) luna.a]
           =/  y  (sub y.a y.iter.ayr)
@@ -2236,7 +2245,7 @@
         ==
       [*axis *ager acc]
     |=  [d=deus a=[n=axis i=ager s=sol]]
-    ^-  [deus axis ager sol]
+    ^+  +<
     =/  x  (apo -.ars.cor.d)
     =?  i.a  !=(n.a x)  0
     :-  d
@@ -2275,6 +2284,7 @@
       %line      (coeo cor.deu key osa)
     ==
   |=  [l=(list lux) xov=vox]
+  ^+  +<
   :_  ?^(xov t.xov ~)
   |-  ^-  (list lux)
   =/  tok=lux
@@ -2333,6 +2343,28 @@
       ?~  xov  ~
       xov(i (oust [0 +((sub x2.i.l x1))] i.xov))
   ==
+::
+++  gyro                           :: produce interactivity context from a render schematic
+  |=  [pex=apex =sol]
+  ^-  ordo
+  %-  flop
+  =<  +.q
+  %^  spin  sol
+    [y.pex *ordo]
+  |=  [l=(list lux) a=[y=@ud =ordo]]
+  ^+  +<
+  :+  l
+    +(y.a)
+  =<  q
+  %^  spin  l  ordo.a
+  |=  [i=lux ord=ordo]
+  ^+  +<
+  :-  i
+  ?.  &(?=(^ p.i) ?=(^ nav.p.i))
+    ord
+  ?:  (lien ord |=(d=dux =(u.nav.p.i rami.d)))
+    ord
+  [[[x1.i y.a] u.nav.p.i] ord]
 ::
 ++  dico                           :: turn a render schematic into text
   |=  [=apex =sol]
