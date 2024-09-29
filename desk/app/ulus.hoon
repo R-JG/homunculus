@@ -117,11 +117,19 @@
   ==
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
 +$  data  [p=@t q=(map @t @t)]
-:: ...
 +$  vela  manx
 +$  urbs  $~([50 25] [x=@ud y=@ud])
++$  aula  @tas
++$  cura  aula
++$  ara
+  $:  =vela
+      =ossa
+      =ordo
+      =deus
+  ==
++$  arae  (map aula ara)
 +$  ego
-  $:  =urbs  =deus
+  $:  =urbs  =cura  =arae
   ==
 ::
 +$  card  card:agent:gall
@@ -153,54 +161,52 @@
   ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
+      %homunculus-session
+    =+  !<(ses=session:homunculus vase)
+    =/  aul=aula  ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)
+    =|  [ram=rami ayr=aer]
+    =.  modi.ayr  urbs.ego
+    =/  aru  (~(get by arae.ego) aul)
+    ?~  aru
+      =|  new=ara
+      =:  cura.ego  aul
+          vela.new  +.ses
+          deus.new  (geno ~ +.ses)
+        ==
+      =.  ossa.new  (humo deus.new)
+      =/  vis       (viso ram ossa.new ayr deus.new)
+      =.  ordo.new  (gyro apex.cor.deus.new vis)
+      :_  hoc(arae.ego (~(put by arae.ego) aul new))
+      :~  (fio apex.cor.deus.new vis)
+      ==
+      ::
+    =:  vela.u.aru  +.ses
+        deus.u.aru  (geno ~ +.ses)
+      ==
+    =.  ossa.u.aru  (humo deus.u.aru)
+    =/  vis         (viso ram ossa.u.aru ayr deus.u.aru)
+    =.  ordo.u.aru  (gyro apex.cor.deus.u.aru vis)
+    :_  hoc(arae.ego (~(put by arae.ego) aul u.aru))
+    ?.  =(aul cura.ego)  ~
+    :~  (fio apex.cor.deus.u.aru vis)
+    ==
+    ::
       %json
     =/  zon  (ineo !<(json vase))
     ?~  zon  [~ hoc]
-    ~&  >  zon
+    :: ~&  >  zon
     ?.  ?=(%rez -.u.zon)  [~ hoc]
     =.  urbs.ego  +.u.zon
-    =;  =vela
-      =/  gen  (geno vela ~)
-      :: ~&  >>>  gen
-      ?~  gen  [~ hoc]
-      =.  deus.ego  i.gen
-      =/  osa  humo
-      =/  key=rami  ~
-      =^  =aer  deus.ego  (creo key)
-      :: ~&  >>  aer
-      :: ~&  >>  osa
-      =/  vis  (viso key osa aer deus.ego)
-      :: ~&  >  vis
-      =/  ord  (gyro apex.cor.deus.ego vis)
-      ~&  >>  ord
-      =/  txt  (dico apex.cor.deus.ego vis)
-      :_  hoc
-      :~  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
-      ==
-    ;box(w "100%", h "100%", cb "cyan", cf "black", fx "end", fy "center", fl "column")
-      ;layer
-        ;box(h "50%", w "50%", mx "6", my "3", cb "green", b "heavy", fy "center", fx "center")
-          ;border-top(fx "center")
-            ;select(mx "2"): test1
-            ;select(mx "2"): test2
-          ==
-          ;line-h(l "double", mt "2");
-          ;line-v(l "arc", h "grow");
-          ;pattern(w "20%", h "30%", cb "red"): ~.
-        ==
-      ==
-      ;select(cb "white", cf "green"): woop
-      ;box(px "4", py "2", mx "1", cb "black", cf "yellow")
-        ;+  ;/
-          """
-           .      .        .            *
-           .     *      *        *    .
-            *    .  *      .        .  *   .
-            ..    *    .      *  .  ..  *
-            *    *            .      *   *
-            .        .        .   *    ..
-          """
-      ==
+    =/  aru  (~(get by arae.ego) cura.ego)
+    ?~  aru  [~ hoc]
+    =|  [ram=rami ayr=aer]
+    =.  modi.ayr  urbs.ego
+    =.  deus.u.aru  (geno ~ vela.u.aru)
+    =.  ossa.u.aru  (humo deus.u.aru)
+    =/  vis         (viso ram ossa.u.aru ayr deus.u.aru)
+    =.  ordo.u.aru  (gyro apex.cor.deus.u.aru vis)
+    :_  hoc(arae.ego (~(put by arae.ego) cura.ego u.aru))
+    :~  (fio apex.cor.deus.u.aru vis)
     ==
     ::
   ==
@@ -211,23 +217,6 @@
   ?+  path  !!
     ::
       [%homunculus-http ~]
-    :: =/  aul=(list ^fons)  ~(tap in ^-((set ^fons) (snag cor aula)))
-    :: =/  bac=visa  (rbox [1 1] urbs =|(res -(size urbs, look [~ ~ ~])))
-    :: =/  vis=visa  (gyro aul bac)
-    :: =/  aru=(unit ara)  (~(get by arae) fons)
-    :: :_  hoc
-    :: :_  ~
-    :: :*  %give  %fact  ~[/homunculus-http]  %json
-    ::     !>  ^-  json  :-  %s  %-  crip
-    ::     ^-  tape  :-  '\\x1b[1;1H\\x1b[3J\\x1b[0J'
-    ::     %-  volo  ^-  lux  :-  %mor
-    ::     :~  (supo ~ vis)
-    ::         ?:  p.luna
-    ::           =.(p.luna | (supo ~ visa.q.luna))
-    ::           (fero rex.q.luna equi.q.luna esse.q.luna)
-    ::         ?^  aru  (fero rex.u.aru equi.u.aru esse.u.aru)  (fero ~ ~ ~)
-    ::     ==
-    :: ==
     [~ hoc]
     ::
   ==
@@ -249,6 +238,12 @@
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 |%
+::
+++  fio                            :: make a display update card
+  |=  [=apex =sol]
+  ^-  card
+  =/  txt  (dico apex sol)
+  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
 ::
 ++  ineo                           :: parse input text
   |=  jon=json
@@ -1293,16 +1288,17 @@
   ~-.
 ::
 ++  humo                           :: collect line intersection groups from the element tree
+  |=  deu=deus
   =/  osa=ossa  [~^~ ~^~]
   =|  key=rami
   |-  ^-  ossa
   =.  osa
-    ?:  ?|  ?=(%layer -.ars.cor.deus.ego)
-            ?=(%scroll -.ars.cor.deus.ego)
+    ?:  ?|  ?=(%layer -.ars.cor.deu)
+            ?=(%scroll -.ars.cor.deu)
         ==
       (~(put by osa) key ~)
-    ?.  ?|  ?=(%border -.ars.cor.deus.ego)
-            ?=(%line -.ars.cor.deus.ego)
+    ?.  ?|  ?=(%border -.ars.cor.deu)
+            ?=(%line -.ars.cor.deu)
         ==
       osa
     =/  ki  (eruo key osa)
@@ -1311,36 +1307,36 @@
     %+  %~  put  by  osa  ki
     %+  %~  put  by  u.oz  key
     ^-  os
-    =/  x  x.apex.cor.deus.ego
-    =/  y  y.apex.cor.deus.ego
-    =/  [w=@ h=@]  size.res.cor.deus.ego
-    ?+  -.ars.cor.deus.ego  !!
+    =/  x  x.apex.cor.deu
+    =/  y  y.apex.cor.deu
+    =/  [w=@ h=@]  size.res.cor.deu
+    ?+  -.ars.cor.deu  !!
       ::
         %border
-      =/  o  ora.ars.cor.deus.ego
-      ?:  |(?=(%t ad.ars.cor.deus.ego) ?=(%b ad.ars.cor.deus.ego))
+      =/  o  ora.ars.cor.deu
+      ?:  |(?=(%t ad.ars.cor.deu) ?=(%b ad.ars.cor.deu))
         [%h %border x ?.(=(0 w) (add x (dec w)) x) y o]
       [%v %border x y ?.(=(0 h) (add y (dec h)) y) o]
       ::
         %line
-      =/  o  ora.ars.cor.deus.ego
-      ?:  ?=(%h via.ars.cor.deus.ego)
+      =/  o  ora.ars.cor.deu
+      ?:  ?=(%h via.ars.cor.deu)
         [%h %line x ?.(=(0 w) (add x (dec w)) x) y o]
       [%v %line x y ?.(=(0 h) (add y (dec h)) y) o]
       ::
     ==
-  ?.  ?|  .?(b.gens.deus.ego)
-          .?(l.gens.deus.ego)
-          .?(n.gens.deus.ego)
+  ?.  ?|  .?(b.gens.deu)
+          .?(l.gens.deu)
+          .?(n.gens.deu)
       ==
     osa
   =<  +>.q
   %^  spin
       ^-  dei
       %-  zing
-      :~  b.gens.deus.ego
-          l.gens.deus.ego
-          n.gens.deus.ego
+      :~  b.gens.deu
+          l.gens.deu
+          n.gens.deu
       ==
     [*axis *ager osa]
   |=  [d=deus a=[n=axis i=ager o=ossa]]
@@ -1353,9 +1349,9 @@
     i  +(i.a)
     o
       %=  ^$
-        deus.ego  d
-        key       (snoc key [x i.a])
-        osa       o.a
+        deu  d
+        key  (snoc key [x i.a])
+        osa  o.a
       ==
   ==
 ::
@@ -1457,8 +1453,8 @@
   ==
 ::
 ++  geno                           :: turn sail into element state
-  |=  [vel=vela loc=(unit loci)]
-  ^-  dei
+  |=  [loc=(unit loci) vel=vela]
+  ^-  deus
   =/  m=marl                   ~[vel]
   =/  pl=fila                  [~ ~ %w]
   =/  pa=acia                  [~ ~ ~]
@@ -1470,6 +1466,9 @@
   =/  pape=apex                ?^(loc u.loc *apex)
   =/  vape=apex                pape
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
+  =<  ?>
+      ?=(^ -)
+      i
   |-  ^-  dei
   ?~  m  ~
   =/  [=vena =avis =acia =ars =lina marv=mart]
@@ -2077,54 +2076,54 @@
   $(m t.m)
 ::
 ++  creo                           :: produce an element branch by key, along with rendering context
-  |=  key=rami
+  |=  [key=rami deu=deus]
   ^-  [aer deus]
   =|  ki=rami
   =|  ayr=aer
   =.  modi.ayr
-    :-  (add x.apex.cor.deus.ego (dec w.size.res.cor.deus.ego))
-    (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+    :-  (add x.apex.cor.deu (dec w.size.res.cor.deu))
+    (add y.apex.cor.deu (dec h.size.res.cor.deu))
   ?~  key
-    [ayr deus.ego]
+    [ayr deu]
   |-  ^-  [aer deus]
   =<  ?~  t.key
-        [ayr deus.ego]
+        [ayr deu]
       $(key t.key, ki [i.key ki])
   %_  .
     ::
-    deus.ego
+    deu
       %+  snag  ager.i.key
       ?-  axis.i.key
-        %n  n.gens.deus.ego
-        %b  b.gens.deus.ego
-        %l  l.gens.deus.ego
+        %n  n.gens.deu
+        %b  b.gens.deu
+        %l  l.gens.deu
       ==
     ::
     iter.ayr
-      ?.  ?=(%scroll -.ars.cor.deus.ego)  iter.ayr
-      :-  (add x.iter.ayr x.iter.ars.cor.deus.ego)
-      (add y.iter.ayr y.iter.ars.cor.deus.ego)
+      ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
+      :-  (add x.iter.ayr x.iter.ars.cor.deu)
+      (add y.iter.ayr y.iter.ars.cor.deu)
     ::
     modi.ayr
       :-  %+  min  x.modi.ayr
-          %+  add  x.apex.cor.deus.ego
-          (dec w.size.res.cor.deus.ego)
-      =/  y  (add y.apex.cor.deus.ego (dec h.size.res.cor.deus.ego))
+          %+  add  x.apex.cor.deu
+          (dec w.size.res.cor.deu)
+      =/  y  (add y.apex.cor.deu (dec h.size.res.cor.deu))
       =?  y  !=(0 y.iter.ayr)
         ?:((lte y.iter.ayr y.modi.ayr) (sub y.modi.ayr y.iter.ayr) 0)
       (min y.modi.ayr y)
     ::
     nav.ayr
-      ?.  (paro -.ars.cor.deus.ego)  nav.ayr
+      ?.  (paro -.ars.cor.deu)  nav.ayr
       [~ (flop ki)]
     ::
     luna.ayr
-      ?~  l.gens.deus.ego  luna.ayr
+      ?~  l.gens.deu  luna.ayr
       =/  els=dei
         %+  roll
           ?.  ?=(%l axis.i.key)
-            l.gens.deus.ego
-          (scag ager.i.key `dei`l.gens.deus.ego)
+            l.gens.deu
+          (scag ager.i.key `dei`l.gens.deu)
         |=  [d=deus a=dei]
         (weld a n.gens.d)
       |-  ^-  luna

@@ -287,14 +287,14 @@
   ++  render
     |=  [met=metadata:homunculus]
     ^-  card
-    :*  %pass  /homunculus  %agent  [our.bol %homunculus]
+    :*  %pass  /homunculus  %agent  [our.bol %ulus]  :: [our.bol %homunculus]
         %poke  %homunculus-session  !>([met root])
     ==
   ::
   ++  root
     ^-  manx
-    ;box(w "100%", h "100%", px "5%", pt "1", pb "5%", fl "column", cb cb-1, cf cf-1)
-      ;box(w "100%", h "1")
+    ;box(w "100%", h "100%", px "5%", pt "1", pb "5%", cb cb-1, cf cf-1)
+      ;box(w "100%", h "1", fl "row")
         ;txt: {(scow %p our.bol)}
         ;txt: {(spud [des.nav pax.nav])}
       ==
@@ -305,7 +305,7 @@
     ^-  manx
     =/  =cols  (do-scry nav bol)
     =/  =file  ?~(fil.cols ~ (fi-scry fil.cols nav bol))
-    ;box(w "100%", h "grow", b "arc")
+    ;box(w "100%", h "grow", b "arc", fl "row")
       ;+  (column-left lef.cols ?=(^ file))
       ;line-v;
       ;+  (column-center cen.cols ?=(^ file))
