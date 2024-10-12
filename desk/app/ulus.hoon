@@ -51,8 +51,8 @@
 +$  ad    ?(%l %r %t %b)                                               :: direction
 +$  via   ?(%h %v)                                                     :: orientation
 +$  ora   ?(%light %heavy %double %arc %~)                             :: line style
-+$  luna  (map @ud (list lux))                                         :: render blocking context
-+$  sol   (list (list lux))                                            :: render schematic
++$  luna  (map @ud (list lux))                                         :: render blocking context (key is y)
++$  sol   (list (list lux))                                            :: render schematic matrix
 +$  lux                                                                :: render token
   $:  x1=@ud                                                           ::
       x2=@ud                                                           ::
@@ -101,6 +101,8 @@
       %scr-l  %scr-r  %scr-u  %scr-d
       %inp  %del  %tog  %act  %clk  %def
   ==
++$  ales  (map nota @t)
++$  aves  (map @t rami)
 +$  ossa  (map rami (map rami os))
 +$  os
   $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora]
@@ -125,6 +127,7 @@
 +$  ara
   $:  =vela
       =ossa
+      =omen
       =ordo
       =rex
       =deus
@@ -175,11 +178,13 @@
           vela.new  +.ses
           deus.new  (geno ~ +.ses)
         ==
-      =.  ossa.new  (humo deus.new)
+      =:  ossa.new  (humo deus.new)
+          omen.new  (scio ~ deus.new)
+        ==
       =/  vis       (viso ram rex.new ossa.new ayr deus.new)
-      =.  ordo.new  (gyro apex.cor.deus.new vis)
+      =.  ordo.new  (gyro vis)
       :_  hoc(arae.ego (~(put by arae.ego) aul new))
-      :~  (fio ~[[apex.cor.deus.new vis]])
+      :~  (fio ~[vis [(fero rex.new deus.new) ~]])
       ==
       ::
     =:  vela.u.aru  +.ses
@@ -187,29 +192,28 @@
       ==
     =.  ossa.u.aru  (humo deus.u.aru)
     =/  vis         (viso ram rex.u.aru ossa.u.aru ayr deus.u.aru)
-    =.  ordo.u.aru  (gyro apex.cor.deus.u.aru vis)
+    =.  ordo.u.aru  (gyro vis)
     :_  hoc(arae.ego (~(put by arae.ego) aul u.aru))
     ?.  =(aul cura.ego)  ~
-    :~  (fio ~[[apex.cor.deus.u.aru vis]])
+    :~  (fio ~[vis [(fero rex.u.aru deus.u.aru) ~]])
     ==
     ::
       %json
     =/  zon  (ineo !<(json vase))
     ?~  zon  [~ hoc]
     :: ~&  >  zon
-    ?.  ?=(%rez -.u.zon)  [~ hoc]
-    =.  urbs.ego  +.u.zon
     =/  aru  (~(get by arae.ego) cura.ego)
     ?~  aru  [~ hoc]
-    =|  [ram=rami ayr=aer]
-    =.  muri.ayr  [1 x.urbs.ego 1 y.urbs.ego]
-    =.  deus.u.aru  (geno ~ vela.u.aru)
-    =.  ossa.u.aru  (humo deus.u.aru)
-    =/  vis         (viso ram rex.u.aru ossa.u.aru ayr deus.u.aru)
-    =.  ordo.u.aru  (gyro apex.cor.deus.u.aru vis)
-    :_  hoc(arae.ego (~(put by arae.ego) cura.ego u.aru))
-    :~  (fio ~[[apex.cor.deus.u.aru vis]])
-    ==
+    ?:  ?=(%rez -.u.zon)
+      =^  cards  ego
+        (apto +.u.zon u.aru)
+      [cards hoc]
+    =/  noa=nota        (noto u.zon)
+    =/  lek=(unit lex)  (~(get by omen.u.aru) noa)
+    ?~  lek  [~ hoc]
+    =^  cards  u.aru  (muto u.lek u.zon u.aru)
+    :-  cards
+    hoc(arae.ego (~(put by arae.ego) cura.ego u.aru))
     ::
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
@@ -240,18 +244,6 @@
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 |%
-::
-++  fio                            :: make a display update card
-  |=  =opus
-  ^-  card
-  =;  txt=@t
-    [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
-  %-  crip
-  %-  zing
-  ^-  wall
-  %+  turn  opus
-  |=  i=[apex sol]
-  (dico i)
 ::
 ++  ineo                           :: parse input text
   |=  jon=json
@@ -363,182 +355,122 @@
     ~
   ~
 ::
+++  fio                            :: make a display update card
+  |=  =opus
+  ^-  card
+  =;  txt=@t
+    [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
+  %-  crip
+  %-  zing
+  ^-  wall
+  %+  turn  opus
+  |=  i=[apex sol]
+  (dico i)
+::
+++  apto                           :: handle a resize event
+  |=  [=urbs =ara]
+  ^-  (quip card ^ego)
+  =.  urbs.ego  urbs
+  =|  [ram=rami ayr=aer]
+  =.  muri.ayr  [1 x.urbs.ego 1 y.urbs.ego]
+  =.  deus.ara  (geno ~ vela.ara)
+  =.  ossa.ara  (humo deus.ara)
+  =/  vis       (viso ram rex.ara ossa.ara ayr deus.ara)
+  =.  ordo.ara  (gyro vis)
+  :_  ego(arae (~(put by arae.ego) cura.ego ara))
+  :~  (fio ~[vis [(fero rex.ara deus.ara) ~]])
+  ==
+::
+++  scio                           :: determine hotkey context
+  |_  [=rex =deus]
+  ++  $
+    ^-  omen
+    ?~  rex  nav
+    |-  ^-  omen
+    ?~  k.rex
+      ?:  ?=(%input -.ars.cor.deus)
+        inp
+      nav
+    %=  $
+      k.rex  t.k.rex
+      deus
+        %+  snag  ager.i.k.rex
+        ?-  axis.i.k.rex
+          %n  n.gens.deus
+          %b  b.gens.deus
+          %l  l.gens.deus
+        ==
+    ==
+  ++  nav
+    ^-  omen
+    %-  malt
+    ^-  (list [nota lex])
+    :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
+        [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
+        [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
+        [[%clk %u] %clk]  [[%clk %d] %clk]
+        [[%ret ~] %act]
+    ==
+  ++  inp
+    ^-  omen
+    %-  malt
+    ^-  (list [nota lex])
+    :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
+        [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
+        [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
+        [[%clk %u] %clk]  [[%clk %d] %clk]
+        [[%txt ~] %inp]  [[%bac ~] %del]
+    ==
+  --
+::
 ++  muto                           :: handle a hotkey event
-  |_  [=lex zon=zona aul=aula =ara]
+  |_  [=lex zon=zona =ara]
   ++  $
     ^-  (quip card ^ara)
     ?:  ?|  ?=(%nav-l lex)  ?=(%nav-r lex)
             ?=(%nav-u lex)  ?=(%nav-d lex)
         ==
       meo
-
-      :: :: ------------- OLD --------------
-      :: ::
-      :: :: find the closest scroll parent (ligo), or none.
-      :: ::
-      :: =/  scr=$@(~ rami)  ?~(rex.ara ~ (ligo k.rex.ara equi.ara))
-      :: =/  spar=(unit ens)  ?~(scr ~ (~(get by esse.ara) scr))
-      :: ::
-      :: :: get and order the navigation points by current selection and nav direction (gero).
-      :: ::
-      :: =/  navs=ordo  (gero rex.ara ordo.ara)
-      :: ::
-      :: :: get a skimmed list of the ordered navigation points with those in the same closest scroll element.
-      :: ::
-      :: =/  snav=ordo
-      ::   ?~  scr  ~
-      ::   %+  skim  ^-(ordo navs)
-      ::   |=  =dux
-      ::   (alo scr k.dux)
-      :: ::
-      :: :: if the skimmed list has an item, that is the prospective next selection, else the initial ordered list, else none.
-      :: ::
-      :: =/  nex=rex  ?~(navs ~ ?~(snav i.navs i.snav))
-      :: ::
-      :: :: check if the closest scroll parent is scrolled to its maximum
-      :: ::
-      :: =/  send=bean
-      ::   ?&  ?=(^ rex.ara)  ?=(^ spar)  ?=(%scroll -.ars.u.spar)  =(scr k.rex.ara)
-      ::       ?|  &(?=(%nav-l lex) =(0 x.iter.ars.u.spar))
-      ::           &(?=(%nav-r lex) =(x.sola.ars.u.spar x.iter.ars.u.spar))
-      ::           &(?=(%nav-u lex) =(0 y.iter.ars.u.spar))
-      ::           &(?=(%nav-d lex) =(y.sola.ars.u.spar y.iter.ars.u.spar))
-      ::   ==  ==
-      :: ::
-      :: :: if the nearest scroll element is at its maximum, get the next nearest and redo the following values
-      :: ::
-      :: =?  scr   &(send ?=(^ scr) ?=(^ t.scr))  
-      ::   =/  pscr=$@(~ rami)  (ligo t.scr equi.ara)
-      ::   ?~(pscr scr pscr)
-      :: =?  spar  &(send ?=(^ scr))  (~(get by esse.ara) scr)
-      :: =?  nex  &(send ?=(~ scr) ?=(^ navs))  i.navs
-      :: =?  snav  &(send ?=(^ scr))
-      ::   %+  skim  ^-(ordo navs)
-      ::   |=  =dux
-      ::   (alo scr k.dux)
-      :: =?  nex  &(send ?=(^ scr) ?=(^ snav))  i.snav
-      :: ::
-      :: :: perform a scroll update (abeo)
-      :: ::
-      :: =/  abe=$@(~ [=esse cura])
-      ::   ?~  scr  ~
-      ::   ?:  ?=(^ snav)  ~
-      ::   %+  abeo  scr
-      ::   ?+  lex   lex
-      ::     %nav-l  %scr-l   %nav-r  %scr-r
-      ::     %nav-u  %scr-u   %nav-d  %scr-d
-      ::   ==
-      :: ::
-      :: :: update session state with the scroll update result
-      :: ::
-      :: =?  ara  ?=(^ abe)
-      ::   %_  ara
-      ::     esse  esse.abe   omen  omen.abe
-      ::     aves  aves.abe   gens  gens.abe
-      ::     ordo  ordo.abe   rex   rex.abe
-      ::     equi  equi.abe   mus   mus.abe
-      ::   ==
-      :: ::
-      :: :: if there was a scroll update filter the navigation points again and see if a selection is now available in the scroll element 
-      :: ::
-      :: =?  nex  ?=(^ abe)
-      ::   ?~  scr  ~
-      ::   =<  ?~(. ~ i)
-      ::   %+  skim  ^-(ordo (gero rex.ara ordo.abe))
-      ::   |=  =dux
-      ::   (alo scr k.dux)
-      :: ::
-      :: :: save the old selection and change selection state to the new one
-      :: ::
-      :: =/  orx  rex.ara
-      :: =.  rex.ara
-      ::   ?:  ?=(^ nex)  nex
-      ::   ?:  ?|  ?=(~ scr)  ?=(~ spar)  ?=(~ abe)
-      ::           ?=(^ (find ~[rex.ara] ordo.abe))
-      ::       ==
-      ::     rex.ara
-      ::   (rogo scr ordo.ara)
-      :: ::
-      :: :: produce a selection style update
-      :: ::
-      :: =/  duc=opus  (duco orx rex.ara esse.ara ?~(abe visa.ara visa.abe))
-      :: ::
-      :: :: get the element that is the new selection
-      :: ::
-      :: =/  sel=(unit ens)  ?~(rex.ara ~ (~(get by esse.ara) k.rex.ara))
-      :: ::
-      :: :: make the hotkey context either normal nav or input depending on whether or not the new selection is an input or not
-      :: ::
-      :: =.  omen.ara
-      ::   ?~  sel  omen.ara
-      ::   ?+  -.ars.u.sel  (~(uni by omen.ara) hnav)
-      ::     %input         (~(uni by omen.ara) hinp)
-      ::   ==
-      :: ::
-      :: :: finally, resolve all element and character updates, make a display update, and a cursor move
-      :: ::
-      :: =?  esse.ara  ?=(^ esse.duc)  (~(uni by esse.ara) ^-(esse esse.duc))
-      :: =?  abe  ?=(^ abe)  abe(visa (~(uni by visa.abe) ^-(visa visa.duc)))
-      :: :_  ara(visa ?~(abe (~(uni by visa.ara) visa.duc) visa.abe))
-      :: :_  ?:  |(?=(~ nex) ?=(~ sel) ?=(~ avis.u.sel))
-      ::       ~
-      ::     :~  :*  %pass  /select  %agent  fon  %poke  %homunculus-event
-      ::             !>(^-(event:homunculus [%select u.avis.u.sel]))
-      ::     ==  ==
-      :: :+  ~  %mor
-      :: :~  (supo visa.ara ?~(abe visa.duc visa.abe))
-      ::     ^-  lux
-      ::     ?:  &(?=(^ sel) ?=(%input -.ars.u.sel))
-      ::       (vado ab.ars.u.sel i.ars.u.sel size.res.u.sel lar.u.sel iter.u.sel)
-      ::     ?~  rex.ara  [%hop [1 1]]
-      ::     ?:  |(?=(~ spar) &(?=(~ abe) ?=(~ snav) ?=(^ navs)) =(k.rex.ara scr))
-      ::       [%hop [l.rex.ara t.rex.ara]]
-      ::     (cedo rex.ara scr u.spar)
-      :: ==
-
     ::
-    [~ aru]
+    [~ ara]
   ::
   ++  meo                          :: handle a navigation event
     ^-  (quip card ^ara)
-    :: 1) get and order the navigation points by current selection and nav direction (gero).
-    =/  navs=ordo  (gero rex.ara ordo.ara)
-    :: 2) find the closest scroll parent or none (fluo).
-    =/  active-scroll=(unit rami)  fluo
-    :: 3) get a skimmed list of the ordered navigation points with those in the same closest scroll element.
-    =/  navs-in-scroll=ordo
+    =/  navs           (gero rex.ara ordo.ara)
+    =/  active-scroll  fluo
+    =/  navs-in-scroll
+      ^-  ordo
       ?~  active-scroll  ~
       %+  skim  `ordo`navs
       |=  =dux
       (alo u.active-scroll k.dux)
-    :: 4) if the skimmed list has an item, that is the prospective next selection, else the initial ordered list, else none.
-    =/  next=rex
-      ?^  snav  i.snav
-      ?^  navs  i.navs
-      ~
-    :: 5) if fluo returned defined, and the skimmed list is null, set a flag to perform a scroll update.
-    =/  do-scroll=?
-      ?&  ?=(^ active-scroll)
-          ?=(~ navs-in-scroll)
-          |(?=(%nav-u lex) ?=(%nav-d lex))
-      ==
-    :: 6) to perform a scroll update, change iter on the scroll parent, and then produce a new render schematic and from this new interactivity context
-    ?:  do-scroll
-      =^  rend=[=apex =sol]  ara  (eo (need active-scroll))
+    ?:  ?&  ?=(^ active-scroll)
+            ?=(~ navs-in-scroll)
+            |(?=(%nav-u lex) ?=(%nav-d lex))
+        ==
+      =^  rend=[=apex =sol]  ara
+        (eo (need active-scroll))
       :_  ara
-      :~  (fio ~[rend [(fero ) ~]])
+      :~  (fio ~[rend [(fero rex.ara deus.ara) ~]])
       ==
-
-    
-    
-        :: there are two(?) different cases for the format of render produced:
-        :: 1) if there is a scroll update performed (iter chaged), just produce one render with that whole scroll element rerendered, once rex is comletely resolved,
-        :: 2) if there isn't a scroll update performed, attempt to produce one render for the old rex, and one render for the new rex.
-        :: a cursor hop needs to follow either case
-
-
-
-
+    =/  next=rex
+      ?^  navs-in-scroll  i.navs-in-scroll
+      ?^  navs  i.navs  ~
+    ?:  |(?=(~ next) &(?=(^ rex.ara) =(k.rex.ara k.next)))
+      [~ ara]
+    =/  old=[ayr=aer el=deus]  (creo ?~(rex.ara ~ k.rex.ara) deus.ara)
+    =/  new=[ayr=aer el=deus]  (creo k.next deus.ara)
+    =/  rend-old
+      ?:  ?=([~ ~ ~] sele.res.cor.el.old)  [*loci *sol]
+      (viso ?~(rex.ara ~ k.rex.ara) next ossa.ara old)
+    =.  rex.ara   next
+    =.  omen.ara  (scio rex.ara deus.ara)
+    =/  rend-new
+      ?:  ?=([~ ~ ~] sele.res.cor.el.new)  [*loci *sol]
+      (viso ?~(rex.ara ~ k.rex.ara) rex.ara ossa.ara new)
+    :_  ara
+    :~  (fio ~[rend-old rend-new [(fero rex.ara deus.ara) ~]])
+    ==
   ::
   ++  eo                           :: perform a scroll
     |=  key=rami
@@ -550,20 +482,24 @@
         %nav-u  (dec y.iter.ars.cor.scr)
         %nav-d  +(y.iter.ars.cor.scr)
       ==
-    =/  rend=sol  (viso key rex.ara ossa.ara ayr scr)
-    =.  ordo.ara  (ligo key (gyro apex.cor.scr rend) ordo.ara)
+    =/  rend      (viso key rex.ara ossa.ara ayr scr)
+    =.  ordo.ara  (ligo key (gyro rend) ordo.ara)
+    ~&  ordo/ordo.ara
+    ~&  gero/(gero rex.ara ordo.ara)
     =/  navs=ordo
       %+  skim  (gero rex.ara ordo.ara)
       |=  =dux
       (alo key k.dux)
     ?~  navs
-      :-  [apex.cor.scr rend]
+      :-  rend
       %_  ara
         deus  (novo key scr)
       ==
-    =.  rex.ara  i.navs
-    =.  rend  (viso key rex.ara ossa.ara ayr scr)
-    :-  [apex.cor.scr rend]
+    =.  rex.ara   i.navs
+    =:  omen.ara  (scio rex.ara deus.ara)
+        rend      (viso key rex.ara ossa.ara ayr scr)
+      ==
+    :-  rend
     %_  ara
       deus  (novo key scr)
     ==
@@ -577,17 +513,15 @@
     ?~  k.rex.ara
       ?~  acc  ~
       [~ i.acc]
-    =.  key  (snoc key i.k.rex.ara)
     =?  acc
         ?&  ?=(%scroll -.ars.cor.deus.ara)
             ?!
-            ?|  &(?=(%nav-l lex) =(0 x.iter.ars.cor.deus.ara))
-                &(?=(%nav-r lex) =(x.sola.ars.cor.deus.ara x.iter.ars.cor.deus.ara))
-                &(?=(%nav-u lex) =(0 y.iter.ars.cor.deus.ara))
+            ?|  &(?=(%nav-u lex) =(0 y.iter.ars.cor.deus.ara))
                 &(?=(%nav-d lex) =(y.sola.ars.cor.deus.ara y.iter.ars.cor.deus.ara))
         ==  ==
       [key acc]
     %=  $
+      key        (snoc key i.k.rex.ara)
       k.rex.ara  t.k.rex.ara
       deus.ara
         %+  snag  ager.i.k.rex.ara
@@ -647,18 +581,6 @@
       i.o
     $(o t.o)
   ::
-  ++  alo                          :: check if element b is a child of element a
-    |=  [a=rami b=rami]
-    ^-  bean
-    ?:  =(a b)
-      |
-    |-  ^-  bean
-    ?:  =(a b)
-      &
-    ?~  t.b
-      |
-    $(b t.b)
-  ::
   ++  tego                         :: check if either element a or element b is in a layer above
     |=  [a=rami b=rami]
     =/  a=$@(~ rami)  (flop a)
@@ -669,9 +591,9 @@
     ?~  t.a  %~
     ?~  t.b  %~
     ?.  =(axis.i.t.a axis.i.t.b)
-      ?:  &(?=(%l axis.i.t.a) ?=(%~ axis.i.t.b))
+      ?:  &(?=(%l axis.i.t.a) ?=(%n axis.i.t.b))
         %a
-      ?:  &(?=(%~ axis.i.t.a) ?=(%l axis.i.t.b))
+      ?:  &(?=(%n axis.i.t.a) ?=(%l axis.i.t.b))
         %b
       %~
     ?.  =(ager.i.t.a ager.i.t.b)
@@ -809,12 +731,26 @@
         %l  l.gens.deu
       ==
     ?-  axis.i.key
-      %n  deus.ara(n (snap n.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
-      %b  deus.ara(b (snap b.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
-      %l  deus.ara(l (snap l.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
+      %n  deus.ara(n.gens (snap n.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
+      %b  deus.ara(b.gens (snap b.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
+      %l  deus.ara(l.gens (snap l.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
     ==
   ::
   --
+::
+++  alo                            :: check if element b is a child of element a
+  |=  [a=rami b=rami]
+  ^-  bean
+  ?:  =(a b)
+    |
+  ?~  a
+    &
+  |-  ^-  bean
+  ?:  =(~ b)
+    |
+  ?:  =(a b)
+    &
+  $(b (snip b))
 ::
 ++  fero                           :: resolve cursor location
   |=  [=rex =deus]
@@ -829,14 +765,24 @@
       ab.ars.cor.deu  i.ars.cor.deu
     ==
   =:  x1  (max x1 l.muri.ayr)
-      y1  (min y1 t.muri.ayr)
+      y1  (max y1 t.muri.ayr)
     ==
-  :: process the selected element coordinate against layer blocking
-  
-  
-
-
-
+  =/  ox  x1
+  |-  ^-  loci
+  =/  ux  (~(get by luna.ayr) y1)
+  ?~  ux  [x1 y1]
+  ?~  u.ux  [x1 y1]
+  |-  ^-  loci
+  ?:  ?|  (lth x1 x1.i.u.ux)
+          (gth x1 x2.i.u.ux)
+      ==
+    [x1 y1]
+  ?:  ?&  (gth x2 x2.i.u.ux)
+          ?=(^ t.u.ux)
+      ==
+    $(x1 x2.i.u.ux)
+  ?:  =(y1 y2)  [1 1]
+  ^$(x1 ox, y1 +(y1))
 ::
 ++  vado                           :: resolve cursor location for an input
   |=  [=apex [w=@ud h=@ud] ab=@ud i=loci]
@@ -857,6 +803,37 @@
   ?~  lop  0
   ?.  =(~-. i.lop)  (lent lop)
   $(lop t.lop)
+::
+++  noto                           :: parse zona to nota
+  |=  z=zona
+  ^-  nota
+  ?:  ?=(%mod -.z)  [-.z +<.z (noto +>.z)]
+  ?:  ?=(%clk -.z)  [-.z +<.z]
+  ?:  ?=(%whe -.z)  [-.z +<.z]
+  ?:  ?=(%txt -.z)  [-.z ~]
+  ?:  ?=(%chr -.z)  z
+  ?:  ?=(%aro -.z)  z
+  ?:  ?=(%bac -.z)  z
+  ?:  ?=(%ret -.z)  z
+  ?:  ?=(%esc -.z)  z
+  ?:  ?=(%del -.z)  z
+  !!
+::
+++  uro                            :: parse custom hotkey metadata to ales
+  |=  h=(list [hotkey:homunculus id:homunculus])
+  ^-  ales
+  %-  malt
+  |-  ^-  (list [nota @t])
+  ?~  h  ~
+  :_  $(h t.h)
+  :_  +.i.h
+  ?@  -.i.h               [%chr (taft -.i.h)]
+  ?:  ?=(%delete -<.i.h)  [%del ~]
+  ?:  ?=(%enter -<.i.h)   [%ret ~]
+  ?:  ?=(%back -<.i.h)    [%bac ~]
+  ?:  ?=(%tab -<.i.h)     [%mod %ctl [%chr ~-i]]
+  ?:  ?=(%arrow -<.i.h)   [%aro ->.i.h]
+  !!
 ::
 ++  dolo                           :: get default styles for a semantic element
   |=  el=@tas
@@ -982,7 +959,7 @@
         %border-bottom  [(dolo %border-bottom) [%border %b %~]]
         %line-h         [(dolo %line-h) [%line %h %light]]
         %line-v         [(dolo %line-v) [%line %v %light]]
-        %scroll         [(dolo %scroll) [%scroll *iter *muri *sola]]
+        %scroll         [(dolo %scroll) [%scroll *iter *sola]]
         %form           [(dolo %form) [%form ~]]
         %input          [(dolo %input) [%input 0 [0 0] ~]]
         %checkbox       [(dolo %checkbox) [%checkbox %.n]]
@@ -1204,7 +1181,7 @@
     $(lina (tuba v.i.a), a t.a)
   ==
 ::
-++  paro                           :: check whether an element is a navigation point
+++  peto                           :: check whether an element is a navigation point
   |=  t=term
   ^-  ?
   ?|  =(%select t)
@@ -1416,6 +1393,17 @@
     $(y +(y), iy 0, bas cop)
   $(y +(y), iy +(iy), bas t.bas)
 ::
+++  texo                           :: resolve an element's selection style
+  |=  [typ=@tas fil=fila aci=acia]
+  ^-  fila
+  :+  ?.  ?&  ?=(^ d.aci)
+              |(=(%text typ) =(%input typ) =(%pattern typ))
+          ==
+        d.fil
+      u.d.aci
+    ?~(b.aci b.fil u.b.aci)
+  ?~(f.aci f.fil u.f.aci)
+::
 ++  orno                           :: make a line as vox
   |=  [siz=[w=@ud h=@ud] dir=term =ora]
   ^-  vox
@@ -1492,7 +1480,7 @@
 ::
 ++  laxo                           :: resolve all coordinates for an element with iter
   |=  [=iter =apex =res]
-  ^-  [apex modi muri]
+  ^-  [^apex modi muri]
   =/  [x2-raw=@ y2-raw=@]
     :-  (add x.apex ?.(=(0 w.size.res) (dec w.size.res) 0))
     (add y.apex ?.(=(0 h.size.res) (dec h.size.res) 0))
@@ -2509,6 +2497,7 @@
     :*  [?~(lim len (min len u.lim)) (lent vox.ars)]
         [0 0 0 0]
         [0 0 0 0]
+        [0 0 0 0]
         [0 0]
         [%row %wrap]
         pl
@@ -2531,6 +2520,13 @@
     ==
   :: TO DO: geno state transitions require building rami
   :: 
+  =?  ars  ?=(%scroll -.ars)
+    =/  ola=sola
+      ?~  csiz  [0 0]
+      :-  ?:((gth arx w.csiz) 0 (sub w.csiz arx))
+      ?:((gth ary h.csiz) 0 (sub h.csiz ary))
+    =/  itr=iter  [0 0]
+    [%scroll itr ola]
   :: =?  ars
   ::     ?|  ?=(%input -.ars)
   ::         ?=(%scroll -.ars)
@@ -2636,8 +2632,8 @@
       (min b.room b.muri.ayr)
     ::
     rex.ayr
-      ?.  (paro -.ars.cor.deu)  rex.ayr
-      [~ [(flop ki) x1 x2 y1 y2]]
+      ?.  (peto -.ars.cor.deu)  rex.ayr
+      [(flop ki) x1 x2 y1 y2]
     ::
     luna.ayr
       ?~  l.gens.deu  luna.ayr
@@ -2692,11 +2688,11 @@
 ::
 ++  viso                           :: build a render schematic from a branch
   |=  [key=rami xer=rex osa=ossa ayr=aer deu=deus]
-  ^-  sol
+  ^-  [=apex =sol]
   ?:  ?|  =(0 w.size.res.cor.deu)
           =(0 h.size.res.cor.deu)
       ==
-    ~
+    [1^1 ~]
   =/  a-y1=@ud
     ?:  =(0 y.iter.ayr)  y.apex.cor.deu
     ?.  (lth y.iter.ayr y.apex.cor.deu)  1
@@ -2710,7 +2706,7 @@
   ?:  ?|  (gth a-y1 b.muri.ayr)
           (lth a-y2 t.muri.ayr)
       ==
-    ~
+    [1^1 ~]
   =/  acc=sol
     %+  reap
       +((sub a-y2 a-y1))
@@ -2727,6 +2723,7 @@
     ?~  l
       [i +(n)]
     [u.l +(n)]
+  :-  [x.apex.cor.deu a-y1]
   |-  ^-  sol
   =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
     (laxo iter.ayr apex.cor.deu res.cor.deu)
@@ -2738,18 +2735,17 @@
           (lth y2 t.muri.ayr)
       ==
     acc
-  =.  rex.ayr   ?:((paro -.ars.cor.deu) [key x1 x2 y1 y2] rex.ayr)
+  =.  rex.ayr   ?:((peto -.ars.cor.deu) [key x1 x2 y1 y2] rex.ayr)
   =.  acc
-    =:  iter.ayr
-          ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
-          :-  (add x.iter.ayr x.iter.ars.cor.deu)
-          (add y.iter.ayr y.iter.ars.cor.deu)
-        muri.ayr
-          :^    (max l.room l.muri.ayr)
-              (min r.room r.muri.ayr)
-            (max t.room t.muri.ayr)
-          (min b.room b.muri.ayr)
-      ==
+    =/  itr=iter
+      ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
+      :-  (add x.iter.ayr x.iter.ars.cor.deu)
+      (add y.iter.ayr y.iter.ars.cor.deu)
+    =/  mur=muri
+      :^    (max l.room l.muri.ayr)
+          (min r.room r.muri.ayr)
+        (max t.room t.muri.ayr)
+      (min b.room b.muri.ayr)
     =<  +>.q
     %^  spin
         ^-  dei
@@ -2772,21 +2768,23 @@
           deu  d
           key  (snoc key [x i.a])
           acc  s.a
+          iter.ayr  ?.(?=(%border -.ars.cor.d) itr iter.ayr)
+          muri.ayr  ?.(?=(%border -.ars.cor.d) mur muri.ayr)
         ==
     ==
   ?:  ?|  ?=(%layer -.ars.cor.deu)
           &(?=(%border -.ars.cor.deu) ?=(%~ ora.ars.cor.deu))
       ==
     acc
-  =/  a-i1=@ud   (sub (max y1 t.muri.ayr) a-y1)
-  =/  a-i2=@ud   (sub (min y2 b.muri.ayr) a-y1)
+  =/  a-i1=@ud   =+(y=(max y1 t.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
+  =/  a-i2=@ud   =+(y=(min y2 b.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
   =/  look=fila
     ?.  ?&  ?=(^ xer)
             ?=(^ rex.ayr)
             =(k.xer k.rex.ayr)
         ==
       look.res.cor.deu
-    sele.res.cor.deu
+    (texo -.ars.cor.deu look.res.cor.deu sele.res.cor.deu)
   =;  rend=sol
     %+  weld  (scag a-i1 acc)
     %+  weld  rend
