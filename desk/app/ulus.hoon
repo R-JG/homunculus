@@ -448,8 +448,7 @@
             ?=(~ navs-in-scroll)
             |(?=(%nav-u lex) ?=(%nav-d lex))
         ==
-      =^  rend=[=apex =sol]  ara
-        (eo (need active-scroll))
+      =^  rend  ara  (eo (need active-scroll))
       :_  ara
       :~  (fio ~[rend [(fero rex.ara deus.ara) ~]])
       ==
@@ -767,17 +766,15 @@
   |-  ^-  loci
   =/  ux  (~(get by luna.ayr) y1)
   ?~  ux  [x1 y1]
-  ?~  u.ux  [x1 y1]
   |-  ^-  loci
-  ?:  ?|  (lth x1 x1.i.u.ux)
-          (gth x1 x2.i.u.ux)
-      ==
+  ?~  u.ux
+    ?:  (gth y1 y2)
+      [1 1]
     [x1 y1]
-  ?:  ?&  (gth x2 x2.i.u.ux)
-          ?=(^ t.u.ux)
-      ==
-    $(x1 x2.i.u.ux)
-  ?:  =(y1 y2)  [1 1]
+  ?:  (lth x1 x1.i.u.ux)
+    [x1 y1]
+  ?:  (gth x2 x2.i.u.ux)
+    $(x1 +(x2.i.u.ux), u.ux t.u.ux)
   ^$(x1 ox, y1 +(y1))
 ::
 ++  vado                           :: resolve cursor location for an input
@@ -2606,8 +2603,20 @@
       $(key t.key, ki [i.key ki])
   =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
     (laxo iter.ayr apex.cor.deu res.cor.deu)
+  =:  iter.ayr
+        ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
+        :-  (add x.iter.ayr x.iter.ars.cor.deu)
+        (add y.iter.ayr y.iter.ars.cor.deu)
+      muri.ayr
+        :^    (max l.room l.muri.ayr)
+            (min r.room r.muri.ayr)
+          (max t.room t.muri.ayr)
+        (min b.room b.muri.ayr)
+      rex.ayr
+        ?.  (peto -.ars.cor.deu)  rex.ayr
+        [(flop ki) x1 x2 y1 y2]
+    ==
   %_  .
-    ::
     deu
       %+  snag  ager.i.key
       ?-  axis.i.key
@@ -2615,22 +2624,6 @@
         %b  b.gens.deu
         %l  l.gens.deu
       ==
-    ::
-    iter.ayr
-      ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
-      :-  (add x.iter.ayr x.iter.ars.cor.deu)
-      (add y.iter.ayr y.iter.ars.cor.deu)
-    ::
-    muri.ayr
-      :^    (max l.room l.muri.ayr)
-          (min r.room r.muri.ayr)
-        (max t.room t.muri.ayr)
-      (min b.room b.muri.ayr)
-    ::
-    rex.ayr
-      ?.  (peto -.ars.cor.deu)  rex.ayr
-      [(flop ki) x1 x2 y1 y2]
-    ::
     luna.ayr
       ?~  l.gens.deu  luna.ayr
       =/  els=dei
@@ -2642,7 +2635,9 @@
         (weld a n.gens.d)
       |-  ^-  luna
       ?~  els  luna.ayr
-      ?:  |(=(0 w.size.res.cor.i.els) =(0 h.size.res.cor.i.els))
+      ?:  ?|  =(0 w.size.res.cor.i.els)
+              =(0 h.size.res.cor.i.els)
+          ==
         $(els t.els)
       =/  ros=(list lux)
         %+  reap  h.size.res.cor.i.els
@@ -2671,15 +2666,16 @@
           |-  ^-  (list lux)
           ?~  u.l
             [i ~]
-          ?:  |((lth x2.i x1.i.u.l) (gth x1.i x2.i.u.l))
-            [i u.l]
           ?:  &((gte x1.i x1.i.u.l) (lte x2.i x2.i.u.l))
             u.l
+          ?:  (lth x2.i x1.i.u.l)
+            [i u.l]
+          ?:  (gth x1.i x2.i.u.l)
+            [i.u.l $(u.l t.u.l)]
           ?:  (lth x1.i x1.i.u.l)
             u.l(x1.i x1.i)
           u.l(x2.i x2.i)
       ==
-    ::
   ==
 ::
 ++  viso                           :: build a render schematic from a branch
