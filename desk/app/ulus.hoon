@@ -477,17 +477,30 @@
     ^-  [[apex sol] ^ara]
     =/  [ayr=aer scr=deus]  (creo key deus.ara)
     ?>  ?=(%scroll -.ars.cor.scr)
-    =.  y.iter.ars.cor.scr
-      ?+  lex   y.iter.ars.cor.scr
-        %nav-u  (dec y.iter.ars.cor.scr)
-        %nav-d  +(y.iter.ars.cor.scr)
+    =:  y.iter.ars.cor.scr
+          ?+  lex   y.iter.ars.cor.scr
+            %nav-u  (dec y.iter.ars.cor.scr)
+            %nav-d  +(y.iter.ars.cor.scr)
+          ==
+        rex.ara
+          ?~  rex.ara  ~
+          ?+  lex   rex.ara
+              %nav-u
+            %_  rex.ara
+              t  +(t.rex.ara)
+              b  +(b.rex.ara)
+            ==
+              %nav-d
+            %_  rex.ara
+              t  ?.(=(0 t.rex.ara) (dec t.rex.ara) 0)
+              b  ?.(=(0 b.rex.ara) (dec b.rex.ara) 0)
+            ==
+          ==
       ==
     =/  rend      (viso key rex.ara ossa.ara ayr scr)
-    =.  ordo.ara  (ligo key (gyro rend) ordo.ara)
-    ~&  ordo/ordo.ara
-    ~&  gero/(gero rex.ara ordo.ara)
+    =/  gyr       (gyro rend)
     =/  navs=ordo
-      %+  skim  (gero rex.ara ordo.ara)
+      %+  skim  (gero rex.ara gyr)
       |=  =dux
       (alo key k.dux)
     ?~  navs
@@ -496,7 +509,8 @@
         deus  (novo key scr)
       ==
     =.  rex.ara   i.navs
-    =:  omen.ara  (scio rex.ara deus.ara)
+    =:  ordo.ara  (ligo key gyr ordo.ara)
+        omen.ara  (scio rex.ara deus.ara)
         rend      (viso key rex.ara ossa.ara ayr scr)
       ==
     :-  rend
@@ -583,9 +597,7 @@
   ::
   ++  tego                         :: check if either element a or element b is in a layer above
     |=  [a=rami b=rami]
-    =/  a=$@(~ rami)  (flop a)
-    =/  b=$@(~ rami)  (flop b)
-    |-  ^-  ?(%a %b %~)
+    ^-  ?(%a %b %~)
     ?~  a  %~
     ?~  b  %~
     ?~  t.a  %~
@@ -605,44 +617,28 @@
     $(a t.a, b t.b)
   ::
   ++  cieo                         :: check if a navigation point is viable given the current selection
-    |=  rex=dux
-    |=  =dux
-    ^-  bean
-    ?:  =(k.dux k.rex)  |
-    ?+  lex  |
-        %nav-l
+    |_  rex=dux
+    ++  $
+      |=  =dux
+      ^-  bean
+      ?:  =(k.dux k.rex)  |
+      ?+  lex  |
+        %nav-l  (f lth dux l.dux r.dux l.rex l.rex)
+        %nav-u  (f lth dux t.dux b.dux t.rex t.rex)
+        %nav-r  (f gth dux l.dux l.dux l.rex r.rex)
+        %nav-d  (f gth dux t.dux t.dux t.rex b.rex)
+      ==
+    ++  f
+      |=  [than=$-([@ @] ?) =dux d1=@ d2=@ r1=@ r2=@]
+      ^-  bean
       ?:  (taxo +.dux +.rex)
-        ?:  =(l.dux l.rex)
+        ?:  =(d1 r1)
           |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
-        (lth l.dux l.rex)
+        (than d1 r1)
       ?.  =(%~ (tego k.rex k.dux))
-        (lth l.dux l.rex)
-      (lth r.dux l.rex)
-        %nav-u
-      ?:  (taxo +.dux +.rex)
-        ?:  =(t.dux t.rex)
-          |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
-        (lth t.dux t.rex)
-      ?.  =(%~ (tego k.rex k.dux))
-        (lth t.dux t.rex)
-      (lth b.dux t.rex)
-        %nav-r
-      ?:  (taxo +.dux +.rex)
-        ?:  =(l.dux l.rex)
-          |((alo k.rex k.dux) =(%a (tego k.rex k.dux)))
-        (gth l.dux l.rex)
-      ?.  =(%~ (tego k.rex k.dux))
-        (gth l.dux l.rex)
-      (gth l.dux r.rex)
-        %nav-d
-      ?:  (taxo +.dux +.rex)
-        ?:  =(t.dux t.rex)
-          |((alo k.rex k.dux) =(%a (tego k.rex k.dux)))
-        (gth t.dux t.rex)
-      ?.  =(%~ (tego k.rex k.dux))
-        (gth t.dux t.rex)
-      (gth t.dux b.rex)
-    ==
+        (than d1 r1)
+      (than d2 r2)
+    --
   ::
   ++  reor                         :: get the euclidean distance between a selection and a navigation point
     |=  [=dux rex=dux]
