@@ -62,7 +62,7 @@
           nav=rex                                                      ::
           txt=lina                                                     ::
   ==  ==                                                               ::
-+$  aer   [=iter =muri =rex =luna]                                     :: branch render context (scroll, limits, select hierarchy, blocking)
++$  aer   [=iter =muri nav=[sty=? =rex] =luna]                         :: branch render context (scroll, limits, nav hierarchy, blocking)
 +$  opus  (list [=apex =sol])                                          :: render batch (hop on null sol)
 +$  dux   [k=rami muri]                                                :: navigation point
 +$  rex   $@(~ dux)                                                    :: selection
@@ -460,12 +460,14 @@
     =/  old=[ayr=aer el=deus]  (creo ?~(rex.ara ~ k.rex.ara) deus.ara)
     =/  new=[ayr=aer el=deus]  (creo k.next deus.ara)
     =/  rend-old
-      ?:  ?=([~ ~ ~] sele.res.cor.el.old)  [*loci *sol]
+      ?.  (adeo -.ars.cor.el.old sele.res.cor.el.old)
+        [*loci *sol]
       (viso ?~(rex.ara ~ k.rex.ara) next ossa.ara old)
     =.  rex.ara   next
     =.  omen.ara  (scio rex.ara deus.ara)
     =/  rend-new
-      ?:  ?=([~ ~ ~] sele.res.cor.el.new)  [*loci *sol]
+      ?.  (adeo -.ars.cor.el.new sele.res.cor.el.new)
+        [*loci *sol]
       (viso ?~(rex.ara ~ k.rex.ara) rex.ara ossa.ara new)
     :_  ara
     :~  (fio ~[rend-old rend-new [(fero rex.ara deus.ara) ~]])
@@ -476,6 +478,7 @@
     ^-  [[apex sol] ^ara]
     =/  [ayr=aer scr=deus]  (creo key deus.ara)
     ?>  ?=(%scroll -.ars.cor.scr)
+    =/  old  rex.ara
     =:  y.iter.ars.cor.scr
           ?+  lex   y.iter.ars.cor.scr
             %nav-u  (dec y.iter.ars.cor.scr)
@@ -496,8 +499,8 @@
             ==
           ==
       ==
-    =/  rend      (viso key rex.ara ossa.ara ayr scr)
-    =/  gyr       (gyro rend)
+    =/  rend  (viso key rex.ara ossa.ara ayr scr)
+    =/  gyr   (gyro rend)
     =/  navs=ordo
       %+  skim  (gero rex.ara gyr)
       |=  =dux
@@ -505,6 +508,7 @@
     ?~  navs
       :-  rend
       %_  ara
+        rex   old
         deus  (novo key scr)
       ==
     =.  rex.ara   i.navs
@@ -523,9 +527,6 @@
     =|  key=rami
     =|  acc=(list rami)
     |-  ^-  (unit rami)
-    ?~  k.rex.ara
-      ?~  acc  ~
-      [~ i.acc]
     =?  acc
         ?&  ?=(%scroll -.ars.cor.deus.ara)
             ?!
@@ -533,6 +534,9 @@
                 &(?=(%nav-d lex) =(y.sola.ars.cor.deus.ara y.iter.ars.cor.deus.ara))
         ==  ==
       [key acc]
+    ?~  k.rex.ara
+      ?~  acc  ~
+      [~ i.acc]
     %=  $
       key        (snoc key i.k.rex.ara)
       k.rex.ara  t.k.rex.ara
@@ -721,9 +725,9 @@
     =/  nex=deus
       %+  snag  ager.i.key
       ?-  axis.i.key
-        %n  n.gens.deu
-        %b  b.gens.deu
-        %l  l.gens.deu
+        %n  n.gens.deus.ara
+        %b  b.gens.deus.ara
+        %l  l.gens.deus.ara
       ==
     ?-  axis.i.key
       %n  deus.ara(n.gens (snap n.gens.deus.ara ager.i.key $(deus.ara nex, key t.key)))
@@ -1175,18 +1179,25 @@
   ==
 ::
 ++  peto                           :: check whether an element is a navigation point
-  |=  t=term
+  |=  typ=@tas
   ^-  ?
-  ?|  =(%select t)
-      =(%scroll t)
-      =(%input t)
-      =(%checkbox t)
+  ?|  ?=(%select typ)
+      ?=(%scroll typ)
+      ?=(%input typ)
+      ?=(%checkbox typ)
+  ==
+::
+++  adeo                           :: check whether to apply select styles to a branch
+  |=  [typ=@tas aci=acia]
+  ^-  ?
+  ?|  ?=(%select typ)
+      &(?=(%input typ) ?=([~ ~ ~] aci))
   ==
 ::
 ++  apo                            :: make axis for a key
-  |=  t=term
+  |=  typ=@tas
   ^-  axis
-  ?+  t      %n
+  ?+  typ    %n
     %layer   %l
     %border  %b
   ==
@@ -1389,7 +1400,7 @@
 ++  texo                           :: resolve an element's style
   |=  [typ=@tas sel=? fil=fila aci=acia]
   ^-  fila
-  =/  txt=?  |(=(%text typ) =(%input typ) =(%pattern typ))
+  =/  txt=?  |(?=(%text typ) ?=(%input typ) ?=(%pattern typ))
   ?.  sel
     fil(d ?.(txt ~ d.fil))
   :+  ?.  txt  ~
@@ -2612,8 +2623,9 @@
             (min r.room r.muri.ayr)
           (max t.room t.muri.ayr)
         (min b.room b.muri.ayr)
-      rex.ayr
-        ?.  (peto -.ars.cor.deu)  rex.ayr
+      nav.ayr
+        ?.  (peto -.ars.cor.deu)  nav.ayr
+        :-  (adeo -.ars.cor.deu sele.res.cor.deu)
         [(flop ki) x1 x2 y1 y2]
     ==
   %_  .
@@ -2686,9 +2698,9 @@
       ==
     [1^1 ~]
   =/  a-y1=@ud
-    ?:  =(0 y.iter.ayr)  y.apex.cor.deu
-    ?.  (lth y.iter.ayr y.apex.cor.deu)  1
-    (max (sub y.apex.cor.deu y.iter.ayr) t.muri.ayr)
+    %+  max  t.muri.ayr
+    ?:  (gte y.iter.ayr y.apex.cor.deu)  1
+    (sub y.apex.cor.deu y.iter.ayr)
   =/  a-y2=@ud
     =/  y2  (add y.apex.cor.deu (dec h.size.res.cor.deu))
     =?  y2  !=(0 y.iter.ayr)
@@ -2707,10 +2719,7 @@
     %+  spun  acc
     |=  [i=(list lux) n=@ud]
     ^-  [(list lux) @ud]
-    =/  y  (add y.apex.cor.deu n)
-    ?:  (gte y.iter.ayr y)
-      [i +(n)]
-    =.  y  (sub y y.iter.ayr)
+    =/  y  (add a-y1 n)
     =/  l  (~(get by luna.ayr) y)
     ?~  l
       [i +(n)]
@@ -2727,7 +2736,15 @@
           (lth y2 t.muri.ayr)
       ==
     acc
-  =.  rex.ayr   ?:((peto -.ars.cor.deu) [key x1 x2 y1 y2] rex.ayr)
+  =:  x1  (max x1 l.muri.ayr)
+      x2  (min x2 r.muri.ayr)
+      y1  (max y1 t.muri.ayr)
+      y2  (min y2 b.muri.ayr)
+    ==
+  =.  nav.ayr
+    ?.  (peto -.ars.cor.deu)  nav.ayr
+    :-  (adeo -.ars.cor.deu sele.res.cor.deu)
+    [key x1 x2 y1 y2]
   =.  acc
     =/  itr=iter
       ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
@@ -2773,7 +2790,7 @@
   =/  look=fila
     %:  texo
       -.ars.cor.deu
-      &(?=(^ xer) ?=(^ rex.ayr) =(k.xer k.rex.ayr))
+      &(sty.nav.ayr ?=(^ rex.nav.ayr) ?=(^ xer) =(k.xer k.rex.nav.ayr))
       look.res.cor.deu
       sele.res.cor.deu
     ==
@@ -2803,7 +2820,7 @@
     :*  x1
         x2
         look
-        rex.ayr
+        rex.nav.ayr
         ^-  lina
         ?~  xov  ~
         ?~  i.xov  ~
