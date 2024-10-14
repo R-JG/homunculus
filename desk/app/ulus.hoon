@@ -184,7 +184,7 @@
       =/  vis       (viso ram rex.new ossa.new ayr deus.new)
       =.  ordo.new  (gyro vis)
       :_  hoc(arae.ego (~(put by arae.ego) aul new))
-      :~  (fio ~[vis [(fero rex.new deus.new) ~]])
+      :~  (fio ~[vis [(vado rex.new deus.new) ~]])
       ==
       ::
     =:  vela.u.aru  +.ses
@@ -195,7 +195,7 @@
     =.  ordo.u.aru  (gyro vis)
     :_  hoc(arae.ego (~(put by arae.ego) aul u.aru))
     ?.  =(aul cura.ego)  ~
-    :~  (fio ~[vis [(fero rex.u.aru deus.u.aru) ~]])
+    :~  (fio ~[vis [(vado rex.u.aru deus.u.aru) ~]])
     ==
     ::
       %json
@@ -378,7 +378,7 @@
   =/  vis       (viso ram rex.ara ossa.ara ayr deus.ara)
   =.  ordo.ara  (gyro vis)
   :_  ego(arae (~(put by arae.ego) cura.ego ara))
-  :~  (fio ~[vis [(fero rex.ara deus.ara) ~]])
+  :~  (fio ~[vis [(vado rex.ara deus.ara) ~]])
   ==
 ::
 ++  scio                           :: determine hotkey context
@@ -450,7 +450,7 @@
         ==
       =^  rend  ara  (eo (need active-scroll))
       :_  ara
-      :~  (fio ~[rend [(fero rex.ara deus.ara) ~]])
+      :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
       ==
     =/  next=rex
       ?^  navs-in-scroll  i.navs-in-scroll
@@ -470,7 +470,7 @@
         [*loci *sol]
       (viso ?~(rex.ara ~ k.rex.ara) rex.ara ossa.ara new)
     :_  ara
-    :~  (fio ~[rend-old rend-new [(fero rex.ara deus.ara) ~]])
+    :~  (fio ~[rend-old rend-new [(vado rex.ara deus.ara) ~]])
     ==
   ::
   ++  eo                           :: perform a scroll
@@ -499,10 +499,10 @@
             ==
           ==
       ==
-    =/  rend  (viso key rex.ara ossa.ara ayr scr)
-    =/  gyr   (gyro rend)
+    =/  rend      (viso key rex.ara ossa.ara ayr scr)
+    =.  ordo.ara  (ligo key (gyro rend) ordo.ara)
     =/  navs=ordo
-      %+  skim  (gero rex.ara gyr)
+      %+  skim  (gero rex.ara ordo.ara)
       |=  =dux
       (alo key k.dux)
     ?~  navs
@@ -512,8 +512,7 @@
         deus  (novo key scr)
       ==
     =.  rex.ara   i.navs
-    =:  ordo.ara  (ligo key gyr ordo.ara)
-        omen.ara  (scio rex.ara deus.ara)
+    =:  omen.ara  (scio rex.ara deus.ara)
         rend      (viso key rex.ara ossa.ara ayr scr)
       ==
     :-  rend
@@ -751,7 +750,7 @@
     &
   $(b (snip b))
 ::
-++  fero                           :: resolve cursor location
+++  vado                           :: resolve cursor location
   |=  [=rex =deus]
   ^-  loci
   ?~  rex  [1 1]
@@ -759,12 +758,20 @@
   =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
     (laxo iter.ayr apex.cor.deu res.cor.deu)
   ?:  ?=(%input -.ars.cor.deu)
-    %:  vado
-      [x1 y1]  size.res.cor.deu
-      ab.ars.cor.deu  i.ars.cor.deu
-    ==
-  =:  x1  (max x1 l.muri.ayr)
-      y1  (max y1 t.muri.ayr)
+    =/  [i=loci ab=@ w=@ h=@]
+      :+  i.ars.cor.deu
+        ab.ars.cor.deu
+      size.res.cor.deu
+    ?:  =(1 h)
+      [(add x1 (sub x.i ab)) y1]
+    ?:  (lth x.i w)
+      [(add x1 x.i) (add y1 (sub y.i ab))]
+    =/  ran=@ud  (sub y.i ab)
+    ?:  (lth +(ran) h)
+      [x1 +((add y1 ran))]
+    [(add x1 ?:(=(0 w) 0 (dec w))) (add y1 ran)]
+  =:  x1  (min (max x1 l.muri.ayr) r.muri.ayr)
+      y1  (min (max y1 t.muri.ayr) b.muri.ayr)
     ==
   =/  ox  x1
   |-  ^-  loci
@@ -780,18 +787,6 @@
   ?:  (gth x2 x2.i.u.ux)
     $(x1 +(x2.i.u.ux), u.ux t.u.ux)
   ^$(x1 ox, y1 +(y1))
-::
-++  vado                           :: resolve cursor location for an input
-  |=  [=apex [w=@ud h=@ud] ab=@ud i=loci]
-  ^-  loci
-  ?:  =(1 h)
-    [(add x.apex (sub x.i ab)) y.apex]
-  ?:  (lth x.i w)
-    [(add x.apex x.i) (add y.apex (sub y.i ab))]
-  =/  ran=@ud  (sub y.i ab)
-  ?.  (lth +(ran) h)
-    [(add x.apex ?:(=(0 w) 0 (dec w))) (add y.apex ran)]
-  [x.apex +((add y.apex ran))]
 ::
 ++  pono                           :: get the length of a row in vox without the trailing whitespace
   |=  lop=lina
