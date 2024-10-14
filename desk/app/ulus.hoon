@@ -1386,14 +1386,14 @@
     $(y +(y), iy 0, bas cop)
   $(y +(y), iy +(iy), bas t.bas)
 ::
-++  texo                           :: resolve an element's selection style
-  |=  [typ=@tas fil=fila aci=acia]
+++  texo                           :: resolve an element's style
+  |=  [typ=@tas sel=? fil=fila aci=acia]
   ^-  fila
-  :+  ?.  ?&  ?=(^ d.aci)
-              |(=(%text typ) =(%input typ) =(%pattern typ))
-          ==
-        d.fil
-      u.d.aci
+  =/  txt=?  |(=(%text typ) =(%input typ) =(%pattern typ))
+  ?.  sel
+    fil(d ?.(txt ~ d.fil))
+  :+  ?.  txt  ~
+      ?~(d.aci d.fil u.d.aci)
     ?~(b.aci b.fil u.b.aci)
   ?~(f.aci f.fil u.f.aci)
 ::
@@ -2481,7 +2481,7 @@
           flex.vena
           flow.vena
           fil
-          aci(d ~)
+          aci
       ==
     =/  len=@ud
       (roll ^-(vox vox.ars) |=([i=^lina a=@ud] (max a (pono i))))
@@ -2771,12 +2771,12 @@
   =/  a-i1=@ud   =+(y=(max y1 t.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
   =/  a-i2=@ud   =+(y=(min y2 b.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
   =/  look=fila
-    ?.  ?&  ?=(^ xer)
-            ?=(^ rex.ayr)
-            =(k.xer k.rex.ayr)
-        ==
+    %:  texo
+      -.ars.cor.deu
+      &(?=(^ xer) ?=(^ rex.ayr) =(k.xer k.rex.ayr))
       look.res.cor.deu
-    (texo -.ars.cor.deu look.res.cor.deu sele.res.cor.deu)
+      sele.res.cor.deu
+    ==
   =;  rend=sol
     %+  weld  (scag a-i1 acc)
     %+  weld  rend
