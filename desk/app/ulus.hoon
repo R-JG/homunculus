@@ -119,10 +119,10 @@
       look=acia
   ==
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
-+$  data  [p=@t q=(map @t @t)]
++$  data  (map @t @t)
 +$  vela  manx
 +$  urbs  $~([50 25] [x=@ud y=@ud])
-+$  aula  @tas
++$  aula  (pair @p @tas)
 +$  cura  aula
 +$  ara
   $:  =vela
@@ -168,7 +168,8 @@
     ::
       %homunculus-session
     =+  !<(ses=session:homunculus vase)
-    =/  aul=aula  ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)
+    =/  aul=aula
+      [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]
     =|  [ram=rami ayr=aer]
     =.  muri.ayr  [1 x.urbs.ego 1 y.urbs.ego]
     =/  aru  (~(get by arae.ego) aul)
@@ -367,6 +368,19 @@
   |=  i=[apex sol]
   (dico i)
 ::
+++  iuvo                           :: make an event card
+  |=  [typ=@tas =avis =data]
+  ^-  card
+  ?>  ?=(^ avis)
+  =;  eve=event:homunculus
+    [%pass ~ %agent cura.ego %poke %homunculus-event !>(eve)]
+  ?+  typ    !!
+    %select  [typ u.avis]
+    %act     [typ u.avis]
+    %hotkey  [typ u.avis]
+    %form    [typ u.avis data]
+  ==
+::
 ++  apto                           :: handle a resize event
   |=  [=urbs =ara]
   ^-  (quip card ^ego)
@@ -439,6 +453,8 @@
             ?=(%cur-u lex)  ?=(%cur-d lex)
         ==
       loco
+    ?:  ?=(%act lex)
+      moto
     ::
     [~ ara]
   ::
@@ -1042,6 +1058,75 @@
     =/  rend  (viso k.rex.ara rex.ara ossa.ara ayr el)
     :_  ara
     :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
+    ==
+  ::
+  ++  moto                         :: handle an act event
+    ?~  rex.ara  [~ ara]
+    =/  [ayr=aer el=deus]  (creo k.rex.ara deus.ara)
+    ?:  &(?=(%select -.ars.cor.el) ?=(%submit pro.ars.cor.el))
+      lego
+    ?:  ?=(%checkbox -.ars.cor.el)
+      :: do checkbox processing (and send act if avis?)
+      [~ ara]
+    ?~  avis.cor.el  [~ ara]
+    :_  ara
+    :~  (iuvo %act avis.cor.el ~)
+    ==
+  ::
+  ++  lego                         :: handle a form submit
+    ^-  (quip card ^ara)
+    ?>  ?=(^ rex.ara)
+    =|  form=[key=rami el=$@(~ deus)]
+    =.  form
+      =|  k=rami
+      |-  ^+  form
+      =?  form  ?=(%form -.ars.cor.deus.ara)
+        [k deus.ara]
+      ?~  k.rex.ara
+        form
+      %=  $
+        k  (snoc k i.k.rex.ara)
+        k.rex.ara  t.k.rex.ara
+        deus.ara
+          %+  snag  ager.i.k.rex.ara
+          ?-  axis.i.k.rex.ara
+            %n  n.gens.deus.ara
+            %b  b.gens.deus.ara
+            %l  l.gens.deus.ara
+          ==
+      ==
+    ?~  el.form  ~|(%missing-form !!)
+    =^  =data  el.form
+      =|  dat=data
+      |^  ^-  (pair data deus)
+      =^  dat  b.gens.el.form  [q p]:(spin b.gens.el.form dat f)
+      =^  dat  l.gens.el.form  [q p]:(spin l.gens.el.form dat f)
+      =^  dat  n.gens.el.form  [q p]:(spin n.gens.el.form dat f)
+      ?:  ?=(%input -.ars.cor.el.form)
+        ?~  avis.cor.el.form  ~&(%input-id-missing [dat el.form])
+        =/  val=@t  (crip (tufa `lina`(zing vox.ars.cor.el.form)))
+        :-  (~(put by dat) u.avis.cor.el.form val)
+        %_  el.form
+          vox.ars.cor  ~
+          ab.ars.cor  0
+          i.ars.cor  [0 0]
+        ==
+      ?:  ?=(%checkbox -.ars.cor.el.form)
+        ?~  avis.cor.el.form  ~&(%checkbox-id-missing [dat el.form])
+        =/  val=@t  ?:(v.ars.cor.el.form '%.y' '%.n')
+        :-  (~(put by dat) u.avis.cor.el.form val)
+        %_  el.form
+          v.ars.cor  |
+        ==
+      [dat el.form]
+      ++  f  |=([i=deus a=data] [q p]:^$(el.form i, dat a))
+      --
+    =.  deus.ara  (novo form)
+    =^  ayr=aer  el.form  (creo key.form deus.ara)
+    =/  rend  (viso key.form rex.ara ossa.ara ayr el.form)
+    :_  ara
+    :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
+        (iuvo %form ?~(avis.cor.el.form `'' avis.cor.el.form) data)
     ==
   ::
   --
