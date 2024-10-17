@@ -19,7 +19,7 @@
       look=fila                                                        :: style
       sele=acia                                                        :: select style
   ==                                                                   ::
-+$  ars                                                                :: special element types
++$  ars                                                                :: element types
   $%  [%text =vox]                                                     ::
       [%pattern =vox]                                                  ::
       [%layer ~]                                                       ::
@@ -64,7 +64,7 @@
   ==  ==                                                               ::
 +$  aer   [=iter =muri nav=[sty=? =rex] =luna]                         :: branch render context (scroll, limits, nav hierarchy, blocking)
 +$  opus  (list [=apex =sol])                                          :: render batch (hop on null sol)
-+$  dux   [k=rami muri]                                                :: navigation point
++$  dux   [k=rami =avis muri]                                          :: navigation point
 +$  rex   $@(~ dux)                                                    :: selection
 +$  ordo  (list dux)                                                   :: navigation context
 +$  omen  (map nota lex)
@@ -444,7 +444,7 @@
     ?:  ?|  ?=(%nav-l lex)  ?=(%nav-r lex)
             ?=(%nav-u lex)  ?=(%nav-d lex)
         ==
-      meo
+      eo
     ?:  ?=(%ins lex)
       cibo
     ?:  ?=(%del lex)
@@ -458,7 +458,7 @@
     ::
     [~ ara]
   ::
-  ++  meo                          :: handle a navigation event
+  ++  eo                           :: handle a navigation event
     ^-  (quip card ^ara)
     =/  navs           (gero rex.ara ordo.ara)
     =/  active-scroll  fluo
@@ -472,10 +472,7 @@
             ?=(~ navs-in-scroll)
             |(?=(%nav-u lex) ?=(%nav-d lex))
         ==
-      =^  rend  ara  (eo (need active-scroll))
-      :_  ara
-      :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
-      ==
+      (meo (need active-scroll))
     =/  next=rex
       ?^  navs-in-scroll  i.navs-in-scroll
       ?^  navs  i.navs  ~
@@ -488,18 +485,19 @@
         [*loci *sol]
       (viso ?~(rex.ara ~ k.rex.ara) next ossa.ara old)
     =.  rex.ara   next
-    =.  omen.ara  (scio rex.ara deus.ara)
     =/  rend-new
       ?.  (adeo -.ars.cor.el.new sele.res.cor.el.new)
         [*loci *sol]
       (viso ?~(rex.ara ~ k.rex.ara) rex.ara ossa.ara new)
-    :_  ara
-    :~  (fio ~[rend-old rend-new [(vado rex.ara deus.ara) ~]])
+    :_  ara(omen (scio rex.ara deus.ara))
+    :-  (fio ~[rend-old rend-new [(vado rex.ara deus.ara) ~]])
+    ?~  avis.cor.el.new  ~
+    :~  (iuvo %select avis.cor.el.new ~)
     ==
   ::
-  ++  eo                           :: perform a scroll
+  ++  meo                          :: handle a scroll
     |=  key=rami
-    ^-  [[apex sol] ^ara]
+    ^-  (quip card ^ara)
     =/  [ayr=aer scr=deus]  (creo key deus.ara)
     ?>  ?=(%scroll -.ars.cor.scr)
     =/  old  rex.ara
@@ -530,18 +528,21 @@
       |=  =dux
       (alo key k.dux)
     ?~  navs
-      :-  rend
-      %_  ara
-        rex   old
-        deus  (novo key scr)
+      =:  rex.ara   old
+          deus.ara  (novo key scr)
+        ==
+      :_  ara
+      :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
       ==
     =.  rex.ara   i.navs
-    =:  omen.ara  (scio rex.ara deus.ara)
+    =:  deus.ara  (novo key scr)
+        omen.ara  (scio rex.ara deus.ara)
         rend      (viso key rex.ara ossa.ara ayr scr)
       ==
-    :-  rend
-    %_  ara
-      deus  (novo key scr)
+    :_  ara
+    :-  (fio ~[rend [(vado rex.ara deus.ara) ~]])
+    ?~  avis.i.navs  ~
+    :~  (iuvo %select avis.i.navs ~)
     ==
   ::
   ++  fluo                         :: find the nearest scroll parent not maxed out in the nav direction
@@ -657,7 +658,7 @@
     ++  f
       |=  [than=$-([@ @] ?) =dux d1=@ d2=@ r1=@ r2=@]
       ^-  bean
-      ?:  (taxo +.dux +.rex)
+      ?:  (taxo +>.dux +>.rex)
         ?:  =(d1 r1)
           |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
         (than d1 r1)
@@ -673,7 +674,7 @@
       (add (mul 10 p.pyt) q.pyt)
     ?+  lex  [0 0]
         %nav-l
-      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
@@ -681,7 +682,7 @@
         (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
       (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
         %nav-u
-      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
@@ -689,7 +690,7 @@
         (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
       (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
         %nav-r
-      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
@@ -697,7 +698,7 @@
         (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
       (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
         %nav-d
-      ?:  |((taxo +.dux +.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
@@ -1024,7 +1025,7 @@
           %cur-u  %nav-u
           %cur-d  %nav-d
         ==
-      meo
+      eo
     =/  oab=@ud  ab.ars.cor.el
     =.  ab.ars.cor.el
       ?~  vox.ars.cor.el  ab.ars.cor.el
@@ -3098,7 +3099,7 @@
       nav.ayr
         ?.  (peto -.ars.cor.deu)  nav.ayr
         :-  (adeo -.ars.cor.deu sele.res.cor.deu)
-        [(flop ki) x1 x2 y1 y2]
+        [(flop ki) avis.cor.deu x1 x2 y1 y2]
     ==
   %_  .
     deu
@@ -3216,7 +3217,7 @@
   =.  nav.ayr
     ?.  (peto -.ars.cor.deu)  nav.ayr
     :-  (adeo -.ars.cor.deu sele.res.cor.deu)
-    [key x1 x2 y1 y2]
+    [key avis.cor.deu x1 x2 y1 y2]
   =.  acc
     =/  itr=iter
       ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
