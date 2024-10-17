@@ -28,7 +28,7 @@
       [%line =via =ora]                                                ::
       [%select pro=?(%submit %~)]                                      ::
       [%input ab=@ud i=loci =vox]                                      ::
-      [%checkbox v=bean]                                               ::
+      [%checkbox v=? t=vox f=vox]                                      ::
       [%radio ~]                                                       ::
       [%form ~]                                                        ::
       [%$ ~]                                                           ::
@@ -1066,8 +1066,7 @@
     ?:  &(?=(%select -.ars.cor.el) ?=(%submit pro.ars.cor.el))
       lego
     ?:  ?=(%checkbox -.ars.cor.el)
-      :: do checkbox processing (and send act if avis?)
-      [~ ara]
+      opto
     ?~  avis.cor.el  [~ ara]
     :_  ara
     :~  (iuvo %act avis.cor.el ~)
@@ -1076,26 +1075,8 @@
   ++  lego                         :: handle a form submit
     ^-  (quip card ^ara)
     ?>  ?=(^ rex.ara)
-    =|  form=[key=rami el=$@(~ deus)]
-    =.  form
-      =|  k=rami
-      |-  ^+  form
-      =?  form  ?=(%form -.ars.cor.deus.ara)
-        [k deus.ara]
-      ?~  k.rex.ara
-        form
-      %=  $
-        k  (snoc k i.k.rex.ara)
-        k.rex.ara  t.k.rex.ara
-        deus.ara
-          %+  snag  ager.i.k.rex.ara
-          ?-  axis.i.k.rex.ara
-            %n  n.gens.deus.ara
-            %b  b.gens.deus.ara
-            %l  l.gens.deus.ara
-          ==
-      ==
-    ?~  el.form  ~|(%missing-form !!)
+    =/  form=$@(~ [key=rami el=deus])  (nudo %form)
+    ?~  form  ~|(%missing-form !!)
     =^  =data  el.form
       =|  dat=data
       |^  ^-  (pair data deus)
@@ -1127,6 +1108,64 @@
     :_  ara
     :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
         (iuvo %form ?~(avis.cor.el.form `'' avis.cor.el.form) data)
+    ==
+  ::
+  ++  opto                         :: handle a checkbox, potentially in a radio group
+    ^-  (quip card ^ara)
+    ?>  ?=(^ rex.ara)
+    =/  rad=$@(~ [key=rami el=deus])  (nudo %radio)
+    ?~  rad
+      =/  [ayr=aer el=deus]  (creo k.rex.ara deus.ara)
+      ?>  ?=(%checkbox -.ars.cor.el)
+      =.  v.ars.cor.el  !v.ars.cor.el
+      =.  deus.ara  (novo k.rex.ara el)
+      =/  rend  (viso k.rex.ara rex.ara ossa.ara ayr el)
+      :_  ara
+      :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
+      ==
+    =/  [ayr=aer el=deus]  (creo key.rad deus.ara)
+    =.  el
+      |-  ^-  deus
+      %_  el
+        ars.cor
+          ?.  ?=(%checkbox -.ars.cor.el)
+            ars.cor.el
+          %_  ars.cor.el
+            v
+              ?.  =(key.rad k.rex.ara)
+                |
+              !v.ars.cor.el
+          ==
+        b.gens  (spun b.gens.el |=([i=deus a=@] [^$(el i, key.rad (snoc key.rad [%b a])) +(a)]))
+        l.gens  (spun l.gens.el |=([i=deus a=@] [^$(el i, key.rad (snoc key.rad [%l a])) +(a)]))
+        n.gens  (spun n.gens.el |=([i=deus a=@] [^$(el i, key.rad (snoc key.rad [%n a])) +(a)]))
+      ==
+    =.  deus.ara  (novo key.rad el)
+    =/  rend  (viso key.rad rex.ara ossa.ara ayr el)
+    :_  ara
+    :~  (fio ~[rend [(vado rex.ara deus.ara) ~]])
+    ==
+  ::
+  ++  nudo                         :: get the nearest element of some kind over the current selection
+    |=  typ=@tas
+    =|  k=rami
+    =|  acc=$@(~ [key=rami el=deus])
+    ?~  rex.ara  acc
+    |-  ^+  acc
+    =?  acc  =(typ -.ars.cor.deus.ara)
+      [k deus.ara]
+    ?~  k.rex.ara
+      acc
+    %=  $
+      k  (snoc k i.k.rex.ara)
+      k.rex.ara  t.k.rex.ara
+      deus.ara
+        %+  snag  ager.i.k.rex.ara
+        ?-  axis.i.k.rex.ara
+          %n  n.gens.deus.ara
+          %b  b.gens.deus.ara
+          %l  l.gens.deus.ara
+        ==
     ==
   ::
   --
@@ -1357,7 +1396,7 @@
         %scroll         [(dolo %scroll) [%scroll *iter *sola]]
         %form           [(dolo %form) [%form ~]]
         %input          [(dolo %input) [%input 0 [0 0] ~]]
-        %checkbox       [(dolo %checkbox) [%checkbox %.n]]
+        %checkbox       [(dolo %checkbox) [%checkbox | ~ ~]]
         %radio          [(dolo %$) [%radio ~]]
         %submit         [(dolo %$) [%select %submit]]
       ==
@@ -1816,6 +1855,18 @@
   %_  vox.ars
     i  (slag ab.ars i.vox.ars)
   ==
+::
+++  duro                           :: resolve the characters in a checkbox
+  |=  =cor
+  ^-  vox
+  ?>  ?=(%checkbox -.ars.cor)
+  ?.  v.ars.cor
+    ?~  f.ars.cor  ~
+    f.ars.cor
+  ?^  t.ars.cor
+    t.ars.cor
+  =/  v=vox  [[~-~2588. ~] ~]
+  (fuco w.size.res.cor h.size.res.cor v)
 ::
 ++  orno                           :: resolve a line as vox
   |=  [siz=[w=@ud h=@ud] dir=term =ora]
@@ -2442,21 +2493,33 @@
     [%c (div (mul q.l.padd.vena q.w.size.vena) 100)]
   =?  x.flex.vena  =(%i p.w.size.vena)  0
   =?  y.flex.vena  =(%i p.h.size.vena)  0
-  =?  ars  ?=(%pattern -.ars)
-    ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))
-      ars
-    =/  bas=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
-    ?:  &(?=(%i p.w.size.vena) ?=(%i p.h.size.vena))
-      =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
-      ars(vox (fuco len (lent bas) bas))
-    ?:  ?=(%i p.w.size.vena)
-      =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
-      ars(vox (fuco len q.h.size.vena bas))
-    ?:  ?=(%i p.h.size.vena)
-      ars(vox (fuco q.w.size.vena (lent bas) bas))
-    ars(vox (fuco q.w.size.vena q.h.size.vena bas))
+  =?  ars  |(?=(%pattern -.ars) ?=(%checkbox -.ars))
+    ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
+    ?+  -.ars  ars
+        %pattern
+      =/  bas=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
+      ?:  &(?=(%i p.w.size.vena) ?=(%i p.h.size.vena))
+        =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
+        ars(vox (fuco len (lent bas) bas))
+      ?:  ?=(%i p.w.size.vena)
+        =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
+        ars(vox (fuco len q.h.size.vena bas))
+      ?:  ?=(%i p.h.size.vena)
+        ars(vox (fuco q.w.size.vena (lent bas) bas))
+      ars(vox (fuco q.w.size.vena q.h.size.vena bas))
+        %checkbox
+      =/  on=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
+      =/  off=vox
+        ?.  &(?=(^ t.c.i.m) ?=(^ a.g.i.t.c.i.m))  ~
+        (oro ~ ~ (tuba v.i.a.g.i.t.c.i.m))
+      ars(t on, f off)
+    ==
   =/  [bor=marl lay=marl nor=marl]
-    ?:  |(?=(%text -.ars) ?=(%pattern -.ars) ?=(%input -.ars))
+    ?:  ?|  ?=(%text -.ars)
+            ?=(%pattern -.ars)
+            ?=(%input -.ars)
+            ?=(%checkbox -.ars)
+        ==
       [~ ~ ~]
     =|  [bor=marl lay=marl nor=marl]
     |-  ^-  [marl marl marl]
@@ -3217,7 +3280,7 @@
       %text      vox.ars.cor.deu
       %pattern   vox.ars.cor.deu
       %input     (figo res.cor.deu ars.cor.deu)
-      %checkbox  ?:(v.ars.cor.deu [[~-~2588. ~] ~] ~)
+      %checkbox  (duro cor.deu)
       %border    (coeo cor.deu key osa)
       %line      (coeo cor.deu key osa)
     ==
