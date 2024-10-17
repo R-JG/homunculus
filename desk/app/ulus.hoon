@@ -3275,7 +3275,13 @@
   %^  spin  `sol`(swag [a-i1 +((sub a-i2 a-i1))] acc)
     =;  v=vox
       ?:  (gte t.room t.muri.ayr)  v
-      =/  n  (sub t.muri.ayr t.room)
+      =/  n=@
+        %+  sub  (add t.muri.ayr y.iter.ayr)
+        ;:  add
+          y.apex.cor.deu
+          t.bord.res.cor.deu
+          t.padd.res.cor.deu
+        ==
       (oust [0 n] v)
     ?+  -.ars.cor.deu  ~
       %text      vox.ars.cor.deu
