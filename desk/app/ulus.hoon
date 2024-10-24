@@ -71,7 +71,7 @@
       =luna                                                            ::   layer blocking
   ==                                                                   ::
 +$  opus  (list [=apex =sol])                                          :: render batch (hop on null sol)
-+$  dux   [k=rami =avis muri]                                          :: navigation point
++$  dux   [n=@tas k=rami =avis muri]                                   :: navigation point
 +$  rex   $@(~ dux)                                                    :: selection
 +$  ordo  (list dux)                                                   :: navigation context
 +$  omen  (map nota lex)                                               :: internal hotkey context
@@ -139,7 +139,6 @@
 +$  via                                                                :: frame state
   $:  =rex                                                             ::
       =ordo                                                            ::
-      =omen                                                            ::
       =aula                                                            ::
       =arae                                                            ::
   ==                                                                   ::
@@ -193,7 +192,9 @@
       ?:  (gte 4 (lent arae.last))
         =|  =via
         =|  =ara
-        =.  vela.ara  +.ses
+        =:  fons.ara  fon
+            vela.ara  +.ses
+          ==
         =:  cura.ego  (lent viae.ego)
             viae.ego  (snoc viae.ego via(arae ~[ara]))
           ==
@@ -201,8 +202,8 @@
         [cards hoc]
       ::
       =|  =ara
-      =/  i  (dec (lent viae.ego))
-      =.  arae.last  (snoc arae.last ara(vela +.ses))
+      =/  i          (dec (lent viae.ego))
+      =.  arae.last  (snoc arae.last ara(fons fon, vela +.ses))
       =:  cura.ego   i
           viae.ego   (snap viae.ego i last)
         ==
@@ -221,14 +222,15 @@
     ::
       %json
     =/  zon  (ineo !<(json vase))
-    ?~  zon  [~ hoc]
-    ~&  >  zon
-    ::
+    :: ~&  >  zon
+    ?~  zon
+      [~ hoc]
+      ::
     ?:  ?=(%rez -.u.zon)
       =.  arca.urbs.ego  +.u.zon
       =^  cards  ego  (apto cura.ego)
       [cards hoc]
-    ::
+      ::
     ?:  ?=(%esc -.u.zon)
       =.  open.arx.urbs.ego  !open.arx.urbs.ego
       =/  ren  (viso ~)
@@ -237,17 +239,11 @@
         hoc(ordo.via.arx.urbs.ego (duco ren))
       =/  =via  (snag cura.ego viae.ego)
       hoc(viae.ego (snap viae.ego cura.ego via(ordo (duco ren))))
-    ::
-    =/  noa  (noto u.zon)
-    ?.  open.arx.urbs.ego
-      =/  =via  (snag cura.ego viae.ego)
-      =/  lek   (~(get by omen.via) noa)
-      ?~  lek   [~ hoc]
-      =^  cards  ego  (muto u.lek u.zon via)
-      [cards hoc]
-    =/  lek   (~(get by omen.via.arx.urbs.ego) noa)
-    ?~  lek   [~ hoc] 
-    =^  cards  ego  (muto u.lek u.zon via.arx.urbs.ego)
+      ::
+    =/  =via  ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
+    =/  lek=(unit lex)  (~(get by (scio rex.via)) (noto u.zon))
+    ?~  lek  [~ hoc]
+    =^  cards  ego  (muto u.lek u.zon via)
     [cards hoc]
     ::
   ==
@@ -441,14 +437,13 @@
           gens  ~^~^~
         ==
       arae.via.arx.urbs.ego
-        ?>  ?&  ?=(^ l.gens.deu)
+        ?.  ?&  ?=(^ l.gens.deu)
                 ?=(^ arae.via.arx.urbs.ego)
             ==
+          arae.via.arx.urbs.ego
         =.  deus.i.arae.via.arx.urbs.ego
-          %_    i.l.gens.deu
-              n.gens
-            :~  (geno cor.i.l.gens.deu vela.i.arae.via.arx.urbs.ego)
-            ==
+          %_  i.l.gens.deu
+            n.gens  ~[(geno cor.i.l.gens.deu vela.i.arae.via.arx.urbs.ego)]
           ==
         %_  arae.via.arx.urbs.ego
           ossa.i  (humo ~[[%l 0]] deus.i.arae.via.arx.urbs.ego)
@@ -457,16 +452,9 @@
         %+  spun  arae.via
         |=  [=ara i=@]
         :_  +(i)
-        =/  container=deus  (snag i n.gens.deu)
-        =.  deus.ara
-          %_    container
-              n.gens
-            :~  (geno cor.container vela.ara)
-            ==
-          ==
-        %_  ara
-          ossa  (humo ~[[%n i]] deus.ara)
-        ==
+        =/  container  (snag i n.gens.deu)
+        =.  deus.ara   container(n.gens ~[(geno cor.container vela.ara)])
+        ara(ossa (humo ~[[%n i]] deus.ara))
     ==
   =.  viae.ego  (snap viae.ego cura via)
   ?.  =(cura cura.ego)  :: TODO: exiting here misses some interactivity state?
@@ -474,19 +462,8 @@
   =/  ren  (viso ~)
   :-  ~[(fio ~[ren])]
   ?.  open.arx.urbs.ego
-    %_  ego
-      viae
-        %^  snap  viae.ego  cura
-        %_  via
-          ordo  (duco ren)
-          omen  (scio ?~(rex.via %$ -.ars.cor:(creo k.rex.via)))
-        ==
-    ==
-  %_  ego
-    ordo.via.arx.urbs  (duco ren)
-    omen.via.arx.urbs
-      (scio ?~(rex.via.arx.urbs.ego %$ -.ars.cor:(creo k.rex.via.arx.urbs.ego)))
-  ==
+    ego(viae (snap viae.ego cura via(ordo (duco ren))))
+  ego(ordo.via.arx.urbs (duco ren))
 ::
 ++  rigo                           :: find an existing session in a frame by source, or null
   |=  =fons
@@ -507,12 +484,13 @@
     arae.i.viae.ego  t.arae.i.viae.ego
   ==
 ::
-++  scio                           :: derive system hotkey context from an element type
-  |_  typ=@tas
+++  scio                           :: derive system hotkey context from a selection
+  |_  =rex
   ++  $
     ^-  omen
-    ?+  typ   nav
-      %input  inp
+    ?~  rex    nav
+    ?+  n.rex  nav
+      %input   inp
     ==
   ++  nav
     ^-  omen
@@ -651,7 +629,7 @@
     =.  rex.via   next
     =/  new-ara   sto
     =/  new=deus  (exuo k.next deus.new-ara)
-    =.  ego       (novo via(omen (scio -.ars.cor.new)))
+    =.  ego       (novo via)
     =/  rend-old
       ?.  ?&  ?=(^ old)
               ?=(^ old-rex)
@@ -680,7 +658,8 @@
         %nav-u    (dec y.iter.ars.cor.scr)
         %nav-d    +(y.iter.ars.cor.scr)
       ==
-    =.  ego       (novo (sido ses(deus (paco key scr deus.ses))))
+    =.  via       (sido ses(deus (paco key scr deus.ses)))
+    =.  ego       (novo via)
     =/  ren       (viso key)
     =.  ordo.via  (ligo key (duco ren) ordo.via)
     =/  upd=rex
@@ -706,8 +685,7 @@
       :~  (fio ~[ren])
       ==
     =.  rex.via   i.navs
-    =/  nex=deus  (exuo k.i.navs deus.ses)
-    =.  ego       (novo via(omen (scio -.ars.cor.nex)))
+    =.  ego       (novo via)
     =.  ren       (viso key)
     :_  ego
     :-  (fio ~[ren])
@@ -834,7 +812,7 @@
     ++  f
       |=  [than=$-([@ @] ?) =dux d1=@ d2=@ r1=@ r2=@]
       ^-  bean
-      ?:  (taxo +>.dux +>.rex)
+      ?:  (taxo +>+.dux +>+.rex)
         ?:  =(d1 r1)
           |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
         (than d1 r1)
@@ -850,7 +828,7 @@
       (add (mul 10 p.pyt) q.pyt)
     ?+  lex  [0 0]
         %nav-l
-      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
@@ -858,7 +836,7 @@
         (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
       (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
         %nav-u
-      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
@@ -866,7 +844,7 @@
         (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
       (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
         %nav-r
-      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
         (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
@@ -874,7 +852,7 @@
         (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
       (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
         %nav-d
-      ?:  |((taxo +>.dux +>.rex) !=(%~ (tego k.rex k.dux)))
+      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
         %-  sqt  %+  add
           (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
         (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
@@ -1313,8 +1291,11 @@
     |=  typ=@tas
     =|  k=rami
     =|  acc=$@(~ [key=rami el=deus])
-    ?~  rex.via  acc
-    =/  ses=ara  sto
+    ?~  rex.via    acc
+    =/  ses=ara    sto
+    =:  k          ?^(k.rex.via ~[i.k.rex.via] k)
+        k.rex.via  (voro k.rex.via)
+      ==
     |-  ^+  acc
     =?  acc  =(typ -.ars.cor.deus.ses)
       [k deus.ses]
@@ -3319,7 +3300,7 @@
       nav.ayr
         ?.  (peto -.ars.cor.deu)  nav.ayr
         :-  (adeo -.ars.cor.deu sele.res.cor.deu)
-        [(flop ki) avis.cor.deu x1 x2 y1 y2]
+        [-.ars.cor.deu (flop ki) avis.cor.deu x1 x2 y1 y2]
     ==
   %_  .
     deu
@@ -3438,7 +3419,7 @@
   =.  nav.ayr
     ?.  (peto -.ars.cor.deu)  nav.ayr
     :-  (adeo -.ars.cor.deu sele.res.cor.deu)
-    [key avis.cor.deu x1 x2 y1 y2]
+    [-.ars.cor.deu key avis.cor.deu x1 x2 y1 y2]
   =.  acc
     =/  itr=iter
       ?.  ?=(%scroll -.ars.cor.deu)  iter.ayr
