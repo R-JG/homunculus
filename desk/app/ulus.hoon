@@ -189,7 +189,7 @@
     ?~  ind
       =/  last=via  (rear viae.ego)
       :: temporary ::
-      ?:  (gte 4 (lent arae.last))
+      ?:  (gte (lent arae.last) 4)
         =|  =via
         =|  =ara
         =:  fons.ara  fon
@@ -218,7 +218,14 @@
     [cards hoc]
     ::
       %homunculus-menu
-    [~ hoc]
+    =+  !<(ses=session:homunculus vase)
+    =.  arae.via.arx.urbs.ego
+      ?~  arae.via.arx.urbs.ego
+        =|  =ara
+        ~[ara(vela +.ses)]
+      arae.via.arx.urbs.ego(vela.i +.ses)
+    =^  cards  ego  (apto cura.ego)
+    [cards hoc]
     ::
       %json
     =/  zon  (ineo !<(json vase))
@@ -421,7 +428,6 @@
   =/  h=tape  ((d-co:co 1) y.arca.urbs.ego)
   =/  vel=vela
     ;box(w w, h h, fl "row-wrap")
-      ;layer;
       ;*  ^-  marl
           ?+  len  ~
             %1  ~[;box(w "100%", h "100%");]
@@ -437,14 +443,9 @@
           gens  ~^~^~
         ==
       arae.via.arx.urbs.ego
-        ?.  ?&  ?=(^ l.gens.deu)
-                ?=(^ arae.via.arx.urbs.ego)
-            ==
-          arae.via.arx.urbs.ego
+        ?~  arae.via.arx.urbs.ego  arae.via.arx.urbs.ego
         =.  deus.i.arae.via.arx.urbs.ego
-          %_  i.l.gens.deu
-            n.gens  ~[(geno cor.i.l.gens.deu vela.i.arae.via.arx.urbs.ego)]
-          ==
+          (geno cor.deu vela.i.arae.via.arx.urbs.ego)
         %_  arae.via.arx.urbs.ego
           ossa.i  (humo ~[[%l 0]] deus.i.arae.via.arx.urbs.ego)
         ==
@@ -457,7 +458,7 @@
         ara(ossa (humo ~[[%n i]] deus.ara))
     ==
   =.  viae.ego  (snap viae.ego cura via)
-  ?.  =(cura cura.ego)  :: TODO: exiting here misses some interactivity state?
+  ?.  =(cura cura.ego)
     [~ ego]
   =/  ren  (viso ~)
   :-  ~[(fio ~[ren])]
@@ -2449,6 +2450,7 @@
   =.  osa
     ?:  ?|  ?=(%layer -.ars.cor.deu)
             ?=(%scroll -.ars.cor.deu)
+            ?=([* ~] key)
         ==
       (~(put by osa) key ~)
     ?.  ?|  ?=(%border -.ars.cor.deu)
@@ -3293,6 +3295,8 @@
         :-  (add x.iter.ayr x.iter.ars.cor.deu)
         (add y.iter.ayr y.iter.ars.cor.deu)
       muri.ayr
+        ?:  ?=(%b axis.i.key)
+          muri.ayr
         :^    (max l.room l.muri.ayr)
             (min r.room r.muri.ayr)
           (max t.room t.muri.ayr)
