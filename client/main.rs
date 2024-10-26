@@ -249,7 +249,7 @@ fn make_subscribe_body(ship: &String, msg_id: &Arc<AtomicU32>) -> Result<String,
     id: msg_id.load(Ordering::SeqCst),
     action: "subscribe".to_string(),
     ship: ship.to_owned(),
-    app: "ulus".to_string(),  // app: "homunculus".to_string(),
+    app: "homunculus".to_string(),
     path: "/homunculus-http".to_string()
   };
   let body = ReqBody{
@@ -264,7 +264,7 @@ fn make_poke_body(ship: &String, msg_id: &Arc<AtomicU32>, dat: PokeData) -> Resu
     id: msg_id.load(Ordering::SeqCst),
     action: "poke".to_string(),
     ship: ship.to_owned(),
-    app: "ulus".to_string(),  // app: "homunculus".to_string(),
+    app: "homunculus".to_string(),
     mark: "json".to_string(),
     json: dat
   };

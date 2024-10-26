@@ -1,6 +1,6 @@
 :~
   title+'Homunculus'
-  info+'A terminal graphics engine'
+  info+'TERMINAL INTERFACE'
   color+0x2f.11d6
   website+'https://github.com/R-JG/homunculus'
   version+[0 0 1]

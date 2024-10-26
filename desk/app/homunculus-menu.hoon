@@ -17,7 +17,7 @@
   ^-  (quip card _this)
   =.  kelvin  (get-kelvin bol)
   :_  this
-  :~  (~(render tui bol) ~)
+  :~  ~(render tui bol)
   ==
 ++  on-save
   ^-  vase
@@ -27,7 +27,7 @@
   ^-  (quip card _this)
   =.  kelvin  (get-kelvin bol)
   :_  this
-  :~  (~(render tui bol) ~)
+  :~  ~(render tui bol)
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
@@ -38,7 +38,7 @@
     ::
       %open
     :_  this
-    :~  (~(render tui bol) ~)
+    :~  ~(render tui bol)
     ==
     ::
       %homunculus-event
@@ -76,10 +76,9 @@
   |_  bol=bowl:gall
   ::
   ++  render
-    |=  [met=metadata:homunculus]
     ^-  card
-    :*  %pass  /homunculus  %agent  [our.bol %ulus]  :: [our.bol %homunculus]
-        %poke  %homunculus-menu  !>([met root])
+    :*  %pass  /homunculus  %agent  [our.bol %homunculus]
+        %poke  %homunculus-menu  !>(`menu:homunculus`[%update %full root])
     ==
   ::
   ++  root
