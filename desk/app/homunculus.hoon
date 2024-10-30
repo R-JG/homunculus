@@ -132,6 +132,7 @@
 +$  ara                                                                :: window state
   $:  =fons                                                            ::
       =vela                                                            ::
+      =aves                                                            ::
       =ossa                                                            ::
       =deus                                                            ::
   ==                                                                   ::
@@ -433,73 +434,6 @@
     %form    [typ avis data]
   ==
 ::
-++  apto                           :: reevaluate a frame
-  |=  =cura
-  ^-  (quip card ^ego)
-  =/  =via    (snag cura viae.ego)
-  =/  len=@   (lent arae.via)
-  :: temporary ::
-  =/  w=tape  ((d-co:co 1) x.arca.urbs.ego)
-  =/  h=tape  ((d-co:co 1) y.arca.urbs.ego)
-  =/  vel=vela
-    ;box(w w, h h, fl "row-wrap")
-      ;*  ^-  marl
-          ?+  len  ~
-            %1  ~[;box(w "100%", h "100%");]
-            %2  ~[;box(w "50%", h "100%"); ;box(w "50%", h "100%");]
-            %3  ~[;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "100%", h "50%");]
-            %4  ~[;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "50%", h "50%");]
-          ==
-    ==
-  ::  ::  ::  ::
-  =/  deu=deus  (geno ~ vel)
-  =:  deus.aula.via
-        %_  deu
-          gens  ~^~^~
-        ==
-      arae.via.arx.urbs.ego
-        ?~  arae.via.arx.urbs.ego  arae.via.arx.urbs.ego
-        =.  deus.i.arae.via.arx.urbs.ego
-          (geno cor.deu vela.i.arae.via.arx.urbs.ego)
-        %_  arae.via.arx.urbs.ego
-          ossa.i  (humo ~[[%l 0]] deus.i.arae.via.arx.urbs.ego)
-        ==
-      arae.via
-        %+  spun  arae.via
-        |=  [=ara i=@]
-        :_  +(i)
-        =/  container  (snag i n.gens.deu)
-        =.  deus.ara   container(n.gens ~[(geno cor.container vela.ara)])
-        ara(ossa (humo ~[[%n i]] deus.ara))
-    ==
-  =.  viae.ego  (snap viae.ego cura via)
-  ?.  =(cura cura.ego)
-    [~ ego]
-  =/  ren  (viso ~)
-  :-  ~[(fio ~[ren])]
-  ?.  open.arx.urbs.ego
-    ego(viae (snap viae.ego cura via(ordo (duco ren))))
-  ego(ordo.via.arx.urbs (duco ren))
-::
-++  rigo                           :: find an existing session in a frame by source, or null
-  |=  =fons
-  =|  i=@
-  |-  ^-  $@(~ [@ @])
-  ?~  viae.ego  ~
-  =|  j=@
-  |-  ^-  $@(~ [@ @])
-  ?~  arae.i.viae.ego
-    %=  ^$
-      i  +(i)
-      viae.ego  t.viae.ego
-    ==
-  ?:  =(fons fons.i.arae.i.viae.ego)
-    [i j]
-  %=  $
-    j  +(j)
-    arae.i.viae.ego  t.arae.i.viae.ego
-  ==
-::
 ++  scio                           :: derive system hotkey context from a selection
   |_  =rex
   ++  $
@@ -529,6 +463,127 @@
         [[%txt ~] %ins]  [[%bac ~] %del]
     ==
   --
+::
+++  apto                           :: reevaluate a frame
+  |=  =cura
+  ^-  (quip card ^ego)
+  =/  =via    (snag cura viae.ego)
+  =/  len=@   (lent arae.via)
+  :: temporary ::
+  =/  w=tape  ((d-co:co 1) x.arca.urbs.ego)
+  =/  h=tape  ((d-co:co 1) y.arca.urbs.ego)
+  =/  vel=vela
+    ;box(w w, h h, fl "row-wrap")
+      ;*  ^-  marl
+          ?+  len  ~
+            %1  ~[;box(w "100%", h "100%");]
+            %2  ~[;box(w "50%", h "100%"); ;box(w "50%", h "100%");]
+            %3  ~[;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "100%", h "50%");]
+            %4  ~[;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "50%", h "50%");]
+          ==
+    ==
+  ::  ::  ::  ::
+  =/  deu=deus  (geno ~ ~ vel)
+  =:  deus.aula.via
+        %_  deu
+          gens  ~^~^~
+        ==
+      arae.via.arx.urbs.ego
+        ?~  arae.via.arx.urbs.ego  arae.via.arx.urbs.ego
+        =/  k=rami  ~[[%l 0]]
+        =.  deus.i.arae.via.arx.urbs.ego
+          %:  geno
+            [k cor.deu]
+            i.arae.via.arx.urbs.ego
+            vela.i.arae.via.arx.urbs.ego
+          ==
+        =/  [ave=aves osa=ossa]
+          (vivo k deus.i.arae.via.arx.urbs.ego)
+        %_  arae.via.arx.urbs.ego
+          aves.i  ave
+          ossa.i  osa
+        ==
+      arae.via
+        %+  spun  arae.via
+        |=  [=ara i=@]
+        :_  +(i)
+        =/  container  (snag i n.gens.deu)
+        =/  k=rami     ~[[%n i]]
+        =.  deus.ara
+          container(n.gens ~[(geno [k cor.container] ara vela.ara)])
+        =/  [ave=aves osa=ossa]  (vivo k deus.ara)
+        ara(aves ave, ossa osa)
+    ==
+  =.  viae.ego  (snap viae.ego cura via)
+  ?.  =(cura cura.ego)
+    [~ ego]
+  =/  ren  (viso ~)
+  :-  ~[(fio ~[ren])]
+  ?.  open.arx.urbs.ego
+    ego(viae (snap viae.ego cura via(ordo (duco ren))))
+  ego(ordo.via.arx.urbs (duco ren))
+::
+++  rigo                           :: find an existing session in a frame by source, or null
+  |=  =fons
+  =|  i=@
+  |-  ^-  $@(~ [@ @])
+  ?~  viae.ego  ~
+  =|  j=@
+  |-  ^-  $@(~ [@ @])
+  ?~  arae.i.viae.ego
+    %=  ^$
+      i  +(i)
+      viae.ego  t.viae.ego
+    ==
+  ?:  =(fons fons.i.arae.i.viae.ego)
+    [i j]
+  %=  $
+    j  +(j)
+    arae.i.viae.ego  t.arae.i.viae.ego
+  ==
+::
+++  voro                           :: relativize a key to a session branch
+  |=  key=rami
+  ^-  rami
+  :: keys descend from the global root.
+  :: each child element is a session branch.
+  ?~  key  !!  t.key
+::
+++  exuo                           :: get an element from a session branch by key (or crash)
+  |=  [key=rami deu=deus]
+  ^-  deus
+  =.  key  (voro key)
+  |-  ^-  deus
+  ?~  key  deu
+  %=  $
+    key  t.key
+    deu
+      %+  snag  ager.i.key
+      ?-  axis.i.key
+        %n  n.gens.deu
+        %b  b.gens.deu
+        %l  l.gens.deu
+      ==
+  ==
+::
+++  paco                           :: replace an element in a session branch by key
+  |=  [key=rami new=deus ses=deus]
+  ^-  deus
+  =.  key  (voro key)
+  |-  ^-  deus
+  ?~  key  new
+  =/  nex=deus
+    %+  snag  ager.i.key
+    ?-  axis.i.key
+      %n  n.gens.ses
+      %b  b.gens.ses
+      %l  l.gens.ses
+    ==
+  ?-  axis.i.key
+    %n  ses(n.gens (snap n.gens.ses ager.i.key $(ses nex, key t.key)))
+    %b  ses(b.gens (snap b.gens.ses ager.i.key $(ses nex, key t.key)))
+    %l  ses(l.gens (snap l.gens.ses ager.i.key $(ses nex, key t.key)))
+  ==
 ::
 ++  muto                           :: handle an input event for a frame
   |_  [=lex zon=zona =via]
@@ -571,50 +626,6 @@
     ?:  open.arx.urbs.ego
       ego(via.arx.urbs via)
     ego(viae (snap viae.ego cura.ego via))
-  ::
-  ++  voro                         :: relativize a key to a session branch
-    |=  key=rami
-    ^-  rami
-    :: keys descend from the global root.
-    :: sessions are placed in containers,
-    :: and the menu is placed in a layer.
-    ?~  key  !!  t.key
-  ::
-  ++  exuo                         :: get an element from a session branch by absolute key
-    |=  [key=rami deu=deus]
-    ^-  deus
-    =.  key  (voro key)
-    |-  ^-  deus
-    ?~  key  deu
-    %=  $
-      key  t.key
-      deu
-        %+  snag  ager.i.key
-        ?-  axis.i.key
-          %n  n.gens.deu
-          %b  b.gens.deu
-          %l  l.gens.deu
-        ==
-    ==
-  ::
-  ++  paco                         :: replace an element in a session branch by absolute key
-    |=  [key=rami new=deus ses=deus]
-    ^-  deus
-    =.  key  (voro key)
-    |-  ^-  deus
-    ?~  key  new
-    =/  nex=deus
-      %+  snag  ager.i.key
-      ?-  axis.i.key
-        %n  n.gens.ses
-        %b  b.gens.ses
-        %l  l.gens.ses
-      ==
-    ?-  axis.i.key
-      %n  ses(n.gens (snap n.gens.ses ager.i.key $(ses nex, key t.key)))
-      %b  ses(b.gens (snap b.gens.ses ager.i.key $(ses nex, key t.key)))
-      %l  ses(l.gens (snap l.gens.ses ager.i.key $(ses nex, key t.key)))
-    ==
   ::
   ++  eo                           :: handle a navigation event
     ^-  (quip card ^ego)
@@ -2174,6 +2185,51 @@
     0
   [[x1 y1] [x2 y2] mur]
 ::
+++  veho                           :: transition a scroll element's scroll state 
+  |=  [old-cor=cor old=dei new=dei]
+  ^-  iter
+  ?>  ?=(%scroll -.ars.old-cor)
+  =/  top=@  ;:(add y.apex.old-cor t.bord.res.old-cor t.padd.res.old-cor)
+  =/  bot=@
+    =/  b=@  +((add b.bord.res.old-cor b.padd.res.old-cor))
+    =.  y.apex.old-cor  (add y.apex.old-cor h.size.res.old-cor)
+    ?:  (gte b y.apex.old-cor)  0
+    (sub y.apex.old-cor b)
+  =/  old-el
+    |-  ^-  $@(~ deus)
+    ?~  old  ~
+    =/  el-t=@
+      ?:  (gte y.iter.ars.old-cor y.apex.cor.i.old)  0
+      (sub y.apex.cor.i.old y.iter.ars.old-cor)
+    =/  el-b=@
+      =.  y.apex.cor.i.old
+        %+  add  y.apex.cor.i.old
+        ?.(=(0 h.size.res.cor.i.old) (dec h.size.res.cor.i.old) 0)
+      ?:  (gte y.iter.ars.old-cor y.apex.cor.i.old)  0
+      (sub y.apex.cor.i.old y.iter.ars.old-cor)
+    ?:  (gth el-t bot)  ~
+    ?:  &((gte el-b top) ?=(^ avis.cor.i.old))
+      i.old
+    $(old t.old)
+  ?~  old-el  iter.ars.old-cor
+  =/  new-el
+    |-  ^-  $@(~ deus)
+    ?~  new  ~
+    ?:  =(avis.cor.old-el avis.cor.i.new)
+      i.new
+    $(new t.new)
+  ?~  new-el  iter.ars.old-cor
+  ?:  =(y.apex.cor.old-el y.apex.cor.new-el)
+    iter.ars.old-cor
+  %_    iter.ars.old-cor
+      y
+    ?:  (gth y.apex.cor.old-el y.apex.cor.new-el)
+      =/  dif  (sub y.apex.cor.old-el y.apex.cor.new-el)
+      ?:((lth dif y.iter.ars.old-cor) (sub y.iter.ars.old-cor dif) 0)
+    =/  dif  (sub y.apex.cor.new-el y.apex.cor.old-el)
+    (add y.iter.ars.old-cor dif)
+  ==
+::
 ++  iugo                           :: make a line intersection character
   |=  crux
   ^-  @c
@@ -2466,75 +2522,6 @@
   ?:  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%heavy b))  ~-~2545.  ::  ╅
   ~-.
 ::
-++  humo                           :: collect line intersection groups from a session branch
-  |=  [key=rami deu=deus]
-  ^-  ossa
-  =/  osa=ossa  [~^~ ~^~]
-  |-  ^-  ossa
-  =.  osa
-    ?:  ?|  ?=(%layer -.ars.cor.deu)
-            ?=(%scroll -.ars.cor.deu)
-            ?=([* ~] key)
-        ==
-      (~(put by osa) key ~)
-    ?.  ?|  ?=(%border -.ars.cor.deu)
-            ?=(%line -.ars.cor.deu)
-        ==
-      osa
-    =/  ki  (feto key osa)
-    =/  oz  (~(get by osa) ki)
-    ?~  oz  osa
-    %+  %~  put  by  osa  ki
-    %+  %~  put  by  u.oz  key
-    ^-  os
-    =/  x  x.apex.cor.deu
-    =/  y  y.apex.cor.deu
-    =/  [w=@ h=@]  size.res.cor.deu
-    ?+  -.ars.cor.deu  !!
-      ::
-        %border
-      =/  o  ora.ars.cor.deu
-      ?:  |(?=(%t ad.ars.cor.deu) ?=(%b ad.ars.cor.deu))
-        [%h %border x ?.(=(0 w) (add x (dec w)) x) y o]
-      [%v %border x y ?.(=(0 h) (add y (dec h)) y) o]
-      ::
-        %line
-      =/  o  ora.ars.cor.deu
-      ?:  ?=(%h ab.ars.cor.deu)
-        [%h %line x ?.(=(0 w) (add x (dec w)) x) y o]
-      [%v %line x y ?.(=(0 h) (add y (dec h)) y) o]
-      ::
-    ==
-  ?.  ?|  .?(b.gens.deu)
-          .?(l.gens.deu)
-          .?(n.gens.deu)
-      ==
-    osa
-  =<  +>.q
-  %^  spin
-      ^-  dei
-      %-  zing
-      :~  b.gens.deu
-          l.gens.deu
-          n.gens.deu
-      ==
-    [*axis *ager osa]
-  |=  [d=deus a=[n=axis i=ager o=ossa]]
-  ^+  +<
-  =/  x  (apo -.ars.cor.d)
-  =?  i.a  !=(n.a x)  0
-  :-  d
-  %_  a
-    n  x
-    i  +(i.a)
-    o
-      %=  ^$
-        deu  d
-        key  (snoc key [x i.a])
-        osa  o.a
-      ==
-  ==
-::
 ++  feto                           :: find the key of the line intersection group to which a line belongs
   |=  [key=rami osa=ossa]
   ^-  rami
@@ -2632,18 +2619,94 @@
     %v  (snap v i.i `lina`[char ~])
   ==
 ::
+++  vivo                           :: collect line intersection groups and ids from a session branch
+  |=  [key=rami deu=deus]
+  =/  acc=[=aves =ossa]  [~ [~^~ ~^~]]
+  |-  ^-  [aves ossa]
+  =:  aves.acc
+        ?~  avis.cor.deu  aves.acc
+        (~(put by aves.acc) avis.cor.deu key)
+      ossa.acc
+        ?:  ?|  ?=(%layer -.ars.cor.deu)
+                ?=(%scroll -.ars.cor.deu)
+                ?=([* ~] key)
+            ==
+          (~(put by ossa.acc) key ~)
+        ?.  ?|  ?=(%border -.ars.cor.deu)
+                ?=(%line -.ars.cor.deu)
+            ==
+          ossa.acc
+        =/  ki  (feto key ossa.acc)
+        =/  oz  (~(get by ossa.acc) ki)
+        ?~  oz  ossa.acc
+        %+  %~  put  by  ossa.acc  ki
+        %+  %~  put  by  u.oz  key
+        ^-  os
+        =/  x  x.apex.cor.deu
+        =/  y  y.apex.cor.deu
+        =/  [w=@ h=@]  size.res.cor.deu
+        ?+  -.ars.cor.deu  !!
+          ::
+            %border
+          =/  o  ora.ars.cor.deu
+          ?:  |(?=(%t ad.ars.cor.deu) ?=(%b ad.ars.cor.deu))
+            [%h %border x ?.(=(0 w) (add x (dec w)) x) y o]
+          [%v %border x y ?.(=(0 h) (add y (dec h)) y) o]
+          ::
+            %line
+          =/  o  ora.ars.cor.deu
+          ?:  ?=(%h ab.ars.cor.deu)
+            [%h %line x ?.(=(0 w) (add x (dec w)) x) y o]
+          [%v %line x y ?.(=(0 h) (add y (dec h)) y) o]
+          ::
+        ==
+    ==
+  ?.  ?|  .?(b.gens.deu)
+          .?(l.gens.deu)
+          .?(n.gens.deu)
+      ==
+    acc
+  =<  +>.q
+  %^  spin
+      ^-  dei
+      %-  zing
+      :~  b.gens.deu
+          l.gens.deu
+          n.gens.deu
+      ==
+    [*axis *ager acc]
+  |=  [d=deus a=[n=axis i=ager c=_acc]]
+  ^+  +<
+  =/  x  (apo -.ars.cor.d)
+  =?  i.a  !=(n.a x)  0
+  :-  d
+  %_  a
+    n  x
+    i  +(i.a)
+    c
+      %=  ^$
+        deu  d
+        key  (snoc key [x i.a])
+        acc  c.a
+      ==
+  ==
+::
 ++  geno                           :: turn sail into element state
-  |=  [kor=$@(~ cor) vel=vela]
+  |=  $:  rel=$@(~ [=rami =cor])
+          old=$@(~ ara)
+          vel=vela
+      ==
   ^-  deus
+  =/  k=rami                   ?^(rel rami.rel ~)
   =/  m=marl                   ~[vel]
-  =/  px=as                    [%c ?^(kor w.size.res.kor x.arca.urbs.ego)]
-  =/  py=as                    [%c ?^(kor h.size.res.kor y.arca.urbs.ego)]
-  =/  pl=fila                  ?^(kor look.res.kor [~ ~ %w])
-  =/  pa=acia                  ?^(kor sele.res.kor [~ ~ ~])
-  =/  pow=fuga                 ?^(kor flow.res.kor [%row %clip])
-  =/  prx=@ud                  ?^(kor w.size.res.kor x.arca.urbs.ego)
-  =/  pry=@ud                  ?^(kor h.size.res.kor y.arca.urbs.ego)
-  =/  pape=apex                ?^(kor apex.kor *apex)
+  =/  px=as                    [%c ?^(rel w.size.res.cor.rel x.arca.urbs.ego)]
+  =/  py=as                    [%c ?^(rel h.size.res.cor.rel y.arca.urbs.ego)]
+  =/  pl=fila                  ?^(rel look.res.cor.rel [~ ~ %w])
+  =/  pa=acia                  ?^(rel sele.res.cor.rel [~ ~ ~])
+  =/  pow=fuga                 ?^(rel flow.res.cor.rel [%row %clip])
+  =/  prx=@ud                  ?^(rel w.size.res.cor.rel x.arca.urbs.ego)
+  =/  pry=@ud                  ?^(rel h.size.res.cor.rel y.arca.urbs.ego)
+  =/  pape=apex                ?^(rel apex.cor.rel *apex)
   =/  vape=apex                pape
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
   =<  ?>
@@ -2863,6 +2926,7 @@
   =/  ldei=dei
     ?~  lay  ~
     %=  $
+      k     (snoc k [%l 0])
       m     lay
       px    w.size.vena
       py    h.size.vena
@@ -2877,6 +2941,7 @@
   =/  ndei=dei
     ?~  nor  ~
     %=  $
+      k     (snoc k [%n 0])
       m     nor
       px    w.size.vena
       py    h.size.vena
@@ -2975,6 +3040,7 @@
     %+  weld  ndei
     ^-  dei
     %=  $
+      k     (snoc k [%n (lent ndei)])
       m     gro
       px    w.size.vena
       py    h.size.vena
@@ -3186,6 +3252,7 @@
   =/  bdei=dei
     ?~  bor  ~
     %=  $
+      k     (snoc k [%b 0])
       m     bor
       px    w.size.vena
       py    h.size.vena
@@ -3198,61 +3265,57 @@
       vape  aape
       vir   [0 0 0]
     ==
-  :: TO DO: geno state transitions require building rami
-  :: 
-  =?  ars  ?=(%scroll -.ars)
-    =/  ola=sola
-      ?~  csiz  [0 0]
-      :-  ?:((gth arx w.csiz) 0 (sub w.csiz arx))
-      ?:((gth ary h.csiz) 0 (sub h.csiz ary))
-    =/  itr=iter  [0 0]
-    [%scroll itr ola]
-  :: =?  ars
-  ::     ?|  ?=(%input -.ars)
-  ::         ?=(%scroll -.ars)
-  ::         ?=(%checkbox -.ars)
-  ::     ==
-  ::   =/  key=(unit rami)
-  ::     ?~  avis  [~ k]
-  ::     (~(get by aves.ara) avis)
-  ::   ?+  -.ars  ars
-  ::       %input
-  ::     =/  old=(unit ens)
-  ::       ?~  key  ~
-  ::       (~(get by esse.ara) u.key)
-  ::     ?.  &(?=(^ old) ?=(%input -.ars.u.old))
-  ::       ?~  lina  ars
-  ::       ars(vox (oro [~ w.size.ares] [~ h.size.ares] lina))
-  ::     ?:  =(size.res.u.old size.ares)
-  ::       ars.u.old
-  ::     %_  ars.u.old
-  ::       de   0
-  ::       i    [0 0]
-  ::       vox  (oro [~ w.size.ares] [~ h.size.ares] ^-(^lina (zing vox.ars.u.old)))
-  ::     ==
-  ::       %checkbox
-  ::     ?~  key  ars
-  ::     =/  old=(unit ens)  (~(get by esse.ara) u.key)
-  ::     ?~  old  ars
-  ::     ?.  ?=(%checkbox -.ars.u.old)  ars
-  ::     ars.u.old
-  ::       %scroll
-  ::     ?~  key  ars
-  ::     =/  sol=sola
-  ::       ?~  csiz  [0 0]
-  ::       :-  ?:((gth arx w.csiz) 0 (sub w.csiz arx))
-  ::       ?:((gth ary h.csiz) 0 (sub h.csiz ary))
-  ::     =/  old=(unit ens)  (~(get by esse.ara) u.key)
-  ::     =/  itr=iter
-  ::       ?~  old
-  ::         [0 0]
-  ::       ?.  ?=(%scroll -.ars.u.old)
-  ::         [0 0]
-  ::       :-  (min x.iter.ars.u.old x.sol)
-  ::       (min y.iter.ars.u.old y.sol)
-  ::     [%scroll itr [bl br bt bb] sol]
-  ::   ==
-  :: 
+  =?  ars
+      ?|  ?=(%input -.ars)
+          ?=(%scroll -.ars)
+          ?=(%checkbox -.ars)
+      ==
+    =/  old-key=rami
+      ?~  old   k
+      ?~  avis  k
+      =/  ok    (~(get by aves.old) avis)
+      ?~  ok    k
+      u.ok
+    =/  old-el=(unit deus)
+      ?~  old  ~
+      (mole |.((exuo old-key deus.old)))
+    ?+  -.ars  ars
+        %input
+      ?.  &(?=(^ old-el) ?=(%input -.ars.cor.u.old-el))
+        ?~  lina  ars
+        %_  ars
+          vox  (oro [~ w.size.ares] [~ h.size.ares] lina)
+        ==
+      ?:  =(size.res.cor.u.old-el size.ares)
+        ars.cor.u.old-el
+      %_  ars
+        de   0
+        i    [0 0]
+        vox
+          %^    oro
+              [~ w.size.ares]
+            [~ h.size.ares]
+          `^lina`(zing vox.ars.cor.u.old-el)
+      ==
+        %checkbox
+      ?.  &(?=(^ old-el) ?=(%checkbox -.ars.cor.u.old-el))
+        ars
+      ars.cor.u.old-el
+        %scroll
+      =/  ola=sola
+        ?~  csiz  [0 0]
+        :-  ?:((gth arx w.csiz) 0 (sub w.csiz arx))
+        ?:((gth ary h.csiz) 0 (sub h.csiz ary))
+      %_  ars
+        sola  ola
+        iter
+          ?~  old-el  *iter
+          %^    veho
+              cor.u.old-el
+            (weld n.gens.u.old-el l.gens.u.old-el)
+          (weld ndei ldei)
+      ==
+    ==
   =.  vir
     ?:  |(?=(%layer -.ars) ?=(%border -.ars))
       [0 0 0]
@@ -3274,7 +3337,7 @@
     =/  vy=@ud  ?-(d.pow %row o.vir, %col n.vir)
     [(add x.pape vx) (add y.pape vy)]
   :-  ^-(deus [[aape avis ares ars] [bdei ldei ndei]])
-  $(m t.m)
+  $(k ?^(k k(ager.i +(ager.i.k)) ~), m t.m)
 ::
 ++  creo                           :: instantiate a branch by key, along with rendering context
   |=  key=rami
