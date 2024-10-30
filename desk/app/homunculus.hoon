@@ -1471,7 +1471,7 @@
         flow=[%col %clip]
         look=[~ ~ ~]
     ==
-      %border-left
+      %border-l
     :*  size=[[%c 1] [%p 100]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1479,7 +1479,7 @@
         flow=[%col %clip]
         look=[~ ~ ~]
     ==
-      %border-right
+      %border-r
     :*  size=[[%c 1] [%p 100]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1487,7 +1487,7 @@
         flow=[%col %clip]
         look=[~ ~ ~]
     ==
-      %border-top
+      %border-t
     :*  size=[[%p 100] [%c 1]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1495,7 +1495,7 @@
         flow=[%row %clip]
         look=[~ ~ ~]
     ==
-      %border-bottom
+      %border-b
     :*  size=[[%p 100] [%c 1]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1562,10 +1562,10 @@
         %pattern        [(dolo %$) [%pattern ~]]
         %layer          [(dolo %layer) [%layer ~]]
         %select         [(dolo %$) [%select %~]]
-        %border-left    [(dolo %border-left) [%border %l %~]]
-        %border-right   [(dolo %border-right) [%border %r %~]]
-        %border-top     [(dolo %border-top) [%border %t %~]]
-        %border-bottom  [(dolo %border-bottom) [%border %b %~]]
+        %border-l       [(dolo %border-l) [%border %l %~]]
+        %border-r       [(dolo %border-r) [%border %r %~]]
+        %border-t       [(dolo %border-t) [%border %t %~]]
+        %border-b       [(dolo %border-b) [%border %b %~]]
         %line-h         [(dolo %line-h) [%line %h %light]]
         %line-v         [(dolo %line-v) [%line %v %light]]
         %scroll         [(dolo %scroll) [%scroll *iter *sola]]
@@ -1662,7 +1662,7 @@
       %column-clip  $(flow.vena [%col %clip], a t.a)
       %column-wrap  $(flow.vena [%col %wrap], a t.a)
     ==
-      %cb
+      %bg
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
       $(b.look.vena [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(b.look.vena ~, a t.a)
@@ -1675,7 +1675,7 @@
       %black    $(b.look.vena [~ %k], a t.a)
       %white    $(b.look.vena [~ %w], a t.a)
     ==
-      %cf
+      %fg
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
       $(f.look.vena [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(f.look.vena ~, a t.a)
@@ -1704,7 +1704,7 @@
       %double  $(ora.ars %double, a t.a)
       %arc     $(ora.ars %arc, a t.a)
     ==
-      %b-cb
+      %b-bg
     ?.  ?=(%border -.ars)
       $(marv [i.a marv], a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
@@ -1719,7 +1719,7 @@
       %black    $(b.look.vena [~ %k], a t.a)
       %white    $(b.look.vena [~ %w], a t.a)
     ==
-      %b-cf
+      %b-fg
     ?.  ?=(%border -.ars)
       $(marv [i.a marv], a t.a)
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
@@ -1750,7 +1750,7 @@
       %double  $(ora.ars %double, a t.a)
       %arc     $(ora.ars %arc, a t.a)
     ==
-      %select-cb
+      %select-bg
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
       $(b.acia [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
@@ -1763,7 +1763,7 @@
       %black    $(b.acia [~ %k], a t.a)
       %white    $(b.acia [~ %w], a t.a)
     ==
-      %select-cf
+      %select-fg
     ?:  &(?=(^ v.i.a) =('#' i.v.i.a))
       $(f.acia [~ (seco v.i.a)], a t.a)
     ?+  (@tas (crip v.i.a))  $(a t.a)
@@ -1809,9 +1809,13 @@
 ++  apo                            :: make axis for a key
   |=  typ=@tas
   ^-  axis
-  ?+  typ    %n
-    %layer   %l
-    %border  %b
+  ?+  typ      %n
+    %layer     %l
+    %border    %b
+    %border-l  %b
+    %border-r  %b
+    %border-t  %b
+    %border-b  %b
   ==
 ::
 ++  pars                           :: parse a tape to a sizing unit
@@ -1876,7 +1880,7 @@
   |-  ^-  muri
   ?~  bor  [bl br bt bb]
   ?+  n.g.i.bor  $(bor t.bor)
-      %border-left
+      %border-l
     ?~  a.g.i.bor
       $(bor t.bor, bl ?:(=(0 bl) 1 bl))
     ?:  =(%w n.i.a.g.i.bor)
@@ -1886,7 +1890,7 @@
         bl   ?~(n ?:(=(0 bl) 1 bl) ?:((gth u.n bl) u.n bl))
       ==
     $(a.g.i.bor t.a.g.i.bor)
-      %border-right
+      %border-r
     ?~  a.g.i.bor
       $(bor t.bor, br ?:(=(0 br) 1 br))
     ?:  =(%w n.i.a.g.i.bor)
@@ -1896,7 +1900,7 @@
         br   ?~(n ?:(=(0 br) 1 br) ?:((gth u.n br) u.n br))
       ==
     $(a.g.i.bor t.a.g.i.bor)
-      %border-top
+      %border-t
     ?~  a.g.i.bor
       $(bor t.bor, bt ?:(=(0 bt) 1 bt))
     ?:  =(%h n.i.a.g.i.bor)
@@ -1906,7 +1910,7 @@
         bt   ?~(n ?:(=(0 bt) 1 bt) ?:((gth u.n bt) u.n bt))
       ==
     $(a.g.i.bor t.a.g.i.bor)
-      %border-bottom
+      %border-b
     ?~  a.g.i.bor
       $(bor t.bor, bb ?:(=(0 bb) 1 bb))
     ?:  =(%h n.i.a.g.i.bor)
@@ -2791,18 +2795,18 @@
     =|  [bor=marl lay=marl nor=marl]
     |-  ^-  [marl marl marl]
     ?~  c.i.m  [bor (flop lay) (flop nor)]
-    ?+  n.g.i.c.i.m   $(nor [i.c.i.m nor], c.i.m t.c.i.m)
-      %border-left    $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-right   $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-top     $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %border-bottom  $(bor [i.c.i.m bor], c.i.m t.c.i.m)
-      %layer          $(lay [i.c.i.m lay], c.i.m t.c.i.m)
+    ?+  n.g.i.c.i.m  $(nor [i.c.i.m nor], c.i.m t.c.i.m)
+      %border-l      $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-r      $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-t      $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %border-b      $(bor [i.c.i.m bor], c.i.m t.c.i.m)
+      %layer         $(lay [i.c.i.m lay], c.i.m t.c.i.m)
     ==
   =?  bor  &(?=(^ marv) !?=(%input -.ars))
     %+  weld  bor
     ^-  marl
-    :~  [[%border-left marv] ~]  [[%border-right marv] ~]
-        [[%border-top marv] ~]  [[%border-bottom marv] ~]
+    :~  [[%border-l marv] ~]  [[%border-r marv] ~]
+        [[%border-t marv] ~]  [[%border-b marv] ~]
     ==
   =/  [bl=@ud br=@ud bt=@ud bb=@ud]
     (obeo bor)

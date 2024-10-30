@@ -84,23 +84,23 @@
   ++  root
     ^-  manx
     ;layer(fx "center", fy "center")
-      ;box(w "47", h "8", px "2", pt "1", cb "#000000", cf "#fc8021", fx "center")
-        ;border-left(b "heavy");
-        ;border-right(b "heavy");
-        ;border-top(b "heavy");
-        ;border-bottom(cb "#38d99b", cf "#000000")
+      ;box(w "47", h "8", px "2", pt "1", bg "#000000", fg "#fc8021", fx "center")
+        ;border-l(b "heavy");
+        ;border-r(b "heavy");
+        ;border-t(b "heavy");
+        ;border-b(bg "#38d99b", fg "#000000")
           ;box(w "100%", h "1", px "2", fl "row")
-            ;select(fl "row", select-d "bold", select-cf "#9effda")
+            ;select(fl "row", select-d "bold", select-fg "#9effda")
               ;+  ;/  (trip (scot %ud kelvin))
               ;+  ;/  "K"
             ==
             ;box(w "grow", h "1");
             ;box(mr "1"): ship:
-            ;select(select-d "bold", select-cf "#9effda"): {(trip (scot %p our.bol))}
+            ;select(select-d "bold", select-fg "#9effda"): {(trip (scot %p our.bol))}
           ==
         ==
         ;select(select-d "blink")
-          ;art(cf "#cc5a02")
+          ;art(fg "#cc5a02")
             ;+  ;/
               """
               ╭     ╮ ╭─────╮ ╭────╮  ──┬── ╭──┬──╮
@@ -112,7 +112,7 @@
               │     │ ├────┬╯ ├────┴╮   │      │   
               """
           ==
-          ;art(cf "#cc5a02")
+          ;art(fg "#cc5a02")
             ;+  ;/
               """
               ╰─────╯ ╰    ╰─ ╰─────╯ ──┴──    ┴    
@@ -121,31 +121,31 @@
         ==
         ;box(w "100%", h "1", mt "1")
           ;layer(fx "center")
-            ;pattern(w "9", h "1", cf "#38d99b"):"▮"
+            ;pattern(w "9", h "1", fg "#38d99b"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "13", h "1", cf "#34CB91"):"▮"
+            ;pattern(w "13", h "1", fg "#34CB91"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "17", h "1", cf "#2DAE7C"):"▮"
+            ;pattern(w "17", h "1", fg "#2DAE7C"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "21", h "1", cf "#248B63"):"▮"
+            ;pattern(w "21", h "1", fg "#248B63"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "25", h "1", cf "#1D6F4F"):"▮"
+            ;pattern(w "25", h "1", fg "#1D6F4F"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "29", h "1", cf "#17593F"):"▮"
+            ;pattern(w "29", h "1", fg "#17593F"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "33", h "1", cf "#124732"):"▮"
+            ;pattern(w "33", h "1", fg "#124732"):"▮"
           ==
           ;layer(fx "center")
-            ;pattern(w "37", h "1", cf "#0E3928"):"▮"
+            ;pattern(w "37", h "1", fg "#0E3928"):"▮"
           ==
           ;layer
-            ;pattern(w "100%", h "1", cf "#0B2E20"):"▮"
+            ;pattern(w "100%", h "1", fg "#0B2E20"):"▮"
           ==
         ==
       ==
