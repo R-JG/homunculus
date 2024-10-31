@@ -508,9 +508,16 @@
         |=  [=ara i=@]
         :_  +(i)
         =/  container  (snag i n.gens.deu)
+        =/  ax=axis    (apo ?@(n.g.vela.ara n.g.vela.ara -.n.g.vela.ara))
         =/  k=rami     ~[[%n i]]
         =.  deus.ara
-          container(n.gens ~[(geno [k cor.container] ara vela.ara)])
+          =.  k     ?>(?=(^ k) k(t ~[[ax 0]]))
+          =/  =dei  ~[(geno [k cor.container] ara vela.ara)]
+          ?-  ax
+            %n  container(n.gens dei)
+            %l  container(l.gens dei)
+            %b  container(b.gens dei)
+          ==
         =/  [ave=aves osa=ossa]  (vivo k deus.ara)
         ara(aves ave, ossa osa)
     ==
@@ -2190,11 +2197,11 @@
   [[x1 y1] [x2 y2] mur]
 ::
 ++  veho                           :: transition a scroll element's scroll state 
-  |=  [old-cor=cor old=dei new=dei]
+  |=  [[old-cor=cor new-top=@] old=dei new=dei]
   ^-  iter
-  ?>  ?=(%scroll -.ars.old-cor)
-  =/  top=@  ;:(add y.apex.old-cor t.bord.res.old-cor t.padd.res.old-cor)
-  =/  bot=@
+  ?.  ?=(%scroll -.ars.old-cor)  *iter
+  =/  old-top=@  ;:(add y.apex.old-cor t.bord.res.old-cor t.padd.res.old-cor)
+  =/  old-bot=@
     =/  b=@  +((add b.bord.res.old-cor b.padd.res.old-cor))
     =.  y.apex.old-cor  (add y.apex.old-cor h.size.res.old-cor)
     ?:  (gte b y.apex.old-cor)  0
@@ -2211,8 +2218,8 @@
         ?.(=(0 h.size.res.cor.i.old) (dec h.size.res.cor.i.old) 0)
       ?:  (gte y.iter.ars.old-cor y.apex.cor.i.old)  0
       (sub y.apex.cor.i.old y.iter.ars.old-cor)
-    ?:  (gth el-t bot)  ~
-    ?:  &((gte el-b top) ?=(^ avis.cor.i.old))
+    ?:  (gth el-t old-bot)  ~
+    ?:  &((gte el-b old-top) ?=(^ avis.cor.i.old))
       i.old
     $(old t.old)
   ?~  old-el  iter.ars.old-cor
@@ -2223,14 +2230,16 @@
       i.new
     $(new t.new)
   ?~  new-el  iter.ars.old-cor
-  ?:  =(y.apex.cor.old-el y.apex.cor.new-el)
+  =/  old-range=@  (sub y.apex.cor.old-el old-top)
+  =/  new-range=@  (sub y.apex.cor.new-el new-top)
+  ?:  =(old-range new-range)
     iter.ars.old-cor
   %_    iter.ars.old-cor
       y
-    ?:  (gth y.apex.cor.old-el y.apex.cor.new-el)
-      =/  dif  (sub y.apex.cor.old-el y.apex.cor.new-el)
+    ?:  (gth old-range new-range)
+      =/  dif  (sub old-range new-range)
       ?:((lth dif y.iter.ars.old-cor) (sub y.iter.ars.old-cor dif) 0)
-    =/  dif  (sub y.apex.cor.new-el y.apex.cor.old-el)
+    =/  dif  (sub new-range old-range)
     (add y.iter.ars.old-cor dif)
   ==
 ::
@@ -2701,7 +2710,7 @@
           vel=vela
       ==
   ^-  deus
-  =/  k=rami                   ?^(rel rami.rel ~)
+  =/  k=rami                   ?^(rel (flop rami.rel) ~)
   =/  m=marl                   ~[vel]
   =/  px=as                    [%c ?^(rel w.size.res.cor.rel x.arca.urbs.ego)]
   =/  py=as                    [%c ?^(rel h.size.res.cor.rel y.arca.urbs.ego)]
@@ -2930,7 +2939,7 @@
   =/  ldei=dei
     ?~  lay  ~
     %=  $
-      k     (snoc k [%l 0])
+      k     [[%l 0] k]
       m     lay
       px    w.size.vena
       py    h.size.vena
@@ -2945,7 +2954,7 @@
   =/  ndei=dei
     ?~  nor  ~
     %=  $
-      k     (snoc k [%n 0])
+      k     [[%n 0] k]
       m     nor
       px    w.size.vena
       py    h.size.vena
@@ -3044,7 +3053,7 @@
     %+  weld  ndei
     ^-  dei
     %=  $
-      k     (snoc k [%n (lent ndei)])
+      k     [[%n (lent ndei)] k]
       m     gro
       px    w.size.vena
       py    h.size.vena
@@ -3256,7 +3265,7 @@
   =/  bdei=dei
     ?~  bor  ~
     %=  $
-      k     (snoc k [%b 0])
+      k     [[%b 0] k]
       m     bor
       px    w.size.vena
       py    h.size.vena
@@ -3274,6 +3283,7 @@
           ?=(%scroll -.ars)
           ?=(%checkbox -.ars)
       ==
+    =.  k  (flop k)
     =/  old-key=rami
       ?~  old   k
       ?~  avis  k
@@ -3315,7 +3325,7 @@
         iter
           ?~  old-el  *iter
           %^    veho
-              cor.u.old-el
+              [cor.u.old-el ;:(add y.aape t.bord.ares t.padd.ares)]
             (weld n.gens.u.old-el l.gens.u.old-el)
           (weld ndei ldei)
       ==
@@ -3340,7 +3350,7 @@
     =/  vx=@ud  ?-(d.pow %row n.vir, %col o.vir)
     =/  vy=@ud  ?-(d.pow %row o.vir, %col n.vir)
     [(add x.pape vx) (add y.pape vy)]
-  :-  ^-(deus [[aape avis ares ars] [bdei ldei ndei]])
+  :-  `deus`[[aape avis ares ars] [bdei ldei ndei]]
   $(k ?^(k k(ager.i +(ager.i.k)) ~), m t.m)
 ::
 ++  creo                           :: instantiate a branch by key, along with rendering context
