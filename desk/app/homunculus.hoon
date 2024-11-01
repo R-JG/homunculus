@@ -23,7 +23,7 @@
   $%  [%text =vox]                                                     ::
       [%pattern =vox]                                                  ::
       [%layer ~]                                                       ::
-      [%scroll =iter =sola]                                            ::
+      [%scroll =equi =iter =sola]                                      ::
       [%border =ad =ora]                                               ::
       [%line =ab =ora]                                                 ::
       [%select pro=?(%submit %~)]                                      ::
@@ -48,6 +48,7 @@
 +$  fuga  [d=?(%col %row) b=?(%wrap %clip)]                            :: positioning flow
 +$  iter  modi                                                         :: scroll position
 +$  sola  modi                                                         :: scroll content dimensions
++$  equi  [u=(unit as) d=(unit as)]                                    :: scroll triggers
 +$  ad    ?(%l %r %t %b)                                               :: direction
 +$  ab    ?(%h %v)                                                     :: orientation
 +$  ora   ?(%light %heavy %double %arc %~)                             :: line style
@@ -637,7 +638,7 @@
   ++  eo                           :: handle a navigation event
     ^-  (quip card ^ego)
     =/  navs  (gero rex.via ordo.via)
-    =/  active-scroll  fluo
+    =/  [cards=(list card) active-scroll=(unit rami)]  fluo
     =/  navs-in-scroll
       ^-  ordo
       ?~  active-scroll  ~
@@ -648,14 +649,15 @@
             ?=(~ navs-in-scroll)
             |(?=(%nav-u lex) ?=(%nav-d lex))
         ==
-      (meo (need active-scroll))
+      =^  meo-cards  ego  (meo (need active-scroll))
+      [(weld cards meo-cards) ego]
     =/  next=rex
       ?^  navs-in-scroll  i.navs-in-scroll
       ?^  navs  i.navs  ~
     ?:  ?|  ?=(~ next)
             &(?=(^ rex.via) =(k.rex.via k.next))
         ==
-      [~ ego]
+      [cards ego]
     =/  old=$@(~ deus)
       ?~  rex.via  ~
       (exuo k.rex.via deus:sto)
@@ -677,9 +679,10 @@
       (viso k.next)
     :_  ego
     :-  (fio ~[rend-old rend-new])
-    ?~  avis.cor.new  ~
-    :~  (iuvo %select fons.new-ara avis.cor.new ~)
-    ==
+    ?~  avis.cor.new
+      cards
+    :_  cards
+    (iuvo %select fons.new-ara avis.cor.new ~)
   ::
   ++  meo                          :: handle a scroll
     |=  key=rami
@@ -727,26 +730,58 @@
     :~  (iuvo %select fons.ses avis.i.navs ~)
     ==
   ::
-  ++  fluo                         :: find the nearest scroll parent not maxed out in the nav direction
-    ^-  (unit rami)
-    ?~  rex.via  ~
-    =/  key=rami
-      :: assume system container
-      :: before session branch
-      ?>  ?=(^ k.rex.via)
-      [i.k.rex.via ~]
+  ++  fluo                         :: find the nearest scroll parent not maxed out in the nav direction + collect trigger events
+    ^-  (quip card (unit rami))
+    ?~  rex.via  ~^~
+    =/  key=rami      ?>(?=(^ k.rex.via) [i.k.rex.via ~])
     =/  rex-key=rami  (voro k.rex.via)
-    =|  acc=(list rami)
+    =|  [car=(list card) acc=(list rami)]
     =/  =ara  sto
-    |-  ^-  (unit rami)
-    =?  acc
-        ?&  ?=(%scroll -.ars.cor.deus.ara)
-            ?!
-            ?|  &(?=(%nav-u lex) =(0 y.iter.ars.cor.deus.ara))
-                &(?=(%nav-d lex) =(y.sola.ars.cor.deus.ara y.iter.ars.cor.deus.ara))
-        ==  ==
-      [key acc]
+    |-  ^-  (quip card (unit rami))
+    =:  car
+          ?.  ?=(%scroll -.ars.cor.deus.ara)  car
+          ?:  ?&  ?=(%nav-u lex)
+                  ?=(^ u.equi.ars.cor.deus.ara)
+              ==
+            =/  trig=@
+              ?+  p.u.u.equi.ars.cor.deus.ara  0
+                %c  q.u.u.equi.ars.cor.deus.ara
+                %p
+                  %+  div
+                    %+  mul  q.u.u.equi.ars.cor.deus.ara
+                    y.sola.ars.cor.deus.ara
+                  100
+              ==
+            ?.  (lte y.iter.ars.cor.deus.ara trig)  car
+            [(cedo fons.ara %up avis.cor.deus.ara) car]
+          ?:  ?&  ?=(%nav-d lex)
+                  ?=(^ d.equi.ars.cor.deus.ara)
+              ==
+            =/  trig=@
+              ?+  p.u.d.equi.ars.cor.deus.ara  0
+                %c  q.u.d.equi.ars.cor.deus.ara
+                %p
+                  %+  div
+                    %+  mul  q.u.d.equi.ars.cor.deus.ara
+                    y.sola.ars.cor.deus.ara
+                  100
+              ==
+            ?.  %+  gte  (add trig y.iter.ars.cor.deus.ara)
+                y.sola.ars.cor.deus.ara
+              car
+            [(cedo fons.ara %down avis.cor.deus.ara) car]
+          car
+        acc
+          ?.  ?&  ?=(%scroll -.ars.cor.deus.ara)
+                  ?!
+                  ?|  &(?=(%nav-u lex) =(0 y.iter.ars.cor.deus.ara))
+                      &(?=(%nav-d lex) =(y.sola.ars.cor.deus.ara y.iter.ars.cor.deus.ara))
+              ==  ==
+            acc
+          [key acc]
+      ==
     ?~  rex-key
+      :-  car
       ?~  acc  ~
       [~ i.acc]
     %=  $
@@ -760,6 +795,12 @@
           %l  l.gens.deus.ara
         ==
     ==
+  ::
+  ++  cedo                         :: make a scroll trigger event card
+    |=  [=fons dir=?(%up %down) =avis]
+    ^-  card
+    =/  eve=event:homunculus  [%scroll %trigger dir avis]
+    [%pass ~ %agent fons %poke %homunculus-event !>(eve)]
   ::
   ++  gero                         :: order a list of navigation points
     |=  [r=rex o=ordo]
@@ -1575,7 +1616,7 @@
         %border-b       [(dolo %border-b) [%border %b %~]]
         %line-h         [(dolo %line-h) [%line %h %light]]
         %line-v         [(dolo %line-v) [%line %v %light]]
-        %scroll         [(dolo %scroll) [%scroll *iter *sola]]
+        %scroll         [(dolo %scroll) [%scroll *equi *iter *sola]]
         %form           [(dolo %form) [%form ~]]
         %input          [(dolo %input) [%input 0 [0 0] ~]]
         %checkbox       [(dolo %checkbox) [%checkbox | ~ ~]]
@@ -1793,6 +1834,10 @@
       %default
     ?.  ?=(%input -.ars)  $(a t.a)
     $(lina (tuba v.i.a), a t.a)
+      %trigger
+    ?.  ?=(%scroll -.ars)  $(a t.a)
+    =/  v=as  (pars v.i.a)
+    $(equi.ars [~^v ~^v], a t.a)
       %href
     $(avis (calo v.i.a), a t.a)
   ==
