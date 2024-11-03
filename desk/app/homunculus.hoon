@@ -638,30 +638,65 @@
   ++  eo                           :: handle a navigation event
     ^-  (quip card ^ego)
     =/  navs  (gero rex.via ordo.via)
-    =/  [cards=(list card) active-scroll=(unit rami)]  fluo
+    =/  [cards=(list card) active-scroll=(unit [=iter =rami =deus])]  fluo
     =/  navs-in-scroll
       ^-  ordo
       ?~  active-scroll  ~
       %+  skim  `ordo`navs
       |=  =dux
-      (alo u.active-scroll k.dux)
+      (alo rami.u.active-scroll k.dux)
     ?:  ?&  ?=(^ active-scroll)
-            ?=(~ navs-in-scroll)
             |(?=(%nav-u lex) ?=(%nav-d lex))
+            ?|  ?=(~ navs-in-scroll)
+                ^-  ?
+                =;  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
+                  ?+  lex  |
+                    %nav-u  (lte t.i.navs-in-scroll t.room)
+                    %nav-d  (gte b.i.navs-in-scroll b.room)
+                  ==
+                %^    laxo
+                    iter.u.active-scroll
+                  apex.cor.deus.u.active-scroll
+                res.cor.deus.u.active-scroll
+        ==  ==
+      ?>  ?=(%scroll -.ars.cor.deus.u.active-scroll)
+      =/  ses=ara   sto
+      =:  rex.via
+            ?~  navs-in-scroll
+              rex.via
+            i.navs-in-scroll
+          y.iter.ars.cor.deus.u.active-scroll
+            ?+  lex     y.iter.ars.cor.deus.u.active-scroll
+              %nav-u    (dec y.iter.ars.cor.deus.u.active-scroll)
+              %nav-d    +(y.iter.ars.cor.deus.u.active-scroll)
+            ==
         ==
-      =^  meo-cards  ego  (meo (need active-scroll))
-      [(weld cards meo-cards) ego]
+      =.  via       (sido ses(deus (paco rami.u.active-scroll deus.u.active-scroll deus.ses)))
+      =.  ego       (novo via)
+      =/  ren       (viso rami.u.active-scroll)
+      =.  ordo.via  (ligo rami.u.active-scroll (duco ren) ordo.via)
+      =.  rex.via
+        ?~  rex.via  ~
+        =/  upd  (rogo k.rex.via ordo.via)
+        ?~  upd  rex.via  upd
+      :_  (novo via)
+      %+  weld  cards
+      :-  (fio ~[ren])
+      ?.  &(?=(^ navs-in-scroll) ?=(^ rex.via) ?=(^ avis.rex.via))
+        ~
+      :~  (iuvo %select fons.ses avis.rex.via ~)
+      ==
     =/  next=rex
       ?^  navs-in-scroll  i.navs-in-scroll
       ?^  navs  i.navs  ~
+    =/  old-rex  rex.via
     ?:  ?|  ?=(~ next)
-            &(?=(^ rex.via) =(k.rex.via k.next))
+            &(?=(^ old-rex) =(k.old-rex k.next))
         ==
       [cards ego]
     =/  old=$@(~ deus)
-      ?~  rex.via  ~
-      (exuo k.rex.via deus:sto)
-    =/  old-rex   rex.via
+      ?~  old-rex  ~
+      (exuo k.old-rex deus:sto)
     =.  rex.via   next
     =/  new-ara   sto
     =/  new=deus  (exuo k.next deus.new-ara)
@@ -684,61 +719,19 @@
     :_  cards
     (iuvo %select fons.new-ara avis.cor.new ~)
   ::
-  ++  meo                          :: handle a scroll
-    |=  key=rami
-    ^-  (quip card ^ego)
-    =/  ses=ara   sto
-    =/  scr=deus  (exuo key deus.ses)
-    ?>  ?=(%scroll -.ars.cor.scr)
-    =.  y.iter.ars.cor.scr
-      ?+  lex     y.iter.ars.cor.scr
-        %nav-u    (dec y.iter.ars.cor.scr)
-        %nav-d    +(y.iter.ars.cor.scr)
-      ==
-    =.  via       (sido ses(deus (paco key scr deus.ses)))
-    =.  ego       (novo via)
-    =/  ren       (viso key)
-    =.  ordo.via  (ligo key (duco ren) ordo.via)
-    =/  upd=rex
-      ?~  rex.via  ~
-      ?+  lex   rex.via
-          %nav-u
-        %_  rex.via
-          t  +(t.rex.via)
-          b  +(b.rex.via)
-        ==
-          %nav-d
-        %_  rex.via
-          t  ?.(=(0 t.rex.via) (dec t.rex.via) 0)
-          b  ?.(=(0 b.rex.via) (dec b.rex.via) 0)
-        ==
-      ==
-    =/  navs=ordo
-      %+  skim  (gero upd ordo.via)
-      |=  =dux
-      (alo key k.dux)
-    ?~  navs
-      :_  (novo via)
-      :~  (fio ~[ren])
-      ==
-    =.  rex.via   i.navs
-    =.  ego       (novo via)
-    =.  ren       (viso key)
-    :_  ego
-    :-  (fio ~[ren])
-    ?~  avis.i.navs  ~
-    :~  (iuvo %select fons.ses avis.i.navs ~)
-    ==
-  ::
   ++  fluo                         :: find the nearest scroll parent not maxed out in the nav direction + collect trigger events
-    ^-  (quip card (unit rami))
+    ^-  (quip card (unit [iter rami deus]))
     ?~  rex.via  ~^~
     =/  key=rami      ?>(?=(^ k.rex.via) [i.k.rex.via ~])
     =/  rex-key=rami  (voro k.rex.via)
-    =|  [car=(list card) acc=(list rami)]
+    =|  itr=iter
+    =|  [car=(list card) acc=(unit [iter rami deus])]
     =/  =ara  sto
-    |-  ^-  (quip card (unit rami))
-    =:  car
+    |-  ^-  (quip card (unit [iter rami deus]))
+    =:  itr
+          ?.  ?=(%scroll -.ars.cor.deus.ara)  itr
+          itr(y (add y.itr y.iter.ars.cor.deus.ara))
+        car
           ?.  ?=(%scroll -.ars.cor.deus.ara)  car
           ?:  ?&  ?=(%nav-u lex)
                   ?=(^ u.equi.ars.cor.deus.ara)
@@ -778,12 +771,10 @@
                       &(?=(%nav-d lex) =(y.sola.ars.cor.deus.ara y.iter.ars.cor.deus.ara))
               ==  ==
             acc
-          [key acc]
+          [~ [itr key deus.ara]]
       ==
     ?~  rex-key
-      :-  car
-      ?~  acc  ~
-      [~ i.acc]
+      [car acc]
     %=  $
       key      (snoc key i.rex-key)
       rex-key  t.rex-key
