@@ -185,11 +185,10 @@
     ::
       %homunculus-update
     =+  !<(upd=update:homunculus vase)
+    =/  fon=fons  (bibo bol)
     ?+  -.upd  [~ hoc]
       ::
         %full
-      =/  fon=fons
-        [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]
       =/  ind  (rigo fon)
       ?~  ind
         =/  last=via  (rear viae.ego)
@@ -221,6 +220,39 @@
         (snap viae.ego -.ind via(arae (snap arae.via +.ind ara(vela p.upd))))
       =^  cards  ego  (apto -.ind)
       [cards hoc]
+      ::
+        %branch
+      =/  ind  (rigo fon)
+      ?~  ind  [~ hoc]
+      =/  =via  (snag -.ind viae.ego)
+      =/  =ara  (snag +.ind arae.via)
+      =^  keys  ara
+        =|  ks=(list rami)
+        |-  ^-  (quip rami ^ara)
+        ?~  p.upd  [ks ara]
+        =^  key  ara  (indo i.p.upd ara)
+        %=  $
+          p.upd  t.p.upd
+          ks     [key ks]
+        ==
+      =.  arae.via  (snap arae.via +.ind ara)
+      =.  viae.ego  (snap viae.ego -.ind via)
+      ?.  =(cura.ego -.ind)
+        [~ hoc]
+      =^  opus  via
+        =|  op=opus
+        |-  ^-  [opus ^via]
+        ?~  keys  [op via]
+        =/  ren   (viso i.keys)
+        %=  $
+          keys      t.keys
+          op        [ren op]
+          ordo.via  (ligo i.keys (duco ren) ordo.via)
+        ==
+      :-  ~[(fio opus)]
+      %_  hoc
+        viae.ego  (snap viae.ego -.ind via)
+      ==
       ::
     ==
     ::
@@ -410,6 +442,11 @@
     ~
   ~
 ::
+++  bibo                           :: get the source from a bowl
+  |=  bol=bowl:gall
+  ^-  fons
+  [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]
+::
 ++  fio                            :: make a display update card
   |=  =opus
   ^-  card
@@ -530,6 +567,44 @@
   ?.  open.arx.urbs.ego
     ego(viae (snap viae.ego cura via(ordo (duco ren))))
   ego(ordo.via.arx.urbs (duco ren))
+::
+++  indo                           :: apply a branch update to a session
+  |=  [new=vela =ara]
+  ^-  [rami ^ara]
+  =/  id-attr
+    |-  ^-  [mane tape]
+    ?~  a.g.new  ~&(>>> %missing-id-on-branch-update !!)
+    ?:  =(%href n.i.a.g.new)  i.a.g.new
+    $(a.g.new t.a.g.new)
+  =/  [new-v=vena avi=avis *]  (suo g.new)
+  =.  vela.ara
+    |-  ^-  vela
+    ?~  (find ~[id-attr] a.g.vela.ara)
+      %_  vela.ara
+        c  (turn c.vela.ara |=(i=vela ^$(vela.ara i)))
+      ==
+    =/  [old-v=vena *]  (suo g.vela.ara)
+    ?:  ?|  ?=(%i p.w.size.old-v)
+            ?=(%i p.h.size.old-v)
+            !=(size.old-v size.new-v)
+            !=(marg.old-v marg.new-v)
+        ==
+      ~&(>>> %invalid-branch-update !!)
+    new
+  =/  key=rami  (~(got by aves.ara) avi)
+  =/  old-el    (exuo key deus.ara)
+  =/  size=mart
+    :~  [%w ((d-co:co 1) w.size.res.cor.old-el)]
+        [%h ((d-co:co 1) h.size.res.cor.old-el)]
+    ==
+  =.  deus.ara
+    %^    paco
+        key
+      (geno [key cor.old-el] ara new(a.g (weld a.g.new size)))
+    deus.ara
+  =/  [ave=aves osa=ossa]  (vivo ?^(key ~[i.key] ~) deus.ara)
+  :-  key
+  ara(aves ave, ossa osa)
 ::
 ++  rigo                           :: find an existing session in a frame by source, or null
   |=  =fons
@@ -1286,7 +1361,7 @@
     ?>  ?=(^ rex.via)
     =/  ses=ara  sto
     =/  form=$@(~ [key=rami el=deus])  (nudo %form)
-    ?~  form  ~|(%missing-form !!)
+    ?~  form  ~&(>>> %missing-form !!)
     =^  =data  el.form
       =|  dat=data
       |^  ^-  (pair data deus)
@@ -1294,7 +1369,7 @@
       =^  dat  l.gens.el.form  [q p]:(spin l.gens.el.form dat f)
       =^  dat  n.gens.el.form  [q p]:(spin n.gens.el.form dat f)
       ?:  ?=(%input -.ars.cor.el.form)
-        ?~  avis.cor.el.form  [dat el.form]
+        ?~  avis.cor.el.form  ~&(>>> %missing-input-id [dat el.form])
         =/  val=@t  (crip (tufa `lina`(zing vox.ars.cor.el.form)))
         :-  (~(put by dat) avis.cor.el.form val)
         %_  el.form
@@ -1303,7 +1378,7 @@
           i.ars.cor  [0 0]
         ==
       ?:  ?=(%checkbox -.ars.cor.el.form)
-        ?~  avis.cor.el.form  [dat el.form]
+        ?~  avis.cor.el.form  ~&(>>> %missing-checkbox-id [dat el.form])
         =/  val=@t  ?:(v.ars.cor.el.form '%.y' '%.n')
         :-  (~(put by dat) avis.cor.el.form val)
         %_  el.form
