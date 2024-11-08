@@ -36,14 +36,14 @@
   ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
-      %open
-    :_  this
-    :~  ~(render tui bol)
-    ==
-    ::
       %homunculus-event
     =/  eve  !<(event:homunculus vase)
     ?+  -.eve  !!
+      ::
+        %open
+      :_  this
+      :~  ~(render tui bol)
+      ==
       ::
         %select
       ~&  >>  eve

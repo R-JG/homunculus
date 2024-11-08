@@ -110,42 +110,52 @@
       %ins  %del  %tog  %act  %clk  %def
   ==
 +$  ales  (map nota avis)
-+$  aves  (map avis rami)
-+$  ossa  (map rami (map rami os))
-+$  os
-  $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora]
-      [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora]
-  ==
-+$  crux  [v=ab i=@ud c=ora l=ora r=ora t=ora b=ora]
-+$  aqua  (list [i=@ud size=@ud marg=@ud])
-+$  vena
-  $:  size=[w=as h=as]
-      padd=[l=as r=as t=as b=as]
-      marg=[l=as r=as t=as b=as]
-      flex=modi
-      flow=fuga
-      look=acia
-  ==
-+$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))
-+$  data  (map avis @t)
++$  aves  (map avis rami)                                              :: ids to keys for a session
++$  ossa  (map rami (map rami os))                                     :: line groups for a session
++$  os                                                                 :: line data for intersections 
+  $%  [%h p=?(%border %line) x1=@ud x2=@ud y=@ud =ora]                 ::
+      [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora]                 ::
+  ==                                                                   ::
++$  crux  [v=ab i=@ud c=ora l=ora r=ora t=ora b=ora]                   :: line intersection
++$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))                :: size unit
++$  data  (map avis @t)                                                :: form data
++$  aqua  (list [i=@ud size=@ud marg=@ud])                             :: geno grow sizing state
++$  vena                                                               :: geno res building state
+  $:  size=[w=as h=as]                                                 ::
+      padd=[l=as r=as t=as b=as]                                       ::
+      marg=[l=as r=as t=as b=as]                                       ::
+      flex=modi                                                        ::
+      flow=fuga                                                        ::
+      look=acia                                                        ::
+  ==                                                                   ::
 +$  vela  manx                                                         :: sail
-+$  fons  (pair @p @tas)                                               :: window session source
-+$  ara                                                                :: window state
++$  fons  (pair @p @tas)                                               :: session source
++$  ara                                                                :: session state
   $:  =fons                                                            ::
       =vela                                                            ::
       =aves                                                            ::
       =ossa                                                            ::
       =deus                                                            ::
   ==                                                                   ::
-+$  arae  (list ara)                                                   :: window sessions
++$  arae  (list ara)                                                   :: sessions
 +$  via                                                                :: frame state
   $:  =rex                                                             ::
       =ordo                                                            ::
-      =aula                                                            ::
+      =area                                                            ::
       =arae                                                            ::
   ==                                                                   ::
-+$  viae  (list via)                                                   :: all frames
-+$  aula  [p=%to-do =deus]                                             :: frame layout and root container
++$  viae  (list via)                                                   :: frames
++$  area  [=aula =deus]                                                :: frame layout state
++$  aula                                                               :: frame layout specification
+  $%  [%h h=@]                                                         ::
+      [%v v=@]                                                         ::
+      [%h-v1 h=@ v1=@]                                                 ::
+      [%h-v2 h=@ v2=@]                                                 ::
+      [%v-h1 v=@ h1=@]                                                 ::
+      [%v-h2 v=@ h2=@]                                                 ::
+      [%h1-h2-v1-v2 h1=@ h2=@ v1=@ v2=@]                               ::
+      [%$ ~]                                                           ::
+  ==                                                                   ::
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=arca =arx]                                                 :: system state
 +$  arca  [x=@ y=@]                                                    :: terminal size
@@ -213,45 +223,40 @@
           ==
         =^  cards  ego  (apto cura.ego)
         [cards hoc]
-      :: TODO: this case should only reevaluate the specific window instead of the frame
+      ::
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
+      =/  key=rami  ~[[%n +.ind]]
       =.  viae.ego
-        (snap viae.ego -.ind via(arae (snap arae.via +.ind ara(vela p.upd))))
-      =^  cards  ego  (apto -.ind)
-      [cards hoc]
+        %^  snap  viae.ego  -.ind
+        %_    via
+            arae
+          %^  snap  arae.via  +.ind
+          (curo key deus.ara(l.gens ~, n.gens ~) ara(vela p.upd))
+        ==
+      ?.  =(cura.ego -.ind)
+        [~ hoc]
+      =/  ren  (viso key)
+      =?  viae.ego  !open.arx.urbs.ego  
+        (snap viae.ego -.ind via(ordo (ligo key (duco ren) ordo.via)))
+      :_  hoc
+      :~  (fio ~[ren])
+      ==
       ::
         %branch
       =/  ind  (rigo fon)
       ?~  ind  [~ hoc]
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
-      =^  keys  ara
-        =|  ks=(list rami)
-        |-  ^-  (quip rami ^ara)
-        ?~  p.upd  [ks ara]
-        =^  key  ara  (indo i.p.upd ara)
-        %=  $
-          p.upd  t.p.upd
-          ks     [key ks]
-        ==
-      =.  arae.via  (snap arae.via +.ind ara)
-      =.  viae.ego  (snap viae.ego -.ind via)
+      =^  keys  ara  (gyro p.upd ara)
+      =.  arae.via   (snap arae.via +.ind ara)
+      =.  viae.ego   (snap viae.ego -.ind via)
       ?.  =(cura.ego -.ind)
         [~ hoc]
-      =^  opus  via
-        =|  op=opus
-        |-  ^-  [opus ^via]
-        ?~  keys  [op via]
-        =/  ren   (viso i.keys)
-        %=  $
-          keys      t.keys
-          op        [ren op]
-          ordo.via  (ligo i.keys (duco ren) ordo.via)
-        ==
-      :-  ~[(fio opus)]
-      %_  hoc
-        viae.ego  (snap viae.ego -.ind via)
+      =^  opus  via  (levo keys via)
+      =.  viae.ego   (snap viae.ego -.ind via)
+      :_  hoc
+      :~  (fio opus)
       ==
       ::
     ==
@@ -269,8 +274,39 @@
             =|  =ara
             ~[ara(vela p.p.menu)]
           arae.via.arx.urbs.ego(vela.i p.p.menu)
-        =^  cards  ego  (apto cura.ego)
-        [cards hoc]
+        ?>  ?=(^ arae.via.arx.urbs.ego)
+        =/  key=rami  ~[[%l 0]]
+        =.  deus.i.arae.via.arx.urbs.ego
+          %:  geno
+            [key cor.deus.i.arae.via.arx.urbs.ego]
+            i.arae.via.arx.urbs.ego
+            vela.i.arae.via.arx.urbs.ego
+          ==
+        =/  [ave=aves osa=ossa]
+          (vivo key deus.i.arae.via.arx.urbs.ego)
+        =:  aves.i.arae.via.arx.urbs.ego  ave
+            ossa.i.arae.via.arx.urbs.ego  osa
+          ==
+        ?.  open.arx.urbs.ego
+          [~ hoc]
+        =/  ren  (viso key)
+        =.  ordo.via.arx.urbs.ego  (duco ren)
+        :_  hoc
+        :~  (fio ~[ren])
+        ==
+        ::
+          %branch
+        ?~  arae.via.arx.urbs.ego  [~ hoc]
+        =^  keys  i.arae.via.arx.urbs.ego
+          (gyro p.p.menu i.arae.via.arx.urbs.ego)
+        ?.  open.arx.urbs.ego
+          [~ hoc]
+        =^  =opus  via.arx.urbs.ego
+          =<  ?>(?=(^ arae) .)
+          (levo keys via.arx.urbs.ego)
+        :_  hoc
+        :~  (fio opus)
+        ==
         ::
       ==
       ::
@@ -290,11 +326,14 @@
     ?:  ?=(%esc -.u.zon)
       =.  open.arx.urbs.ego  !open.arx.urbs.ego
       =/  ren  (viso ~)
-      :-  ~[(fio ~[ren])]
-      ?:  open.arx.urbs.ego
-        hoc(ordo.via.arx.urbs.ego (duco ren))
-      =/  =via  (snag cura.ego viae.ego)
-      hoc(viae.ego (snap viae.ego cura.ego via(ordo (duco ren))))
+      =.  ego
+        ?:  open.arx.urbs.ego
+          ego(ordo.via.arx.urbs (duco ren))
+        =/  =via  (snag cura.ego viae.ego)
+        ego(viae (snap viae.ego cura.ego via(ordo (duco ren))))
+      :_  hoc
+      :~  (fio ~[ren])
+      ==
       ::
     =/  =via  ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
     =/  lek=(unit lex)  (~(get by (scio rex.via)) (noto u.zon))
@@ -522,7 +561,7 @@
     ==
   ::  ::  ::  ::
   =/  deu=deus  (geno ~ ~ vel)
-  =:  deus.aula.via
+  =:  deus.area.via
         %_  deu
           gens  ~^~^~
         ==
@@ -545,28 +584,58 @@
         %+  spun  arae.via
         |=  [=ara i=@]
         :_  +(i)
-        =/  container  (snag i n.gens.deu)
-        =/  ax=axis    (apo ?@(n.g.vela.ara n.g.vela.ara -.n.g.vela.ara))
-        =/  k=rami     ~[[%n i]]
-        =.  deus.ara
-          =.  k     ?>(?=(^ k) k(t ~[[ax 0]]))
-          =/  =dei  ~[(geno [k cor.container] ara vela.ara)]
-          ?-  ax
-            %n  container(n.gens dei)
-            %l  container(l.gens dei)
-            %b  container(b.gens dei)
-          ==
-        =/  [ave=aves osa=ossa]  (vivo k deus.ara)
-        ara(aves ave, ossa osa)
+        (curo ~[[%n i]] (snag i n.gens.deu) ara)
     ==
   =.  viae.ego  (snap viae.ego cura via)
   ?.  =(cura cura.ego)
     [~ ego]
   =/  ren  (viso ~)
-  :-  ~[(fio ~[ren])]
-  ?.  open.arx.urbs.ego
-    ego(viae (snap viae.ego cura via(ordo (duco ren))))
-  ego(ordo.via.arx.urbs (duco ren))
+  =.  ego
+    ?.  open.arx.urbs.ego
+      ego(viae (snap viae.ego cura via(ordo (duco ren))))
+    ego(ordo.via.arx.urbs (duco ren))
+  :_  ego
+  :~  (fio ~[ren])
+  ==
+::
+++  curo                           :: reevaluate a session's element state
+  |=  [key=rami con=deus ses=ara]
+  ^-  ara
+  =/  axi=axis  (apo ?@(n.g.vela.ses n.g.vela.ses -.n.g.vela.ses))
+  =.  deus.ses
+    =.  key   ?>(?=(^ key) key(t ~[[axi 0]]))
+    =/  =dei  ~[(geno [key cor.con] ses vela.ses)]
+    ?+  axi  con
+      %n  con(n.gens dei)
+      %l  con(l.gens dei)
+    ==
+  =/  [ave=aves osa=ossa]  (vivo key deus.ses)
+  ses(aves ave, ossa osa)
+::
+++  gyro                           :: resolve session state for a list of branch updates
+  |=  [upd=(list vela) ses=ara]
+  =|  keys=(list rami)
+  |-  ^-  (quip rami ara)
+  ?~  upd
+    [keys ses]
+  =^  key  ses  (indo i.upd ses)
+  %=  $
+    upd   t.upd
+    keys  [key keys]
+  ==
+::
+++  levo                           :: render a list of branches in a frame by key
+  |=  [keys=(list rami) fam=via]
+  =|  rens=opus
+  |-  ^-  [opus via]
+  ?~  keys
+    [rens fam]
+  =/  ren  (viso i.keys)
+  %=  $
+    keys      t.keys
+    rens      [ren rens]
+    ordo.fam  (ligo i.keys (duco ren) ordo.fam)
+  ==
 ::
 ++  indo                           :: apply a branch update to a session
   |=  [new=vela =ara]
@@ -3469,7 +3538,7 @@
   ^-  [aer deus]
   =/  =via  (snag cura.ego viae.ego)
   =/  deu=deus
-    %_  deus.aula.via
+    %_  deus.area.via
       l.gens
         ?.  ?&  ?=(^ arae.via.arx.urbs.ego)
                 open.arx.urbs.ego

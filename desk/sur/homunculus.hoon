@@ -1,14 +1,18 @@
 |%
 ::
 +$  update
-  $%  [%full p=manx]
+  $%  [%register ~]
+      [%full p=manx]
       [%branch p=(list manx)]
-      [%hotkeys p=hotkeys]
-      [%set-select p=path]
+      :: [%hotkeys p=hotkeys]
+      :: [%set-select p=path]
+      :: [%set-scroll-position p=?(%c %p) q=@ r=path]
   ==
 ::
 +$  event
-  $%  [%select p=path]
+  $%  [%open ~]
+      [%close ~]
+      [%select p=path]
       [%act p=path]
       [%form p=path q=form-data]
       [%hotkey p=path]
