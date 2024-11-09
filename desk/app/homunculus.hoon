@@ -3889,7 +3889,7 @@
     (snoc p "\\x1b[0m")
   %^  spin  sol  [y.apex *fila]
   |=  [lis=(list lux) acc=[y=@ f=fila]]
-  =;  [p=wall q=[? fil=fila]]
+  =;  [p=wall q=[@ fil=fila]]
     ^-  [tape [@ fila]]
     :_  [+(y.acc) fil.q]
     %-  zing
@@ -3900,22 +3900,22 @@
         (scot %ud x.apex)  'H'
     ==
   %^  spin  lis
-    [| f.acc]
-  |=  [=lux [jump=? fil=fila]]
-  ^-  [tape [? fila]]
+    [x.apex f.acc]
+  |=  [=lux [oldx=@ fil=fila]]
+  ^-  [tape [@ fila]]
   ?~  p.lux
-    [~ & fil]
-  :_  [| fil.p.lux]
+    [~ oldx fil]
+  :_  [+(x2.lux) fil.p.lux]
   =/  od=?  .?(d.fil)
   =/  nd=?  .?(d.fil.p.lux)
   =/  nb=(unit tint)  ?.(=(b.fil b.fil.p.lux) [~ b.fil.p.lux] ~)
   =/  nf=(unit tint)  ?.(=(f.fil f.fil.p.lux) [~ f.fil.p.lux] ~)
   |-  ^-  tape
-  ?:  jump
+  ?.  =(oldx x1.lux)
     :-  '\\x1b['
     :+  (scot %ud y.acc)   ';'
     :+  (scot %ud x1.lux)  'H'
-    $(jump |)
+    $(oldx x1.lux)
   ?:  od
     =/  ds=(list deco)  ~(tap in d.fil)
     |-  ^-  tape
