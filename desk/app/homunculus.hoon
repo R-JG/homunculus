@@ -276,9 +276,10 @@
           arae.via.arx.urbs.ego(vela.i p.p.menu)
         ?>  ?=(^ arae.via.arx.urbs.ego)
         =/  key=rami  ~[[%l 0]]
+        =/  =via      (snag cura.ego viae.ego)
         =.  deus.i.arae.via.arx.urbs.ego
           %:  geno
-            [key cor.deus.i.arae.via.arx.urbs.ego]
+            [key cor.deus.area.via]
             i.arae.via.arx.urbs.ego
             vela.i.arae.via.arx.urbs.ego
           ==
@@ -1630,7 +1631,7 @@
 ++  dolo                           :: get default styles for a semantic element
   |=  el=@tas
   ^-  vena
-  ?+  el
+  =/  def=vena
     :*  size=[[%i 0] [%i 0]]
         padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
         marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
@@ -1638,101 +1639,57 @@
         flow=[%col %clip]
         look=[~ ~ ~]
     ==
+  ?+  el  def
       %text
-    :*  size=[[%c 0] [%c 0]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%c 0] [%c 0]]
+      flow  [%row %clip]
     ==
       %layer
-    :*  size=[[%p 100] [%p 100]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%col %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%p 100] [%p 100]]
     ==
       %border-l
-    :*  size=[[%c 1] [%p 100]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%col %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%c 1] [%p 100]]
     ==
       %border-r
-    :*  size=[[%c 1] [%p 100]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%col %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%c 1] [%p 100]]
     ==
       %border-t
-    :*  size=[[%p 100] [%c 1]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%p 100] [%c 1]]
+      flow  [%row %clip]
     ==
       %border-b
-    :*  size=[[%p 100] [%c 1]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%p 100] [%c 1]]
+      flow  [%row %clip]
     ==
       %line-h
-    :*  size=[[%p 100] [%c 1]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%p 100] [%c 1]]
+      flow  [%row %clip]
     ==
       %line-v
-    :*  size=[[%c 1] [%p 100]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%col %clip]
-        look=[~ ~ ~]
-    ==
-      %form
-    :*  size=[[%i 0] [%i 0]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%col %clip]
-        look=[~ ~ ~]
+    %_  def
+      size  [[%c 1] [%p 100]]
     ==
       %input
-    :*  size=[[%c 10] [%c 1]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ [~ %w] [~ %k]]
+    %_  def
+      size  [[%c 10] [%c 1]]
+      flow  [%row %clip]
+      look  [~ [~ %w] [~ %k]]
     ==
       %checkbox
-    :*  size=[[%c 2] [%c 1]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%row %clip]
-        look=[~ [~ %w] [~ %k]]
+    %_  def
+      size  [[%c 2] [%c 1]]
+      look  [~ [~ %w] [~ %k]]
     ==
-      %scroll
-    :*  size=[[%i 0] [%i 0]]
-        padd=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        marg=[[%c 0] [%c 0] [%c 0] [%c 0]]
-        flex=[0 0]
-        flow=[%col %clip]
-        look=[~ ~ ~]
+      %row
+    %_  def
+      flow  [%row %clip]
     ==
   ==
 ::
@@ -1742,6 +1699,7 @@
   =/  [=vena =ars]
       ?+  n             [(dolo %$) [%$ ~]]
         %$              [(dolo %text) [%text ~]]
+        %row            [(dolo %row) [%$ ~]]
         %pattern        [(dolo %$) [%pattern ~]]
         %layer          [(dolo %layer) [%layer ~]]
         %select         [(dolo %$) [%select %~]]
