@@ -1,9 +1,13 @@
-use std::io::Write;
+use std::io::{Write, stdout};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
+use crossterm::execute;
 use crossterm::terminal;
-use crossterm::event::{read, Event, KeyEvent, KeyCode, KeyModifiers};
+use crossterm::terminal::{Clear, ClearType};
+use crossterm::cursor::MoveTo;
+use crossterm::style::{ResetColor, Attribute, SetAttribute};
+use crossterm::event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers, MouseEvent, MouseEventKind};
 use reqwest::Client;
 use futures::stream::StreamExt;
 use serde::{Serialize, Deserialize};
@@ -44,22 +48,22 @@ struct Delete {
 
 #[derive(Deserialize)]
 struct Diff {
-  id: u32,
-  response: String,
+  // id: u32,
+  // response: String,
   json: String
 }
 
 #[derive(Deserialize)]
 struct Quit {
-  id: u32,
-  response: String
+  // id: u32,
+  // response: String
 }
 
 #[derive(Deserialize)]
 struct ResAck {
-  ok: String,
-  id: u32,
-  response: String
+  // ok: String,
+  // id: u32,
+  // response: String
 }
 
 #[derive(Serialize)]
@@ -122,7 +126,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     .send()
     .await?;
   // stream output
-  terminal::enable_raw_mode()?;
+  setup_terminal()?;
   let reqw_clone = reqw.clone();
   let msg_id_clone = Arc::clone(&msg_id);
   let channel_url_clone = channel_url.clone();
@@ -151,20 +155,28 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
           .header("cookie", &auth)
           .send()
           .await?;
-        println!("\x1b[3J\x1b[2J\x1b[H");
-        terminal::disable_raw_mode()?;
+        reset_terminal()?;
         break;
       }
       Event::Key(key_event) => {
         let input = handle_key(key_event);
-        reqw.put(&channel_url)
-          .body(make_poke_body(&ship, &msg_id, PokeData::Input(input))?)
-          .header("cookie", &auth)
-          .send()
-          .await?;
+        if input != "" {
+          reqw.put(&channel_url)
+            .body(make_poke_body(&ship, &msg_id, PokeData::Input(input))?)
+            .header("cookie", &auth)
+            .send()
+            .await?;
+        }
       }
       Event::Mouse(mouse_event) => {
-        //
+        let input = handle_mouse(mouse_event);
+        if input != "" {
+          reqw.put(&channel_url)
+            .body(make_poke_body(&ship, &msg_id, PokeData::Input(input))?)
+            .header("cookie", &auth)
+            .send()
+            .await?;
+        }
       }
       Event::Resize(width, height) => {
         let size = TerminalSize(width, height);
@@ -301,17 +313,80 @@ fn make_delete_body(msg_id: &Arc<AtomicU32>) -> Result<String, serde_json::Error
 }
 
 fn handle_key(key_event: KeyEvent) -> String {
-  match key_event.code {
-    KeyCode::Char(char) =>  char.to_string(),
-    KeyCode::Tab              =>  "\\t".to_string(),
-    KeyCode::Enter            =>  "\\n".to_string(),
-    KeyCode::Esc              =>  "\\e".to_string(),
-    KeyCode::Backspace        =>  "\\177".to_string(),
-    KeyCode::Delete           =>  "\\e[3~".to_string(),
-    KeyCode::Up               =>  "\\e[A".to_string(),
-    KeyCode::Down             =>  "\\e[B".to_string(),
-    KeyCode::Right            =>  "\\e[C".to_string(),
-    KeyCode::Left             =>  "\\e[D".to_string(),
-    _                         =>  "".to_string()
+  match key_event.modifiers {
+    KeyModifiers::NONE =>
+      match key_event.code {
+        KeyCode::Char(char) =>  char.to_string(),
+        KeyCode::Tab              =>  "\\t".to_string(),
+        KeyCode::Enter            =>  "\\n".to_string(),
+        KeyCode::Esc              =>  "\\e".to_string(),
+        KeyCode::Backspace        =>  "\\177".to_string(),
+        KeyCode::Delete           =>  "\\e[3~".to_string(),
+        KeyCode::Up               =>  "\\e[A".to_string(),
+        KeyCode::Down             =>  "\\e[B".to_string(),
+        KeyCode::Right            =>  "\\e[C".to_string(),
+        KeyCode::Left             =>  "\\e[D".to_string(),
+        _                         =>  "".to_string()
+      },
+    KeyModifiers::CONTROL =>
+      match key_event.code {
+        KeyCode::Up               =>  "\\e[1;5A".to_string(),
+        KeyCode::Down             =>  "\\e[1;5B".to_string(),
+        KeyCode::Right            =>  "\\e[1;5C".to_string(),
+        KeyCode::Left             =>  "\\e[1;5D".to_string(),
+        _                         =>  "".to_string()
+      },
+    KeyModifiers::ALT =>
+      match key_event.code {
+        KeyCode::Char(char) =>  format!("\\e{char}"),
+        KeyCode::Up               =>  "\\e[1;3A".to_string(),
+        KeyCode::Down             =>  "\\e[1;3B".to_string(),
+        KeyCode::Right            =>  "\\e[1;3C".to_string(),
+        KeyCode::Left             =>  "\\e[1;3D".to_string(),
+        _                         =>  "".to_string()
+      },
+    KeyModifiers::SHIFT =>
+      match key_event.code {
+        KeyCode::Up               =>  "\\e[1;2A".to_string(),
+        KeyCode::Down             =>  "\\e[1;2B".to_string(),
+        KeyCode::Right            =>  "\\e[1;2C".to_string(),
+        KeyCode::Left             =>  "\\e[1;2D".to_string(),
+        _                         =>  "".to_string()
+      },
+    _                             =>  "".to_string()
   }
+}
+
+fn handle_mouse(mouse_event: MouseEvent) -> String {
+  let x = mouse_event.column + 1;
+  let y = mouse_event.row + 1;
+  match mouse_event.kind {
+    MouseEventKind::Down(_)    =>  format!("\\e[<0;{};{}M", x, y),
+    MouseEventKind::ScrollDown =>  format!("\\e[<64;{};{}M", x, y),
+    MouseEventKind::ScrollUp   =>  format!("\\e[<65;{};{}M", x, y),
+    _                          =>  "".to_string()
+  }
+}
+
+fn setup_terminal() -> Result<(), Box<dyn std::error::Error>> {
+  terminal::enable_raw_mode()?;
+  execute!(
+    stdout(),
+    EnableMouseCapture
+  )?;
+  Ok(())
+}
+
+fn reset_terminal() -> Result<(), Box<dyn std::error::Error>> {
+  terminal::disable_raw_mode()?;
+  execute!(
+    stdout(),
+    MoveTo(0, 0),
+    ResetColor,
+    SetAttribute(Attribute::Reset),
+    DisableMouseCapture,
+    Clear(ClearType::All),
+    Clear(ClearType::Purge),
+  )?;
+  Ok(())
 }
