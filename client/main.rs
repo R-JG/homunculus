@@ -1,5 +1,6 @@
 use std::io::{self, Write, Read, stdout};
 use std::fs::{self, File};
+use std::env;
 use std::path::Path;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
@@ -110,8 +111,19 @@ struct ClientState {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let mut client_state = get_client_state();
-  if client_state.ship.is_empty() { client_state.ship = set_ship() }
-  if client_state.url.is_empty() { client_state.url = set_url() }
+  let args: Vec<String> = env::args().collect();
+  if args.get(1).is_some_and(|s| !s.is_empty()) {
+    client_state.ship = set_ship(args[1].clone())
+  }
+  if args.get(2).is_some_and(|s| !s.is_empty()) {
+    client_state.url = set_url(args[2].clone())
+  }
+  if client_state.ship.is_empty() {
+    client_state.ship = set_ship(prompt_user("Enter your ship: ".to_string()))
+  }
+  if client_state.url.is_empty() {
+    client_state.url = set_url(prompt_user("Enter your ship's url: ".to_string()))
+  }
   let msg_id = Arc::new(AtomicU32::new(0));
   let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
   let channel_id = format!("homunculus-{}", now.to_string());
@@ -242,15 +254,14 @@ fn prompt_user(msg: String) -> String {
   return input.trim().to_string();
 }
 
-fn set_ship() -> String {
-  let mut ship = prompt_user("Enter your ship: ".to_string());
-  if ship.starts_with("~") { ship.remove(0); }
-  write_file("ship".to_string(), ship.clone()).unwrap();
-  return ship;
+fn set_ship(ship: String) -> String {
+  let mut ship_val = ship;
+  if ship_val.starts_with("~") { ship_val.remove(0); }
+  write_file("ship".to_string(), ship_val.clone()).unwrap();
+  return ship_val;
 }
 
-fn set_url() -> String {
-  let url = prompt_user("Enter your ship's url: ".to_string());
+fn set_url(url: String) -> String {
   write_file("url".to_string(), url.clone()).unwrap();
   return url;
 }
