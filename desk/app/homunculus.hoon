@@ -347,13 +347,13 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _hoc)
+  ?>  =(our.bol src.bol)
   ?+  path  !!
     ::
       [%homunculus-http ~]
     [~ hoc]
     ::
   ==
-  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-leave
   |=  =path
   ^-  (quip card _hoc)
@@ -363,8 +363,13 @@
     [~ hoc]
     ::
   ==
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ?+  path  ~
+    [%x %auth ~]  [~ [~ [%noun !>(~)]]]
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-++  on-peek   |=(path ^-((unit (unit cage)) !!))
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _hoc) !!))
 ++  on-arvo   |=([wire sign-arvo] ^-((quip card _hoc) !!))
 ++  on-fail   |=([term tang] ^-((quip card _hoc) !!))
