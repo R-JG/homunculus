@@ -107,7 +107,7 @@
   $?  %nav-l  %nav-r  %nav-u  %nav-d
       %cur-l  %cur-r  %cur-u  %cur-d
       %scr-l  %scr-r  %scr-u  %scr-d
-      %ins  %del  %tog  %act  %clk  %def
+      %ins  %del  %act  %hit
   ==
 +$  ales  (map nota avis)
 +$  aves  (map avis rami)                                              :: ids to keys for a session
@@ -227,13 +227,13 @@
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
       =/  key=rami  ~[[%n +.ind]]
-      =.  viae.ego
-        %^  snap  viae.ego  -.ind
+      =.  via
         %_    via
             arae
           %^  snap  arae.via  +.ind
           (curo key deus.ara(l.gens ~, n.gens ~) ara(vela p.upd))
         ==
+      =.  viae.ego  (snap viae.ego -.ind via)
       ?.  =(cura.ego -.ind)
         [~ hoc]
       =/  ren  (viso key)
@@ -532,7 +532,7 @@
     :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
         [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
         [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
-        [[%clk %u] %clk]  [[%clk %d] %clk]
+        [[%clk %u] %hit]  [[%clk %d] %hit]
         [[%ret ~] %act]
     ==
   ++  inp
@@ -542,7 +542,7 @@
     :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
         [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
         [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
-        [[%clk %u] %clk]  [[%clk %d] %clk]
+        [[%clk %u] %hit]  [[%clk %d] %hit]
         [[%txt ~] %ins]  [[%bac ~] %del]
     ==
   --
@@ -761,6 +761,8 @@
       loco
     ?:  ?=(%act lex)
       moto
+    ?:  ?=(%hit lex)
+      ico
     ::
     [~ ego]
   ::
@@ -1426,7 +1428,8 @@
       lego
     ?:  ?=(%checkbox -.ars.cor.el)
       opto
-    ?~  avis.cor.el  [~ ego]
+    ?.  &(?=(%select -.ars.cor.el) ?=(^ avis.cor.el))
+      [~ ego]
     :_  ego
     :~  (iuvo %act fons.ses avis.cor.el ~)
     ==
@@ -1528,6 +1531,119 @@
           %l  l.gens.deus.ses
         ==
     ==
+  ::
+  ++  ruo                          :: find the navigation point which presently renders at a coordinate 
+    |=  loc=loci
+    ^-  $@(~ [=rami =deus])
+    =.  ordo.via
+      %+  skim  ordo.via
+      |=  =dux
+      ?&  (gte x.loc l.dux)
+          (lte x.loc r.dux)
+          (gte y.loc t.dux)
+          (lte y.loc b.dux)
+      ==
+    ?:  =(~ ordo.via)  ~
+    =.  ordo.via
+      %+  sort  ordo.via
+      |=  [a=dux b=dux]
+      (gth (lent k.a) (lent k.b))
+    |-  ^-  $@(~ [=rami =deus])
+    ?~  ordo.via  ~
+    =/  [ayr=aer deu=deus]  (creo k.i.ordo.via)
+    =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
+      (laxo iter.ayr apex.cor.deu res.cor.deu)
+    ?:  ?|  =(0 w.size.res.cor.deu)
+            =(0 h.size.res.cor.deu)
+            (lth x.loc l.muri.ayr)
+            (gth x.loc r.muri.ayr)
+            (lth y.loc t.muri.ayr)
+            (gth y.loc b.muri.ayr)
+            =/  lay  (~(get by luna.ayr) y.loc)
+            ?~  lay  |
+            %+  lien  u.lay
+            |=  =lux
+            ?&  (gte x.loc x1.lux)
+                (lte x.loc x2.lux)
+            ==
+        ==
+      $(ordo.via t.ordo.via)
+    [k.i.ordo.via deu]
+  ::
+  ++  ico                          :: handle a click event
+    ^-  (quip card ^ego)
+    ?.  &(?=(%clk -.zon) ?=(%d p.zon))
+      [~ ego]
+    =/  target  (ruo [x.zon y.zon])
+    ?~  target
+      [~ ego]
+    =/  old-rex  rex.via
+    =/  new-rex  (rogo rami.target ordo.via)
+    ?~  new-rex
+      [~ ego]
+    =/  old=$@(~ deus)
+      ?~  old-rex  ~
+      (exuo k.old-rex deus:sto)
+    =.  rex.via  new-rex      
+    =/  new  sto
+    =?  cor.deus.target  ?=(%input -.ars.cor.deus.target)
+      (sino [x.zon y.zon] cor.deus.target)
+    =?  via  ?=(%input -.ars.cor.deus.target)
+      (sido new(deus (paco rami.target deus.target deus.new)))
+    =.  ego  (novo via)
+    ?:  &(?=(^ old-rex) =(k.old-rex k.new-rex))
+      =^  cards  ego  moto
+      :_  ego
+      ?.  ?=(%input -.ars.cor.deus.target)  cards
+      :_  cards
+      (fio ~[(viso k.new-rex)])
+    =/  rend-old
+      ?.  ?&  ?=(^ old)
+              ?=(^ old-rex)
+              (adeo [-.ars.cor.old sele.res.cor.old])
+          ==
+        [*apex *sol]
+      (viso k.old-rex)
+    =/  rend-new
+      ?.  ?&  ?=(^ rex.via)
+              (adeo -.ars.cor.deus.target sele.res.cor.deus.target)
+          ==
+        [*apex *sol]
+      (viso k.rex.via)
+    =^  cards  ego  moto
+    :_  ego
+    :-  (fio ~[rend-old rend-new])
+    ?~  avis.cor.deus.target
+      cards
+    :_  cards
+    (iuvo %select fons.new avis.cor.deus.target ~)
+  ::
+  ++  sino                         :: change an input's cursor index by coordinate
+    |=  [loc=loci =cor]
+    ^-  ^cor
+    ?.  ?&(?=(%input -.ars.cor) ?=(^ vox.ars.cor))
+      cor
+    =/  [x=@ud y=@ud]
+      =:  x.apex.cor
+            ;:(add x.apex.cor l.bord.res.cor l.padd.res.cor)
+          y.apex.cor
+            ;:(add y.apex.cor t.bord.res.cor t.padd.res.cor)
+        ==
+      :-  ?:((lth x.apex.cor x.loc) (sub x.loc x.apex.cor) 0)
+      ?:((lth y.apex.cor y.loc) (sub y.loc y.apex.cor) 0)
+    ?:  =(1 h.size.res.cor)
+      %_  cor
+        i.ars  [(min (add x de.ars.cor) (lent i.vox.ars.cor)) 0]
+      ==
+    =.  y  (add y de.ars.cor)
+    =/  l  (lent vox.ars.cor)
+    =/  row-len=@ud
+      ?:  (gth +(y) l)
+        (pono `lina`(rear ^-(vox vox.ars.cor)))
+      (pono `lina`(snag y ^-(vox vox.ars.cor)))
+    %_  cor
+      i.ars  [(min x row-len) ?:((gth +(y) l) (dec l) y)]
+    ==    
   ::
   --
 ::

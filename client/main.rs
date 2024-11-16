@@ -443,6 +443,7 @@ fn handle_key(key_event: KeyEvent) -> String {
       },
     KeyModifiers::SHIFT =>
       match key_event.code {
+        KeyCode::Char(char) =>  char.to_string(),
         KeyCode::Up               =>  "\\e[1;2A".to_string(),
         KeyCode::Down             =>  "\\e[1;2B".to_string(),
         KeyCode::Right            =>  "\\e[1;2C".to_string(),
