@@ -90,7 +90,7 @@
       [%ret ~]
       [%esc ~]
   ==
-+$  nota                 :: FIX NOTA - make it a derived modification of zona
++$  nota
   $~  [%txt ~]
   $%  [%clk ?(%d %u)]
       [%whe ?(%d %u)]
@@ -106,8 +106,9 @@
 +$  lex
   $?  %nav-l  %nav-r  %nav-u  %nav-d
       %cur-l  %cur-r  %cur-u  %cur-d
-      %scr-l  %scr-r  %scr-u  %scr-d
-      %ins  %del  %act  %hit
+      %ins  %del  %act  %clk
+      %whe-u  %whe-d
+      %def
   ==
 +$  ales  (map nota avis)
 +$  aves  (map avis rami)                                              :: ids to keys for a session
@@ -248,7 +249,7 @@
       ?~  ind  [~ hoc]
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
-      =^  keys  ara  (gyro p.upd ara)
+      =^  keys  ara  (colo p.upd ara)
       =.  arae.via   (snap arae.via +.ind ara)
       =.  viae.ego   (snap viae.ego -.ind via)
       ?.  =(cura.ego -.ind)
@@ -299,7 +300,7 @@
           %branch
         ?~  arae.via.arx.urbs.ego  [~ hoc]
         =^  keys  i.arae.via.arx.urbs.ego
-          (gyro p.p.menu i.arae.via.arx.urbs.ego)
+          (colo p.p.menu i.arae.via.arx.urbs.ego)
         ?.  open.arx.urbs.ego
           [~ hoc]
         =^  =opus  via.arx.urbs.ego
@@ -531,8 +532,8 @@
     ^-  (list [nota lex])
     :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
         [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
-        [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
-        [[%clk %u] %hit]  [[%clk %d] %hit]
+        [[%whe %u] %whe-u]  [[%whe %d] %whe-d]
+        [[%clk %u] %clk]  [[%clk %d] %clk]
         [[%ret ~] %act]
     ==
   ++  inp
@@ -541,8 +542,8 @@
     ^-  (list [nota lex])
     :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
         [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
-        [[%whe %u] %scr-u]  [[%whe %d] %scr-d]
-        [[%clk %u] %hit]  [[%clk %d] %hit]
+        [[%whe %u] %whe-u]  [[%whe %d] %whe-d]
+        [[%clk %u] %clk]  [[%clk %d] %clk]
         [[%txt ~] %ins]  [[%bac ~] %del]
     ==
   --
@@ -618,7 +619,7 @@
   =/  [ave=aves osa=ossa]  (vivo key deus.ses)
   ses(aves ave, ossa osa)
 ::
-++  gyro                           :: resolve session state for a list of branch updates
+++  colo                           :: resolve session state for a list of branch updates
   |=  [upd=(list vela) ses=ara]
   =|  keys=(list rami)
   |-  ^-  (quip rami ara)
@@ -761,8 +762,11 @@
       loco
     ?:  ?=(%act lex)
       moto
-    ?:  ?=(%hit lex)
+    ?:  ?=(%clk lex)
       ico
+    ?:  ?|  ?=(%whe-u lex)  ?=(%whe-d lex)
+        ==
+      gyro
     ::
     [~ ego]
   ::
@@ -1643,7 +1647,34 @@
       (pono `lina`(snag y ^-(vox vox.ars.cor)))
     %_  cor
       i.ars  [(min x row-len) ?:((gth +(y) l) (dec l) y)]
-    ==    
+    ==
+  ::
+  ++  gyro                         :: handle a scroll wheel event
+    ^-  (quip card ^ego)
+    ?.  ?=(%whe -.zon)
+      [~ ego]
+    =/  target  (ruo [x.zon y.zon])
+    ?~  target
+      [~ ego]
+    =/  target-dux  (rogo rami.target ordo.via)
+    =/  [* target-scroll=(unit [=iter =rami =deus])]
+      =:  rex.via  target-dux
+          lex      ?+(lex lex %whe-d %nav-u, %whe-u %nav-d)
+        ==
+      fluo
+    ?~  target-scroll
+      [~ ego]
+    =/  [* selection-scroll=(unit [=iter =rami =deus])]
+      fluo
+    =:  lex  ?+(lex lex %whe-d %nav-u, %whe-u %nav-d)
+        rex.via
+          ?:  ?&  ?=(^ selection-scroll)
+                  =(rami.u.selection-scroll rami.u.target-scroll)
+              ==
+            rex.via
+          target-dux
+      ==
+    eo
   ::
   --
 ::
