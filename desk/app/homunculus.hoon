@@ -142,24 +142,18 @@
 +$  via                                                                :: frame state
   $:  =rex                                                             ::
       =ordo                                                            ::
-      =area                                                            ::
+      =aula                                                            ::
       =arae                                                            ::
   ==                                                                   ::
 +$  viae  (list via)                                                   :: frames
-+$  area  [=aula =deus]                                                :: frame layout state
-+$  aula                                                               :: frame layout specification
-  $%  [%h h=@]                                                         ::
-      [%v v=@]                                                         ::
-      [%h-v1 h=@ v1=@]                                                 ::
-      [%h-v2 h=@ v2=@]                                                 ::
-      [%v-h1 v=@ h1=@]                                                 ::
-      [%v-h2 v=@ h2=@]                                                 ::
-      [%h1-h2-v1-v2 h1=@ h2=@ v1=@ v2=@]                               ::
-      [%$ ~]                                                           ::
++$  aula                                                               :: frame layout 
+  $~  [%$ *fons]                                                       ::
+  $%  [%$ p=fons]                                                      ::
+      [%v p=@ l=aula r=aula]                                           ::
+      [%h p=@ t=aula b=aula]                                           ::
   ==                                                                   ::
 +$  arx   [open=? =via]                                                :: menu state
-+$  urbs  [=arca =arx]                                                 :: system state
-+$  arca  [x=@ y=@]                                                    :: terminal size
++$  urbs  [=cor =arx]                                                  :: system state
 +$  cura  @                                                            :: active frame index
 +$  ego                                                                :: %homunculus state
   $:  =cura                                                            ::
@@ -232,7 +226,7 @@
         %_    via
             arae
           %^  snap  arae.via  +.ind
-          (curo key deus.ara(l.gens ~, n.gens ~) ara(vela p.upd))
+          (curo key cor.deus.ara ara(vela p.upd))
         ==
       =.  viae.ego  (snap viae.ego -.ind via)
       ?.  =(cura.ego -.ind)
@@ -280,7 +274,7 @@
         =/  =via      (snag cura.ego viae.ego)
         =.  deus.i.arae.via.arx.urbs.ego
           %:  geno
-            [key cor.deus.area.via]
+            [key cor.urbs.ego]
             i.arae.via.arx.urbs.ego
             vela.i.arae.via.arx.urbs.ego
           ==
@@ -321,7 +315,7 @@
       [~ hoc]
       ::
     ?:  ?=(%rez -.u.zon)
-      =.  arca.urbs.ego  +.u.zon
+      =.  size.res.cor.urbs.ego  +.u.zon
       =^  cards  ego  (apto cura.ego)
       [cards hoc]
       ::
@@ -548,36 +542,68 @@
     ==
   --
 ::
+++  paro                           :: produce containers for a frame layout
+  |=  =aula
+  =|  pex=apex
+  =|  acc=(map fons cor)
+  =/  siz  size.res.cor.urbs.ego
+  |-  ^+  acc
+  ?-  -.aula
+      %$
+    %+  %~  put  by  acc  
+      p.aula
+    =|  =cor
+    %_  cor
+      apex      pex
+      size.res  siz
+      look.res  look.res.cor.urbs.ego
+    ==
+      %v
+    =/  lef  (div (mul p.aula w.siz) 100)
+    =/  rig  (sub w.siz lef)
+    %-  %~  uni
+          by
+        $(aula l.aula, w.siz lef)
+    $(aula r.aula, w.siz rig, x.pex (add x.pex lef))
+      %h
+    =/  top  (div (mul p.aula h.siz) 100)
+    =/  bot  (sub h.siz top)
+    %-  %~  uni
+          by
+        $(aula t.aula, h.siz top)
+    $(aula b.aula, h.siz bot, y.pex (add y.pex top))
+  ==
+::
 ++  apto                           :: reevaluate a frame
   |=  =cura
   ^-  (quip card ^ego)
   =/  =via    (snag cura viae.ego)
+  ::
+  :: temporary:
   =/  len=@   (lent arae.via)
-  :: temporary ::
-  =/  w=tape  ((d-co:co 1) x.arca.urbs.ego)
-  =/  h=tape  ((d-co:co 1) y.arca.urbs.ego)
-  =/  vel=vela
-    ;box(w w, h h, fl "row-wrap")
-      ;*  ^-  marl
-          ?+  len  ~
-            %1  ~[;box(w "100%", h "100%");]
-            %2  ~[;box(w "50%", h "100%"); ;box(w "50%", h "100%");]
-            %3  ~[;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "100%", h "50%");]
-            %4  ~[;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "50%", h "50%"); ;box(w "50%", h "50%");]
-          ==
+  =/  aul=aula
+    ?+  len  *aula
+        %1
+      [%$ fons:(snag 0 arae.via)]
+        %2
+      [%v 50 [%$ fons:(snag 0 arae.via)] [%$ fons:(snag 1 arae.via)]]
+        %3
+      :^  %v  50  [%$ fons:(snag 0 arae.via)]
+      [%h 50 [%$ fons:(snag 1 arae.via)] [%$ fons:(snag 2 arae.via)]]
+        %4
+      :^  %v  50
+        [%h 50 [%$ fons:(snag 0 arae.via)] [%$ fons:(snag 1 arae.via)]]
+      [%h 50 [%$ fons:(snag 2 arae.via)] [%$ fons:(snag 3 arae.via)]]
     ==
-  ::  ::  ::  ::
-  =/  deu=deus  (geno ~ ~ vel)
-  =:  deus.area.via
-        %_  deu
-          gens  ~^~^~
-        ==
-      arae.via.arx.urbs.ego
+  =/  cons    (paro aul)
+  ::
+  :: =/  cons=(map fons cor)  (paro aula.via)
+  =:  arae.via.arx.urbs.ego
         ?~  arae.via.arx.urbs.ego  arae.via.arx.urbs.ego
         =/  k=rami  ~[[%l 0]]
         =.  deus.i.arae.via.arx.urbs.ego
           %:  geno
-            [k cor.deu]
+            [k cor.urbs.ego]
             i.arae.via.arx.urbs.ego
             vela.i.arae.via.arx.urbs.ego
           ==
@@ -591,7 +617,7 @@
         %+  spun  arae.via
         |=  [=ara i=@]
         :_  +(i)
-        (curo ~[[%n i]] (snag i n.gens.deu) ara)
+        (curo ~[[%n i]] (~(got by cons) fons.ara) ara)
     ==
   =.  viae.ego  (snap viae.ego cura via)
   ?.  =(cura cura.ego)
@@ -606,15 +632,15 @@
   ==
 ::
 ++  curo                           :: reevaluate a session's element state
-  |=  [key=rami con=deus ses=ara]
+  |=  [key=rami con=cor ses=ara]
   ^-  ara
   =/  axi=axis  (apo ?@(n.g.vela.ses n.g.vela.ses -.n.g.vela.ses))
   =.  deus.ses
     =.  key   ?>(?=(^ key) key(t ~[[axi 0]]))
-    =/  =dei  ~[(geno [key cor.con] ses vela.ses)]
-    ?+  axi  con
-      %n  con(n.gens dei)
-      %l  con(l.gens dei)
+    =/  =dei  ~[(geno [key con] ses vela.ses)]
+    ?+  axi  [con ~^~^~]
+      %n  [con ~^~^dei]
+      %l  [con ~^dei^~]
     ==
   =/  [ave=aves osa=ossa]  (vivo key deus.ses)
   ses(aves ave, ossa osa)
@@ -3002,13 +3028,13 @@
   ^-  deus
   =/  k=rami                   ?^(rel (flop rami.rel) ~)
   =/  m=marl                   ~[vel]
-  =/  px=as                    [%c ?^(rel w.size.res.cor.rel x.arca.urbs.ego)]
-  =/  py=as                    [%c ?^(rel h.size.res.cor.rel y.arca.urbs.ego)]
+  =/  px=as                    [%c ?^(rel w.size.res.cor.rel w.size.res.cor.urbs.ego)]
+  =/  py=as                    [%c ?^(rel h.size.res.cor.rel h.size.res.cor.urbs.ego)]
   =/  pl=fila                  ?^(rel look.res.cor.rel [~ ~ %w])
   =/  pa=acia                  ?^(rel sele.res.cor.rel [~ ~ ~])
   =/  pow=fuga                 ?^(rel flow.res.cor.rel [%row %clip])
-  =/  prx=@ud                  ?^(rel w.size.res.cor.rel x.arca.urbs.ego)
-  =/  pry=@ud                  ?^(rel h.size.res.cor.rel y.arca.urbs.ego)
+  =/  prx=@ud                  ?^(rel w.size.res.cor.rel w.size.res.cor.urbs.ego)
+  =/  pry=@ud                  ?^(rel h.size.res.cor.rel h.size.res.cor.urbs.ego)
   =/  pape=apex                ?^(rel apex.cor.rel *apex)
   =/  vape=apex                pape
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
@@ -3648,18 +3674,16 @@
   ^-  [aer deus]
   =/  =via  (snag cura.ego viae.ego)
   =/  deu=deus
-    %_  deus.area.via
-      l.gens
-        ?.  ?&  ?=(^ arae.via.arx.urbs.ego)
-                open.arx.urbs.ego
-            ==
-          ~
-        ~[deus.i.arae.via.arx.urbs.ego]
-      n.gens
-        (turn arae.via |=(=ara deus.ara))
-    ==
+    :-  cor.urbs.ego
+    :+  ~
+      ?.  ?&  ?=(^ arae.via.arx.urbs.ego)
+              open.arx.urbs.ego
+          ==
+        ~
+      ~[deus.i.arae.via.arx.urbs.ego]
+    (turn arae.via |=(=ara deus.ara))
   =|  ayr=aer
-  =:  muri.ayr  [1 x.arca.urbs.ego 1 y.arca.urbs.ego]
+  =:  muri.ayr  [1 w.size.res.cor.urbs.ego 1 h.size.res.cor.urbs.ego]
       rex.ayr
         ?.  open.arx.urbs.ego
           rex.via
