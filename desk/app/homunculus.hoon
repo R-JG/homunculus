@@ -119,7 +119,6 @@
   ==                                                                   ::
 +$  crux  [v=ab i=@ud c=ora l=ora r=ora t=ora b=ora]                   :: line intersection
 +$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))                :: size unit
-+$  data  (map avis @t)                                                :: form data
 +$  aqua  (list [i=@ud size=@ud marg=@ud])                             :: geno grow sizing state
 +$  vena                                                               :: geno res building state
   $:  size=[w=as h=as]                                                 ::
@@ -129,8 +128,9 @@
       flow=fuga                                                        ::
       look=acia                                                        ::
   ==                                                                   ::
++$  data  form-data:homunculus                                         :: form data
 +$  vela  manx                                                         :: sail
-+$  fons  (pair @p @tas)                                               :: session source
++$  fons  session-source:homunculus                                    :: session source
 +$  ara                                                                :: session state
   $:  =fons                                                            ::
       =vela                                                            ::
@@ -146,12 +146,7 @@
       =arae                                                            ::
   ==                                                                   ::
 +$  viae  (list via)                                                   :: frames
-+$  aula                                                               :: frame layout 
-  $~  [%$ *fons]                                                       ::
-  $%  [%$ p=fons]                                                      ::
-      [%v p=@ l=aula r=aula]                                           ::
-      [%h p=@ t=aula b=aula]                                           ::
-  ==                                                                   ::
++$  aula  layout:homunculus                                            :: layout 
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=cor =arx]                                                  :: system state
 +$  cura  @                                                            :: active frame index
@@ -171,16 +166,24 @@
 +*  hoc  .
 ++  on-init
   ^-  (quip card _hoc)
-  =.  viae.ego  ~[*via]
-  [~ hoc]
+  =:  viae.ego               ~[*via]
+      look.res.cor.urbs.ego  [~ %k %w]
+    ==
+  :_  hoc
+  :~  (iuvo [our.bol %homunculus-menu] [%open ~])
+  ==
 ++  on-save
   ^-  vase
   !>(~)
 ++  on-load
   |=  old=vase
-  =.  viae.ego  ~[*via]
   ^-  (quip card _hoc)
-  [~ hoc]
+  =:  viae.ego               ~[*via]
+      look.res.cor.urbs.ego  [~ %k %w]
+    ==
+  :_  hoc
+  :~  (iuvo [our.bol %homunculus-menu] [%open ~])
+  ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
   |=  [=mark =vase]
@@ -191,34 +194,16 @@
       %homunculus-update
     =+  !<(upd=update:homunculus vase)
     =/  fon=fons  (bibo bol)
-    ?+  -.upd  [~ hoc]
+    ?-  -.upd
       ::
-        %full
+        %register
+      :_  hoc
+      :~  (ago our.bol [%put-register fon])
+      ==
+      ::
+        %root
       =/  ind  (rigo fon)
-      ?~  ind
-        =/  last=via  (rear viae.ego)
-        :: temporary ::
-        ?:  (gte (lent arae.last) 4)
-          =|  =via
-          =|  =ara
-          =:  fons.ara  fon
-              vela.ara  p.upd
-            ==
-          =:  cura.ego  (lent viae.ego)
-              viae.ego  (snoc viae.ego via(arae ~[ara]))
-            ==
-          =^  cards  ego  (apto cura.ego)
-          [cards hoc]
-        ::
-        =|  =ara
-        =/  i          (dec (lent viae.ego))
-        =.  arae.last  (snoc arae.last ara(fons fon, vela p.upd))
-        =:  cura.ego   i
-            viae.ego   (snap viae.ego i last)
-          ==
-        =^  cards  ego  (apto cura.ego)
-        [cards hoc]
-      ::
+      ?~  ind  [~ hoc]
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
       =/  key=rami  ~[[%n +.ind]]
@@ -233,7 +218,9 @@
         [~ hoc]
       =/  ren  (viso key)
       =?  viae.ego  !open.arx.urbs.ego  
-        (snap viae.ego -.ind via(ordo (ligo key (duco ren) ordo.via)))
+        =.  ordo.via  (ligo key (duco ren) ordo.via)
+        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+        (snap viae.ego -.ind via)
       :_  hoc
       :~  (fio ~[ren])
       ==
@@ -256,19 +243,19 @@
       ::
     ==
     ::
-      %homunculus-menu
-    =+  !<(=menu:homunculus vase)
-    ?+  -.menu  [~ hoc]
+      %homunculus-menu-update
+    =+  !<(upd=menu-update:homunculus vase)
+    ?+  -.upd  [~ hoc]
       ::
         %update
-      ?+  -.p.menu  [~ hoc]
+      ?+  -.p.upd  [~ hoc]  
         ::
-          %full
+          %root
         =.  arae.via.arx.urbs.ego
           ?~  arae.via.arx.urbs.ego
             =|  =ara
-            ~[ara(vela p.p.menu)]
-          arae.via.arx.urbs.ego(vela.i p.p.menu)
+            ~[ara(vela p.p.upd, fons (bibo bol))]
+          arae.via.arx.urbs.ego(vela.i p.p.upd)
         ?>  ?=(^ arae.via.arx.urbs.ego)
         =/  key=rami  ~[[%l 0]]
         =/  =via      (snag cura.ego viae.ego)
@@ -287,6 +274,8 @@
           [~ hoc]
         =/  ren  (viso key)
         =.  ordo.via.arx.urbs.ego  (duco ren)
+        =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+          (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
         :_  hoc
         :~  (fio ~[ren])
         ==
@@ -294,7 +283,7 @@
           %branch
         ?~  arae.via.arx.urbs.ego  [~ hoc]
         =^  keys  i.arae.via.arx.urbs.ego
-          (colo p.p.menu i.arae.via.arx.urbs.ego)
+          (colo p.p.upd i.arae.via.arx.urbs.ego)
         ?.  open.arx.urbs.ego
           [~ hoc]
         =^  =opus  via.arx.urbs.ego
@@ -304,6 +293,75 @@
         :~  (fio opus)
         ==
         ::
+      ==
+      ::
+        %load-state
+      :_  hoc
+      :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
+      ==
+      ::
+        %open-session
+      =/  found  (rigo p.upd)
+      ?>  ?=(~ found)
+      =.  ego
+        ?-  -.q.upd
+         ::
+           %new-frame
+          =|  =via
+          =|  =ara
+          =:  fons.ara  p.upd
+              aula.via  [%$ p.upd]
+              cura.ego  ?-(p.q.upd %l cura.ego, %r +(cura.ego))
+            ==
+          %_    ego
+              viae
+            %^  into  viae.ego  cura.ego
+            %_  via
+              arae  ~[ara]
+            ==
+          ==
+          ::
+            %current-frame
+          =/  =via  (snag cura.ego viae.ego)
+          =|  =ara
+          =.  fons.ara  p.upd
+          =.  aula.via
+            |-  ^-  aula
+            ?~  q.q.upd
+              ?>  ?=(%$ -.aula.via)
+              ?-  p.q.upd
+                %l  [%v 50 [%$ p.upd] aula.via]
+                %r  [%v 50 aula.via [%$ p.upd]]
+                %t  [%h 50 [%$ p.upd] aula.via]
+                %b  [%h 50 aula.via [%$ p.upd]]
+                %c  [%$ p.upd]
+              ==
+            ?+  -.aula.via  !!
+                %v
+              ?-  i.q.q.upd
+                %0  aula.via(l $(aula.via l.aula.via, q.q.upd t.q.q.upd))
+                %1  aula.via(r $(aula.via r.aula.via, q.q.upd t.q.q.upd))
+              ==
+                %h
+              ?-  i.q.q.upd
+                %0  aula.via(t $(aula.via t.aula.via, q.q.upd t.q.q.upd))
+                %1  aula.via(b $(aula.via b.aula.via, q.q.upd t.q.q.upd))
+              ==
+            ==
+          %_    ego
+              viae
+            %^  snap  viae.ego  cura.ego
+            %_  via
+              arae  (snoc arae.via ara)
+            ==
+          ==
+          ::
+        ==
+      =^  cards  ego  (apto cura.ego)
+      :_  hoc
+      %+  weld  cards
+      :~  (iuvo p.upd [%open ~])
+          (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       ==
       ::
     ==
@@ -324,9 +382,14 @@
       =/  ren  (viso ~)
       =.  ego
         ?:  open.arx.urbs.ego
-          ego(ordo.via.arx.urbs (duco ren))
+          =.  ordo.via.arx.urbs.ego  (duco ren)
+          =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+            (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
+          ego
         =/  =via  (snag cura.ego viae.ego)
-        ego(viae (snap viae.ego cura.ego via(ordo (duco ren))))
+        =.  ordo.via  (duco ren)
+        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+        ego(viae (snap viae.ego cura.ego via))
       :_  hoc
       :~  (fio ~[ren])
       ==
@@ -500,17 +563,14 @@
   (dico i)
 ::
 ++  iuvo                           :: make an event card
-  |=  [typ=@tas =fons =avis =data]
+  |=  [fon=fons eve=event:homunculus]
   ^-  card
-  ?>  ?=(^ avis)
-  =;  eve=event:homunculus
-    [%pass ~ %agent fons %poke %homunculus-event !>(eve)]
-  ?+  typ    !!
-    %select  [typ avis]
-    %act     [typ avis]
-    %hotkey  [typ avis]
-    %form    [typ avis data]
-  ==
+  [%pass ~ %agent fon %poke %homunculus-event !>(eve)]
+::
+++  ago                            :: make a menu diff card
+  |=  [our=@p dif=menu-diff:homunculus]
+  ^-  card
+  [%pass ~ %agent [our %homunculus-menu] %poke %homunculus-menu-diff !>(dif)]
 ::
 ++  scio                           :: derive system hotkey context from a selection
   |_  =rex
@@ -577,27 +637,8 @@
 ++  apto                           :: reevaluate a frame
   |=  =cura
   ^-  (quip card ^ego)
-  =/  =via    (snag cura viae.ego)
-  ::
-  :: temporary:
-  =/  len=@   (lent arae.via)
-  =/  aul=aula
-    ?+  len  *aula
-        %1
-      [%$ fons:(snag 0 arae.via)]
-        %2
-      [%v 50 [%$ fons:(snag 0 arae.via)] [%$ fons:(snag 1 arae.via)]]
-        %3
-      :^  %v  50  [%$ fons:(snag 0 arae.via)]
-      [%h 50 [%$ fons:(snag 1 arae.via)] [%$ fons:(snag 2 arae.via)]]
-        %4
-      :^  %v  50
-        [%h 50 [%$ fons:(snag 0 arae.via)] [%$ fons:(snag 1 arae.via)]]
-      [%h 50 [%$ fons:(snag 2 arae.via)] [%$ fons:(snag 3 arae.via)]]
-    ==
-  =/  cons    (paro aul)
-  ::
-  :: =/  cons=(map fons cor)  (paro aula.via)
+  =/  =via        (snag cura viae.ego)
+  =/  containers  (paro aula.via)
   =:  arae.via.arx.urbs.ego
         ?~  arae.via.arx.urbs.ego  arae.via.arx.urbs.ego
         =/  k=rami  ~[[%l 0]]
@@ -617,7 +658,7 @@
         %+  spun  arae.via
         |=  [=ara i=@]
         :_  +(i)
-        (curo ~[[%n i]] (~(got by cons) fons.ara) ara)
+        (curo ~[[%n i]] (~(got by containers) fons.ara) ara)
     ==
   =.  viae.ego  (snap viae.ego cura via)
   ?.  =(cura cura.ego)
@@ -625,8 +666,13 @@
   =/  ren  (viso ~)
   =.  ego
     ?.  open.arx.urbs.ego
-      ego(viae (snap viae.ego cura via(ordo (duco ren))))
-    ego(ordo.via.arx.urbs (duco ren))
+      =.  ordo.via  (duco ren)
+      =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+      ego(viae (snap viae.ego cura via))
+    =.  ordo.via.arx.urbs.ego  (duco ren)
+    =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+      (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
+    ego
   :_  ego
   :~  (fio ~[ren])
   ==
@@ -664,10 +710,11 @@
   ?~  keys
     [rens fam]
   =/  ren  (viso i.keys)
+  =.  ordo.fam  (ligo i.keys (duco ren) ordo.fam)
+  =?  rex.fam   ?=(^ rex.fam)  (rogo k.rex.fam ordo.fam)
   %=  $
     keys      t.keys
     rens      [ren rens]
-    ordo.fam  (ligo i.keys (duco ren) ordo.fam)
   ==
 ::
 ++  indo                           :: apply a branch update to a session
@@ -698,6 +745,7 @@
   =/  size=mart
     :~  [%w ((d-co:co 1) w.size.res.cor.old-el)]
         [%h ((d-co:co 1) h.size.res.cor.old-el)]
+        [%m "0"]
     ==
   =.  deus.ara
     %^    paco
@@ -866,7 +914,7 @@
       :-  (fio ~[ren])
       ?.  &(?=(^ navs-in-scroll) ?=(^ rex.via) ?=(^ avis.rex.via))
         ~
-      :~  (iuvo %select fons.ses avis.rex.via ~)
+      :~  (iuvo fons.ses [%select avis.rex.via])
       ==
     =/  next=rex
       ?^  navs-in-scroll  i.navs-in-scroll
@@ -899,7 +947,7 @@
     ?~  avis.cor.new
       cards
     :_  cards
-    (iuvo %select fons.new-ara avis.cor.new ~)
+    (iuvo fons.new-ara [%select avis.cor.new])
   ::
   ++  fluo                         :: find the nearest scroll parent not maxed out in the nav direction + collect trigger events
     ^-  (quip card (unit [iter rami deus]))
@@ -1014,15 +1062,7 @@
       tars
     ?.  ((cieo r) i.pars)
       ~
-    pars
-  ::
-  ++  rogo                         :: find a dux in ordo by key
-    |=  [k=rami o=ordo]
-    ^-  $@(~ dux)
-    ?~  o  ~
-    ?:  =(k k.i.o)
-      i.o
-    $(o t.o)
+    pars 
   ::
   ++  tego                         :: check if either element a or element b is in a layer above
     |=  [a=rami b=rami]
@@ -1461,7 +1501,7 @@
     ?.  &(?=(%select -.ars.cor.el) ?=(^ avis.cor.el))
       [~ ego]
     :_  ego
-    :~  (iuvo %act fons.ses avis.cor.el ~)
+    :~  (iuvo fons.ses [%act avis.cor.el])
     ==
   ::
   ++  lego                         :: handle a form submit
@@ -1498,7 +1538,7 @@
     =.  ego  (novo (sido ses(deus (paco key.form el.form deus.ses))))
     :_  ego
     :~  (fio ~[(viso key.form)])
-        (iuvo %form fons.ses avis.cor.el.form data)
+        (iuvo fons.ses [%form avis.cor.el.form data])
     ==
   ::
   ++  opto                         :: handle a checkbox, potentially in a radio group
@@ -1646,7 +1686,7 @@
     ?~  avis.cor.deus.target
       cards
     :_  cards
-    (iuvo %select fons.new avis.cor.deus.target ~)
+    (iuvo fons.new [%select avis.cor.deus.target])
   ::
   ++  sino                         :: change an input's cursor index by coordinate
     |=  [loc=loci =cor]
@@ -1704,6 +1744,14 @@
   ::
   --
 ::
+++  rogo                           :: find a dux in ordo by key
+  |=  [k=rami o=ordo]
+  ^-  $@(~ dux)
+  ?~  o  ~
+  ?:  =(k k.i.o)
+    i.o
+  $(o t.o)
+::
 ++  alo                            :: check if element b is a child of element a
   |=  [a=rami b=rami]
   ^-  ?
@@ -1756,7 +1804,7 @@
   ?:  (lth x1 x1.i.u.ux)
     [x1 y1]
   ?:  (gth x2 x2.i.u.ux)
-    $(x1 +(x2.i.u.ux), u.ux t.u.ux)
+    $(x1 (max x1 +(x2.i.u.ux)), u.ux t.u.ux)
   ^$(x1 ox, y1 +(y1))
 ::
 ++  sumo                           :: get the length of the first word in a vox row
