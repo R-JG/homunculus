@@ -63,6 +63,12 @@
       ?+  p.eve  !!
         ::
           [%agent @ta ~]
+        =/  =layout:homunculus  (snag active-frame.state frames.state)
+        ?:  &(?=(%$ -.layout) ?=(%$ q.p.layout) ?=(~ open-session-mode.state))
+          :_  this
+          :~  %+  make-menu-update-card  our.bol
+              [%open-session [our.bol i.t.p.eve] [%current-frame %c ~]]
+          ==
         =.  open-session-mode.state
           ?~  open-session-mode.state  [~ i.t.p.eve]
           ?:  =(u.open-session-mode.state i.t.p.eve)  ~
@@ -71,12 +77,27 @@
         :~  ~(root-update tui bol)
         ==
         ::
-          [%new-session @ta @ta ~]
+          [%open-session %current @ta @ta ~]
         ?~  open-session-mode.state  [~ this]
-        =/  key  (layout-key:homunculus (cue (slav %ud i.t.t.p.eve)))
-        =/  dir  (layout-dir:homunculus i.t.p.eve)
+        =/  key  (layout-key:homunculus (cue (slav %ud i.t.t.t.p.eve)))
+        =/  dir  (layout-dir:homunculus i.t.t.p.eve)
         :_  this(open-session-mode.state ~)
-        :~  (make-session-open-card our.bol u.open-session-mode.state [%current-frame dir key])
+        :~  %+  make-menu-update-card  our.bol
+            [%open-session [our.bol u.open-session-mode.state] [%current-frame dir key]]
+        ==
+        ::
+          [%open-session %new @ta ~]
+        ?~  open-session-mode.state  [~ this]
+        =/  dir  (?(%l %r) i.t.t.p.eve)
+        :_  this(open-session-mode.state ~)
+        :~  %+  make-menu-update-card  our.bol
+            [%open-session [our.bol u.open-session-mode.state] [%new-frame dir]]
+        ==
+        ::
+          [%close-session @ta ~]
+        :_  this
+        :~  %+  make-menu-update-card  our.bol
+            [%close-session [our.bol i.t.p.eve]]
         ==
         ::
       ==
@@ -112,7 +133,10 @@
       ==
       ::
         %active-frame
-      [~ this]
+      =.  active-frame.state  p.diff
+      :_  this
+      :~  ~(frame-update tui bol)
+      ==
       ::
     ==
     ::
@@ -140,6 +164,10 @@
     ^-  card
     (make-menu-update-card our.bol [%update %branch ~[register-container]])
   ::
+  ++  frame-update
+    ^-  card
+    (make-menu-update-card our.bol [%update %branch ~[frame-container]])
+  ::
   ++  open-session-update
     ^-  card
     (make-menu-update-card our.bol [%update %branch ~[register-container frame-container]])
@@ -151,7 +179,11 @@
         ;+  header
         ;row(mt "1")
           ;+  register-container
-          ;+  frame-container
+          ;*  ?~  open-session-mode.state  ~[frame-container]
+              ;=  ;select/"open-session/new/l"(w "1", h "3", pt "1", bg "red"):"◀"
+                  ;+  frame-container
+                  ;select/"open-session/new/r"(w "1", h "3", pt "1", bg "red"):"▶"
+              ==
         ==
       ==
     ==
@@ -179,38 +211,51 @@
     =|  key=layout-key:homunculus
     =/  [wid=@ hei=@]       [51 11]
     =/  =layout:homunculus  (snag active-frame.state frames.state)
-    =;  frame
+    =;  frame=manx
       ;col/"frame-container"(bg "green", b "arc")
         =w  ((d-co:co 1) +(+(wid)))
         =h  ((d-co:co 1) +(+(hei)))
         ;+  frame
+      ==
+    ?:  &(?=(%$ -.layout) ?=(%$ q.p.layout))
+      ;row(w "100%", h "100%")
+        ;layer(fx "center", fy "center")
+          ;+  ;/  "No active windows"
+        ==
+        ;pattern(w "100%", h "100%"): ╱
       ==
     |-  ^-  manx
     =+  [w=((d-co:co 1) wid) h=((d-co:co 1) hei)]
     ?-  -.layout
         %$
       =/  k  (trip (scot %ud (jam (flop key))))
+      =/  name  (trip q.p.layout)
       ;row(w w, h h, fx "center", fy "center")
-        ;*  ?~  open-session-mode.state  ~
-            ?:  ?=(%$ q.p.layout)
-              :~  ;layer(fx "center", fy "center")
-                    ;select/"new-session/c/{k}"(w "1", h "1", bg "red", select-d "underline"):"C"
-                  ==
-              ==
-            :~  ;layer(fy "center")
-                  ;select/"new-session/l/{k}"(w "1", h "1", bg "red", select-d "underline"):"L"
-                ==
-                ;layer(fx "end", fy "center")
-                  ;select/"new-session/r/{k}"(w "1", h "1", bg "red", select-d "underline"):"R"
-                ==
-                ;layer(fx "center")
-                  ;select/"new-session/t/{k}"(w "1", h "1", bg "red", select-d "underline"):"T"
-                ==
-                ;layer(fx "center", fy "end")
-                  ;select/"new-session/b/{k}"(w "1", h "1", bg "red", select-d "underline"):"B"
+        ;*  ?^  open-session-mode.state  ~
+            ;=  ;layer(fx "end")
+                  ;select/"close-session/{name}"(bg "red"):"X"
                 ==
             ==
-        ;+  ;/  (trip q.p.layout)
+        ;*  ?~  open-session-mode.state  ~
+            ?:  ?=(%$ q.p.layout)
+              ;=  ;layer(fx "center", fy "center")
+                    ;select/"open-session/current/c/{k}"(w "1", h "1", bg "red", select-d "underline"):"C"
+                  ==
+              ==
+            ;=  ;layer(fy "center")
+                  ;select/"open-session/current/l/{k}"(w "1", h "1", bg "red", select-d "underline"):"L"
+                ==
+                ;layer(fx "end", fy "center")
+                  ;select/"open-session/current/r/{k}"(w "1", h "1", bg "red", select-d "underline"):"R"
+                ==
+                ;layer(fx "center")
+                  ;select/"open-session/current/t/{k}"(w "1", h "1", bg "red", select-d "underline"):"T"
+                ==
+                ;layer(fx "center", fy "end")
+                  ;select/"open-session/current/b/{k}"(w "1", h "1", bg "red", select-d "underline"):"B"
+                ==
+            ==
+        ;+  ;/  name
       ==
         %v
       =/  lef  (div (mul p.layout wid) 100)
@@ -301,11 +346,6 @@
     ==
   ::
   --
-::
-++  make-session-open-card
-  |=  [our=@p ses=@tas ope=session-open:homunculus]
-  ^-  card
-  (make-menu-update-card our [%open-session [our ses] ope])
 ::
 ++  make-menu-update-card
   |=  [our=@p upd=menu-update:homunculus]

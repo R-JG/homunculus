@@ -56,7 +56,7 @@
   ==
 +$  session-source  (pair @p @tas)
 +$  session-open
-  $%  [%new-frame p=?(%l %r) ~]
+  $%  [%new-frame p=?(%l %r)]
       [%current-frame p=layout-dir q=layout-key]
   ==
 +$  layout-dir  ?(%l %r %t %b %c)

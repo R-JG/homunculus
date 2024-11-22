@@ -245,7 +245,7 @@
     ::
       %homunculus-menu-update
     =+  !<(upd=menu-update:homunculus vase)
-    ?+  -.upd  [~ hoc]
+    ?-  -.upd
       ::
         %update
       ?+  -.p.upd  [~ hoc]  
@@ -362,6 +362,42 @@
       %+  weld  cards
       :~  (iuvo p.upd [%open ~])
           (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
+      ==
+      ::
+        %close-session
+      =/  ind  (rigo p.upd)
+      ?~  ind
+        [~ hoc]
+      =/  =via      (snag -.ind viae.ego)
+      =.  arae.via  (oust [+.ind 1] arae.via)
+      =.  ego
+        ?:  =(~ arae.via)
+          ?:  =(1 (lent viae.ego))
+            ego(viae (snap viae.ego -.ind via(aula *aula)))  
+          %_  ego
+            viae  (oust [-.ind 1] viae.ego)
+            cura  ?.(=(0 cura.ego) (dec cura.ego) 0)
+          ==
+        =.  aula.via
+          |-  ^-  aula
+          ?+  -.aula.via  aula.via
+              %v
+            ?:  &(?=(%$ -.l.aula.via) =(p.l.aula.via p.upd))  r.aula.via
+            ?:  &(?=(%$ -.r.aula.via) =(p.r.aula.via p.upd))  l.aula.via
+            aula.via(l $(aula.via l.aula.via), r $(aula.via r.aula.via))
+              %h
+            ?:  &(?=(%$ -.t.aula.via) =(p.t.aula.via p.upd))  b.aula.via
+            ?:  &(?=(%$ -.b.aula.via) =(p.b.aula.via p.upd))  t.aula.via
+            aula.via(t $(aula.via t.aula.via), b $(aula.via b.aula.via))
+          ==
+        %_  ego
+          viae  (snap viae.ego -.ind via)
+        ==
+      =^  cards  ego  (apto cura.ego)
+      :_  hoc
+      %+  weld  cards
+      :~  (iuvo p.upd [%close ~])
+          (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=^via aula.i))])
       ==
       ::
     ==
