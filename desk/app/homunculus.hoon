@@ -300,6 +300,18 @@
       :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       ==
       ::
+        %change-frame
+      ?:  ?|  =(p.upd cura.ego)
+              (gth +(p.upd) (lent viae.ego))
+          ==
+        [~ hoc]
+      =.  cura.ego  p.upd
+      =^  cards  ego  (apto cura.ego)
+      :_  hoc
+      %+  weld  cards
+      :~  (ago our.bol [%active-frame cura.ego])
+      ==
+      ::
         %open-session
       =/  found  (rigo p.upd)
       ?>  ?=(~ found)

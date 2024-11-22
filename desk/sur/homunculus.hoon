@@ -40,16 +40,17 @@
       [%load-state ~]
       [%open-session p=session-source q=session-open]
       [%close-session p=session-source]
+      [%change-frame p=frame-index]
   ==
 +$  menu-diff
-  $%  [%all-frames p=active-frame q=frames]
-      [%active-frame p=active-frame]
+  $%  [%all-frames p=frame-index q=frames]
+      [%active-frame p=frame-index]
       [%put-register p=session-source]
       [%del-register p=session-source]
   ==
 ::
 +$  register  (set session-source)
-+$  active-frame  @
++$  frame-index  @
 +$  frames  $~(~[*frame] (list frame))
 +$  frame
   $:  =layout

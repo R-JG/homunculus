@@ -4,7 +4,7 @@
 +$  menu-state
   $:  =ship-info
       =open-session-mode
-      =active-frame:homunculus
+      active-frame=@
       =frames:homunculus
       =register:homunculus
   ==
@@ -75,6 +75,12 @@
           [~ i.t.p.eve]
         :_  this
         :~  ~(root-update tui bol)
+        ==
+        ::
+          [%frame @ta ~]
+        =/  i  (slav %ud i.t.p.eve)
+        :_  this
+        :~  (make-menu-update-card our.bol [%change-frame i])
         ==
         ::
           [%open-session %current @ta @ta ~]
@@ -166,18 +172,18 @@
   ::
   ++  frame-update
     ^-  card
-    (make-menu-update-card our.bol [%update %branch ~[frame-container]])
+    (make-menu-update-card our.bol [%update %branch ~[frame-container frames-list]])
   ::
   ++  open-session-update
     ^-  card
-    (make-menu-update-card our.bol [%update %branch ~[register-container frame-container]])
+    (make-menu-update-card our.bol [%update %branch ~[register-container frame-container frames-list]])
   ::
   ++  root
     ^-  manx
     ;layer(fx "center", fy "center")
       ;col(w "60%", h "60%", px "2", py "1", bg "magenta")
         ;+  header
-        ;row(mt "1")
+        ;row(my "1")
           ;+  register-container
           ;*  ?~  open-session-mode.state  ~[frame-container]
               ;=  ;select/"open-session/new/l"(w "1", h "3", pt "1", bg "red"):"◀"
@@ -185,6 +191,7 @@
                   ;select/"open-session/new/r"(w "1", h "3", pt "1", bg "red"):"▶"
               ==
         ==
+        ;+  frames-list
       ==
     ==
   ::
@@ -277,31 +284,29 @@
       ==
     ==
   ::
+  ++  frames-list
+    ^-  manx
+    ;row/"frames-list"(w "100%", h "1", fx "center")
+      ;*  %+  spun  frames.state
+          |=  [i=frame:homunculus a=@]
+          ^-  [manx @]
+          :_  +(a)
+          =/  n=tape   (scow %ud a)
+          =/  bg=tape  ?:(=(a active-frame.state) "red" "blue")
+          ;select/"frame/{n}"(w "6", h "1", px "1", mx "1", bg bg, select-d "underline"):"{n}"
+    ==
+  ::
   ++  header
     ^-  manx
-    ;col(w "47", h "8", px "2", pt "1", bg "#000000", fg "#fc8021", fx "center")
-      ;border-l(b "heavy");
-      ;border-r(b "heavy");
-      ;border-t(b "heavy");
-      ;border-b(bg "#38d99b", fg "#000000")
-        ;row(w "100%", h "1", px "2")
-          ;select(fl "row", select-d "bold", select-fg "#9effda")
-            ;+  ;/  (trip (scot %ud kelvin.ship-info.state))
-            ;+  ;/  "K"
-          ==
-          ;row(w "grow", h "1");
-          ;row(mr "1"): ship:
-          ;select(select-d "bold", select-fg "#9effda"): {(trip (scot %p our.bol))}
-        ==
-      ==
-      ;select(select-d "blink")
+    ;row(w "100%", px "2", py "1", bg black, fg "#fc8021")
+      ;col
         ;art(fg "#cc5a02")
           ;+  ;/
             """
             ╭     ╮ ╭─────╮ ╭────╮  ──┬── ╭──┬──╮
             """
         ==
-        ;art
+        ;art(fg "#fc8021")
           ;+  ;/
             """
             │     │ ├────┬╯ ├────┴╮   │      │   
@@ -314,36 +319,17 @@
             """
         ==
       ==
-      ;col(w "100%", h "1", mt "1")
-        ;layer(fx "center")
-          ;pattern(w "9", h "1", fg "#38d99b"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "13", h "1", fg "#34CB91"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "17", h "1", fg "#2DAE7C"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "21", h "1", fg "#248B63"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "25", h "1", fg "#1D6F4F"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "29", h "1", fg "#17593F"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "33", h "1", fg "#124732"):"▮"
-        ==
-        ;layer(fx "center")
-          ;pattern(w "37", h "1", fg "#0E3928"):"▮"
-        ==
-        ;layer
-          ;pattern(w "100%", h "1", fg "#0B2E20"):"▮"
+      ;col(w "grow", fx "end")
+        ;row:"{(trip (scot %p our.bol))}"
+        ;line-h(w "3");
+        ;row
+          ;+  ;/  (trip (scot %ud kelvin.ship-info.state))
+          ;+  ;/  "K"
         ==
       ==
     ==
+  ::
+  ++  black  "#000000"
   ::
   --
 ::
