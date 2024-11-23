@@ -1076,7 +1076,7 @@
     ^-  ordo
     ?~  r  o
     =/  chis=ordo
-      ?.  |(=(%nav-r lex) =(%nav-d lex))
+      ?.  |(?=(%nav-r lex) ?=(%nav-d lex))
         ~
       %+  sort
         ^-  ordo
@@ -1150,7 +1150,9 @@
       ^-  bean
       ?:  (taxo +>+.dux +>+.rex)
         ?:  =(d1 r1)
-          |((alo k.dux k.rex) =(%b (tego k.rex k.dux)))
+          ?|  =(%b (tego k.rex k.dux))
+              &(|(?=(%nav-l lex) ?=(%nav-u lex)) (alo k.dux k.rex))
+          ==
         (than d1 r1)
       ?.  =(%~ (tego k.rex k.dux))
         (than d1 r1)
@@ -1805,14 +1807,8 @@
   ^-  ?
   ?:  =(a b)
     |
-  ?~  a
-    &
-  |-  ^-  ?
-  ?:  =(~ b)
-    |
-  ?:  =(a b)
-    &
-  $(b (snip b))
+  ?=  ^
+  (find `(list *)`[%~ a] `(list *)`[%~ b])
 ::
 ++  vado                           :: resolve cursor location
   ^-  loci

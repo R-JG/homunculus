@@ -181,15 +181,21 @@
   ++  root
     ^-  manx
     ;layer(fx "center", fy "center")
-      ;col(w "60%", h "60%", px "2", py "1", bg "magenta")
+      ;col(w "82", h "28", px "2", py "1", fg white, bg green-4, b "heavy", b-fg green-2)
         ;+  header
-        ;row(my "1")
-          ;+  register-container
-          ;*  ?~  open-session-mode.state  ~[frame-container]
-              ;=  ;select/"open-session/new/l"(w "1", h "3", pt "1", bg "red"):"◀"
-                  ;+  frame-container
-                  ;select/"open-session/new/r"(w "1", h "3", pt "1", bg "red"):"▶"
+        ;row(w "100%", mt "2", mb "1", bg green-3)
+          ;+  ?~  open-session-mode.state  
+                ;row(w "1", h "1");
+              ;select/"open-session/new/l"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg white, select-fg green-1)
+                ;+  ;/  "⢾"
               ==
+          ;+  frame-container
+          ;+  ?~  open-session-mode.state
+                ;row(w "1", h "1");
+              ;select/"open-session/new/r"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg white, select-fg green-1)
+                ;+  ;/  "⡷"
+              ==
+          ;+  register-container
         ==
         ;+  frames-list
       ==
@@ -197,20 +203,29 @@
   ::
   ++  register-container
     ^-  manx
-    ;col/"register-container"(w "20", h "10", mr "2", bg "blue")
-      ;*  ?~  open-session-mode.state  ~
-          :_  ~
-          ;row(px "2", mb "1", bg "red"):"OPEN: {(trip u.open-session-mode.state)}"
-      ;*  %+  turn
-            %+  sort  ~(tap in register.state)
-            |=  $:  a=session-source:homunculus
-                    b=session-source:homunculus
+    =/  open-agents  get-all-open-agents
+    ;col/"register-container"(w "grow", h "10", px "2", mt "1", ml "2")
+      ;+  ?~  open-session-mode.state
+            ;row(w "100%", h "1", mb "1", fx "center", bg green-2, fg green-1):"Agents:"
+          ;row(w "100%", h "1", mb "1", fx "center", bg orange-1):"Open:"
+      ;scroll/"register-scroll"(w "100%", h "grow")
+        ;*  %+  turn
+              %+  sort  ~(tap in register.state)
+              |=  $:  a=session-source:homunculus
+                      b=session-source:homunculus
+                  ==
+              (aor q.a q.b)
+            |=  i=session-source:homunculus
+            ^-  manx
+            =/  name  (trip q.i)
+            ?:  (~(has in open-agents) i)
+              ;row(w "100%", h "1", fg green-2):"{name}"
+            ?:  ?&  ?=(^ open-session-mode.state)
+                    =(q.i u.open-session-mode.state)
                 ==
-            (aor q.a q.b)
-          |=  i=session-source:homunculus
-          ^-  manx
-          =/  name  (trip q.i)
-          ;select/"agent/{name}"(w "100%", h "1", select-bg "red"):"{name}"
+              ;select/"agent/{name}"(w "100%", h "1", bg orange-1):"{name}"
+            ;select/"agent/{name}"(w "100%", h "1", select-bg white, select-fg green-3):"{name}"
+      ==
     ==
   ::
   ++  frame-container
@@ -219,7 +234,7 @@
     =/  [wid=@ hei=@]       [51 11]
     =/  =layout:homunculus  (snag active-frame.state frames.state)
     =;  frame=manx
-      ;col/"frame-container"(bg "green", b "arc")
+      ;col/"frame-container"(fg green-2, bg green-3, b "arc")
         =w  ((d-co:co 1) +(+(wid)))
         =h  ((d-co:co 1) +(+(hei)))
         ;+  frame
@@ -240,29 +255,33 @@
       ;row(w w, h h, fx "center", fy "center")
         ;*  ?^  open-session-mode.state  ~
             ;=  ;layer(fx "end")
-                  ;select/"close-session/{name}"(bg "red"):"X"
+                  ;select/"close-session/{name}"(px "1", select-fg red):"✖"
                 ==
             ==
         ;*  ?~  open-session-mode.state  ~
-            ?:  ?=(%$ q.p.layout)
-              ;=  ;layer(fx "center", fy "center")
-                    ;select/"open-session/current/c/{k}"(w "1", h "1", bg "red", select-d "underline"):"C"
+            ?:  ?=(%$ q.p.layout)  ~
+            ;=  ;layer(py "1")
+                  ;select/"open-session/current/l/{k}"(w "2", h "grow", select-fg white)
+                    ;pattern(w "100%", h "100%"):"⣿"
                   ==
-              ==
-            ;=  ;layer(fy "center")
-                  ;select/"open-session/current/l/{k}"(w "1", h "1", bg "red", select-d "underline"):"L"
                 ==
-                ;layer(fx "end", fy "center")
-                  ;select/"open-session/current/r/{k}"(w "1", h "1", bg "red", select-d "underline"):"R"
+                ;layer(py "1", fx "end")
+                  ;select/"open-session/current/r/{k}"(w "2", h "grow", select-fg white)
+                    ;pattern(w "100%", h "100%"):"⣿"
+                  ==
                 ==
-                ;layer(fx "center")
-                  ;select/"open-session/current/t/{k}"(w "1", h "1", bg "red", select-d "underline"):"T"
+                ;layer(px "1")
+                  ;select/"open-session/current/t/{k}"(w "grow", h "1", select-fg white)
+                    ;pattern(w "100%", h "100%"):"⣿"
+                  ==
                 ==
-                ;layer(fx "center", fy "end")
-                  ;select/"open-session/current/b/{k}"(w "1", h "1", bg "red", select-d "underline"):"B"
+                ;layer(px "1", fy "end")
+                  ;select/"open-session/current/b/{k}"(w "grow", h "1", select-fg white)
+                    ;pattern(w "100%", h "100%"):"⣿"
+                  ==
                 ==
             ==
-        ;+  ;/  name
+        ;row(fg "white"):"{name}"
       ==
         %v
       =/  lef  (div (mul p.layout wid) 100)
@@ -270,7 +289,7 @@
       =?  rig  !=(0 rig)  (dec rig)
       ;row(w w, h h)
         ;+  $(wid lef, layout l.layout, key [%0 key])
-        ;line-v;
+        ;line-v(fg green-1);
         ;+  $(wid rig, layout r.layout, key [%1 key])
       ==
         %h
@@ -279,47 +298,47 @@
       =?  bot  !=(0 bot)  (dec bot)
       ;col(w w, h h)
         ;+  $(hei top, layout t.layout, key [%0 key])
-        ;line-h;
+        ;line-h(fg green-1);
         ;+  $(hei bot, layout b.layout, key [%1 key])
       ==
     ==
   ::
   ++  frames-list
     ^-  manx
-    ;row/"frames-list"(w "100%", h "1", fx "center")
+    ;row/"frames-list"(w "100%", h "1")
       ;*  %+  spun  frames.state
           |=  [i=frame:homunculus a=@]
           ^-  [manx @]
           :_  +(a)
           =/  n=tape   (scow %ud a)
-          =/  bg=tape  ?:(=(a active-frame.state) "red" "blue")
-          ;select/"frame/{n}"(w "6", h "1", px "1", mx "1", bg bg, select-d "underline"):"{n}"
+          =/  bg=tape  ?:(=(a active-frame.state) green-2 green-3)
+          ;select/"frame/{n}"(w "7", h "1", mx "1", bg bg, fx "center", select-d "underline"):"{n}"
     ==
   ::
   ++  header
     ^-  manx
-    ;row(w "100%", px "2", py "1", bg black, fg "#fc8021")
+    ;row(w "100%", px "2", py "1", bg green-3)
       ;col
-        ;art(fg "#cc5a02")
+        ;art(fg green-2)
           ;+  ;/
             """
             ╭     ╮ ╭─────╮ ╭────╮  ──┬── ╭──┬──╮
             """
         ==
-        ;art(fg "#fc8021")
+        ;art(fg green-1)
           ;+  ;/
             """
             │     │ ├────┬╯ ├────┴╮   │      │   
             """
         ==
-        ;art(fg "#cc5a02")
+        ;art(fg green-2)
           ;+  ;/
             """
             ╰─────╯ ╰    ╰─ ╰─────╯ ──┴──    ┴    
             """
         ==
       ==
-      ;col(w "grow", fx "end")
+      ;col(w "grow", fx "end", fg green-1)
         ;row:"{(trip (scot %p our.bol))}"
         ;line-h(w "3");
         ;row
@@ -329,9 +348,37 @@
       ==
     ==
   ::
-  ++  black  "#000000"
+  ++  black     "#000000"
+  ++  orange-1  "#fc8021"
+  ++  orange-2  "#cc5a02"
+  ++  green-1   "#0dc40a"
+  ++  green-2   "#228721"
+  ++  green-3   "#022801"
+  ++  green-4   "#000f00"
+  ++  red       "#A72608"
+  ++  blue-1    "#4384bf"
+  ++  blue-2    "#335C81"
+  ++  blue-3    "#27394a"
+  ++  white     "#F5EDF0"
   ::
   --
+::
+++  get-all-open-agents
+  ^-  (set session-source:homunculus)
+  %+  roll  frames.state
+  |=  $:  i=layout:homunculus
+          a=(set session-source:homunculus)
+      ==
+  (~(uni in a) (get-agents-in-layout i))
+::
+++  get-agents-in-layout
+  |=  lay=layout:homunculus
+  ^-  (set session-source:homunculus)
+  ?-  -.lay
+    %$  [p.lay ~ ~]
+    %v  (~(uni in $(lay l.lay)) $(lay r.lay))
+    %h  (~(uni in $(lay t.lay)) $(lay b.lay))
+  ==
 ::
 ++  make-menu-update-card
   |=  [our=@p upd=menu-update:homunculus]
