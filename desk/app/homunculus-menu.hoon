@@ -186,13 +186,13 @@
         ;row(w "100%", mt "2", mb "1", bg green-3)
           ;+  ?~  open-session-mode.state  
                 ;row(w "1", h "1");
-              ;select/"open-session/new/l"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg white, select-fg green-1)
+              ;select/"open-session/new/l"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg cyan-2, select-fg white)
                 ;+  ;/  "⢾"
               ==
           ;+  frame-container
           ;+  ?~  open-session-mode.state
                 ;row(w "1", h "1");
-              ;select/"open-session/new/r"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg white, select-fg green-1)
+              ;select/"open-session/new/r"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg cyan-2, select-fg white)
                 ;+  ;/  "⡷"
               ==
           ;+  register-container
@@ -207,7 +207,7 @@
     ;col/"register-container"(w "grow", h "10", px "2", mt "1", ml "2")
       ;+  ?~  open-session-mode.state
             ;row(w "100%", h "1", mb "1", fx "center", bg green-2, fg green-1):"Agents:"
-          ;row(w "100%", h "1", mb "1", fx "center", bg orange-1):"Open:"
+          ;row(w "100%", h "1", mb "1", fx "center", bg cyan-2, fg white):"Open:"
       ;scroll/"register-scroll"(w "100%", h "grow")
         ;*  %+  turn
               %+  sort  ~(tap in register.state)
@@ -223,7 +223,7 @@
             ?:  ?&  ?=(^ open-session-mode.state)
                     =(q.i u.open-session-mode.state)
                 ==
-              ;select/"agent/{name}"(w "100%", h "1", bg orange-1):"{name}"
+              ;select/"agent/{name}"(w "100%", h "1", bg cyan-2, fg white):"{name}"
             ;select/"agent/{name}"(w "100%", h "1", select-bg white, select-fg green-3):"{name}"
       ==
     ==
@@ -261,22 +261,22 @@
         ;*  ?~  open-session-mode.state  ~
             ?:  ?=(%$ q.p.layout)  ~
             ;=  ;layer(py "1")
-                  ;select/"open-session/current/l/{k}"(w "2", h "grow", select-fg white)
+                  ;select/"open-session/current/l/{k}"(w "2", h "grow", select-fg cyan-1)
                     ;pattern(w "100%", h "100%"):"⣿"
                   ==
                 ==
                 ;layer(py "1", fx "end")
-                  ;select/"open-session/current/r/{k}"(w "2", h "grow", select-fg white)
+                  ;select/"open-session/current/r/{k}"(w "2", h "grow", select-fg cyan-1)
                     ;pattern(w "100%", h "100%"):"⣿"
                   ==
                 ==
                 ;layer(px "1")
-                  ;select/"open-session/current/t/{k}"(w "grow", h "1", select-fg white)
+                  ;select/"open-session/current/t/{k}"(w "grow", h "1", select-fg cyan-1)
                     ;pattern(w "100%", h "100%"):"⣿"
                   ==
                 ==
                 ;layer(px "1", fy "end")
-                  ;select/"open-session/current/b/{k}"(w "grow", h "1", select-fg white)
+                  ;select/"open-session/current/b/{k}"(w "grow", h "1", select-fg cyan-1)
                     ;pattern(w "100%", h "100%"):"⣿"
                   ==
                 ==
@@ -349,13 +349,15 @@
     ==
   ::
   ++  black     "#000000"
+  ++  red       "#A72608"
   ++  orange-1  "#fc8021"
   ++  orange-2  "#cc5a02"
   ++  green-1   "#0dc40a"
   ++  green-2   "#228721"
   ++  green-3   "#022801"
   ++  green-4   "#000f00"
-  ++  red       "#A72608"
+  ++  cyan-1    "#9effda"
+  ++  cyan-2    "#38d99b"
   ++  blue-1    "#4384bf"
   ++  blue-2    "#335C81"
   ++  blue-3    "#27394a"

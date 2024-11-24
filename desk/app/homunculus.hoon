@@ -915,7 +915,7 @@
   ::
   ++  eo                           :: handle a navigation event
     ^-  (quip card ^ego)
-    =/  navs  (gero rex.via ordo.via)
+    =/  navs  (rego rex.via ordo.via)
     =/  [cards=(list card) active-scroll=(unit [=iter =rami =deus])]  fluo
     =/  navs-in-scroll
       ^-  ordo
@@ -1071,168 +1071,29 @@
     =/  eve=event:homunculus  [%scroll %trigger dir avis]
     [%pass ~ %agent fons %poke %homunculus-event !>(eve)]
   ::
-  ++  gero                         :: order a list of navigation points
+  ++  rego                         :: filter and order a list of navigation points
     |=  [r=rex o=ordo]
     ^-  ordo
     ?~  r  o
-    =/  chis=ordo
-      ?.  |(?=(%nav-r lex) ?=(%nav-d lex))
-        ~
-      %+  sort
-        ^-  ordo
-        %+  skim  `ordo`o
-        |=  =dux
-        (alo k.r k.dux)
-      |=  [a=dux b=dux]
-      (lth (reor a r) (reor b r))
-    ?:  ?=(^ chis)
-      chis
-    =/  tars=ordo
-      %+  sort  `ordo`(skim `ordo`o (cieo r))
-      |=  [a=dux b=dux]
-      (lth (reor a r) (reor b r))
-    ?~  tars
-      ~
-    =/  pars=ordo
-      %+  sort
-        ^-  ordo
-        %+  skim  `ordo`o
-        |=  d=dux
-        ^-  bean
-        ?:  =(k.d k.r)
-          |
-        ?:  (alo k.d k.i.tars)
-          !(alo k.d k.r)
-        |
-      |=  [a=dux b=dux]
-      (lth (lent k.a) (lent k.b))
-    ?~  pars
-      tars
-    ?.  ((cieo r) i.pars)
-      ~
-    pars 
-  ::
-  ++  tego                         :: check if either element a or element b is in a layer above
-    |=  [a=rami b=rami]
-    ^-  ?(%a %b %~)
-    ?~  a  %~
-    ?~  b  %~
-    ?~  t.a  %~
-    ?~  t.b  %~
-    ?.  =(axis.i.t.a axis.i.t.b)
-      ?:  &(?=(%l axis.i.t.a) ?=(%n axis.i.t.b))
-        %a
-      ?:  &(?=(%n axis.i.t.a) ?=(%l axis.i.t.b))
-        %b
-      %~
-    ?.  =(ager.i.t.a ager.i.t.b)
-      ?:  &(?=(%l axis.i.t.a) ?=(%l axis.i.t.b))
-        ?:  (gth ager.i.t.a ager.i.t.b)
-          %b
-        %a
-      %~
-    $(a t.a, b t.b)
-  ::
-  ++  cieo                         :: check if a navigation point is viable given the current selection
-    |_  rex=dux
-    ++  $
-      |=  =dux
-      ^-  bean
-      ?:  =(k.dux k.rex)  |
-      ?+  lex  |
-        %nav-l  (f lth dux l.dux r.dux l.rex l.rex)
-        %nav-u  (f lth dux t.dux b.dux t.rex t.rex)
-        %nav-r  (f gth dux l.dux l.dux l.rex r.rex)
-        %nav-d  (f gth dux t.dux t.dux t.rex b.rex)
+    %+  sort
+      %+  skim  o
+      ?+  lex   !!
+        %nav-l  |=(d=dux (lth l.d l.r))
+        %nav-r  |=(d=dux (gth l.d l.r))  
+        %nav-u  |=(d=dux (lth t.d t.r))
+        %nav-d  |=(d=dux (gth t.d t.r))
       ==
-    ++  f
-      |=  [than=$-([@ @] ?) =dux d1=@ d2=@ r1=@ r2=@]
-      ^-  bean
-      ?:  (taxo +>+.dux +>+.rex)
-        ?:  =(d1 r1)
-          ?|  =(%b (tego k.rex k.dux))
-              &(|(?=(%nav-l lex) ?=(%nav-u lex)) (alo k.dux k.rex))
-          ==
-        (than d1 r1)
-      ?.  =(%~ (tego k.rex k.dux))
-        (than d1 r1)
-      (than d2 r2)
-    --
+    |=  [a=dux b=dux]
+    (lth (reor [l.a t.a] [l.r t.r]) (reor [l.b t.b] [l.r t.r]))
   ::
-  ++  reor                         :: get the euclidean distance between a selection and a navigation point
-    |=  [=dux rex=dux]
+  ++  reor                         :: get the euclidean distance between two coordinates (with weights on y)
+    |=  [a=loci b=loci]
     ^-  @ud
     =;  pyt=(pair @ud @ud)
       (add (mul 10 p.pyt) q.pyt)
-    ?+  lex  [0 0]
-        %nav-l
-      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
-        %-  sqt  %+  add
-          (pow ?:((lte l.dux l.rex) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-        (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
-      %-  sqt  %+  add
-        (pow ?:((lte r.dux l.rex) (sub l.rex r.dux) (sub r.dux l.rex)) 2)
-      (pow (mul ?:((gte t.rex t.dux) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
-        %nav-u
-      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
-        %-  sqt  %+  add
-          (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-        (pow (mul ?:((lte t.dux t.rex) (sub t.rex t.dux) (sub t.dux t.rex)) 2) 2)
-      %-  sqt  %+  add
-        (pow ?:((gte l.dux l.rex) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-      (pow (mul ?:((lte b.dux t.rex) (sub t.rex b.dux) (sub b.dux t.rex)) 2) 2)
-        %nav-r
-      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
-        %-  sqt  %+  add
-          (pow ?:((lte l.rex l.dux) (sub l.dux l.rex) (sub l.rex l.dux)) 2)
-        (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
-      %-  sqt  %+  add
-        (pow ?:((lte r.rex l.dux) (sub l.dux r.rex) (sub r.rex l.dux)) 2)
-      (pow (mul ?:((gte t.dux t.rex) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
-        %nav-d
-      ?:  |((taxo +>+.dux +>+.rex) !=(%~ (tego k.rex k.dux)))
-        %-  sqt  %+  add
-          (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-        (pow (mul ?:((lte t.rex t.dux) (sub t.dux t.rex) (sub t.rex t.dux)) 2) 2)
-      %-  sqt  %+  add
-        (pow ?:((gte l.rex l.dux) (sub l.rex l.dux) (sub l.dux l.rex)) 2)
-      (pow (mul ?:((lte b.rex t.dux) (sub t.dux b.rex) (sub b.rex t.dux)) 2) 2)
-    ==
-  ::
-  ++  taxo                         :: compare two coordinate groups for an overlap
-    |=  [a=muri b=muri]
-    ^-  bean
-    ?|  ?&  (lte l.a l.b)  (gte r.a l.b)
-            (lte t.a t.b)  (gte b.a t.b)
-        ==
-        ?&  (lte l.a r.b)  (gte r.a r.b)
-            (lte t.a t.b)  (gte b.a t.b)
-        ==
-        ?&  (lte l.a l.b)  (gte r.a l.b)
-            (lte t.a b.b)  (gte b.a b.b)
-        ==
-        ?&  (lte l.a r.b)  (gte r.a r.b)
-            (lte t.a b.b)  (gte b.a b.b)
-        ==
-        ?&  (lte l.a l.b)  (gte r.a r.b)
-            (gte t.a t.b)  (lte b.a b.b)
-        ==
-        ?&  (lte l.b l.a)  (gte r.b l.a)
-            (lte t.b t.a)  (gte b.b t.a)
-        ==
-        ?&  (lte l.b r.a)  (gte r.b r.a)
-            (lte t.b t.a)  (gte b.b t.a)
-        ==
-        ?&  (lte l.b l.a)  (gte r.b l.a)
-            (lte t.b b.a)  (gte b.b b.a)
-        ==
-        ?&  (lte l.b r.a)  (gte r.b r.a)
-            (lte t.b b.a)  (gte b.b b.a)
-        ==
-        ?&  (lte l.b l.a)  (gte r.b r.a)
-            (gte t.b t.a)  (lte b.b b.a)
-        ==
-    ==
+    %-  sqt  %+  add
+      (pow ?:((lte x.a x.b) (sub x.b x.a) (sub x.a x.b)) 2)
+    (pow (mul ?:((lte y.a y.b) (sub y.b y.a) (sub y.a y.b)) 2) 2)
   ::
   ++  cibo                         :: handle an insert event
     ^-  (quip card ^ego)
@@ -1802,11 +1663,9 @@
     i.o
   $(o t.o)
 ::
-++  alo                            :: check if element b is a child of element a
+++  alo                            :: produce true if element a contains element b
   |=  [a=rami b=rami]
   ^-  ?
-  ?:  =(a b)
-    |
   ?=  ^
   (find `(list *)`[%~ a] `(list *)`[%~ b])
 ::
@@ -4096,9 +3955,7 @@
   %+  weld  loc
   %+  skip  gob
   |=  i=dux
-  ?|  =(key k.i)
-      (alo key k.i)
-  ==
+  (alo key k.i)
 ::
 ++  dico                           :: turn a render schematic into text
   |=  [=apex =sol]
