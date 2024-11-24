@@ -10,7 +10,7 @@ use crossterm::terminal;
 use crossterm::terminal::{Clear, ClearType};
 use crossterm::cursor::MoveTo;
 use crossterm::style::{ResetColor, Attribute, SetAttribute};
-use crossterm::event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers, MouseEvent, MouseEventKind};
+use crossterm::event::{read, DisableBracketedPaste, EnableBracketedPaste, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers, MouseEvent, MouseEventKind};
 use reqwest::Client;
 use futures::stream::StreamExt;
 use serde::{Serialize, Deserialize};
@@ -203,6 +203,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let size = TerminalSize(width, height);
         reqw.put(&channel_url)
           .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Size(size))?)
+          .header("cookie", &client_state.auth)
+          .send()
+          .await?;
+      }
+      Event::Paste(string) => {
+        reqw.put(&channel_url)
+          .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Input(string))?)
           .header("cookie", &client_state.auth)
           .send()
           .await?;
@@ -412,7 +419,7 @@ fn handle_key(key_event: KeyEvent) -> String {
   match key_event.modifiers {
     KeyModifiers::NONE =>
       match key_event.code {
-        KeyCode::Char(char) =>  char.to_string(),
+        KeyCode::Char(char)       =>  char.to_string(),
         KeyCode::Tab              =>  "\\t".to_string(),
         KeyCode::Enter            =>  "\\n".to_string(),
         KeyCode::Esc              =>  "\\e".to_string(),
@@ -434,7 +441,7 @@ fn handle_key(key_event: KeyEvent) -> String {
       },
     KeyModifiers::ALT =>
       match key_event.code {
-        KeyCode::Char(char) =>  format!("\\e{char}"),
+        KeyCode::Char(char)       =>  format!("\\e{char}"),
         KeyCode::Up               =>  "\\e[1;3A".to_string(),
         KeyCode::Down             =>  "\\e[1;3B".to_string(),
         KeyCode::Right            =>  "\\e[1;3C".to_string(),
@@ -443,7 +450,7 @@ fn handle_key(key_event: KeyEvent) -> String {
       },
     KeyModifiers::SHIFT =>
       match key_event.code {
-        KeyCode::Char(char) =>  char.to_string(),
+        KeyCode::Char(char)       =>  char.to_string(),
         KeyCode::Up               =>  "\\e[1;2A".to_string(),
         KeyCode::Down             =>  "\\e[1;2B".to_string(),
         KeyCode::Right            =>  "\\e[1;2C".to_string(),
@@ -469,6 +476,7 @@ fn setup_terminal() -> Result<(), Box<dyn std::error::Error>> {
   terminal::enable_raw_mode()?;
   execute!(
     stdout(),
+    EnableBracketedPaste,
     EnableMouseCapture
   )?;
   Ok(())
@@ -481,6 +489,7 @@ fn reset_terminal() -> Result<(), Box<dyn std::error::Error>> {
     MoveTo(0, 0),
     ResetColor,
     SetAttribute(Attribute::Reset),
+    DisableBracketedPaste,
     DisableMouseCapture,
     Clear(ClearType::All),
     Clear(ClearType::Purge),
