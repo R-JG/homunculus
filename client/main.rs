@@ -1,9 +1,16 @@
-use std::io::Write;
+use std::io::{self, Write, Read, stdout};
+use std::fs::{self, File};
+use std::env;
+use std::path::Path;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
+use crossterm::execute;
 use crossterm::terminal;
-use crossterm::event::{read, Event, KeyEvent, KeyCode, KeyModifiers};
+use crossterm::terminal::{Clear, ClearType};
+use crossterm::cursor::MoveTo;
+use crossterm::style::{ResetColor, Attribute, SetAttribute};
+use crossterm::event::{read, DisableBracketedPaste, EnableBracketedPaste, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers, MouseEvent, MouseEventKind};
 use reqwest::Client;
 use futures::stream::StreamExt;
 use serde::{Serialize, Deserialize};
@@ -44,22 +51,22 @@ struct Delete {
 
 #[derive(Deserialize)]
 struct Diff {
-  id: u32,
-  response: String,
+  // id: u32,
+  // response: String,
   json: String
 }
 
 #[derive(Deserialize)]
 struct Quit {
-  id: u32,
-  response: String
+  // id: u32,
+  // response: String
 }
 
 #[derive(Deserialize)]
 struct ResAck {
-  ok: String,
-  id: u32,
-  response: String
+  // ok: String,
+  // id: u32,
+  // response: String
 }
 
 #[derive(Serialize)]
@@ -95,46 +102,64 @@ enum ResBody {
   Ack(ResAck)
 }
 
+struct ClientState {
+  url: String,
+  ship: String,
+  auth: String
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-  let ship = "zod".to_string();
-  let code = "lidlut-tabwed-pillex-ridrup";
-  let base_url = "http://localhost:8080";
-  //
+  let mut client_state = get_client_state();
+  let args: Vec<String> = env::args().collect();
+  if args.get(1).is_some_and(|s| !s.is_empty()) {
+    client_state.ship = set_ship(args[1].clone())
+  }
+  if args.get(2).is_some_and(|s| !s.is_empty()) {
+    client_state.url = set_url(args[2].clone())
+  }
+  if client_state.ship.is_empty() {
+    client_state.ship = set_ship(prompt_user("Enter your ship: ".to_string()))
+  }
+  if client_state.url.is_empty() {
+    client_state.url = set_url(prompt_user("Enter your ship's url: ".to_string()))
+  }
   let msg_id = Arc::new(AtomicU32::new(0));
   let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
   let channel_id = format!("homunculus-{}", now.to_string());
-  let login_url = format!("{}/~/login", base_url);
-  let channel_url = format!("{}/~/channel/{}", base_url, channel_id);
-  // get auth
+  let login_url = format!("{}/~/login", client_state.url);
+  let channel_url = format!("{}/~/channel/{}", client_state.url, channel_id);
   let reqw = Client::new();
-  let resp = reqw.post(login_url)
-    .body(format!("password={}", code))
-    .send()
-    .await?;
-  let auth = resp
-    .headers().get("set-cookie").unwrap().to_str()?
-    .split(";").next().unwrap().to_string();
+  // check auth
+  if client_state.auth.is_empty() {
+    client_state.auth = set_auth(reqw.clone(), login_url.clone()).await?;
+  }
+  let auth_is_valid = check_auth(
+      reqw.clone(), client_state.url.clone(), client_state.auth.clone()
+    ).await?;
+  if !auth_is_valid {
+    client_state.auth = set_auth(reqw.clone(), login_url.clone()).await?;
+  }
   // create channel
   reqw.put(&channel_url)
-    .body(make_subscribe_body(&ship, &msg_id)?)
-    .header("cookie", &auth)
+    .body(make_subscribe_body(&client_state.ship, &msg_id)?)
+    .header("cookie", &client_state.auth)
     .send()
     .await?;
   // stream output
-  terminal::enable_raw_mode()?;
+  setup_terminal()?;
   let reqw_clone = reqw.clone();
   let msg_id_clone = Arc::clone(&msg_id);
   let channel_url_clone = channel_url.clone();
-  let auth_clone = auth.clone();
+  let auth_clone = client_state.auth.clone();
   tokio::spawn(async {
     let _ = stream_output(reqw_clone, msg_id_clone, channel_url_clone, auth_clone).await;
   });
   // send input
   let (width, height) = terminal::size()?;
   reqw.put(&channel_url)
-    .body(make_poke_body(&ship, &msg_id, PokeData::Size(TerminalSize(width, height)))?)
-    .header("cookie", &auth)
+    .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Size(TerminalSize(width, height)))?)
+    .header("cookie", &client_state.auth)
     .send()
     .await?;
   loop {
@@ -148,29 +173,44 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
       }) => {
         reqw.put(&channel_url)
           .body(make_delete_body(&msg_id)?)
-          .header("cookie", &auth)
+          .header("cookie", &client_state.auth)
           .send()
           .await?;
-        println!("\x1b[3J\x1b[2J\x1b[H");
-        terminal::disable_raw_mode()?;
+        reset_terminal()?;
         break;
       }
       Event::Key(key_event) => {
         let input = handle_key(key_event);
-        reqw.put(&channel_url)
-          .body(make_poke_body(&ship, &msg_id, PokeData::Input(input))?)
-          .header("cookie", &auth)
-          .send()
-          .await?;
+        if input != "" {
+          reqw.put(&channel_url)
+            .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Input(input))?)
+            .header("cookie", &client_state.auth)
+            .send()
+            .await?;
+        }
       }
       Event::Mouse(mouse_event) => {
-        //
+        let input = handle_mouse(mouse_event);
+        if input != "" {
+          reqw.put(&channel_url)
+            .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Input(input))?)
+            .header("cookie", &client_state.auth)
+            .send()
+            .await?;
+        }
       }
       Event::Resize(width, height) => {
         let size = TerminalSize(width, height);
         reqw.put(&channel_url)
-          .body(make_poke_body(&ship, &msg_id, PokeData::Size(size))?)
-          .header("cookie", &auth)
+          .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Size(size))?)
+          .header("cookie", &client_state.auth)
+          .send()
+          .await?;
+      }
+      Event::Paste(string) => {
+        reqw.put(&channel_url)
+          .body(make_poke_body(&client_state.ship, &msg_id, PokeData::Input(string))?)
+          .header("cookie", &client_state.auth)
           .send()
           .await?;
       }
@@ -178,6 +218,81 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
   }
   Ok(())
+}
+
+fn get_client_state() -> ClientState {
+  let url = read_file("url".to_string()).unwrap_or("".to_string());
+  let ship = read_file("ship".to_string()).unwrap_or("".to_string());
+  let auth = read_file("auth".to_string()).unwrap_or("".to_string());
+  return ClientState {
+    url, ship, auth
+  };
+}
+
+fn get_file_path(file_name: String) -> String {
+  let dir = ".homunculus";
+  fs::create_dir_all(dir).unwrap();
+  return format!("{}/{}", dir, file_name);
+}
+
+fn read_file(file_name: String) -> io::Result<String> {
+  let file_path = get_file_path(file_name);
+  if !Path::new(&file_path).exists() {
+    File::create(&file_path)?;
+  }
+  let mut file_val = String::new();
+  let mut file = File::open(&file_path)?;
+  file.read_to_string(&mut file_val)?;
+  Ok(file_val)
+}
+
+fn write_file(file_name: String, val: String) -> Result<(), Box<dyn std::error::Error>> {
+  let file_path = get_file_path(file_name);
+  fs::write(file_path, val)?;
+  Ok(())
+}
+
+fn prompt_user(msg: String) -> String {
+  println!("{msg}");
+  let mut input = String::new();
+  io::stdin()
+    .read_line(&mut input)
+    .expect("Failed to read line");
+  return input.trim().to_string();
+}
+
+fn set_ship(ship: String) -> String {
+  let mut ship_val = ship;
+  if ship_val.starts_with("~") { ship_val.remove(0); }
+  write_file("ship".to_string(), ship_val.clone()).unwrap();
+  return ship_val;
+}
+
+fn set_url(url: String) -> String {
+  write_file("url".to_string(), url.clone()).unwrap();
+  return url;
+}
+
+async fn set_auth(reqw: Client, login_url: String) -> Result<String, Box<dyn std::error::Error>> {
+  let code = prompt_user("Enter your +code: ".to_string());
+  let resp = reqw.post(login_url)
+    .body(format!("password={}", code))
+    .send()
+    .await?;
+  let auth = resp
+    .headers().get("set-cookie").unwrap().to_str()?
+    .split(";").next().unwrap().to_string();
+  write_file("auth".to_string(), auth.clone()).unwrap();
+  Ok(auth)
+}
+
+async fn check_auth(reqw: Client, url: String, auth: String) -> Result<bool, Box<dyn std::error::Error>> {
+  let scry_url = format!("{}/~/scry/homunculus/auth.noun", url);
+  let res = reqw.get(&scry_url)
+    .header("cookie", &auth)
+    .send()
+    .await?;
+  Ok(res.status().is_success())
 }
 
 async fn stream_output(reqw: Client, msg_id: Arc<AtomicU32>, channel_url: String, auth: String) -> Result<(), Box<dyn std::error::Error>>  {
@@ -301,17 +416,83 @@ fn make_delete_body(msg_id: &Arc<AtomicU32>) -> Result<String, serde_json::Error
 }
 
 fn handle_key(key_event: KeyEvent) -> String {
-  match key_event.code {
-    KeyCode::Char(char) =>  char.to_string(),
-    KeyCode::Tab              =>  "\\t".to_string(),
-    KeyCode::Enter            =>  "\\n".to_string(),
-    KeyCode::Esc              =>  "\\e".to_string(),
-    KeyCode::Backspace        =>  "\\177".to_string(),
-    KeyCode::Delete           =>  "\\e[3~".to_string(),
-    KeyCode::Up               =>  "\\e[A".to_string(),
-    KeyCode::Down             =>  "\\e[B".to_string(),
-    KeyCode::Right            =>  "\\e[C".to_string(),
-    KeyCode::Left             =>  "\\e[D".to_string(),
-    _                         =>  "".to_string()
+  match key_event.modifiers {
+    KeyModifiers::NONE =>
+      match key_event.code {
+        KeyCode::Char(char)       =>  char.to_string(),
+        KeyCode::Tab              =>  "\\t".to_string(),
+        KeyCode::Enter            =>  "\\n".to_string(),
+        KeyCode::Esc              =>  "\\e".to_string(),
+        KeyCode::Backspace        =>  "\\177".to_string(),
+        KeyCode::Delete           =>  "\\e[3~".to_string(),
+        KeyCode::Up               =>  "\\e[A".to_string(),
+        KeyCode::Down             =>  "\\e[B".to_string(),
+        KeyCode::Right            =>  "\\e[C".to_string(),
+        KeyCode::Left             =>  "\\e[D".to_string(),
+        _                         =>  "".to_string()
+      },
+    KeyModifiers::CONTROL =>
+      match key_event.code {
+        KeyCode::Up               =>  "\\e[1;5A".to_string(),
+        KeyCode::Down             =>  "\\e[1;5B".to_string(),
+        KeyCode::Right            =>  "\\e[1;5C".to_string(),
+        KeyCode::Left             =>  "\\e[1;5D".to_string(),
+        _                         =>  "".to_string()
+      },
+    KeyModifiers::ALT =>
+      match key_event.code {
+        KeyCode::Char(char)       =>  format!("\\e{char}"),
+        KeyCode::Up               =>  "\\e[1;3A".to_string(),
+        KeyCode::Down             =>  "\\e[1;3B".to_string(),
+        KeyCode::Right            =>  "\\e[1;3C".to_string(),
+        KeyCode::Left             =>  "\\e[1;3D".to_string(),
+        _                         =>  "".to_string()
+      },
+    KeyModifiers::SHIFT =>
+      match key_event.code {
+        KeyCode::Char(char)       =>  char.to_string(),
+        KeyCode::Up               =>  "\\e[1;2A".to_string(),
+        KeyCode::Down             =>  "\\e[1;2B".to_string(),
+        KeyCode::Right            =>  "\\e[1;2C".to_string(),
+        KeyCode::Left             =>  "\\e[1;2D".to_string(),
+        _                         =>  "".to_string()
+      },
+    _                             =>  "".to_string()
   }
+}
+
+fn handle_mouse(mouse_event: MouseEvent) -> String {
+  let x = mouse_event.column + 1;
+  let y = mouse_event.row + 1;
+  match mouse_event.kind {
+    MouseEventKind::Down(_)    =>  format!("\\e[<0;{};{}M", x, y),
+    MouseEventKind::ScrollDown =>  format!("\\e[<64;{};{}M", x, y),
+    MouseEventKind::ScrollUp   =>  format!("\\e[<65;{};{}M", x, y),
+    _                          =>  "".to_string()
+  }
+}
+
+fn setup_terminal() -> Result<(), Box<dyn std::error::Error>> {
+  terminal::enable_raw_mode()?;
+  execute!(
+    stdout(),
+    EnableBracketedPaste,
+    EnableMouseCapture
+  )?;
+  Ok(())
+}
+
+fn reset_terminal() -> Result<(), Box<dyn std::error::Error>> {
+  terminal::disable_raw_mode()?;
+  execute!(
+    stdout(),
+    MoveTo(0, 0),
+    ResetColor,
+    SetAttribute(Attribute::Reset),
+    DisableBracketedPaste,
+    DisableMouseCapture,
+    Clear(ClearType::All),
+    Clear(ClearType::Purge),
+  )?;
+  Ok(())
 }
