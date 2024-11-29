@@ -1,12 +1,11 @@
 |%
 ::
-+$  update
-  $%  [%register ~]
-      [%root p=manx]
-      [%branch p=(list manx)]
-      :: [%hotkeys p=hotkeys]
++$  update  (lest update-card)
+::
++$  update-card
+  $%  [%element p=manx]
       :: [%set-select p=path]
-      :: [%set-scroll-position p=?(%c %p) q=@ r=path]
+      [%set-scroll-position p=?(%c %p) q=@ r=path]
   ==
 ::
 +$  event

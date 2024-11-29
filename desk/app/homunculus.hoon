@@ -157,7 +157,7 @@
   ==                                                                   ::
 ::                                                                     ::
 +$  card  card:agent:gall                                              ::
---                                                                     
+--
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 =|  =ego
 ^-  agent:gall
@@ -191,56 +191,29 @@
   ?>  =(our.bol src.bol)
   ?+  mark  !!
     ::
+      %homunculus-register
+    =/  fon=fons  (bibo bol)
+    :_  hoc
+    :~  (ago our.bol [%put-register fon])
+    ==
+    ::
       %homunculus-update
     =+  !<(upd=update:homunculus vase)
-    =/  fon=fons  (bibo bol)
-    ?-  -.upd
-      ::
-        %register
-      :_  hoc
-      :~  (ago our.bol [%put-register fon])
-      ==
-      ::
-        %root
-      =/  ind  (rigo fon)
-      ?~  ind  [~ hoc]
-      =/  =via  (snag -.ind viae.ego)
-      =/  =ara  (snag +.ind arae.via)
-      =/  key=rami  ~[[%n +.ind]]
-      =.  via
-        %_    via
-            arae
-          %^  snap  arae.via  +.ind
-          (curo key cor.deus.ara ara(vela p.upd))
-        ==
-      =.  viae.ego  (snap viae.ego -.ind via)
-      ?.  =(cura.ego -.ind)
-        [~ hoc]
-      =/  ren  (viso key)
-      =?  viae.ego  !open.arx.urbs.ego  
-        =.  ordo.via  (ligo key (duco ren) ordo.via)
-        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
-        (snap viae.ego -.ind via)
-      :_  hoc
-      :~  (fio ~[ren])
-      ==
-      ::
-        %branch
-      =/  ind  (rigo fon)
-      ?~  ind  [~ hoc]
-      =/  =via  (snag -.ind viae.ego)
-      =/  =ara  (snag +.ind arae.via)
-      =^  keys  ara  (colo p.upd ara)
-      =.  arae.via   (snap arae.via +.ind ara)
-      =.  viae.ego   (snap viae.ego -.ind via)
-      ?.  =(cura.ego -.ind)
-        [~ hoc]
-      =^  opus  via  (levo keys via)
-      =.  viae.ego   (snap viae.ego -.ind via)
-      :_  hoc
-      :~  (fio opus)
-      ==
-      ::
+    =/  fon=fons   (bibo bol)
+    =/  ind        (rigo fon)
+    ?~  ind
+      [~ hoc]
+    =/  =via       (snag -.ind viae.ego)
+    =/  =ara       (snag +.ind arae.via)
+    =^  keys  ara  (novo ind upd ara)
+    =.  arae.via   (snap arae.via +.ind ara)
+    =.  viae.ego   (snap viae.ego -.ind via)
+    ?.  =(cura.ego -.ind)
+      [~ hoc]
+    =^  opus  via  (levo keys via)
+    =?  viae.ego   !open.arx.urbs.ego  (snap viae.ego -.ind via)
+    :_  hoc
+    :~  (fio opus)
     ==
     ::
       %homunculus-menu-update
@@ -248,51 +221,17 @@
     ?-  -.upd
       ::
         %update
-      ?+  -.p.upd  [~ hoc]  
-        ::
-          %root
-        =.  arae.via.arx.urbs.ego
-          ?~  arae.via.arx.urbs.ego
-            =|  =ara
-            ~[ara(vela p.p.upd, fons (bibo bol))]
-          arae.via.arx.urbs.ego(vela.i p.p.upd)
-        ?>  ?=(^ arae.via.arx.urbs.ego)
-        =/  key=rami  ~[[%l 0]]
-        =/  =via      (snag cura.ego viae.ego)
-        =.  deus.i.arae.via.arx.urbs.ego
-          %:  geno
-            [key cor.urbs.ego]
-            i.arae.via.arx.urbs.ego
-            vela.i.arae.via.arx.urbs.ego
-          ==
-        =/  [ave=aves osa=ossa]
-          (vivo key deus.i.arae.via.arx.urbs.ego)
-        =:  aves.i.arae.via.arx.urbs.ego  ave
-            ossa.i.arae.via.arx.urbs.ego  osa
-          ==
-        ?.  open.arx.urbs.ego
-          [~ hoc]
-        =/  ren  (viso key)
-        =.  ordo.via.arx.urbs.ego  (duco ren)
-        =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
-          (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
-        :_  hoc
-        :~  (fio ~[ren])
+      =?  arae.via.arx.urbs.ego  ?=(~ arae.via.arx.urbs.ego)
+        =|  =ara
+        :~  ara(fons (bibo bol))
         ==
-        ::
-          %branch
-        ?~  arae.via.arx.urbs.ego  [~ hoc]
-        =^  keys  i.arae.via.arx.urbs.ego
-          (colo p.p.upd i.arae.via.arx.urbs.ego)
-        ?.  open.arx.urbs.ego
-          [~ hoc]
-        =^  =opus  via.arx.urbs.ego
-          =<  ?>(?=(^ arae) .)
-          (levo keys via.arx.urbs.ego)
-        :_  hoc
-        :~  (fio opus)
-        ==
-        ::
+      ?>  ?=(^ arae.via.arx.urbs.ego)
+      =^  keys  i.arae.via.arx.urbs.ego  (novo %menu p.upd i.arae.via.arx.urbs.ego)
+      ?.  open.arx.urbs.ego
+        [~ hoc]
+      =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
+      :_  hoc
+      :~  (fio opus)
       ==
       ::
         %load-state
@@ -739,17 +678,82 @@
   =/  [ave=aves osa=ossa]  (vivo key deus.ses)
   ses(aves ave, ossa osa)
 ::
-++  colo                           :: resolve session state for a list of branch updates
-  |=  [upd=(list vela) ses=ara]
+++  novo                           :: apply homunculus update cards to a session
+  |=  $:  ses-location=$@(%menu [@ @])
+          upd=update:homunculus
+          ses=ara
+      ==
   =|  keys=(list rami)
   |-  ^-  (quip rami ara)
-  ?~  upd
+  =^  key  ses
+    ^-  [rami ara]
+    ?-  -.i.upd
+      ::
+        %element
+      =/  id-attr
+        |-  ^-  $@(~ [mane tape])
+        ?~  a.g.p.i.upd  ~
+        ?:  =(%href n.i.a.g.p.i.upd)
+          i.a.g.p.i.upd
+        $(a.g.p.i.upd t.a.g.p.i.upd)
+      ?~  id-attr
+        :: root update
+        =/  key=rami
+          ?@  ses-location
+            ~[[%l 0]]
+          ~[[%n +.ses-location]]
+        :-  key
+        (curo key cor.deus.ses ses(vela p.i.upd))
+      :: relative branch update
+      =/  [new-v=vena avi=avis *]  (suo g.p.i.upd)
+      =.  vela.ses
+        |-  ^-  vela
+        ?~  (find ~[id-attr] a.g.vela.ses)
+          %_  vela.ses
+            c  (turn c.vela.ses |=(i=vela ^$(vela.ses i)))
+          ==
+        =/  [old-v=vena *]  (suo g.vela.ses)
+        ?:  ?|  ?=(%i p.w.size.old-v)
+                ?=(%i p.h.size.old-v)
+                !=(size.old-v size.new-v)
+                !=(marg.old-v marg.new-v)
+            ==
+          ~&(>>> %invalid-relative-element-update !!)
+        p.i.upd
+      =/  key=rami  (~(got by aves.ses) avi)
+      =/  old-el    (exuo key deus.ses)
+      =/  size=mart
+        :~  [%w ((d-co:co 1) w.size.res.cor.old-el)]
+            [%h ((d-co:co 1) h.size.res.cor.old-el)]
+            [%m "0"]
+        ==
+      =.  deus.ses
+        %^    paco
+            key
+          (geno [key cor.old-el] ses p.i.upd(a.g (weld a.g.p.i.upd size)))
+        deus.ses
+      =/  [ave=aves osa=ossa]  (vivo ?^(key ~[i.key] ~) deus.ses)
+      :-  key
+      ses(aves ave, ossa osa)
+      ::
+        %set-scroll-position
+      =/  key  (~(get by aves.ses) r.i.upd)
+      ?~  key  ~&(>>> %element-id-missing !!)
+      =/  el   (exuo u.key deus.ses)
+      ?>  ?=(%scroll -.ars.cor.el)
+      =.  y.iter.ars.cor.el
+        ?-  p.i.upd
+          %c  (min q.i.upd y.sola.ars.cor.el)
+          %p  (div (mul (min 100 q.i.upd) y.sola.ars.cor.el) 100)
+        ==
+      [u.key ses(deus (paco u.key el deus.ses))]
+      ::
+    ==
+  =?  keys  !(lien keys |=(i=rami (alo i key)))
+    [key (skip keys |=(i=rami (alo key i)))]
+  ?~  t.upd
     [keys ses]
-  =^  key  ses  (indo i.upd ses)
-  %=  $
-    upd   t.upd
-    keys  [key keys]
-  ==
+  $(upd t.upd)
 ::
 ++  levo                           :: render a list of branches in a frame by key
   |=  [keys=(list rami) fam=via]
@@ -764,45 +768,6 @@
     keys      t.keys
     rens      [ren rens]
   ==
-::
-++  indo                           :: apply a branch update to a session
-  |=  [new=vela =ara]
-  ^-  [rami ^ara]
-  =/  id-attr
-    |-  ^-  [mane tape]
-    ?~  a.g.new  ~&(>>> %missing-id-on-branch-update !!)
-    ?:  =(%href n.i.a.g.new)  i.a.g.new
-    $(a.g.new t.a.g.new)
-  =/  [new-v=vena avi=avis *]  (suo g.new)
-  =.  vela.ara
-    |-  ^-  vela
-    ?~  (find ~[id-attr] a.g.vela.ara)
-      %_  vela.ara
-        c  (turn c.vela.ara |=(i=vela ^$(vela.ara i)))
-      ==
-    =/  [old-v=vena *]  (suo g.vela.ara)
-    ?:  ?|  ?=(%i p.w.size.old-v)
-            ?=(%i p.h.size.old-v)
-            !=(size.old-v size.new-v)
-            !=(marg.old-v marg.new-v)
-        ==
-      ~&(>>> %invalid-branch-update !!)
-    new
-  =/  key=rami  (~(got by aves.ara) avi)
-  =/  old-el    (exuo key deus.ara)
-  =/  size=mart
-    :~  [%w ((d-co:co 1) w.size.res.cor.old-el)]
-        [%h ((d-co:co 1) h.size.res.cor.old-el)]
-        [%m "0"]
-    ==
-  =.  deus.ara
-    %^    paco
-        key
-      (geno [key cor.old-el] ara new(a.g (weld a.g.new size)))
-    deus.ara
-  =/  [ave=aves osa=ossa]  (vivo ?^(key ~[i.key] ~) deus.ara)
-  :-  key
-  ara(aves ave, ossa osa)
 ::
 ++  rigo                           :: find an existing session in a frame by source, or null
   |=  =fons
@@ -906,7 +871,7 @@
       via
     via(arae (snap arae.via ager.i.k.rex.via ara))
   ::
-  ++  novo                         :: save the active frame in ego
+  ++  indo                         :: save the active frame in ego
     |=  =^via
     ^-  ^ego
     ?:  open.arx.urbs.ego
@@ -922,7 +887,9 @@
       ?~  active-scroll  ~
       %+  skim  `ordo`navs
       |=  =dux
-      (alo rami.u.active-scroll k.dux)
+      ?&  !=(rami.u.active-scroll k.dux)
+          (alo rami.u.active-scroll k.dux)
+      ==
     ?:  ?&  ?=(^ active-scroll)
             |(?=(%nav-u lex) ?=(%nav-d lex))
             ?|  ?=(~ navs-in-scroll)
@@ -950,14 +917,14 @@
             ==
         ==
       =.  via       (sido ses(deus (paco rami.u.active-scroll deus.u.active-scroll deus.ses)))
-      =.  ego       (novo via)
+      =.  ego       (indo via)
       =/  ren       (viso rami.u.active-scroll)
       =.  ordo.via  (ligo rami.u.active-scroll (duco ren) ordo.via)
       =.  rex.via
         ?~  rex.via  ~
         =/  upd  (rogo k.rex.via ordo.via)
         ?~  upd  rex.via  upd
-      :_  (novo via)
+      :_  (indo via)
       %+  weld  cards
       :-  (fio ~[ren])
       ?.  &(?=(^ navs-in-scroll) ?=(^ rex.via) ?=(^ avis.rex.via))
@@ -978,7 +945,7 @@
     =.  rex.via   next
     =/  new-ara   sto
     =/  new=deus  (exuo k.next deus.new-ara)
-    =.  ego       (novo via)
+    =.  ego       (indo via)
     =/  rend-old
       ?.  ?&  ?=(^ old)
               ?=(^ old-rex)
@@ -1186,7 +1153,7 @@
           de.ars.cor.el
         +(de.ars.cor.el)
       ars.cor.el
-    =.  ego  (novo (sido ses(deus (paco k.rex.via el deus.ses))))
+    =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
     :_  ego
     :~  (fio ~[(viso k.rex.via)])
     ==
@@ -1298,7 +1265,7 @@
             (dec de.ars.cor.el)
           de.ars.cor.el
       ==
-    =.  ego  (novo (sido ses(deus (paco k.rex.via el deus.ses))))
+    =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
     :_  ego
     :~  (fio ~[(viso k.rex.via)])
     ==
@@ -1391,7 +1358,7 @@
           de.ars.cor.el
         +(de.ars.cor.el)
       de.ars.cor.el
-    =.  ego  (novo (sido ses(deus (paco k.rex.via el deus.ses))))
+    =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
     ?:  =(oab de.ars.cor.el)
       :_  ego
       :~  (fio ~)
@@ -1446,7 +1413,7 @@
       [dat el.form]
       ++  f  |=([i=deus a=data] [q p]:^$(el.form i, dat a))
       --
-    =.  ego  (novo (sido ses(deus (paco key.form el.form deus.ses))))
+    =.  ego  (indo (sido ses(deus (paco key.form el.form deus.ses))))
     :_  ego
     :~  (fio ~[(viso key.form)])
         (iuvo fons.ses [%form avis.cor.el.form data])
@@ -1461,7 +1428,7 @@
       =/  el=deus  (exuo k.rex.via deus.ses)
       ?>  ?=(%checkbox -.ars.cor.el)
       =.  v.ars.cor.el  !v.ars.cor.el
-      =.  ego  (novo (sido ses(deus (paco k.rex.via el deus.ses))))
+      =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
       :_  ego
       :~  (fio ~[(viso k.rex.via)])
       ==
@@ -1482,7 +1449,7 @@
         l.gens  (spun l.gens.el |=([i=deus a=@] [^$(el i, key.rad (snoc key.rad [%l a])) +(a)]))
         n.gens  (spun n.gens.el |=([i=deus a=@] [^$(el i, key.rad (snoc key.rad [%n a])) +(a)]))
       ==
-    =.  ego  (novo (sido ses(deus (paco key.rad el.rad deus.ses))))
+    =.  ego  (indo (sido ses(deus (paco key.rad el.rad deus.ses))))
     :_  ego
     :~  (fio ~[(viso key.rad)])
     ==
@@ -1571,7 +1538,7 @@
       (sino [x.zon y.zon] cor.deus.target)
     =?  via  ?=(%input -.ars.cor.deus.target)
       (sido new(deus (paco rami.target deus.target deus.new)))
-    =.  ego  (novo via)
+    =.  ego  (indo via)
     ?:  &(?=(^ old-rex) =(k.old-rex k.new-rex))
       =^  cards  ego  moto
       :_  ego

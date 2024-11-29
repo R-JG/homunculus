@@ -164,19 +164,22 @@
   ::
   ++  root-update
     ^-  card
-    (make-menu-update-card our.bol [%update %root root])
+    (make-menu-update-card our.bol [%update ~[[%element root]]])
   ::
   ++  register-update
     ^-  card
-    (make-menu-update-card our.bol [%update %branch ~[register-container]])
+    %+  make-menu-update-card  our.bol
+    [%update ~[[%element register-container]]]
   ::
   ++  frame-update
     ^-  card
-    (make-menu-update-card our.bol [%update %branch ~[frame-container frames-list]])
+    %+  make-menu-update-card  our.bol
+    [%update ~[[%element frame-container] [%element frames-list]]]
   ::
   ++  open-session-update
     ^-  card
-    (make-menu-update-card our.bol [%update %branch ~[register-container frame-container frames-list]])
+    %+  make-menu-update-card  our.bol
+    [%update ~[[%element register-container] [%element frame-container] [%element frames-list]]]
   ::
   ++  root
     ^-  manx
@@ -397,3 +400,4 @@
   (~(rep in p.waf) |=([i=weft a=$~(500 @)] (min a num.i)))
 ::
 --
+
