@@ -1035,13 +1035,18 @@
   ++  cedo                         :: make a scroll trigger event card
     |=  [=fons dir=?(%up %down) =avis]
     ^-  card
-    =/  eve=event:homunculus  [%scroll %trigger dir avis]
+    =/  eve=event:homunculus  [%scroll-trigger dir avis]
     [%pass ~ %agent fons %poke %homunculus-event !>(eve)]
   ::
   ++  rego                         :: filter and order a list of navigation points
     |=  [r=rex o=ordo]
     ^-  ordo
     ?~  r  o
+    =;  ord
+      ?.  &(?=(^ ord) ?=(%scroll n.i.ord))
+        ord
+      =-  (weld p `ordo`[i.ord q])  (skid t.ord |=(i=dux (alo k.i.ord k.i)))
+    =/  [x=@ y=@]  [(taxo l.r r.r) (taxo t.r b.r)]
     %+  sort
       %+  skim  o
       ?+  lex   !!
@@ -1051,7 +1056,17 @@
         %nav-d  |=(d=dux (gth t.d t.r))
       ==
     |=  [a=dux b=dux]
-    (lth (reor [l.a t.a] [l.r t.r]) (reor [l.b t.b] [l.r t.r]))
+    ?+  lex  !!
+      %nav-l  (lth (reor [r.a (taxo t.a b.a)] [l.r y]) (reor [r.b (taxo t.b b.b)] [l.r y]))
+      %nav-r  (lth (reor [l.a (taxo t.a b.a)] [r.r y]) (reor [l.b (taxo t.b b.b)] [r.r y]))
+      %nav-u  (lth (reor [(taxo l.a r.a) b.a] [x t.r]) (reor [(taxo l.b r.b) b.b] [x t.r]))
+      %nav-d  (lth (reor [(taxo l.a r.a) t.a] [x b.r]) (reor [(taxo l.b r.b) t.b] [x b.r]))
+    ==
+  ::
+  ++  taxo                         :: average a and b
+    |=  [a=@ b=@]
+    ^-  @
+    (div (add a b) 2)
   ::
   ++  reor                         :: get the euclidean distance between two coordinates (with weights on y)
     |=  [a=loci b=loci]
@@ -1060,7 +1075,7 @@
       (add (mul 10 p.pyt) q.pyt)
     %-  sqt  %+  add
       (pow ?:((lte x.a x.b) (sub x.b x.a) (sub x.a x.b)) 2)
-    (pow (mul ?:((lte y.a y.b) (sub y.b y.a) (sub y.a y.b)) 2) 2)
+    (pow (mul ?:((lte y.a y.b) (sub y.b y.a) (sub y.a y.b)) 3) 2)
   ::
   ++  cibo                         :: handle an insert event
     ^-  (quip card ^ego)

@@ -15,14 +15,10 @@
       [%act p=path]
       [%form p=path q=form-data]
       [%hotkey p=path]
-      [%scroll p=scroll-event]
+      [%scroll-trigger p=?(%up %down) q=path]
   ==
 ::
 +$  form-data  (map path @t)
-::
-+$  scroll-event
-  $%  [%trigger p=?(%up %down) q=path]
-  ==
 ::
 +$  hotkeys  (list (pair hotkey path))
 +$  hotkey
