@@ -4120,32 +4120,43 @@
   ^-  blit:dill
   :: dill starts its coordinates at zero...
   =.  apex  [(dec x.apex) (dec y.apex)]
-  ?.  .?  sol
+  ?.  .?
+      sol
     [%hop apex]
+  =/  acc=(trel @ (unit fila) (list blit:dill))  [y.apex ~ ~]
   :-  %mor
   ^-  (list blit:dill)
-  %-  zing
-  ^-  (list (list blit:dill))
-  =<  p
-  %^  spin  sol  y.apex
-  |=  [lus=(list lux) y=@]
-  ^-  [(list blit:dill) @]
-  :_  +(y)
-  %-  zing
-  ^-  (list (list blit:dill))
-  %+  turn  lus
-  |=  =lux
-  ^-  (list blit:dill)
+  =-  (flop ?:(?=([[%klr ^] *] r.q) r.q(p.i (flop p.i.r.q)) r.q))
+  %^  spin  sol  acc
+  |=  [lus=(list lux) ac=_acc]
+  ^-  [(list lux) _acc]
+  :-  lus
+  =<  [+(p.q) ~ r.q]
+  %^  spin  lus  ac
+  |=  [=lux a=_acc]
+  ^-  [^lux _acc]
+  :-  lux
+  :-  p.a
   :: account for dill's coordinates again...
   =:  x1.lux  (dec x1.lux)
       x2.lux  (dec x2.lux)
     ==
-  ?~  p.lux  ~
-  :: dill needs the cursor to be positioned anew before each klr
-  :-  [%hop x1.lux y]
-  :_  ~
-  :-  %klr
-  :~  [fil.p.lux ?:(.?(txt.p.lux) txt.p.lux (reap +((sub x2.lux x1.lux)) ~-.))]
-  ==
+  ?~  p.lux
+    [~ r.a]
+  =/  lin=lina  ?^(txt.p.lux txt.p.lux (reap +((sub x2.lux x1.lux)) ~-.))
+  ?.  ?&  ?=(^ q.a)
+          ?=([[%klr ^] *] r.a)
+      ==
+    :-  [~ fil.p.lux]
+    :+  [%klr [[fil.p.lux lin] ~]]
+      [%hop x1.lux p.a]
+    ?:  ?=([[%klr ^] *] r.a)
+      r.a(p.i (flop p.i.r.a))
+    r.a
+  ?.  =(u.q.a fil.p.lux)
+    :-  [~ fil.p.lux]
+    r.a(p.i [[fil.p.lux lin] p.i.r.a])
+  :-  q.a
+  r.a(q.i.p.i (weld q.i.p.i.r.a lin))
 ::
 --
