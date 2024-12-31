@@ -29,11 +29,16 @@
   ==
 ++  on-save
   ^-  vase
-  !>(~)
+  !>(state)
 ++  on-load
   |=  old=vase
   ^-  (quip card _this)
-  =.  kelvin.ship-info.state  (get-kelvin bol)
+  =.  state
+    =/  old-state  (mole |.(!<(menu-state old)))
+    ?^  old-state  u.old-state
+    %_  state
+      kelvin.ship-info  (get-kelvin bol)
+    ==
   :_  this
   :~  ~(root-update tui bol)
       (make-menu-update-card our.bol [%load-state ~])

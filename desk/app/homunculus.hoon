@@ -187,7 +187,8 @@
       look.res.cor.urbs.ego  [~ %k %w]
     ==
   :_  hoc
-  :~  (iuvo [our.bol %homunculus-menu] [%open ~])
+  :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
+      (iuvo [our.bol %homunculus-menu] [%open ~])
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
