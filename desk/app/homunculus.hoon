@@ -150,8 +150,13 @@
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=cor =arx]                                                  :: system state
 +$  cura  @                                                            :: active frame index
++$  acro                                                               :: client source
+  $%  [%dill p=path]                                                   ::
+      [%http ~]                                                        ::
+  ==                                                                   ::
 +$  ego                                                                :: %homunculus state
-  $:  =cura                                                            ::
+  $:  =acro                                                            ::
+      =cura                                                            ::
       =urbs                                                            ::
       =viae                                                            ::
   ==                                                                   ::
@@ -353,38 +358,61 @@
       ::
     ==
     ::
-      %json
-    =/  zon  (ineo !<(json vase))
-    :: ~&  >  zon
-    ?~  zon
-      [~ hoc]
-      ::
-    ?:  ?=(%rez -.u.zon)
-      =.  size.res.cor.urbs.ego  +.u.zon
-      =^  cards  ego  (apto cura.ego)
+      %open
+    :_  hoc
+    :~  [%pass /dill-start %arvo %d %open %homunculus ~]
+        [%pass /dill-start %arvo %d %flee ~]
+    ==
+    ::
+      %dill-poke
+    =+  !<([ses=@ta belt=dill-belt:dill] vase)
+    =;  zon=(unit zona)
+      ?~  zon  [~ hoc]
+      :: temporary: press the del key to exit
+      ?:  ?=(%del -.u.zon)
+        :_  hoc
+        :~  [%give %fact ~[?>(?=(%dill -.acro.ego) p.acro.ego)] %dill-blit !>(`dill-blit:dill`[%clr ~])]
+            [%pass /dill-end %arvo %d %flee ~]
+            [%pass /dill-end %arvo %d %open %hood ~]
+        ==
+      =^  cards  ego  (ineo u.zon)
       [cards hoc]
-      ::
-    ?:  ?=(%esc -.u.zon)
-      =.  open.arx.urbs.ego  !open.arx.urbs.ego
-      =/  ren  (viso ~)
-      =.  ego
-        ?:  open.arx.urbs.ego
-          =.  ordo.via.arx.urbs.ego  (duco ren)
-          =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
-            (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
-          ego
-        =/  =via  (snag cura.ego viae.ego)
-        =.  ordo.via  (duco ren)
-        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
-        ego(viae (snap viae.ego cura.ego via))
-      :_  hoc
-      :~  (fio ~[ren])
-      ==
-      ::
-    =/  =via  ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
-    =/  lek=(unit lex)  (~(get by (scio rex.via)) (noto u.zon))
-    ?~  lek  [~ hoc]
-    =^  cards  ego  (muto u.lek u.zon via)
+    ?@  belt  [~ [%txt belt ~]]
+    ?+  -.belt  ~
+      %aro  [~ belt]
+      %ret  [~ belt]
+      %bac  [~ belt]
+      %del  [~ belt]
+      %rez  [~ belt]
+      %hit
+        [~ [%clk %d +.belt]]
+      %mod
+        ?:  =([%ctl ~-i] +.belt)
+          :: temporary: turn tab into esc
+          [~ [%esc ~]]
+        :+  ~  %mod
+        :-  ?-(mod.belt %ctl %ctl, %hyp %shf, %met %alt)
+        ?^  key.belt  !!
+        [%txt [key.belt ~]]
+      %txt
+        ?.  ?&  ?=(^ p.belt)
+                ?=(^ t.p.belt)
+                ?=(^ t.t.p.belt)
+                =(~-~3b. i.p.belt)
+                |(=(~-2 i.t.p.belt) =(~-5 i.t.p.belt))
+            ==
+          [~ belt]
+        :+  ~  %mod
+        :-  ?:(=(~-2 i.t.p.belt) %shf ?:(=(~-5 i.t.p.belt) %alt !!))
+        ?:  =(~-~41. i.t.t.p.belt)  [%aro %u]
+        ?:  =(~-~42. i.t.t.p.belt)  [%aro %d]
+        ?:  =(~-~43. i.t.t.p.belt)  [%aro %r]
+        ?:  =(~-~44. i.t.t.p.belt)  [%aro %l]
+        !!
+    ==
+    ::
+      %json
+    =^  cards  ego  (ineo (need (edo !<(json vase))))
     [cards hoc]
     ::
   ==
@@ -395,7 +423,13 @@
   ?>  =(our.bol src.bol)
   ?+  path  !!
     ::
+      [%dill @ ~]
+    =.  acro.ego  [%dill path]
+    =^  cards  ego  (apto cura.ego)
+    [cards hoc]
+    ::
       [%homunculus-http ~]
+    =.  acro.ego  [%http ~]
     [~ hoc]
     ::
   ==
@@ -422,7 +456,37 @@
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 |%
 ::
-++  ineo                           :: parse input text
+++  ineo                           :: handle terminal input
+  |=  zon=zona
+  ^-  (quip card ^ego)
+  ?:  ?=(%rez -.zon)
+    =.  size.res.cor.urbs.ego  +.zon
+    (apto cura.ego)
+    ::
+  ?:  ?=(%esc -.zon)
+    =.  open.arx.urbs.ego  !open.arx.urbs.ego
+    =/  ren  (viso ~)
+    =.  ego
+      ?:  open.arx.urbs.ego
+        =.  ordo.via.arx.urbs.ego  (duco ren)
+        =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+          (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
+        ego
+      =/  =via  (snag cura.ego viae.ego)
+      =.  ordo.via  (duco ren)
+      =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+      ego(viae (snap viae.ego cura.ego via))
+    :_  ego
+    :~  (fio ~[ren])
+    ==
+    ::
+  =/  =via  ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
+  =/  lek=(unit lex)  (~(get by (scio rex.via)) (noto zon))
+  ?~  lek
+    [~ ego]
+  (muto u.lek zon via)
+::
+++  edo                            :: parse input text
   |=  jon=json
   ^-  (unit zona)
   ::
@@ -540,14 +604,28 @@
 ++  fio                            :: make a display update card
   |=  =opus
   ^-  card
-  =;  txt=@t
-    [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
-  %-  crip
-  %-  zing
-  ^-  wall
-  %+  turn  (snoc opus [vado ~])
-  |=  i=[apex sol]
-  (dico i)
+  ?-  -.acro.ego
+    ::
+      %dill
+    :+  %give  %fact
+    :+  ~[p.acro.ego]  %dill-blit
+    !>
+    ^-  dill-blit:dill
+    :-  %mor
+    %+  turn  (snoc opus [vado ~])
+    |=  i=[apex sol]
+    (dido i)
+    ::
+      %http
+    =;  txt=@t  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
+    %-  crip
+    %-  zing
+    ^-  wall
+    %+  turn  (snoc opus [vado ~])
+    |=  i=[apex sol]
+    (dico i)
+    ::
+  ==
 ::
 ++  iuvo                           :: make an event card
   |=  [fon=fons eve=event:homunculus]
@@ -4036,5 +4114,38 @@
   ?~  txt.p.lux
     (reap +((sub x2.lux x1.lux)) ' ')
   (tufa txt.p.lux)
+::
+++  dido                           :: turn a render schematic into a blit
+  |=  [=apex =sol]
+  ^-  blit:dill
+  :: dill starts its coordinates at zero...
+  =.  apex  [(dec x.apex) (dec y.apex)]
+  ?.  .?  sol
+    [%hop apex]
+  :-  %mor
+  ^-  (list blit:dill)
+  %-  zing
+  ^-  (list (list blit:dill))
+  =<  p
+  %^  spin  sol  y.apex
+  |=  [lus=(list lux) y=@]
+  ^-  [(list blit:dill) @]
+  :_  +(y)
+  %-  zing
+  ^-  (list (list blit:dill))
+  %+  turn  lus
+  |=  =lux
+  ^-  (list blit:dill)
+  :: account for dill's coordinates again...
+  =:  x1.lux  (dec x1.lux)
+      x2.lux  (dec x2.lux)
+    ==
+  ?~  p.lux  ~
+  :: dill needs the cursor to be positioned anew before each klr
+  :-  [%hop x1.lux y]
+  :_  ~
+  :-  %klr
+  :~  [fil.p.lux ?:(.?(txt.p.lux) txt.p.lux (reap +((sub x2.lux x1.lux)) ~-.))]
+  ==
 ::
 --
