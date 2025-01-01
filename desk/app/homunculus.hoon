@@ -4120,7 +4120,9 @@
   |=  [=apex =sol]
   ^-  blit:dill
   :: dill starts its coordinates at zero...
-  =.  apex  [(dec x.apex) (dec y.apex)]
+  =:  x.apex  ?.(=(0 x.apex) (dec x.apex) 0)
+      y.apex  ?.(=(0 y.apex) (dec y.apex) 0)
+    ==
   ?.  .?
       sol
     [%hop apex]
@@ -4139,8 +4141,8 @@
   :-  lux
   :-  p.a
   :: account for dill's coordinates again...
-  =:  x1.lux  (dec x1.lux)
-      x2.lux  (dec x2.lux)
+  =:  x1.lux  ?.(=(0 x1.lux) (dec x1.lux) 0)
+      x2.lux  ?.(=(0 x2.lux) (dec x2.lux) 0)
     ==
   ?~  p.lux
     [~ r.a]
