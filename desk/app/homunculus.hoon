@@ -75,42 +75,78 @@
 +$  dux   [n=@tas k=rami =avis muri]                                   :: navigation point
 +$  rex   $@(~ dux)                                                    :: selection
 +$  ordo  (list dux)                                                   :: navigation context
-+$  omen  (map nota lex)                                               :: internal hotkey context
-+$  zona                                                               :: terminal input
-  $~  [%txt ~]
-  $%  [%rez p=@ud q=@ud]
-      [%clk p=?(%d %u) x=@ud y=@ud]
-      [%whe p=?(%d %u) x=@ud y=@ud]
-      [%mod mod=?(%ctl %alt %shf) key=$~([%txt ~] zona)]
-      [%aro p=?(%d %l %r %u)]
-      [%txt p=lina]
-      [%chr p=@c]
-      [%bac ~]
-      [%del ~]
-      [%ret ~]
-      [%esc ~]
-  ==
-+$  nota
-  $~  [%txt ~]
-  $%  [%clk ?(%d %u)]
-      [%whe ?(%d %u)]
-      [%mod ?(%ctl %alt %shf) $~([%txt ~] nota)]
-      [%aro ?(%d %l %r %u)]
-      [%txt ~]
-      [%chr @c]
-      [%bac ~]
-      [%del ~]
-      [%ret ~]
-      [%esc ~]
-  ==
-+$  lex
-  $?  %nav-l  %nav-r  %nav-u  %nav-d
-      %cur-l  %cur-r  %cur-u  %cur-d
-      %ins  %del  %act  %clk
-      %whe-u  %whe-d
-      %def
-  ==
-+$  ales  (map nota avis)
++$  zona                                                               :: terminal input, full
+  $~  [%txt ~]                                                         ::
+  $%  [%rez p=@ud q=@ud]                                               ::
+      [%clk p=?(%d %u) x=@ud y=@ud]                                    ::
+      [%whe p=?(%d %u) x=@ud y=@ud]                                    ::
+      [%mod mod=?(%ctl %alt %shf) key=$~([%txt ~] zona)]               ::
+      [%aro p=?(%d %l %r %u)]                                          ::
+      [%txt p=lina]                                                    ::
+      [%chr p=@c]                                                      ::
+      [%bac ~]                                                         ::
+      [%del ~]                                                         ::
+      [%ret ~]                                                         ::
+      [%esc ~]                                                         ::
+  ==                                                                   ::
++$  nota                                                               :: terminal input, as keys to be mapped to events
+  $~  [%txt ~]                                                         ::
+  $%  [%clk ?(%d %u)]                                                  ::
+      [%whe ?(%d %u)]                                                  ::
+      [%mod ?(%ctl %alt %shf) $~([%txt ~] nota)]                       ::
+      [%aro ?(%d %l %r %u)]                                            ::
+      [%txt ~]                                                         ::
+      [%chr @c]                                                        ::
+      [%bac ~]                                                         ::
+      [%del ~]                                                         ::
+      [%ret ~]                                                         ::
+      [%esc ~]                                                         ::
+  ==                                                                   ::
+++  lex                                                                :: input events by mode
+  |%                                                                   ::
+  +$  element                                                          ::
+    $?  %nav-l  %nav-r  %nav-u  %nav-d                                 ::
+        %select  %act  %sel-act                                        ::
+        %to-command  %to-leader  %to-editor                            ::
+    ==                                                                 ::
+  +$  command                                                          ::
+    $?  %insert  %delete  %run                                         ::
+        %toggle-menu                                                   ::
+        %to-element                                                    ::
+    ==                                                                 ::
+  +$  leader                                                           ::
+    $?  %insert  %delete                                               ::
+        %to-element                                                    ::
+    ==                                                                 ::
+  +$  insert                                                           ::
+    $?  %insert  %delete                                               ::
+        %to-editor                                                     ::
+    ==                                                                 ::
+  +$  visual                                                           ::
+    $?  %to-editor                                                     ::
+    ==                                                                 ::
+  +$  editor                                                           ::
+    $?  %to-element                                                    ::
+    ==                                                                 ::
+  --                                                                   ::
++$  omen                                                               :: keybindings per mode
+  $:  element=(map nota element:lex)                                   ::
+      command=(map nota command:lex)                                   ::
+      leader=(map nota leader:lex)                                     ::
+      insert=(map nota insert:lex)                                     ::
+      visual=(map nota visual:lex)                                     ::
+      editor=(map nota editor:lex)                                     ::
+  ==                                                                   ::
++$  mos                                                                :: interaction mode
+  $?  %insert                                                          ::
+      %visual                                                          ::
+      %editor                                                          ::
+      %leader                                                          ::
+      %command                                                         ::
+      %element                                                         ::
+  ==                                                                   ::
+:: +$  jus   :: TODO: command definition type
+:: +$  ales  :: TODO: %leader result to send
 +$  aves  (map avis rami)                                              :: ids to keys for a session
 +$  ossa  (map rami (map rami os))                                     :: line groups for a session
 +$  os                                                                 :: line data for intersections 
@@ -146,18 +182,22 @@
       =arae                                                            ::
   ==                                                                   ::
 +$  viae  (list via)                                                   :: frames
-+$  aula  layout:homunculus                                            :: layout 
-+$  arx   [open=? =via]                                                :: menu state
-+$  urbs  [=cor =arx]                                                  :: system state
 +$  cura  @                                                            :: active frame index
++$  aula  layout:homunculus                                            :: layout
++$  arx   [open=? =via]                                                :: menu state
++$  urbs  [=deus =arx]                                                 :: system element state
++$  acus  (pair @ tape)                                                :: command line state
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
   ==                                                                   ::
 +$  ego                                                                :: %homunculus state
   $:  =acro                                                            ::
-      =cura                                                            ::
+      =acus                                                            ::
+      =mos                                                             ::
+      =omen                                                            ::
       =urbs                                                            ::
+      =cura                                                            ::
       =viae                                                            ::
   ==                                                                   ::
 ::                                                                     ::
@@ -171,8 +211,9 @@
 +*  hoc  .
 ++  on-init
   ^-  (quip card _hoc)
-  =:  viae.ego               ~[*via]
-      look.res.cor.urbs.ego  [~ %k %w]
+  =:  viae.ego       ~[*via]
+      deus.urbs.ego  (volo [100 25])
+      omen.ego       scio
     ==
   :_  hoc
   :~  (iuvo [our.bol %homunculus-menu] [%open ~])
@@ -183,8 +224,9 @@
 ++  on-load
   |=  old=vase
   ^-  (quip card _hoc)
-  =:  viae.ego               ~[*via]
-      look.res.cor.urbs.ego  [~ %k %w]
+  =:  viae.ego       ~[*via]
+      deus.urbs.ego  (volo [100 25])
+      omen.ego       scio
     ==
   :_  hoc
   :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
@@ -457,36 +499,6 @@
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 |%
 ::
-++  ineo                           :: handle terminal input
-  |=  zon=zona
-  ^-  (quip card ^ego)
-  ?:  ?=(%rez -.zon)
-    =.  size.res.cor.urbs.ego  +.zon
-    (apto cura.ego)
-    ::
-  ?:  ?=(%esc -.zon)
-    =.  open.arx.urbs.ego  !open.arx.urbs.ego
-    =/  ren  (viso ~)
-    =.  ego
-      ?:  open.arx.urbs.ego
-        =.  ordo.via.arx.urbs.ego  (duco ren)
-        =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
-          (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
-        ego
-      =/  =via  (snag cura.ego viae.ego)
-      =.  ordo.via  (duco ren)
-      =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
-      ego(viae (snap viae.ego cura.ego via))
-    :_  ego
-    :~  (fio ~[ren])
-    ==
-    ::
-  =/  =via  ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
-  =/  lek=(unit lex)  (~(get by (scio rex.via)) (noto zon))
-  ?~  lek
-    [~ ego]
-  (muto u.lek zon via)
-::
 ++  edo                            :: parse input text
   |=  jon=json
   ^-  (unit zona)
@@ -597,7 +609,49 @@
     ~
   ~
 ::
-++  bibo                           :: get the source from a bowl
+++  ineo                           :: handle terminal input
+  |=  zon=zona
+  ^-  (quip card ^ego)
+  ?:  ?=(%rez -.zon)
+    =.  deus.urbs.ego  (volo +.zon)
+    (apto cura.ego)
+    ::
+  ?-  mos.ego
+    ::
+      %element
+    =?  zon  ?=([%txt @ ~] zon)  [%chr i.p.zon]
+    =/  lex  (~(get by element.omen.ego) (noto zon))
+    ?~  lex  [~ ego]
+    %^    muto
+        zon
+      u.lex
+    ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
+    ::
+      %command
+    =?  zon  &(?=([%txt %58 ~] zon) ?=(~ q.acus.ego))  [%chr `@`i.p.zon]
+    =/  lex  (~(get by command.omen.ego) (noto zon))
+    ?~  lex  [~ ego]
+    %+  gero
+      zon
+    u.lex
+    ::
+      %leader
+    [~ ego]
+    ::
+      %editor
+    =?  zon  ?=([%txt @ ~] zon)  [%chr i.p.zon]
+    [~ ego]
+    ::
+      %visual
+    =?  zon  ?=([%txt @ ~] zon)  [%chr i.p.zon]
+    [~ ego]
+    ::
+      %insert
+    [~ ego]
+    ::
+  ==
+::
+++  bibo                           :: get session source from a bowl
   |=  bol=bowl:gall
   ^-  fons
   [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]
@@ -614,8 +668,7 @@
     ^-  dill-blit:dill
     :-  %mor
     %+  turn  (snoc opus [vado ~])
-    |=  i=[apex sol]
-    (dido i)
+    dido
     ::
       %http
     =;  txt=@t  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
@@ -623,8 +676,7 @@
     %-  zing
     ^-  wall
     %+  turn  (snoc opus [vado ~])
-    |=  i=[apex sol]
-    (dico i)
+    dico
     ::
   ==
 ::
@@ -638,41 +690,129 @@
   ^-  card
   [%pass ~ %agent [our %homunculus-menu] %poke %homunculus-menu-diff !>(dif)]
 ::
-++  scio                           :: derive system hotkey context from a selection
-  |_  =rex
+++  scio                           :: construct keybinding state
+  ^-  omen
+  =|  =omen
+  %_  omen
+    element
+      %-  malt
+      ^-  (list [nota element:lex])
+      :~  [[%aro %l] %nav-l]   [[%aro %r] %nav-r]   [[%aro %u] %nav-u]   [[%aro %d] %nav-d]
+          [[%chr ~-h] %nav-l]  [[%chr ~-l] %nav-r]  [[%chr ~-k] %nav-u]  [[%chr ~-j] %nav-d]
+          [[%ret ~] %act]
+          [[%chr ~-~3a.] %to-command]
+      ==
+    command
+      %-  malt
+      ^-  (list [nota command:lex])
+      :~  [[%txt ~] %insert]  [[%bac ~] %delete]
+          [[%chr ~-~3a.] %toggle-menu]
+          [[%esc ~] %to-element]
+      ==
+  ==
+::
+++  eruo                           :: get system element keys
+  |%
+  ++  root        `rami`~
+  ++  menu        `rami`~[[%l 1]]
+  ++  line        `rami`~[[%l 0] [%n 0]]
+  ++  container   |=(i=@ `rami`~[[%n i]])
+  --
+::
+++  volo                           :: produce the root element
+  |=  siz=[w=@ud h=@ud]
+  ^-  deus
+  =|  [=cor =gens]
+  =:  size.res.cor  siz
+      look.res.cor  [~ %k %w]
+    ==
+  :-  cor
+  =;  =vela
+    gens(l ~[(geno [~ cor] ~ vela)])
+  ;layer(fy "end")
+    ;+  sail:velo
+  ==
+::
+++  velo                           :: render the status line
+  |%
+  ++  deus
+    ^-  ^deus
+    ?>  ?&  ?=(^ l.gens.deus.urbs.ego)
+            ?=(^ n.gens.i.l.gens.deus.urbs.ego)
+        ==
+    %_  deus.urbs.ego
+      i.n.gens.i.l.gens
+        (geno [line:eruo cor.i.n.gens.i.l.gens.deus.urbs.ego] ~ sail)
+    ==
+  ++  sail
+    ^-  manx
+    =;  [=mart =marl]  [[%row [[%w "100%"] [%h "1"] mart]] marl]
+    ?+  mos.ego
+      ::
+      :-  ~
+      ;+  ;/  "mode not implemented"
+      ::
+        %element
+      :-  ~[[%fg "#000000"] [%bg "#69995D"]]
+      ;=  ;row(px "1"):"%element"
+      ==
+      ::
+        %command
+      :-  ~[[%fg "#000000"] [%bg "#D64933"]]
+      ;=  ;row(px "1"):"%command"
+      ==
+      ::
+    ==
+  --
+::
+++  gero                           :: handle %command mode events
+  |_  [zon=zona lex=command:lex]
+  ::
   ++  $
-    ^-  omen
-    ?~  rex    nav
-    ?+  n.rex  nav
-      %input   inp
-    ==
-  ++  nav
-    ^-  omen
-    %-  malt
-    ^-  (list [nota lex])
-    :~  [[%aro %l] %nav-l]  [[%aro %r] %nav-r]
-        [[%aro %u] %nav-u]  [[%aro %d] %nav-d]
-        [[%whe %u] %whe-u]  [[%whe %d] %whe-d]
-        [[%clk %u] %clk]  [[%clk %d] %clk]
-        [[%ret ~] %act]
-    ==
-  ++  inp
-    ^-  omen
-    %-  malt
-    ^-  (list [nota lex])
-    :~  [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
-        [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
-        [[%whe %u] %whe-u]  [[%whe %d] %whe-d]
-        [[%clk %u] %clk]  [[%clk %d] %clk]
-        [[%txt ~] %ins]  [[%bac ~] %del]
-    ==
+    ^-  (quip card ^ego)
+    ?:  ?=(%to-element lex)
+      =:  mos.ego   %element
+          acus.ego  *acus
+        ==
+      =.  deus.urbs.ego  deus:velo
+      :_  ego
+      :~  (fio ~[(viso line:eruo)])
+      ==
+      ::
+    ?:  ?=(%toggle-menu lex)
+      =:  open.arx.urbs.ego  !open.arx.urbs.ego
+          mos.ego            %element
+          acus.ego           *acus
+        ==
+      =.  deus.urbs.ego      deus:velo
+      =/  ren  (viso ~)
+      =.  ego
+        ?:  open.arx.urbs.ego
+          =.  ordo.via.arx.urbs.ego  (duco ren)
+          =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+            (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
+          ego
+        =/  =via  (snag cura.ego viae.ego)
+        =.  ordo.via  (duco ren)
+        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+        ego(viae (snap viae.ego cura.ego via))
+      :_  ego
+      :~  (fio ~[ren])
+      ==
+      ::
+    [~ ego]
+  ::
   --
 ::
 ++  paro                           :: produce containers for a frame layout
   |=  =aula
   =|  pex=apex
   =|  acc=(map fons cor)
-  =/  siz  size.res.cor.urbs.ego
+  =/  siz
+    %_  size.res.cor.deus.urbs.ego
+      :: make space for the status line:
+      h  (dec h.size.res.cor.deus.urbs.ego)
+    ==
   |-  ^+  acc
   ?-  -.aula
       %$
@@ -682,7 +822,7 @@
     %_  cor
       apex      pex
       size.res  siz
-      look.res  look.res.cor.urbs.ego
+      look.res  look.res.cor.deus.urbs.ego
     ==
       %v
     =/  lef  (div (mul p.aula w.siz) 100)
@@ -707,10 +847,10 @@
   =/  containers  (paro aula.via)
   =:  arae.via.arx.urbs.ego
         ?~  arae.via.arx.urbs.ego  arae.via.arx.urbs.ego
-        =/  k=rami  ~[[%l 0]]
+        =/  k=rami  menu:eruo
         =.  deus.i.arae.via.arx.urbs.ego
           %:  geno
-            [k cor.urbs.ego]
+            [k cor.deus.urbs.ego]
             i.arae.via.arx.urbs.ego
             vela.i.arae.via.arx.urbs.ego
           ==
@@ -724,7 +864,7 @@
         %+  spun  arae.via
         |=  [=ara i=@]
         :_  +(i)
-        (curo ~[[%n i]] (~(got by containers) fons.ara) ara)
+        (curo (container:eruo i) (~(got by containers) fons.ara) ara)
     ==
   =.  viae.ego  (snap viae.ego cura via)
   ?.  =(cura cura.ego)
@@ -751,8 +891,8 @@
     =.  key   ?>(?=(^ key) key(t ~[[axi 0]]))
     =/  =dei  ~[(geno [key con] ses vela.ses)]
     ?+  axi  [con ~^~^~]
-      %n  [con ~^~^dei]
-      %l  [con ~^dei^~]
+      %n     [con ~^~^dei]
+      %l     [con ~^dei^~]
     ==
   =/  [ave=aves osa=ossa]  (vivo key deus.ses)
   ses(aves ave, ossa osa)
@@ -776,11 +916,11 @@
           i.a.g.p.i.upd
         $(a.g.p.i.upd t.a.g.p.i.upd)
       ?~  id-attr
-        :: root update
+        :: session root update
         =/  key=rami
           ?@  ses-location
-            ~[[%l 0]]
-          ~[[%n +.ses-location]]
+            menu:eruo
+          (container:eruo +.ses-location)
         :-  key
         (curo key cor.deus.ses ses(vela p.i.upd))
       :: relative branch update
@@ -871,7 +1011,7 @@
   |=  key=rami
   ^-  rami
   :: keys descend from the global root.
-  :: each child element is a session branch.
+  :: each session branch is a child element.
   ?~  key  !!  t.key
 ::
 ++  exuo                           :: get an element from a session branch by key (or crash)
@@ -910,35 +1050,28 @@
     %l  ses(l.gens (snap l.gens.ses ager.i.key $(ses nex, key t.key)))
   ==
 ::
-++  muto                           :: handle an input event for a frame
-  |_  [=lex zon=zona =via]
+++  muto                           :: handle %element mode events
+  |_  [zon=zona lex=element:lex =via]
   ++  $
     ^-  (quip card ^ego)
     ?:  ?|  ?=(%nav-l lex)  ?=(%nav-r lex)
             ?=(%nav-u lex)  ?=(%nav-d lex)
         ==
       eo
-    ?:  ?=(%ins lex)
-      cibo
-    ?:  ?=(%del lex)
-      abdo
-    ?:  ?|  ?=(%cur-l lex)  ?=(%cur-r lex)
-            ?=(%cur-u lex)  ?=(%cur-d lex)
-        ==
-      loco
     ?:  ?=(%act lex)
       moto
-    ?:  ?=(%clk lex)
-      ico
-    ?:  ?|  ?=(%whe-u lex)  ?=(%whe-d lex)
-        ==
-      gyro
+    ?:  ?=(%to-command lex)
+       =.  mos.ego        %command
+       =.  deus.urbs.ego  deus:velo
+       :_  ego
+       :~  (fio ~[(viso line:eruo)])
+       ==
     ::
     [~ ego]
   ::
   ++  sto                          :: get the active session
     ^-  ara
-    ?.  &(?=(^ rex.via) ?=(^ k.rex.via))
+    ?:  |(?=(~ rex.via) ?=(~ k.rex.via) open.arx.urbs.ego)
       ?~  arae.via  !!
       i.arae.via
     (snag ager.i.k.rex.via arae.via)
@@ -1156,310 +1289,310 @@
       (pow ?:((lte x.a x.b) (sub x.b x.a) (sub x.a x.b)) 2)
     (pow (mul ?:((lte y.a y.b) (sub y.b y.a) (sub y.a y.b)) 3) 2)
   ::
-  ++  cibo                         :: handle an insert event
-    ^-  (quip card ^ego)
-    ?.  &(?=(%txt -.zon) ?=(^ p.zon) ?=(^ rex.via))
-      [~ ego]
-    =/  ses=ara  sto
-    =/  el=deus  (exuo k.rex.via deus.ses)
-    ?.  ?=(%input -.ars.cor.el)
-      [~ ego]
-    =.  ars.cor.el
-      ?:  =(1 h.size.res.cor.el)
-        =.  vox.ars.cor.el
-          :_  ~
-          ?~  vox.ars.cor.el  ?~(t.p.zon ~[i.p.zon] p.zon)
-          ?~  t.p.zon  (into i.vox.ars.cor.el x.i.ars.cor.el i.p.zon)
-          %+  weld  (weld (scag +(x.i.ars.cor.el) i.vox.ars.cor.el) p.zon)
-          (slag +(x.i.ars.cor.el) i.vox.ars.cor.el)
-        =.  i.ars.cor.el
-          ?~  vox.ars.cor.el  i.ars.cor.el
-          =/  x=@ud  +(x.i.ars.cor.el)
-          ?:  (gth x (lent i.vox.ars.cor.el))
-            i.ars.cor.el
-          [x y.i.ars.cor.el]
-        %_  ars.cor.el
-          de
-            ?:  (lth (sub x.i.ars.cor.el de.ars.cor.el) w.size.res.cor.el)
-              de.ars.cor.el
-            +(de.ars.cor.el)
-        ==
-      =/  row=lina
-        ?~  vox.ars.cor.el  ~
-        (snag y.i.ars.cor.el `vox`vox.ars.cor.el)
-      =/  wup=bean
-        ?.  ?&  =(~-. i.p.zon)
-                !=(0 y.i.ars.cor.el)
-                (lth x.i.ars.cor.el (sumo row))
-            ==
-          |
-        %+  gte  w.size.res.cor.el
-        %+  add  x.i.ars.cor.el
-        %-  lent
-        ?~  vox.ars.cor.el  ~
-        (snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
-      =.  row
-        ?~  t.p.zon  (into row x.i.ars.cor.el i.p.zon)
-        %+  weld  (weld (scag +(x.i.ars.cor.el) row) p.zon)
-        (slag +(x.i.ars.cor.el) row)
-      ?:  wup
-        =.  vox.ars.cor.el
-          %+  weld
-            (scag (dec y.i.ars.cor.el) vox.ars.cor.el)
-          %:  oro
-            [~ w.size.res.cor.el]
-            [~ h.size.res.cor.el]
-            ^-  lina
-            %-  zing
-            :+  `lina`(snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
-              row
-            (slag +(y.i.ars.cor.el) vox.ars.cor.el)
-          ==
-        %_  ars.cor.el
-          i  [?~(t.p.zon 0 (pono (flop p.zon))) y.i.ars.cor.el]
-        ==
-      =/  len=@ud  (pono row)
-      ?:  (lte len w.size.res.cor.el)
-        %_  ars.cor.el
-          vox  (snap vox.ars.cor.el y.i.ars.cor.el row)
-          x.i  +(x.i.ars.cor.el)
-        ==
-      =.  vox.ars.cor.el
-        %+  weld
-          (scag y.i.ars.cor.el vox.ars.cor.el)
-        %:  oro
-          [~ w.size.res.cor.el]
-          [~ h.size.res.cor.el]
-          `lina`(zing [row (slag +(y.i.ars.cor.el) vox.ars.cor.el)])
-        ==
-      =.  i.ars.cor.el
-        =/  nlen=(unit @ud)
-          ?~  vox.ars.cor.el  ~
-          [~ (lent (snag y.i.ars.cor.el `vox`vox.ars.cor.el))]
-        =/  npos=(unit @ud)
-          ?:  |(?=(~ nlen) (lte +(x.i.ars.cor.el) u.nlen))  ~
-          [~ (sub +(x.i.ars.cor.el) u.nlen)]
-        ?~  npos
-          [+(x.i.ars.cor.el) y.i.ars.cor.el]
-        [u.npos +(y.i.ars.cor.el)]
-      =.  de.ars.cor.el
-        ?:  (lth (sub y.i.ars.cor.el de.ars.cor.el) h.size.res.cor.el)
-          de.ars.cor.el
-        +(de.ars.cor.el)
-      ars.cor.el
-    =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
-    :_  ego
-    :~  (fio ~[(viso k.rex.via)])
-    ==
-  ::
-  ++  abdo                         :: handle a delete event
-    ^-  (quip card ^ego)
-    ?~  rex.via  [~ ego]
-    =/  ses=ara  sto
-    =/  el=deus  (exuo k.rex.via deus.ses)
-    ?.  ?=(%input -.ars.cor.el)
-      [~ ego]
-    =.  ars.cor.el
-      ?:  =(1 h.size.res.cor.el)
-        ?~  vox.ars.cor.el  ars.cor.el
-        ?:  =(0 x.i.ars.cor.el)  ars.cor.el
-        =.  x.i.ars.cor.el  (dec x.i.ars.cor.el)
-        =.  i.vox.ars.cor.el  (oust [x.i.ars.cor.el 1] i.vox.ars.cor.el)
-        =.  de.ars.cor.el
-          ?:  &((lte x.i.ars.cor.el de.ars.cor.el) !=(0 de.ars.cor.el))
-            ?:  (gth w.size.res.cor.el de.ars.cor.el)  0
-            +((sub de.ars.cor.el w.size.res.cor.el))
-          de.ars.cor.el
-        ars.cor.el
-      ?:  =([0 0] i.ars.cor.el)  ars.cor.el
-      =/  arow=lina
-        ?:  |(=(0 y.i.ars.cor.el) ?=(~ vox.ars.cor.el))  ~
-        (snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
-      =?  arow  =(0 x.i.ars.cor.el)
-        (snip arow)
-      =/  alen=@ud  (lent arow)
-      =/  row=lina
-        ?~  vox.ars.cor.el  ~
-        (snag y.i.ars.cor.el `vox`vox.ars.cor.el)
-      =?  row  !=(0 x.i.ars.cor.el)
-        (oust [(dec x.i.ars.cor.el) 1] row)
-      ?:  ?&  ?=(^ arow)
-              ?|  ?&  (lth alen w.size.res.cor.el)
-                      %+  lte  (sumo row)
-                      ?:  (lte alen w.size.res.cor.el)
-                      (sub w.size.res.cor.el alen)  0
-                  ==
-                  ?&  |(=(0 x.i.ars.cor.el) =(1 x.i.ars.cor.el))
-                      !=(~-. (rear arow))
-          ==  ==  ==
-        =.  vox.ars.cor.el
-          %+  weld
-            ?:  =(0 y.i.ars.cor.el)  ~
-            `vox`(scag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
-          %:  oro
-            [~ w.size.res.cor.el]
-            [~ h.size.res.cor.el]
-            ^-  lina
-            %-  zing
-            [arow row `vox`(slag +(y.i.ars.cor.el) `vox`vox.ars.cor.el)]
-          ==
-        =.  i.ars.cor.el
-          =/  nlen=@ud
-            ?:  |(=(0 y.i.ars.cor.el) ?=(~ vox.ars.cor.el))  0
-            (lent (snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el))
-          =/  lend=@ud  ?:((lte nlen alen) (sub alen nlen) 0)
-          ?.  =(0 lend)
-            [lend y.i.ars.cor.el]
-          :_  ?:(=(0 y.i.ars.cor.el) 0 (dec y.i.ars.cor.el))
-          ?:  =(0 x.i.ars.cor.el)  alen
-          (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.cor.el)
-        %_  ars.cor.el
-          de
-            ?:  (lth y.i.ars.cor.el de.ars.cor.el)
-              (dec de.ars.cor.el)
-            de.ars.cor.el
-        ==
-      =/  len=@ud  (lent row)
-      =/  brow=lina
-        ?:  ?|  ?=(~ vox.ars.cor.el)
-                (lth (lent vox.ars.cor.el) +(+(y.i.ars.cor.el)))
-            ==
-          ~
-        (snag +(y.i.ars.cor.el) `vox`vox.ars.cor.el)
-      =/  bwor=@ud  (sumo brow)
-      ?.  ?|  ?&  (lth len w.size.res.cor.el)
-                  (lte bwor (sub w.size.res.cor.el len))
-              ==
-              &(?=(^ row) =(~-. (rear row)))
-          ==
-        %_  ars.cor.el
-          vox  (snap vox.ars.cor.el y.i.ars.cor.el row)
-          x.i  ?:(=(0 x.i.ars.cor.el) 0 (dec x.i.ars.cor.el))
-        ==
-      =.  vox.ars.cor.el
-        %+  weld
-          (scag y.i.ars.cor.el vox.ars.cor.el)
-        %:  oro
-          [~ w.size.res.cor.el]
-          [~ h.size.res.cor.el]
-          `lina`(zing [row brow (slag +(+(y.i.ars.cor.el)) vox.ars.cor.el)])
-        ==
-      =.  i.ars.cor.el
-        ?:  &(=(0 y.i.ars.cor.el) !=(0 x.i.ars.cor.el))
-          [(dec x.i.ars.cor.el) 0]
-        ?.  |(=(0 x.i.ars.cor.el) =(1 x.i.ars.cor.el))
-          [(dec x.i.ars.cor.el) y.i.ars.cor.el]
-        =.  y.i.ars.cor.el  (dec y.i.ars.cor.el)
-        =/  l=@ud
-          (lent `lina`(snag y.i.ars.cor.el `vox`vox.ars.cor.el))
-        [?:(=(0 l) 0 (dec l)) y.i.ars.cor.el]
-      %_  ars.cor.el
-        de
-          ?:  (lth y.i.ars.cor.el de.ars.cor.el)
-            (dec de.ars.cor.el)
-          de.ars.cor.el
-      ==
-    =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
-    :_  ego
-    :~  (fio ~[(viso k.rex.via)])
-    ==
-  ::
-  ++  loco                         :: handle an input cursor move event
-    ^-  (quip card ^ego)
-    ?~  rex.via  [~ ego]
-    =/  ses=ara  sto
-    =/  el=deus  (exuo k.rex.via deus.ses)
-    ?.  ?=(%input -.ars.cor.el)
-      [~ ego]
-    =/  oi=loci  i.ars.cor.el
-    =.  i.ars.cor.el
-      ?~  vox.ars.cor.el  i.ars.cor.el
-      ?+  lex  i.ars.cor.el
-          %cur-l
-        ?:  =(1 h.size.res.cor.el)
-          [?:(=(0 x.i.ars.cor.el) 0 (dec x.i.ars.cor.el)) y.i.ars.cor.el]
-        ?:  =(0 x.i.ars.cor.el)
-          ?:  =(0 y.i.ars.cor.el)  i.ars.cor.el
-          =.  y.i.ars.cor.el  (dec y.i.ars.cor.el)
-          =/  l=@ud  (lent `lina`(snag y.i.ars.cor.el `vox`vox.ars.cor.el))
-          [?:(=(0 l) 0 (dec l)) y.i.ars.cor.el]
-        [(dec x.i.ars.cor.el) y.i.ars.cor.el]
-          %cur-r
-        ?:  =(1 h.size.res.cor.el)
-          =/  x=@ud  +(x.i.ars.cor.el)
-          ?:  (gth x (lent i.vox.ars.cor.el))
-            i.ars.cor.el
-          [x y.i.ars.cor.el]
-        =/  x=@ud  +(x.i.ars.cor.el)
-        =/  l=@ud  (lent `lina`(snag y.i.ars.cor.el `vox`vox.ars.cor.el))
-        ?:  (gth x l)
-          =/  y=@ud  +(y.i.ars.cor.el)
-          ?:  (gte y (lent vox.ars.cor.el))
-            i.ars.cor.el
-          [0 y]
-        [x y.i.ars.cor.el]
-          %cur-u
-        ?:  =(1 h.size.res.cor.el)  [0 0]
-        ?:  =(0 y.i.ars.cor.el)  [0 0]
-        =.  y.i.ars.cor.el  (dec y.i.ars.cor.el)
-        =/  l=@ud  (pono (snag y.i.ars.cor.el `vox`vox.ars.cor.el))
-        :_  y.i.ars.cor.el
-        ?:  (gth x.i.ars.cor.el l)  l
-        x.i.ars.cor.el
-          %cur-d
-        ?:  =(1 h.size.res.cor.el)
-          [(lent i.vox.ars.cor.el) y.i.ars.cor.el]
-        =/  y=@ud  +(y.i.ars.cor.el)
-        ?:  (gte y (lent vox.ars.cor.el))
-          [(lent (rear vox.ars.cor.el)) y.i.ars.cor.el]
-        =.  y.i.ars.cor.el  y
-        =/  l=@ud  (pono (snag y.i.ars.cor.el `vox`vox.ars.cor.el))
-        :_  y.i.ars.cor.el
-        ?:  (gth x.i.ars.cor.el l)  l
-        x.i.ars.cor.el
-      ==
-    ?:  =(oi i.ars.cor.el)
-      =.  lex
-        ?+  lex   lex
-          %cur-l  %nav-l
-          %cur-r  %nav-r
-          %cur-u  %nav-u
-          %cur-d  %nav-d
-        ==
-      eo
-    =/  oab=@ud  de.ars.cor.el
-    =.  de.ars.cor.el
-      ?~  vox.ars.cor.el  de.ars.cor.el
-      ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
-        ?:  =(0 de.ars.cor.el)  0
-        ?:  =(1 h.size.res.cor.el)
-          ?:  ?=(%cur-u lex)  0
-          ?:  (lte x.i.ars.cor.el de.ars.cor.el)
-            (dec de.ars.cor.el)
-          de.ars.cor.el
-        ?:  (lth y.i.ars.cor.el de.ars.cor.el)
-          (dec de.ars.cor.el)
-        de.ars.cor.el
-      ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
-        ?:  =(1 h.size.res.cor.el)
-          ?:  (lth (sub x.i.ars.cor.el de.ars.cor.el) w.size.res.cor.el)
-            de.ars.cor.el
-          ?:  ?=(%cur-d lex)
-            =/  l=@ud  (lent i.vox.ars.cor.el)
-            ?:((lte w.size.res.cor.el l) +((sub l w.size.res.cor.el)) 0)
-          +(de.ars.cor.el)
-        ?:  (lth (sub y.i.ars.cor.el de.ars.cor.el) h.size.res.cor.el)
-          de.ars.cor.el
-        +(de.ars.cor.el)
-      de.ars.cor.el
-    =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
-    ?:  =(oab de.ars.cor.el)
-      :_  ego
-      :~  (fio ~)
-      ==
-    :_  ego
-    :~  (fio ~[(viso k.rex.via)])
-    ==
+  :: ++  cibo                         :: handle an insert event
+  ::   ^-  (quip card ^ego)
+  ::   ?.  &(?=(%txt -.zon) ?=(^ p.zon) ?=(^ rex.via))
+  ::     [~ ego]
+  ::   =/  ses=ara  sto
+  ::   =/  el=deus  (exuo k.rex.via deus.ses)
+  ::   ?.  ?=(%input -.ars.cor.el)
+  ::     [~ ego]
+  ::   =.  ars.cor.el
+  ::     ?:  =(1 h.size.res.cor.el)
+  ::       =.  vox.ars.cor.el
+  ::         :_  ~
+  ::         ?~  vox.ars.cor.el  ?~(t.p.zon ~[i.p.zon] p.zon)
+  ::         ?~  t.p.zon  (into i.vox.ars.cor.el x.i.ars.cor.el i.p.zon)
+  ::         %+  weld  (weld (scag +(x.i.ars.cor.el) i.vox.ars.cor.el) p.zon)
+  ::         (slag +(x.i.ars.cor.el) i.vox.ars.cor.el)
+  ::       =.  i.ars.cor.el
+  ::         ?~  vox.ars.cor.el  i.ars.cor.el
+  ::         =/  x=@ud  +(x.i.ars.cor.el)
+  ::         ?:  (gth x (lent i.vox.ars.cor.el))
+  ::           i.ars.cor.el
+  ::         [x y.i.ars.cor.el]
+  ::       %_  ars.cor.el
+  ::         de
+  ::           ?:  (lth (sub x.i.ars.cor.el de.ars.cor.el) w.size.res.cor.el)
+  ::             de.ars.cor.el
+  ::           +(de.ars.cor.el)
+  ::       ==
+  ::     =/  row=lina
+  ::       ?~  vox.ars.cor.el  ~
+  ::       (snag y.i.ars.cor.el `vox`vox.ars.cor.el)
+  ::     =/  wup=bean
+  ::       ?.  ?&  =(~-. i.p.zon)
+  ::               !=(0 y.i.ars.cor.el)
+  ::               (lth x.i.ars.cor.el (sumo row))
+  ::           ==
+  ::         |
+  ::       %+  gte  w.size.res.cor.el
+  ::       %+  add  x.i.ars.cor.el
+  ::       %-  lent
+  ::       ?~  vox.ars.cor.el  ~
+  ::       (snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
+  ::     =.  row
+  ::       ?~  t.p.zon  (into row x.i.ars.cor.el i.p.zon)
+  ::       %+  weld  (weld (scag +(x.i.ars.cor.el) row) p.zon)
+  ::       (slag +(x.i.ars.cor.el) row)
+  ::     ?:  wup
+  ::       =.  vox.ars.cor.el
+  ::         %+  weld
+  ::           (scag (dec y.i.ars.cor.el) vox.ars.cor.el)
+  ::         %:  oro
+  ::           [~ w.size.res.cor.el]
+  ::           [~ h.size.res.cor.el]
+  ::           ^-  lina
+  ::           %-  zing
+  ::           :+  `lina`(snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
+  ::             row
+  ::           (slag +(y.i.ars.cor.el) vox.ars.cor.el)
+  ::         ==
+  ::       %_  ars.cor.el
+  ::         i  [?~(t.p.zon 0 (pono (flop p.zon))) y.i.ars.cor.el]
+  ::       ==
+  ::     =/  len=@ud  (pono row)
+  ::     ?:  (lte len w.size.res.cor.el)
+  ::       %_  ars.cor.el
+  ::         vox  (snap vox.ars.cor.el y.i.ars.cor.el row)
+  ::         x.i  +(x.i.ars.cor.el)
+  ::       ==
+  ::     =.  vox.ars.cor.el
+  ::       %+  weld
+  ::         (scag y.i.ars.cor.el vox.ars.cor.el)
+  ::       %:  oro
+  ::         [~ w.size.res.cor.el]
+  ::         [~ h.size.res.cor.el]
+  ::         `lina`(zing [row (slag +(y.i.ars.cor.el) vox.ars.cor.el)])
+  ::       ==
+  ::     =.  i.ars.cor.el
+  ::       =/  nlen=(unit @ud)
+  ::         ?~  vox.ars.cor.el  ~
+  ::         [~ (lent (snag y.i.ars.cor.el `vox`vox.ars.cor.el))]
+  ::       =/  npos=(unit @ud)
+  ::         ?:  |(?=(~ nlen) (lte +(x.i.ars.cor.el) u.nlen))  ~
+  ::         [~ (sub +(x.i.ars.cor.el) u.nlen)]
+  ::       ?~  npos
+  ::         [+(x.i.ars.cor.el) y.i.ars.cor.el]
+  ::       [u.npos +(y.i.ars.cor.el)]
+  ::     =.  de.ars.cor.el
+  ::       ?:  (lth (sub y.i.ars.cor.el de.ars.cor.el) h.size.res.cor.el)
+  ::         de.ars.cor.el
+  ::       +(de.ars.cor.el)
+  ::     ars.cor.el
+  ::   =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
+  ::   :_  ego
+  ::   :~  (fio ~[(viso k.rex.via)])
+  ::   ==
+  :: ::
+  :: ++  abdo                         :: handle a delete event
+  ::   ^-  (quip card ^ego)
+  ::   ?~  rex.via  [~ ego]
+  ::   =/  ses=ara  sto
+  ::   =/  el=deus  (exuo k.rex.via deus.ses)
+  ::   ?.  ?=(%input -.ars.cor.el)
+  ::     [~ ego]
+  ::   =.  ars.cor.el
+  ::     ?:  =(1 h.size.res.cor.el)
+  ::       ?~  vox.ars.cor.el  ars.cor.el
+  ::       ?:  =(0 x.i.ars.cor.el)  ars.cor.el
+  ::       =.  x.i.ars.cor.el  (dec x.i.ars.cor.el)
+  ::       =.  i.vox.ars.cor.el  (oust [x.i.ars.cor.el 1] i.vox.ars.cor.el)
+  ::       =.  de.ars.cor.el
+  ::         ?:  &((lte x.i.ars.cor.el de.ars.cor.el) !=(0 de.ars.cor.el))
+  ::           ?:  (gth w.size.res.cor.el de.ars.cor.el)  0
+  ::           +((sub de.ars.cor.el w.size.res.cor.el))
+  ::         de.ars.cor.el
+  ::       ars.cor.el
+  ::     ?:  =([0 0] i.ars.cor.el)  ars.cor.el
+  ::     =/  arow=lina
+  ::       ?:  |(=(0 y.i.ars.cor.el) ?=(~ vox.ars.cor.el))  ~
+  ::       (snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
+  ::     =?  arow  =(0 x.i.ars.cor.el)
+  ::       (snip arow)
+  ::     =/  alen=@ud  (lent arow)
+  ::     =/  row=lina
+  ::       ?~  vox.ars.cor.el  ~
+  ::       (snag y.i.ars.cor.el `vox`vox.ars.cor.el)
+  ::     =?  row  !=(0 x.i.ars.cor.el)
+  ::       (oust [(dec x.i.ars.cor.el) 1] row)
+  ::     ?:  ?&  ?=(^ arow)
+  ::             ?|  ?&  (lth alen w.size.res.cor.el)
+  ::                     %+  lte  (sumo row)
+  ::                     ?:  (lte alen w.size.res.cor.el)
+  ::                     (sub w.size.res.cor.el alen)  0
+  ::                 ==
+  ::                 ?&  |(=(0 x.i.ars.cor.el) =(1 x.i.ars.cor.el))
+  ::                     !=(~-. (rear arow))
+  ::         ==  ==  ==
+  ::       =.  vox.ars.cor.el
+  ::         %+  weld
+  ::           ?:  =(0 y.i.ars.cor.el)  ~
+  ::           `vox`(scag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el)
+  ::         %:  oro
+  ::           [~ w.size.res.cor.el]
+  ::           [~ h.size.res.cor.el]
+  ::           ^-  lina
+  ::           %-  zing
+  ::           [arow row `vox`(slag +(y.i.ars.cor.el) `vox`vox.ars.cor.el)]
+  ::         ==
+  ::       =.  i.ars.cor.el
+  ::         =/  nlen=@ud
+  ::           ?:  |(=(0 y.i.ars.cor.el) ?=(~ vox.ars.cor.el))  0
+  ::           (lent (snag (dec y.i.ars.cor.el) `vox`vox.ars.cor.el))
+  ::         =/  lend=@ud  ?:((lte nlen alen) (sub alen nlen) 0)
+  ::         ?.  =(0 lend)
+  ::           [lend y.i.ars.cor.el]
+  ::         :_  ?:(=(0 y.i.ars.cor.el) 0 (dec y.i.ars.cor.el))
+  ::         ?:  =(0 x.i.ars.cor.el)  alen
+  ::         (add ?:(=(0 alen) 0 (dec alen)) x.i.ars.cor.el)
+  ::       %_  ars.cor.el
+  ::         de
+  ::           ?:  (lth y.i.ars.cor.el de.ars.cor.el)
+  ::             (dec de.ars.cor.el)
+  ::           de.ars.cor.el
+  ::       ==
+  ::     =/  len=@ud  (lent row)
+  ::     =/  brow=lina
+  ::       ?:  ?|  ?=(~ vox.ars.cor.el)
+  ::               (lth (lent vox.ars.cor.el) +(+(y.i.ars.cor.el)))
+  ::           ==
+  ::         ~
+  ::       (snag +(y.i.ars.cor.el) `vox`vox.ars.cor.el)
+  ::     =/  bwor=@ud  (sumo brow)
+  ::     ?.  ?|  ?&  (lth len w.size.res.cor.el)
+  ::                 (lte bwor (sub w.size.res.cor.el len))
+  ::             ==
+  ::             &(?=(^ row) =(~-. (rear row)))
+  ::         ==
+  ::       %_  ars.cor.el
+  ::         vox  (snap vox.ars.cor.el y.i.ars.cor.el row)
+  ::         x.i  ?:(=(0 x.i.ars.cor.el) 0 (dec x.i.ars.cor.el))
+  ::       ==
+  ::     =.  vox.ars.cor.el
+  ::       %+  weld
+  ::         (scag y.i.ars.cor.el vox.ars.cor.el)
+  ::       %:  oro
+  ::         [~ w.size.res.cor.el]
+  ::         [~ h.size.res.cor.el]
+  ::         `lina`(zing [row brow (slag +(+(y.i.ars.cor.el)) vox.ars.cor.el)])
+  ::       ==
+  ::     =.  i.ars.cor.el
+  ::       ?:  &(=(0 y.i.ars.cor.el) !=(0 x.i.ars.cor.el))
+  ::         [(dec x.i.ars.cor.el) 0]
+  ::       ?.  |(=(0 x.i.ars.cor.el) =(1 x.i.ars.cor.el))
+  ::         [(dec x.i.ars.cor.el) y.i.ars.cor.el]
+  ::       =.  y.i.ars.cor.el  (dec y.i.ars.cor.el)
+  ::       =/  l=@ud
+  ::         (lent `lina`(snag y.i.ars.cor.el `vox`vox.ars.cor.el))
+  ::       [?:(=(0 l) 0 (dec l)) y.i.ars.cor.el]
+  ::     %_  ars.cor.el
+  ::       de
+  ::         ?:  (lth y.i.ars.cor.el de.ars.cor.el)
+  ::           (dec de.ars.cor.el)
+  ::         de.ars.cor.el
+  ::     ==
+  ::   =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
+  ::   :_  ego
+  ::   :~  (fio ~[(viso k.rex.via)])
+  ::   ==
+  :: ::
+  :: ++  loco                         :: handle an input cursor move event
+  ::   ^-  (quip card ^ego)
+  ::   ?~  rex.via  [~ ego]
+  ::   =/  ses=ara  sto
+  ::   =/  el=deus  (exuo k.rex.via deus.ses)
+  ::   ?.  ?=(%input -.ars.cor.el)
+  ::     [~ ego]
+  ::   =/  oi=loci  i.ars.cor.el
+  ::   =.  i.ars.cor.el
+  ::     ?~  vox.ars.cor.el  i.ars.cor.el
+  ::     ?+  lex  i.ars.cor.el
+  ::         %cur-l
+  ::       ?:  =(1 h.size.res.cor.el)
+  ::         [?:(=(0 x.i.ars.cor.el) 0 (dec x.i.ars.cor.el)) y.i.ars.cor.el]
+  ::       ?:  =(0 x.i.ars.cor.el)
+  ::         ?:  =(0 y.i.ars.cor.el)  i.ars.cor.el
+  ::         =.  y.i.ars.cor.el  (dec y.i.ars.cor.el)
+  ::         =/  l=@ud  (lent `lina`(snag y.i.ars.cor.el `vox`vox.ars.cor.el))
+  ::         [?:(=(0 l) 0 (dec l)) y.i.ars.cor.el]
+  ::       [(dec x.i.ars.cor.el) y.i.ars.cor.el]
+  ::         %cur-r
+  ::       ?:  =(1 h.size.res.cor.el)
+  ::         =/  x=@ud  +(x.i.ars.cor.el)
+  ::         ?:  (gth x (lent i.vox.ars.cor.el))
+  ::           i.ars.cor.el
+  ::         [x y.i.ars.cor.el]
+  ::       =/  x=@ud  +(x.i.ars.cor.el)
+  ::       =/  l=@ud  (lent `lina`(snag y.i.ars.cor.el `vox`vox.ars.cor.el))
+  ::       ?:  (gth x l)
+  ::         =/  y=@ud  +(y.i.ars.cor.el)
+  ::         ?:  (gte y (lent vox.ars.cor.el))
+  ::           i.ars.cor.el
+  ::         [0 y]
+  ::       [x y.i.ars.cor.el]
+  ::         %cur-u
+  ::       ?:  =(1 h.size.res.cor.el)  [0 0]
+  ::       ?:  =(0 y.i.ars.cor.el)  [0 0]
+  ::       =.  y.i.ars.cor.el  (dec y.i.ars.cor.el)
+  ::       =/  l=@ud  (pono (snag y.i.ars.cor.el `vox`vox.ars.cor.el))
+  ::       :_  y.i.ars.cor.el
+  ::       ?:  (gth x.i.ars.cor.el l)  l
+  ::       x.i.ars.cor.el
+  ::         %cur-d
+  ::       ?:  =(1 h.size.res.cor.el)
+  ::         [(lent i.vox.ars.cor.el) y.i.ars.cor.el]
+  ::       =/  y=@ud  +(y.i.ars.cor.el)
+  ::       ?:  (gte y (lent vox.ars.cor.el))
+  ::         [(lent (rear vox.ars.cor.el)) y.i.ars.cor.el]
+  ::       =.  y.i.ars.cor.el  y
+  ::       =/  l=@ud  (pono (snag y.i.ars.cor.el `vox`vox.ars.cor.el))
+  ::       :_  y.i.ars.cor.el
+  ::       ?:  (gth x.i.ars.cor.el l)  l
+  ::       x.i.ars.cor.el
+  ::     ==
+  ::   ?:  =(oi i.ars.cor.el)
+  ::     =.  lex
+  ::       ?+  lex   lex
+  ::         %cur-l  %nav-l
+  ::         %cur-r  %nav-r
+  ::         %cur-u  %nav-u
+  ::         %cur-d  %nav-d
+  ::       ==
+  ::     eo
+  ::   =/  oab=@ud  de.ars.cor.el
+  ::   =.  de.ars.cor.el
+  ::     ?~  vox.ars.cor.el  de.ars.cor.el
+  ::     ?:  |(?=(%cur-l lex) ?=(%cur-u lex))
+  ::       ?:  =(0 de.ars.cor.el)  0
+  ::       ?:  =(1 h.size.res.cor.el)
+  ::         ?:  ?=(%cur-u lex)  0
+  ::         ?:  (lte x.i.ars.cor.el de.ars.cor.el)
+  ::           (dec de.ars.cor.el)
+  ::         de.ars.cor.el
+  ::       ?:  (lth y.i.ars.cor.el de.ars.cor.el)
+  ::         (dec de.ars.cor.el)
+  ::       de.ars.cor.el
+  ::     ?:  |(?=(%cur-r lex) ?=(%cur-d lex))
+  ::       ?:  =(1 h.size.res.cor.el)
+  ::         ?:  (lth (sub x.i.ars.cor.el de.ars.cor.el) w.size.res.cor.el)
+  ::           de.ars.cor.el
+  ::         ?:  ?=(%cur-d lex)
+  ::           =/  l=@ud  (lent i.vox.ars.cor.el)
+  ::           ?:((lte w.size.res.cor.el l) +((sub l w.size.res.cor.el)) 0)
+  ::         +(de.ars.cor.el)
+  ::       ?:  (lth (sub y.i.ars.cor.el de.ars.cor.el) h.size.res.cor.el)
+  ::         de.ars.cor.el
+  ::       +(de.ars.cor.el)
+  ::     de.ars.cor.el
+  ::   =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
+  ::   ?:  =(oab de.ars.cor.el)
+  ::     :_  ego
+  ::     :~  (fio ~)
+  ::     ==
+  ::   :_  ego
+  ::   :~  (fio ~[(viso k.rex.via)])
+  ::   ==
   ::
   ++  moto                         :: handle an act event
     ^-  (quip card ^ego)
@@ -1574,145 +1707,145 @@
         ==
     ==
   ::
-  ++  ruo                          :: find the navigation point which presently renders at a coordinate 
-    |=  loc=loci
-    ^-  $@(~ [=rami =deus])
-    =.  ordo.via
-      %+  skim  ordo.via
-      |=  =dux
-      ?&  (gte x.loc l.dux)
-          (lte x.loc r.dux)
-          (gte y.loc t.dux)
-          (lte y.loc b.dux)
-      ==
-    ?:  =(~ ordo.via)  ~
-    =.  ordo.via
-      %+  sort  ordo.via
-      |=  [a=dux b=dux]
-      (gth (lent k.a) (lent k.b))
-    |-  ^-  $@(~ [=rami =deus])
-    ?~  ordo.via  ~
-    =/  [ayr=aer deu=deus]  (creo k.i.ordo.via)
-    =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
-      (laxo iter.ayr apex.cor.deu res.cor.deu)
-    ?:  ?|  =(0 w.size.res.cor.deu)
-            =(0 h.size.res.cor.deu)
-            (lth x.loc l.muri.ayr)
-            (gth x.loc r.muri.ayr)
-            (lth y.loc t.muri.ayr)
-            (gth y.loc b.muri.ayr)
-            =/  lay  (~(get by luna.ayr) y.loc)
-            ?~  lay  |
-            %+  lien  u.lay
-            |=  =lux
-            ?&  (gte x.loc x1.lux)
-                (lte x.loc x2.lux)
-            ==
-        ==
-      $(ordo.via t.ordo.via)
-    [k.i.ordo.via deu]
-  ::
-  ++  ico                          :: handle a click event
-    ^-  (quip card ^ego)
-    ?.  &(?=(%clk -.zon) ?=(%d p.zon))
-      [~ ego]
-    =/  target  (ruo [x.zon y.zon])
-    ?~  target
-      [~ ego]
-    =/  old-rex  rex.via
-    =/  new-rex  (rogo rami.target ordo.via)
-    ?~  new-rex
-      [~ ego]
-    =/  old=$@(~ deus)
-      ?~  old-rex  ~
-      (exuo k.old-rex deus:sto)
-    =.  rex.via  new-rex      
-    =/  new  sto
-    =?  cor.deus.target  ?=(%input -.ars.cor.deus.target)
-      (sino [x.zon y.zon] cor.deus.target)
-    =?  via  ?=(%input -.ars.cor.deus.target)
-      (sido new(deus (paco rami.target deus.target deus.new)))
-    =.  ego  (indo via)
-    ?:  &(?=(^ old-rex) =(k.old-rex k.new-rex))
-      =^  cards  ego  moto
-      :_  ego
-      ?.  ?=(%input -.ars.cor.deus.target)  cards
-      :_  cards
-      (fio ~[(viso k.new-rex)])
-    =/  rend-old
-      ?.  ?&  ?=(^ old)
-              ?=(^ old-rex)
-              (adeo [-.ars.cor.old sele.res.cor.old])
-          ==
-        [*apex *sol]
-      (viso k.old-rex)
-    =/  rend-new
-      ?.  ?&  ?=(^ rex.via)
-              (adeo -.ars.cor.deus.target sele.res.cor.deus.target)
-          ==
-        [*apex *sol]
-      (viso k.rex.via)
-    =^  cards  ego  moto
-    :_  ego
-    :-  (fio ~[rend-old rend-new])
-    ?~  avis.cor.deus.target
-      cards
-    :_  cards
-    (iuvo fons.new [%select avis.cor.deus.target])
-  ::
-  ++  sino                         :: change an input's cursor index by coordinate
-    |=  [loc=loci =cor]
-    ^-  ^cor
-    ?.  ?&(?=(%input -.ars.cor) ?=(^ vox.ars.cor))
-      cor
-    =/  [x=@ud y=@ud]
-      =:  x.apex.cor
-            ;:(add x.apex.cor l.bord.res.cor l.padd.res.cor)
-          y.apex.cor
-            ;:(add y.apex.cor t.bord.res.cor t.padd.res.cor)
-        ==
-      :-  ?:((lth x.apex.cor x.loc) (sub x.loc x.apex.cor) 0)
-      ?:((lth y.apex.cor y.loc) (sub y.loc y.apex.cor) 0)
-    ?:  =(1 h.size.res.cor)
-      %_  cor
-        i.ars  [(min (add x de.ars.cor) (lent i.vox.ars.cor)) 0]
-      ==
-    =.  y  (add y de.ars.cor)
-    =/  l  (lent vox.ars.cor)
-    =/  row-len=@ud
-      ?:  (gth +(y) l)
-        (pono `lina`(rear ^-(vox vox.ars.cor)))
-      (pono `lina`(snag y ^-(vox vox.ars.cor)))
-    %_  cor
-      i.ars  [(min x row-len) ?:((gth +(y) l) (dec l) y)]
-    ==
-  ::
-  ++  gyro                         :: handle a scroll wheel event
-    ^-  (quip card ^ego)
-    ?.  ?=(%whe -.zon)
-      [~ ego]
-    =/  target  (ruo [x.zon y.zon])
-    ?~  target
-      [~ ego]
-    =/  target-dux  (rogo rami.target ordo.via)
-    =/  [* target-scroll=(unit [=iter =rami =deus])]
-      =:  rex.via  target-dux
-          lex      ?+(lex lex %whe-d %nav-u, %whe-u %nav-d)
-        ==
-      fluo
-    ?~  target-scroll
-      [~ ego]
-    =/  [* selection-scroll=(unit [=iter =rami =deus])]
-      fluo
-    =:  lex  ?+(lex lex %whe-d %nav-u, %whe-u %nav-d)
-        rex.via
-          ?:  ?&  ?=(^ selection-scroll)
-                  =(rami.u.selection-scroll rami.u.target-scroll)
-              ==
-            rex.via
-          target-dux
-      ==
-    eo
+  :: ++  ruo                          :: find the navigation point which presently renders at a coordinate 
+  ::   |=  loc=loci
+  ::   ^-  $@(~ [=rami =deus])
+  ::   =.  ordo.via
+  ::     %+  skim  ordo.via
+  ::     |=  =dux
+  ::     ?&  (gte x.loc l.dux)
+  ::         (lte x.loc r.dux)
+  ::         (gte y.loc t.dux)
+  ::         (lte y.loc b.dux)
+  ::     ==
+  ::   ?:  =(~ ordo.via)  ~
+  ::   =.  ordo.via
+  ::     %+  sort  ordo.via
+  ::     |=  [a=dux b=dux]
+  ::     (gth (lent k.a) (lent k.b))
+  ::   |-  ^-  $@(~ [=rami =deus])
+  ::   ?~  ordo.via  ~
+  ::   =/  [ayr=aer deu=deus]  (creo k.i.ordo.via)
+  ::   =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
+  ::     (laxo iter.ayr apex.cor.deu res.cor.deu)
+  ::   ?:  ?|  =(0 w.size.res.cor.deu)
+  ::           =(0 h.size.res.cor.deu)
+  ::           (lth x.loc l.muri.ayr)
+  ::           (gth x.loc r.muri.ayr)
+  ::           (lth y.loc t.muri.ayr)
+  ::           (gth y.loc b.muri.ayr)
+  ::           =/  lay  (~(get by luna.ayr) y.loc)
+  ::           ?~  lay  |
+  ::           %+  lien  u.lay
+  ::           |=  =lux
+  ::           ?&  (gte x.loc x1.lux)
+  ::               (lte x.loc x2.lux)
+  ::           ==
+  ::       ==
+  ::     $(ordo.via t.ordo.via)
+  ::   [k.i.ordo.via deu]
+  :: ::
+  :: ++  ico                          :: handle a click event
+  ::   ^-  (quip card ^ego)
+  ::   ?.  &(?=(%clk -.zon) ?=(%d p.zon))
+  ::     [~ ego]
+  ::   =/  target  (ruo [x.zon y.zon])
+  ::   ?~  target
+  ::     [~ ego]
+  ::   =/  old-rex  rex.via
+  ::   =/  new-rex  (rogo rami.target ordo.via)
+  ::   ?~  new-rex
+  ::     [~ ego]
+  ::   =/  old=$@(~ deus)
+  ::     ?~  old-rex  ~
+  ::     (exuo k.old-rex deus:sto)
+  ::   =.  rex.via  new-rex      
+  ::   =/  new  sto
+  ::   =?  cor.deus.target  ?=(%input -.ars.cor.deus.target)
+  ::     (sino [x.zon y.zon] cor.deus.target)
+  ::   =?  via  ?=(%input -.ars.cor.deus.target)
+  ::     (sido new(deus (paco rami.target deus.target deus.new)))
+  ::   =.  ego  (indo via)
+  ::   ?:  &(?=(^ old-rex) =(k.old-rex k.new-rex))
+  ::     =^  cards  ego  moto
+  ::     :_  ego
+  ::     ?.  ?=(%input -.ars.cor.deus.target)  cards
+  ::     :_  cards
+  ::     (fio ~[(viso k.new-rex)])
+  ::   =/  rend-old
+  ::     ?.  ?&  ?=(^ old)
+  ::             ?=(^ old-rex)
+  ::             (adeo [-.ars.cor.old sele.res.cor.old])
+  ::         ==
+  ::       [*apex *sol]
+  ::     (viso k.old-rex)
+  ::   =/  rend-new
+  ::     ?.  ?&  ?=(^ rex.via)
+  ::             (adeo -.ars.cor.deus.target sele.res.cor.deus.target)
+  ::         ==
+  ::       [*apex *sol]
+  ::     (viso k.rex.via)
+  ::   =^  cards  ego  moto
+  ::   :_  ego
+  ::   :-  (fio ~[rend-old rend-new])
+  ::   ?~  avis.cor.deus.target
+  ::     cards
+  ::   :_  cards
+  ::   (iuvo fons.new [%select avis.cor.deus.target])
+  :: ::
+  :: ++  sino                         :: change an input's cursor index by coordinate
+  ::   |=  [loc=loci =cor]
+  ::   ^-  ^cor
+  ::   ?.  ?&(?=(%input -.ars.cor) ?=(^ vox.ars.cor))
+  ::     cor
+  ::   =/  [x=@ud y=@ud]
+  ::     =:  x.apex.cor
+  ::           ;:(add x.apex.cor l.bord.res.cor l.padd.res.cor)
+  ::         y.apex.cor
+  ::           ;:(add y.apex.cor t.bord.res.cor t.padd.res.cor)
+  ::       ==
+  ::     :-  ?:((lth x.apex.cor x.loc) (sub x.loc x.apex.cor) 0)
+  ::     ?:((lth y.apex.cor y.loc) (sub y.loc y.apex.cor) 0)
+  ::   ?:  =(1 h.size.res.cor)
+  ::     %_  cor
+  ::       i.ars  [(min (add x de.ars.cor) (lent i.vox.ars.cor)) 0]
+  ::     ==
+  ::   =.  y  (add y de.ars.cor)
+  ::   =/  l  (lent vox.ars.cor)
+  ::   =/  row-len=@ud
+  ::     ?:  (gth +(y) l)
+  ::       (pono `lina`(rear ^-(vox vox.ars.cor)))
+  ::     (pono `lina`(snag y ^-(vox vox.ars.cor)))
+  ::   %_  cor
+  ::     i.ars  [(min x row-len) ?:((gth +(y) l) (dec l) y)]
+  ::   ==
+  :: ::
+  :: ++  gyro                         :: handle a scroll wheel event
+  ::   ^-  (quip card ^ego)
+  ::   ?.  ?=(%whe -.zon)
+  ::     [~ ego]
+  ::   =/  target  (ruo [x.zon y.zon])
+  ::   ?~  target
+  ::     [~ ego]
+  ::   =/  target-dux  (rogo rami.target ordo.via)
+  ::   =/  [* target-scroll=(unit [=iter =rami =deus])]
+  ::     =:  rex.via  target-dux
+  ::         lex      ?+(lex lex %whe-d %nav-u, %whe-u %nav-d)
+  ::       ==
+  ::     fluo
+  ::   ?~  target-scroll
+  ::     [~ ego]
+  ::   =/  [* selection-scroll=(unit [=iter =rami =deus])]
+  ::     fluo
+  ::   =:  lex  ?+(lex lex %whe-d %nav-u, %whe-u %nav-d)
+  ::       rex.via
+  ::         ?:  ?&  ?=(^ selection-scroll)
+  ::                 =(rami.u.selection-scroll rami.u.target-scroll)
+  ::             ==
+  ::           rex.via
+  ::         target-dux
+  ::     ==
+  ::   eo
   ::
   --
 ::
@@ -1800,22 +1933,6 @@
   ?:  ?=(%ret -.z)  z
   ?:  ?=(%esc -.z)  z
   ?:  ?=(%del -.z)  z
-  !!
-::
-++  uro                            :: parse custom hotkey metadata to ales
-  |=  h=hotkeys:homunculus
-  ^-  ales
-  %-  malt
-  |-  ^-  (list [nota avis])
-  ?~  h  ~
-  :_  $(h t.h)
-  :_  +.i.h
-  ?@  -.i.h               [%chr (taft -.i.h)]
-  ?:  ?=(%delete -<.i.h)  [%del ~]
-  ?:  ?=(%enter -<.i.h)   [%ret ~]
-  ?:  ?=(%back -<.i.h)    [%bac ~]
-  ?:  ?=(%tab -<.i.h)     [%mod %ctl [%chr ~-i]]
-  ?:  ?=(%arrow -<.i.h)   [%aro ->.i.h]
   !!
 ::
 ++  dolo                           :: get default styles for a semantic element
@@ -2357,7 +2474,7 @@
     $(y +(y), iy 0, bas cop)
   $(y +(y), iy +(iy), bas t.bas)
 ::
-++  texo                           :: resolve an element's style
+++  filo                           :: resolve an element's style
   |=  [typ=@tas sel=? gray=? fil=fila aci=acia]
   ^-  fila
   =.  fil
@@ -3040,13 +3157,13 @@
   ^-  deus
   =/  k=rami                   ?^(rel (flop rami.rel) ~)
   =/  m=marl                   ~[vel]
-  =/  px=as                    [%c ?^(rel w.size.res.cor.rel w.size.res.cor.urbs.ego)]
-  =/  py=as                    [%c ?^(rel h.size.res.cor.rel h.size.res.cor.urbs.ego)]
+  =/  px=as                    [%c ?^(rel w.size.res.cor.rel w.size.res.cor.deus.urbs.ego)]
+  =/  py=as                    [%c ?^(rel h.size.res.cor.rel h.size.res.cor.deus.urbs.ego)]
   =/  pl=fila                  ?^(rel look.res.cor.rel [~ ~ %w])
   =/  pa=acia                  ?^(rel sele.res.cor.rel [~ ~ ~])
   =/  pow=fuga                 ?^(rel flow.res.cor.rel [%row %clip])
-  =/  prx=@ud                  ?^(rel w.size.res.cor.rel w.size.res.cor.urbs.ego)
-  =/  pry=@ud                  ?^(rel h.size.res.cor.rel h.size.res.cor.urbs.ego)
+  =/  prx=@ud                  ?^(rel w.size.res.cor.rel w.size.res.cor.deus.urbs.ego)
+  =/  pry=@ud                  ?^(rel h.size.res.cor.rel h.size.res.cor.deus.urbs.ego)
   =/  pape=apex                ?^(rel apex.cor.rel *apex)
   =/  vape=apex                pape
   =/  vir=[n=@ud o=@ud i=@ud]  [0 0 0]
@@ -3685,17 +3802,19 @@
   |=  key=rami
   ^-  [aer deus]
   =/  =via  (snag cura.ego viae.ego)
-  =/  deu=deus
-    :-  cor.urbs.ego
-    :+  ~
-      ?.  ?&  ?=(^ arae.via.arx.urbs.ego)
-              open.arx.urbs.ego
-          ==
-        ~
-      ~[deus.i.arae.via.arx.urbs.ego]
-    (turn arae.via |=(=ara deus.ara))
+  =/  deu
+    %_  deus.urbs.ego
+      l.gens
+        ?.  ?&  ?=(^ arae.via.arx.urbs.ego)
+                open.arx.urbs.ego
+            ==
+          l.gens.deus.urbs.ego
+        (snoc l.gens.deus.urbs.ego deus.i.arae.via.arx.urbs.ego)
+      n.gens
+        (turn arae.via |=(=ara deus.ara))
+    ==
   =|  ayr=aer
-  =:  muri.ayr  [1 w.size.res.cor.urbs.ego 1 h.size.res.cor.urbs.ego]
+  =:  muri.ayr  [1 w.size.res.cor.deus.urbs.ego 1 h.size.res.cor.deus.urbs.ego]
       rex.ayr
         ?.  open.arx.urbs.ego
           rex.via
@@ -3895,7 +4014,7 @@
   =/  a-i2=@ud   =+(y=(min y2 b.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
   =/  gray=?     &(open.arx.urbs.ego !?=([[%l @] *] key))
   =/  look=fila
-    %:  texo
+    %:  filo
       -.ars.cor.deu
       &(sty.nav.ayr ?=(^ rex.nav.ayr) ?=(^ rex.ayr) =(k.rex.ayr k.rex.nav.ayr))
       gray
