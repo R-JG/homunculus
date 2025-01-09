@@ -107,11 +107,12 @@
   +$  element                                                          ::
     $?  %nav-l  %nav-r  %nav-u  %nav-d                                 ::
         %select  %act  %sel-act                                        ::
+        %toggle-menu                                                   ::
         %to-command  %to-leader  %to-editor                            ::
     ==                                                                 ::
   +$  command                                                          ::
     $?  %insert  %delete  %run                                         ::
-        %toggle-menu                                                   ::
+        %cur-l  %cur-r                                                 ::
         %to-element                                                    ::
     ==                                                                 ::
   +$  leader                                                           ::
@@ -186,7 +187,7 @@
 +$  aula  layout:homunculus                                            :: layout
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=deus =arx]                                                 :: system element state
-+$  acus  (pair @ tape)                                                :: command line state
++$  acus  (trel @ @ tape)                                              :: command line state
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
@@ -628,7 +629,6 @@
     ?.(open.arx.urbs.ego (snag cura.ego viae.ego) via.arx.urbs.ego)
     ::
       %command
-    =?  zon  &(?=([%txt %58 ~] zon) ?=(~ q.acus.ego))  [%chr `@`i.p.zon]
     =/  lex  (~(get by command.omen.ego) (noto zon))
     ?~  lex  [~ ego]
     %+  gero
@@ -700,23 +700,28 @@
       :~  [[%aro %l] %nav-l]   [[%aro %r] %nav-r]   [[%aro %u] %nav-u]   [[%aro %d] %nav-d]
           [[%chr ~-h] %nav-l]  [[%chr ~-l] %nav-r]  [[%chr ~-k] %nav-u]  [[%chr ~-j] %nav-d]
           [[%ret ~] %act]
+          [[%chr ~-m] %toggle-menu]
           [[%chr ~-~3a.] %to-command]
       ==
     command
       %-  malt
       ^-  (list [nota command:lex])
       :~  [[%txt ~] %insert]  [[%bac ~] %delete]
-          [[%chr ~-~3a.] %toggle-menu]
+          [[%aro %l] %cur-l]  [[%aro %r] %cur-r]
+          [[%ret ~] %run]
           [[%esc ~] %to-element]
       ==
   ==
 ::
 ++  eruo                           :: get system element keys
   |%
-  ++  root        `rami`~
-  ++  menu        `rami`~[[%l 1]]
-  ++  line        `rami`~[[%l 0] [%n 0]]
-  ++  container   |=(i=@ `rami`~[[%n i]])
+  ++  root              `rami`~
+  ++  menu              `rami`~[[%l 1]]
+  ++  container         |=(i=@ `rami`~[[%n i]])
+  ++  sys-lines         `rami`~[[%l 0] [%n 0]]
+  ++  status-line       `rami`~[[%l 0] [%n 0] [%n 0]]
+  ++  command-line      `rami`~[[%l 0] [%n 0] [%n 1]]
+  ++  command-line-txt  `rami`~[[%l 0] [%n 0] [%n 1] [%n 0] [%n 1]]
   --
 ::
 ++  volo                           :: produce the root element
@@ -726,81 +731,170 @@
   =:  size.res.cor  siz
       look.res.cor  [~ %k %w]
     ==
-  :-  cor
   =;  =vela
-    gens(l ~[(geno [~ cor] ~ vela)])
+    :*  cor
+        gens(l ~[(geno [~ cor] ~ vela)])
+    ==
   ;layer(fy "end")
-    ;+  sail:velo
+    ;+  full-sail:velo
   ==
 ::
-++  velo                           :: render the status line
+++  velo                           :: update system lines
   |%
-  ++  deus
-    ^-  ^deus
+  ::
+  ++  sys
     ?>  ?&  ?=(^ l.gens.deus.urbs.ego)
             ?=(^ n.gens.i.l.gens.deus.urbs.ego)
         ==
-    %_  deus.urbs.ego
-      i.n.gens.i.l.gens
-        (geno [line:eruo cor.i.n.gens.i.l.gens.deus.urbs.ego] ~ sail)
-    ==
-  ++  sail
+    |%
+    ++  full
+      ^-  deus
+      %_  deus.urbs.ego
+        i.n.gens.i.l.gens
+          (geno [sys-lines:eruo cor.i.n.gens.i.l.gens.deus.urbs.ego] ~ full-sail)
+      ==
+    ++  status
+      ^-  deus
+      ?>  ?=(^ n.gens.i.n.gens.i.l.gens.deus.urbs.ego)
+      %_  deus.urbs.ego
+        i.n.gens.i.n.gens.i.l.gens
+          (geno [status-line:eruo cor.i.n.gens.i.n.gens.i.l.gens.deus.urbs.ego] ~ status-sail)
+      ==
+    ++  command
+      ^-  deus
+      ?>  ?&  ?=(^ n.gens.i.n.gens.i.l.gens.deus.urbs.ego)
+              ?=(^ t.n.gens.i.n.gens.i.l.gens.deus.urbs.ego)
+          ==
+      %_  deus.urbs.ego
+        i.t.n.gens.i.n.gens.i.l.gens
+          (geno [command-line:eruo cor.i.t.n.gens.i.n.gens.i.l.gens.deus.urbs.ego] ~ command-sail)
+      ==
+    --
+  ::
+  ++  full-sail
     ^-  manx
-    =;  [=mart =marl]  [[%row [[%w "100%"] [%h "1"] mart]] marl]
-    ?+  mos.ego
-      ::
-      :-  ~
-      ;+  ;/  "mode not implemented"
-      ::
-        %element
-      :-  ~[[%fg "#000000"] [%bg "#69995D"]]
-      ;=  ;row(px "1"):"%element"
-      ==
-      ::
-        %command
-      :-  ~[[%fg "#000000"] [%bg "#D64933"]]
-      ;=  ;row(px "1"):"%command"
-      ==
-      ::
+    ;col(w "100%", h "2")
+      ;+  status-sail
+      ;+  command-sail
     ==
+  ::
+  ++  status-sail
+    ^-  manx
+    ;row(w "100%", h "1")
+      ;*  ?+  mos.ego  ~
+            ::
+              %element
+            ;=  ;row(h "1", px "1", fg "#000000", bg "#228721"):"%element"
+                ;row(w "grow", h "1", bg "#31c430");
+            ==
+            ::
+              %command
+            ;=  ;row(h "1", px "1", fg "#000000", bg "#D64933"):"%command"
+                ;row(w "grow", h "1", bg "#e38273");
+            ==
+            ::
+          ==
+    ==
+  ::
+  ++  command-sail
+    ^-  manx
+    ;row(w "100%", h "1", bg "#000000")
+      ;row(w "grow", h "1", fg ?:(puto "#FFFFFF" "#707070"))
+        ;row(w "1", h "1", mx "1"):":"
+        ;row(w "grow", h "1"):"{(slag q.acus.ego r.acus.ego)}"
+      ==
+    ==
+  ::
   --
+::
+++  puto                           :: check if the command line is active
+  ^-  ?
+  ?|  ?=(%command mos.ego)
+      ?=(%leader mos.ego)
+  ==
 ::
 ++  gero                           :: handle %command mode events
   |_  [zon=zona lex=command:lex]
   ::
   ++  $
     ^-  (quip card ^ego)
-    ?:  ?=(%to-element lex)
-      =:  mos.ego   %element
-          acus.ego  *acus
+    ?-  lex
+      ::
+        %run
+      :: TODO: implement commands
+      =:  mos.ego        %element
+          acus.ego       *acus
         ==
-      =.  deus.urbs.ego  deus:velo
+      =.  deus.urbs.ego  full:sys:velo
       :_  ego
-      :~  (fio ~[(viso line:eruo)])
+      :~  (fio ~[(viso sys-lines:eruo)])
       ==
       ::
-    ?:  ?=(%toggle-menu lex)
-      =:  open.arx.urbs.ego  !open.arx.urbs.ego
-          mos.ego            %element
-          acus.ego           *acus
+        %insert
+      =/  txt=tape
+        ?+  -.zon  !!
+          %txt  (tufa p.zon)
+          %chr  ~[(tuft p.zon)]
         ==
-      =.  deus.urbs.ego      deus:velo
-      =/  ren  (viso ~)
-      =.  ego
-        ?:  open.arx.urbs.ego
-          =.  ordo.via.arx.urbs.ego  (duco ren)
-          =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
-            (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
-          ego
-        =/  =via  (snag cura.ego viae.ego)
-        =.  ordo.via  (duco ren)
-        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
-        ego(viae (snap viae.ego cura.ego via))
+      =/  txt-el=deus
+        (exuo command-line-txt:eruo deus.urbs.ego)
+      =/  len=@       (lent txt)
+      =:  p.acus.ego  (add p.acus.ego len)
+          r.acus.ego  =-((zing p txt q ~) (trim p.acus.ego r.acus.ego))
+        ==
+      =?  q.acus.ego  (gth +((sub p.acus.ego q.acus.ego)) w.size.res.cor.txt-el)
+        (add q.acus.ego len)
+      =.  deus.urbs.ego  command:sys:velo
       :_  ego
-      :~  (fio ~[ren])
+      :~  (fio ~[(viso command-line:eruo)])
       ==
       ::
-    [~ ego]
+        %delete
+      ?:  =(0 p.acus.ego)
+        [~ ego]
+      =/  i  (dec p.acus.ego)
+      =:  p.acus.ego  i
+          q.acus.ego  ?:(=(p.acus.ego q.acus.ego) (dec q.acus.ego) q.acus.ego)
+          r.acus.ego  (oust [i 1] r.acus.ego)
+        ==
+      =.  deus.urbs.ego  command:sys:velo
+      :_  ego
+      :~  (fio ~[(viso command-line:eruo)])
+      ==
+      ::
+        %cur-l
+      ?:  =(0 p.acus.ego)
+        [~ ego]
+      =/  i  (dec p.acus.ego)
+      =:  p.acus.ego  i
+          q.acus.ego  ?:(=(p.acus.ego q.acus.ego) (dec q.acus.ego) q.acus.ego)
+        ==
+      =.  deus.urbs.ego  command:sys:velo
+      :_  ego
+      :~  (fio ~[(viso command-line:eruo)])
+      ==
+      ::
+        %cur-r
+      ?:  =(p.acus.ego (lent r.acus.ego))
+        [~ ego]
+      =/  txt-el=deus
+        (exuo command-line-txt:eruo deus.urbs.ego)
+      =.  p.acus.ego  +(p.acus.ego)
+      =?  q.acus.ego  (gth +((sub p.acus.ego q.acus.ego)) w.size.res.cor.txt-el)
+        +(q.acus.ego)
+      =.  deus.urbs.ego  command:sys:velo
+      :_  ego
+      :~  (fio ~[(viso command-line:eruo)])
+      ==
+      ::
+        %to-element
+      =.  mos.ego        %element
+      =.  deus.urbs.ego  full:sys:velo
+      :_  ego
+      :~  (fio ~[(viso sys-lines:eruo)])
+      ==
+      ::
+    ==
   ::
   --
 ::
@@ -810,8 +904,11 @@
   =|  acc=(map fons cor)
   =/  siz
     %_  size.res.cor.deus.urbs.ego
-      :: make space for the status line:
-      h  (dec h.size.res.cor.deus.urbs.ego)
+      :: make space for the system lines:
+      h
+        ?:  (gth h.size.res.cor.deus.urbs.ego 2)
+          (sub h.size.res.cor.deus.urbs.ego 2)
+        0
     ==
   |-  ^+  acc
   ?-  -.aula
@@ -940,7 +1037,7 @@
           ~&(>>> %invalid-relative-element-update !!)
         p.i.upd
       =/  key=rami  (~(got by aves.ses) avi)
-      =/  old-el    (exuo key deus.ses)
+      =/  old-el    (exuo (voro key) deus.ses)
       =/  size=mart
         :~  [%w ((d-co:co 1) w.size.res.cor.old-el)]
             [%h ((d-co:co 1) h.size.res.cor.old-el)]
@@ -958,7 +1055,7 @@
         %set-scroll-position
       =/  key  (~(get by aves.ses) r.i.upd)
       ?~  key  ~&(>>> %element-id-missing !!)
-      =/  el   (exuo u.key deus.ses)
+      =/  el   (exuo (voro u.key) deus.ses)
       ?>  ?=(%scroll -.ars.cor.el)
       =.  y.iter.ars.cor.el
         ?-  p.i.upd
@@ -1014,11 +1111,9 @@
   :: each session branch is a child element.
   ?~  key  !!  t.key
 ::
-++  exuo                           :: get an element from a session branch by key (or crash)
+++  exuo                           :: get an element by key (or crash) (with a session, relativize the key)
   |=  [key=rami deu=deus]
   ^-  deus
-  =.  key  (voro key)
-  |-  ^-  deus
   ?~  key  deu
   %=  $
     key  t.key
@@ -1052,22 +1147,42 @@
 ::
 ++  muto                           :: handle %element mode events
   |_  [zon=zona lex=element:lex =via]
+  ::
   ++  $
     ^-  (quip card ^ego)
-    ?:  ?|  ?=(%nav-l lex)  ?=(%nav-r lex)
-            ?=(%nav-u lex)  ?=(%nav-d lex)
-        ==
-      eo
-    ?:  ?=(%act lex)
-      moto
-    ?:  ?=(%to-command lex)
-       =.  mos.ego        %command
-       =.  deus.urbs.ego  deus:velo
-       :_  ego
-       :~  (fio ~[(viso line:eruo)])
-       ==
-    ::
-    [~ ego]
+    ?+  lex  [~ ego]
+      ::
+      %nav-l  eo
+      %nav-r  eo
+      %nav-u  eo
+      %nav-d  eo
+      %act    moto
+      ::
+        %to-command
+      =.  mos.ego        %command
+      =.  deus.urbs.ego  full:sys:velo
+      :_  ego
+      :~  (fio ~[(viso sys-lines:eruo)])
+      ==
+      ::
+        %toggle-menu
+      =.  open.arx.urbs.ego  !open.arx.urbs.ego
+      =/  ren  (viso ~)
+      =.  ego
+        ?:  open.arx.urbs.ego
+          =.  ordo.via.arx.urbs.ego  (duco ren)
+          =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+            (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
+          ego
+        =/  =^via  (snag cura.ego viae.ego)
+        =.  ordo.via  (duco ren)
+        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+        ego(viae (snap viae.ego cura.ego via))
+      :_  ego
+      :~  (fio ~[ren])
+      ==
+      ::
+    ==
   ::
   ++  sto                          :: get the active session
     ^-  ara
@@ -1153,10 +1268,10 @@
       [cards ego]
     =/  old=$@(~ deus)
       ?~  old-rex  ~
-      (exuo k.old-rex deus:sto)
+      (exuo (voro k.old-rex) deus:sto)
     =.  rex.via   next
     =/  new-ara   sto
-    =/  new=deus  (exuo k.next deus.new-ara)
+    =/  new=deus  (exuo (voro k.next) deus.new-ara)
     =.  ego       (indo via)
     =/  rend-old
       ?.  ?&  ?=(^ old)
@@ -1294,7 +1409,7 @@
   ::   ?.  &(?=(%txt -.zon) ?=(^ p.zon) ?=(^ rex.via))
   ::     [~ ego]
   ::   =/  ses=ara  sto
-  ::   =/  el=deus  (exuo k.rex.via deus.ses)
+  ::   =/  el=deus  (exuo (voro k.rex.via) deus.ses)
   ::   ?.  ?=(%input -.ars.cor.el)
   ::     [~ ego]
   ::   =.  ars.cor.el
@@ -1389,7 +1504,7 @@
   ::   ^-  (quip card ^ego)
   ::   ?~  rex.via  [~ ego]
   ::   =/  ses=ara  sto
-  ::   =/  el=deus  (exuo k.rex.via deus.ses)
+  ::   =/  el=deus  (exuo (voro k.rex.via) deus.ses)
   ::   ?.  ?=(%input -.ars.cor.el)
   ::     [~ ego]
   ::   =.  ars.cor.el
@@ -1501,7 +1616,7 @@
   ::   ^-  (quip card ^ego)
   ::   ?~  rex.via  [~ ego]
   ::   =/  ses=ara  sto
-  ::   =/  el=deus  (exuo k.rex.via deus.ses)
+  ::   =/  el=deus  (exuo (voro k.rex.via) deus.ses)
   ::   ?.  ?=(%input -.ars.cor.el)
   ::     [~ ego]
   ::   =/  oi=loci  i.ars.cor.el
@@ -1598,7 +1713,7 @@
     ^-  (quip card ^ego)
     ?~  rex.via  [~ ego]
     =/  ses=ara  sto
-    =/  el=deus  (exuo k.rex.via deus.ses)
+    =/  el=deus  (exuo (voro k.rex.via) deus.ses)
     ?:  &(?=(%select -.ars.cor.el) ?=(%submit pro.ars.cor.el))
       lego
     ?:  ?=(%checkbox -.ars.cor.el)
@@ -1652,14 +1767,14 @@
     =/  ses=ara  sto
     =/  rad=$@(~ [key=rami el=deus])  (nudo %radio)
     ?~  rad
-      =/  el=deus  (exuo k.rex.via deus.ses)
+      =/  el=deus  (exuo (voro k.rex.via) deus.ses)
       ?>  ?=(%checkbox -.ars.cor.el)
       =.  v.ars.cor.el  !v.ars.cor.el
       =.  ego  (indo (sido ses(deus (paco k.rex.via el deus.ses))))
       :_  ego
       :~  (fio ~[(viso k.rex.via)])
       ==
-    =/  el=deus  (exuo key.rad deus.ses)
+    =/  el=deus  (exuo (voro key.rad) deus.ses)
     =.  el
       |-  ^-  deus
       %_  el
@@ -1758,7 +1873,7 @@
   ::     [~ ego]
   ::   =/  old=$@(~ deus)
   ::     ?~  old-rex  ~
-  ::     (exuo k.old-rex deus:sto)
+  ::     (exuo (voro k.old-rex) deus:sto)
   ::   =.  rex.via  new-rex      
   ::   =/  new  sto
   ::   =?  cor.deus.target  ?=(%input -.ars.cor.deus.target)
@@ -1865,6 +1980,8 @@
 ::
 ++  vado                           :: resolve cursor location
   ^-  loci
+  ?:  puto
+    cudo
   =/  =rex
     ?:  open.arx.urbs.ego
       rex.via.arx.urbs.ego
@@ -1903,6 +2020,12 @@
   ?:  (gth x2 x2.i.u.ux)
     $(x1 (max x1 +(x2.i.u.ux)), u.ux t.u.ux)
   ^$(x1 ox, y1 +(y1))
+::
+++  cudo                           :: resolve cursor location in the command line
+  ^-  loci
+  =/  txt-el=deus  (exuo command-line-txt:eruo deus.urbs.ego)
+  :_  y.apex.cor.txt-el
+  (add x.apex.cor.txt-el (sub p.acus.ego q.acus.ego))
 ::
 ++  sumo                           :: get the length of the first word in a vox row
   |=  ro=lina
@@ -3737,7 +3860,7 @@
       u.ok
     =/  old-el=(unit deus)
       ?~  old  ~
-      (mole |.((exuo old-key deus.old)))
+      (mole |.((exuo (voro old-key) deus.old)))
     ?+  -.ars  ars
         %input
       ?.  &(?=(^ old-el) ?=(%input -.ars.cor.u.old-el))
