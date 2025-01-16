@@ -27,6 +27,7 @@
       [%border =ad =ora]                                               ::
       [%line =ab =ora]                                                 ::
       [%select pro=?(%submit %~)]                                      ::
+      [%editor ~]                                                      ::
       [%input de=@ud i=loci =vox]                                      ::
       [%checkbox v=? t=vox f=vox]                                      ::
       [%radio ~]                                                       ::
@@ -155,7 +156,8 @@
       [%v p=?(%border %line) x=@ud y1=@ud y2=@ud =ora]                 ::
   ==                                                                   ::
 +$  crux  [v=ab i=@ud c=ora l=ora r=ora t=ora b=ora]                   :: line intersection
-+$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))                :: size unit
++$  alae  (set path)                                                   :: existent editor source paths
++$  vita  [=alae =aves =ossa]                                          :: post geno session processing state
 +$  aqua  (list [i=@ud size=@ud marg=@ud])                             :: geno grow sizing state
 +$  vena                                                               :: geno res building state
   $:  size=[w=as h=as]                                                 ::
@@ -165,12 +167,14 @@
       flow=fuga                                                        ::
       look=acia                                                        ::
   ==                                                                   ::
++$  as    $%((pair %c @ud) (pair %p @ud) (pair %i @ud))                :: sizing unit
 +$  data  form-data:homunculus                                         :: form data
 +$  vela  manx                                                         :: sail
 +$  fons  session-source:homunculus                                    :: session source
 +$  ara                                                                :: session state
   $:  =fons                                                            ::
       =vela                                                            ::
+      =alae                                                            ::
       =aves                                                            ::
       =ossa                                                            ::
       =deus                                                            ::
@@ -188,6 +192,26 @@
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=deus =arx]                                                 :: system element state
 +$  acus  (trel @ @ tape)                                              :: command line state
++$  alvi                                                               :: editor session state by source
+  %+  map  path                                                        ::
+  $:  =flos                                                            ::
+      =apis                                                            ::
+      =cera                                                            ::
+  ==                                                                   ::
++$  flos  $~(1 @)                                                      :: editor viewport start line
++$  apis  $~([1 1 1] [x-1=@ x-2=@ y=@])                                :: editor cursor state (x-2 = previous maximum)
++$  cera                                                               :: text tree node (leaf or internal)
+  $@  @t                                                               ::
+  $:  l=mel                                                            ::
+      r=mel                                                            ::
+  ==                                                                   ::
++$  mel                                                                :: text tree internal node hemisphere
+  $:  depth=@                                                          ::
+      lines=@                                                          ::
+      words=@                                                          ::
+      chars=@                                                          ::
+      child=cera                                                       ::
+  ==                                                                   ::
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
@@ -197,6 +221,7 @@
       =acus                                                            ::
       =mos                                                             ::
       =omen                                                            ::
+      =alvi                                                            ::
       =urbs                                                            ::
       =cura                                                            ::
       =viae                                                            ::
@@ -254,9 +279,13 @@
       [~ hoc]
     =/  =via       (snag -.ind viae.ego)
     =/  =ara       (snag +.ind arae.via)
+    =/  olde       alae.ara
     =^  keys  ara  (novo ind upd ara)
+    =/  newe       (~(dif in alae.ara) olde)
     =.  arae.via   (snap arae.via +.ind ara)
-    =.  viae.ego   (snap viae.ego -.ind via)
+    =:  viae.ego   (snap viae.ego -.ind via)
+        alvi.ego   ?~(newe alvi.ego (mano newe bol))
+      ==
     ?.  =(cura.ego -.ind)
       [~ hoc]
     =^  opus  via  (levo keys via)
@@ -275,7 +304,10 @@
         :~  ara(fons (bibo bol))
         ==
       ?>  ?=(^ arae.via.arx.urbs.ego)
+      =/  olde  alae.i.arae.via.arx.urbs.ego
       =^  keys  i.arae.via.arx.urbs.ego  (novo %menu p.upd i.arae.via.arx.urbs.ego)
+      =/  newe  (~(dif in alae.i.arae.via.arx.urbs.ego) olde)
+      =?  alvi.ego  ?=(^ newe)  (mano newe bol)
       ?.  open.arx.urbs.ego
         [~ hoc]
       =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
@@ -951,11 +983,11 @@
             i.arae.via.arx.urbs.ego
             vela.i.arae.via.arx.urbs.ego
           ==
-        =/  [ave=aves osa=ossa]
-          (vivo k deus.i.arae.via.arx.urbs.ego)
+        =/  vit=vita  (vivo k deus.i.arae.via.arx.urbs.ego)
         %_  arae.via.arx.urbs.ego
-          aves.i  ave
-          ossa.i  osa
+          alae.i  alae.vit
+          aves.i  aves.vit
+          ossa.i  ossa.vit
         ==
       arae.via
         %+  spun  arae.via
@@ -991,8 +1023,12 @@
       %n     [con ~^~^dei]
       %l     [con ~^dei^~]
     ==
-  =/  [ave=aves osa=ossa]  (vivo key deus.ses)
-  ses(aves ave, ossa osa)
+  =/  vit=vita  (vivo key deus.ses)
+  %_  ses
+    alae  alae.vit
+    aves  aves.vit
+    ossa  ossa.vit
+  ==
 ::
 ++  novo                           :: apply homunculus update cards to a session
   |=  $:  ses-location=$@(%menu [@ @])
@@ -1048,9 +1084,13 @@
             key
           (geno [key cor.old-el] ses p.i.upd(a.g (weld a.g.p.i.upd size)))
         deus.ses
-      =/  [ave=aves osa=ossa]  (vivo ?^(key ~[i.key] ~) deus.ses)
+      =/  vit=vita  (vivo ?^(key ~[i.key] ~) deus.ses)
       :-  key
-      ses(aves ave, ossa osa)
+      %_  ses
+        alae  alae.vit
+        aves  aves.vit
+        ossa  ossa.vit
+      ==
       ::
         %set-scroll-position
       =/  key  (~(get by aves.ses) r.i.upd)
@@ -2058,6 +2098,210 @@
   ?:  ?=(%del -.z)  z
   !!
 ::
+++  domo                           :: classify a character into a word group
+  |=  char=@
+  ^-  @tas
+  ?:  =(char 32)
+    %whitespace
+  ?:  =(char 10)
+    %newline
+  ?:  ?|  &((gte char 48) (lte char 57))
+          &((gte char 65) (lte char 90))
+          &((gte char 97) (lte char 122))
+      ==
+    %alphanumeric
+  %other
+::
+++  apio                           :: compare two characters for word group equality
+  |=  [a=@t b=@t]
+  ^-  ?
+  =((domo a) (domo b))
+::
+++  fero                           :: build text tree leaf nodes from raw text
+  |=  cod=cord
+  ^-  (list @t)
+  =-  (flop [(crip (flop wod)) acc])
+  %+  roll  (trip cod)
+  |=  [i=@t a=[wod=tape acc=(list @t)]]
+  ?:  |(?=(~ wod.a) (apio i i.wod.a))
+    a(wod [i wod.a])
+  a(wod [i ~], acc [(crip (flop wod.a)) acc.a])
+::
+++  cero                           :: build a text tree from raw text
+  |=  cod=cord
+  =|  =mel
+  =/  rop=(list cera)  (fero cod)
+  |-  ^-  cera
+  =/  mid  (div (lent rop) 2)
+  =.  rop
+    =;  [n=@ pre=(unit cera) acc=(list cera)]
+      %-  flop
+      ?~  pre
+        acc
+      [u.pre acc]
+    %+  roll  rop
+    |=  [i=cera [n=$~(1 @) pre=(unit cera) acc=(list cera)]]
+    ^-  [@ (unit cera) (list cera)]
+    :-  +(n)
+    ?~  pre
+      ?:  &(=(n mid) !=(1 n))
+        [pre [i acc]]
+      [[~ i] acc]
+    :-  ~
+    :_  acc
+    :-  ?@  u.pre
+          %_  mel
+            depth  1
+            lines  ?:(=(10 u.pre) 1 0)
+            words  1
+            chars  (lent (trip u.pre))
+            child  u.pre
+          ==
+        %_  mel
+          depth  +((max depth.l.u.pre depth.r.u.pre))
+          lines  (add lines.l.u.pre lines.r.u.pre)
+          words  (add words.l.u.pre words.r.u.pre)
+          chars  (add chars.l.u.pre chars.r.u.pre)
+          child  u.pre
+        ==
+    ?@  i
+      %_  mel
+        depth  1
+        lines  ?:(=(10 i) 1 0)
+        words  1
+        chars  (lent (trip i))
+        child  i
+      ==
+    %_  mel
+      depth  +((max depth.l.i depth.r.i))
+      lines  (add lines.l.i lines.r.i)
+      words  (add words.l.i words.r.i)
+      chars  (add chars.l.i chars.r.i)
+      child  i
+    ==
+  ?:  ?=([* ~] rop)
+    i.rop
+  ?:  =(~ rop)
+    ''
+  $
+::
+++  poto                           :: resolve editor state as vox
+  |=  [src=path =res]
+  ^-  vox
+  =/  edi  (~(get by alvi.ego) src)
+  ?~  edi  ~
+  =/  gutter-size=@      +(?@(cera.u.edi 1 (lent ((d-co:co 1) (add lines.l.cera.u.edi lines.r.cera.u.edi)))))
+  =/  viewport-width=@   ?:((gth w.size.res gutter-size) (sub w.size.res gutter-size) 0)
+  =/  viewport-height=@  h.size.res
+  |^  ^-  vox
+  =;  fin
+    %+  turn  (flop p.fin)
+    |=  i=(list tape)
+    %-  zing
+    ^-  (list lina)
+    %+  turn  (flop i)
+    tuba
+  =+  ^-
+      $=  acc
+      $:  row-count=@
+          row-chars=@
+          lines-sum=@
+          p=(lest (list tape))
+      ==
+    :*  1  0  1
+        ~[~[(make-gutter-segment [~ flos.u.edi])]]
+    ==
+  |-  ^+  acc
+  ?@  cera.u.edi
+    ?:  =(10 cera.u.edi)  :: newline
+      %_  acc
+        row-count  +(row-count.acc)
+        row-chars  0
+        p          [~[(make-gutter-segment [~ lines-sum.acc])] p.acc]
+      ==
+    =/  lyf  (trip cera.u.edi)
+    =/  len  (lent lyf)
+    ?:  (gth len viewport-width)  :: word break
+      |-  ^+  acc
+      =/  fir  (scag viewport-width lyf)
+      =/  sec  (slag viewport-width lyf)
+      =/  lem  (lent sec)
+      ?:  (lte lem viewport-width)
+        %_  acc
+          row-count  (add 2 row-count.acc)
+          row-chars  lem
+          p
+            :*  ?:  =(0 lem)  ~[(make-gutter-segment ~)]
+                ~[sec (make-gutter-segment ~)]
+                ~[fir (make-gutter-segment ~)]
+                p.acc
+            ==
+        ==
+      %=  $
+        lyf            sec
+        len            lem
+        row-count.acc  +(row-count.acc)
+        row-chars.acc  0
+        p.acc          [~[fir (make-gutter-segment ~)] p.acc]
+      ==
+    =/  new-row-chars  (add len row-chars.acc)
+    ?:  (gth new-row-chars viewport-width)  :: word wrap
+      %_  acc
+        row-count  +(row-count.acc)
+        row-chars  len
+        p          [~[lyf (make-gutter-segment ~)] p.acc]
+      ==
+    %_  acc
+      row-chars  new-row-chars
+      i.p        [lyf i.p.acc]
+    ==
+  =/  new-lines-sum  (add lines.l.cera.u.edi lines-sum.acc)
+  ?:  (gth flos.u.edi new-lines-sum)
+    %=  $
+      cera.u.edi     child.r.cera.u.edi
+      lines-sum.acc  new-lines-sum
+    ==
+  =.  acc
+    %=  $
+      cera.u.edi  child.l.cera.u.edi
+    ==
+  ?:  (gth row-count.acc viewport-height)
+    acc
+  %=  $
+    cera.u.edi     child.r.cera.u.edi
+    lines-sum.acc  new-lines-sum
+  ==
+  ::
+  ++  make-gutter-segment
+    |=  n=(unit @)
+    ^-  tape
+    ?~  n
+      (reap gutter-size ' ')
+    =/  num  ((d-co:co 1) u.n)
+    =/  len  (lent num)
+    %+  weld  num
+    (reap (sub gutter-size len) ' ')
+  --
+::
+++  mano                           :: initialize any new editor sessions
+  |=  [=alae bol=bowl:gall]
+  =/  new  ~(tap in alae)
+  |-  ^-  alvi
+  ?~  new
+    alvi.ego
+  ?:  (~(has by alvi.ego) i.new)
+    $(new t.new)
+  :: the assumption is that the path from the element is a beam, minus ship and case
+  ?>  ?=(^ i.new)
+  =/  des  i.i.new
+  =/  pax  t.i.new
+  =/  txt  !<(@t .^(vase %cr (weld /(scot %p our.bol)/[des]/(scot %da now.bol) pax)))
+  %=  $
+    alvi.ego
+      %+  %~  put  by  alvi.ego  i.new
+      [*flos *apis (cero txt)]
+  ==
+::
 ++  dolo                           :: get default styles for a semantic element
   |=  el=@tas
   ^-  vena
@@ -2106,6 +2350,10 @@
     %_  def
       size  [[%c 1] [%p 100]]
     ==
+      %editor
+    %_  def
+      size  [[%c 20] [%c 7]]
+    ==
       %input
     %_  def
       size  [[%c 10] [%c 1]]
@@ -2140,6 +2388,7 @@
         %line-h         [(dolo %line-h) [%line %h %light]]
         %line-v         [(dolo %line-v) [%line %v %light]]
         %scroll         [(dolo %scroll) [%scroll *equi *iter *sola]]
+        %editor         [(dolo %editor) [%editor ~]]
         %form           [(dolo %form) [%form ~]]
         %input          [(dolo %input) [%input 0 [0 0] ~]]
         %checkbox       [(dolo %checkbox) [%checkbox | ~ ~]]
@@ -3200,11 +3449,14 @@
     %v  (snap v i.i `lina`[char ~])
   ==
 ::
-++  vivo                           :: collect line intersection groups and ids from a session branch
+++  vivo                           :: perform session post geno processing
   |=  [key=rami deu=deus]
-  =/  acc=[=aves =ossa]  [~ [~^~ ~^~]]
-  |-  ^-  [aves ossa]
-  =:  aves.acc
+  =/  acc=vita  [~ ~ [~^~ ~^~]]
+  |-  ^-  vita
+  =:  alae.acc
+        ?.  ?=(%editor -.ars.cor.deu)  alae.acc
+        (~(put in alae.acc) avis.cor.deu)
+      aves.acc
         ?~  avis.cor.deu  aves.acc
         (~(put by aves.acc) avis.cor.deu key)
       ossa.acc
@@ -3256,7 +3508,7 @@
           n.gens.deu
       ==
     [*axis *ager acc]
-  |=  [d=deus a=[n=axis i=ager c=_acc]]
+  |=  [d=deus a=[n=axis i=ager c=vita]]
   ^+  +<
   =/  x  (apo -.ars.cor.d)
   =?  i.a  !=(n.a x)  0
@@ -3341,7 +3593,10 @@
     [%c (div (mul q.l.padd.vena q.w.size.vena) 100)]
   =?  x.flex.vena  =(%i p.w.size.vena)  0
   =?  y.flex.vena  =(%i p.h.size.vena)  0
-  =?  ars  |(?=(%pattern -.ars) ?=(%checkbox -.ars))
+  =?  ars
+      ?|  ?=(%pattern -.ars)
+          ?=(%checkbox -.ars)
+      ==
     ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
     ?+  -.ars  ars
         %pattern
@@ -3365,6 +3620,7 @@
   =/  [bor=marl lay=marl nor=marl]
     ?:  ?|  ?=(%text -.ars)
             ?=(%pattern -.ars)
+            ?=(%editor -.ars)
             ?=(%input -.ars)
             ?=(%checkbox -.ars)
         ==
@@ -4163,6 +4419,7 @@
     ?+  -.ars.cor.deu  ~
       %text      vox.ars.cor.deu
       %pattern   vox.ars.cor.deu
+      %editor    (poto avis.cor.deu res.cor.deu)
       %input     (figo res.cor.deu ars.cor.deu)
       %checkbox  (duro cor.deu)
       %border    (coeo cor.deu key ossa.ayr)
