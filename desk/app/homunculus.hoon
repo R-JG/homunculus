@@ -2214,10 +2214,12 @@
   |-  ^+  acc
   ?@  cera.u.edi
     ?:  =(10 cera.u.edi)  :: newline
+      =:  lines-sum.acc  +(lines-sum.acc)
+          row-count.acc  +(row-count.acc)
+          row-chars.acc  0
+        ==
       %_  acc
-        row-count  +(row-count.acc)
-        row-chars  0
-        p          [~[(make-gutter-segment [~ lines-sum.acc])] p.acc]
+        p  [~[(make-gutter-segment [~ lines-sum.acc])] p.acc]
       ==
     =/  lyf  (trip cera.u.edi)
     =/  len  (lent lyf)
@@ -2268,8 +2270,7 @@
   ?:  (gth row-count.acc viewport-height)
     acc
   %=  $
-    cera.u.edi     child.r.cera.u.edi
-    lines-sum.acc  new-lines-sum
+    cera.u.edi  child.r.cera.u.edi
   ==
   ::
   ++  make-gutter-segment
