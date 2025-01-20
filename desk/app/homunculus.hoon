@@ -130,7 +130,8 @@
   +$  editor                                                           ::
     $?  %mot-l  %mot-r  %mot-u  %mot-d                                 ::
         %jump  %count                                                  ::
-        %to-element  %to-command                                                    ::
+        %delete
+        %to-element  %to-command                                       ::
     ==                                                                 ::
   --                                                                   ::
 +$  omen                                                               :: keybindings per mode
@@ -142,7 +143,8 @@
       editor=(map nota editor:lex)                                     ::
   ==                                                                   ::
 +$  usus                                                               :: editor mode state
-  $:  count=_1                                                         ::
+  $:  count-1=tape                                                     ::
+      count-2=tape                                                     ::
       operator=(unit editor:lex)                                       ::
   ==                                                                   ::
 +$  mos                                                                :: mode state
@@ -198,14 +200,14 @@
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=deus =arx]                                                 :: system element state
 +$  acus  (trel @ @ tape)                                              :: command line state
-+$  alvi                                                               :: editor session state by source
-  %+  map  path                                                        ::
++$  alvi  (map path favi)                                              :: editor session state by source
++$  favi                                                               :: editor state
   $:  =flos                                                            ::
       =apis                                                            ::
       =cera                                                            ::
   ==                                                                   ::
 +$  flos  $~(1 @)                                                      :: editor viewport start line
-+$  apis  $~([1 1 1] [x-1=@ x-2=@ y=@])                                :: editor cursor state (x-2 = previous maximum)
++$  apis  $~([0 0 1] [x=@ px=@ y=@])                                   :: editor cursor state (px = previous maximum)
 +$  cera                                                               :: text tree node (leaf or internal)
   $@  @t                                                               ::
   $:  l=mel                                                            ::
@@ -709,7 +711,7 @@
     !>
     ^-  dill-blit:dill
     :-  %mor
-    %+  turn  (snoc opus [vado ~])
+    %+  turn  (snoc opus [loco ~])
     dido
     ::
       %http
@@ -717,7 +719,7 @@
     %-  crip
     %-  zing
     ^-  wall
-    %+  turn  (snoc opus [vado ~])
+    %+  turn  (snoc opus [loco ~])
     dico
     ::
   ==
@@ -858,20 +860,18 @@
   ::
   ++  command-sail
     ^-  manx
+    =/  cmd=?
+      ?|  ?=(%command -.mos.ego)
+          ?=(%leader -.mos.ego)
+      ==
     ;row(w "100%", h "1", bg "#000000")
-      ;row(w "grow", h "1", fg ?:(puto "#FFFFFF" "#707070"))
+      ;row(w "grow", h "1", fg ?:(cmd "#FFFFFF" "#707070"))
         ;row(w "1", h "1", mx "1"):":"
         ;row(w "grow", h "1"):"{(slag q.acus.ego r.acus.ego)}"
       ==
     ==
   ::
   --
-::
-++  puto                           :: check if the command line is active
-  ^-  ?
-  ?|  ?=(%command -.mos.ego)
-      ?=(%leader -.mos.ego)
-  ==
 ::
 ++  gero                           :: handle %command mode events
   |_  [zon=zona lex=command:lex]
@@ -1755,10 +1755,25 @@
   ?=  ^
   (find `(list *)`[%~ a] `(list *)`[%~ b])
 ::
-++  vado                           :: resolve cursor location
+++  loco                           :: resolve the cursor location
   ^-  loci
-  ?:  puto
-    inno
+  ?-  -.mos.ego
+    %element  vado
+    %editor   mico
+    %insert   mico
+    %visual   mico
+    %leader   vieo
+    %command  vieo
+  ==
+::
+++  vieo                           :: resolve the cursor location in the command line
+  ^-  loci
+  =/  txt-el=deus  (exuo command-line-txt:eruo deus.urbs.ego)
+  :_  y.apex.cor.txt-el
+  (add x.apex.cor.txt-el (sub p.acus.ego q.acus.ego))
+::
+++  vado                           :: resolve the cursor location for an element
+  ^-  loci
   =/  =rex
     ?:  open.arx.urbs.ego
       rex.via.arx.urbs.ego
@@ -1767,19 +1782,6 @@
   =/  [ayr=aer deu=deus]  (creo k.rex)
   =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
     (laxo iter.ayr apex.cor.deu res.cor.deu)
-  ?:  ?=(%input -.ars.cor.deu)
-    =/  [i=loci de=@ w=@ h=@]
-      :+  i.ars.cor.deu
-        de.ars.cor.deu
-      size.res.cor.deu
-    ?:  =(1 h)
-      [(add x1 (sub x.i de)) y1]
-    ?:  (lth x.i w)
-      [(add x1 x.i) (add y1 (sub y.i de))]
-    =/  ran=@ud  (sub y.i de)
-    ?:  (lth +(ran) h)
-      [x1 +((add y1 ran))]
-    [(add x1 ?:(=(0 w) 0 (dec w))) (add y1 ran)]
   =:  x1  (min (max x1 l.muri.ayr) r.muri.ayr)
       y1  (min (max y1 t.muri.ayr) b.muri.ayr)
     ==
@@ -1797,12 +1799,6 @@
   ?:  (gth x2 x2.i.u.ux)
     $(x1 (max x1 +(x2.i.u.ux)), u.ux t.u.ux)
   ^$(x1 ox, y1 +(y1))
-::
-++  inno                           :: resolve cursor location in the command line
-  ^-  loci
-  =/  txt-el=deus  (exuo command-line-txt:eruo deus.urbs.ego)
-  :_  y.apex.cor.txt-el
-  (add x.apex.cor.txt-el (sub p.acus.ego q.acus.ego))
 ::
 ++  sumo                           :: get the length of the first word in a vox row
   |=  ro=lina
@@ -1836,35 +1832,127 @@
   !!
 ::
 ++  moto                           :: handle %editor mode events
-  |_  [zon=zona lex=editor:lex]
+  |=  [zon=zona lex=editor:lex]
+  ^-  (quip card ^ego)
   ::
-  ++  $
-    ^-  (quip card ^ego)
-    ::
-    ?:  ?=(%to-element lex)
-      =.  mos.ego        [%element ~]
-      =.  deus.urbs.ego  full:sys:velo
-      :_  ego
-      :~  (fio ~[(viso sys-lines:eruo)])
+  ?:  ?=(%to-element lex)
+    =.  mos.ego        [%element ~]
+    =.  deus.urbs.ego  full:sys:velo
+    :_  ego
+    :~  (fio ~[(viso sys-lines:eruo)])
+    ==
+  ::
+  ?:  ?=(%to-command lex)
+    =.  mos.ego        [%command ~]
+    =.  deus.urbs.ego  full:sys:velo
+    :_  ego
+    :~  (fio ~[(viso sys-lines:eruo)])
+    ==
+  ::
+  ?>  ?=(%editor -.mos.ego)
+  ?:  ?=(%count lex)
+    =.  mos.ego
+      ?~  operator.mos.ego
+        %_  mos.ego
+          count-1
+            ?+  -.zon  !!
+              %chr  (snoc count-1.mos.ego (tuft p.zon))
+              %txt  (weld count-1.mos.ego (tufa p.zon))
+            ==
+        ==
+      %_  mos.ego
+        count-2
+          ?+  -.zon  !!
+            %chr  (snoc count-2.mos.ego (tuft p.zon))
+            %txt  (weld count-2.mos.ego (tufa p.zon))
+          ==
       ==
-    ::
-    ?:  ?=(%to-command lex)
-      =.  mos.ego        [%command ~]
-      =.  deus.urbs.ego  full:sys:velo
-      :_  ego
-      :~  (fio ~[(viso sys-lines:eruo)])
-      ==
-    ::
-
-     :: %mot-l
-     :: %mot-r
-     :: %mot-u
-     :: %mot-d
-     
-     ::  %count
+    =.  deus.urbs.ego  status:sys:velo
+    :_  ego
+    :~  (fio ~[(viso status-line:eruo)])
+    ==
+  ::
+  =/  =via
+    ?:  open.arx.urbs.ego  via.arx.urbs.ego
+    (snag cura.ego viae.ego)
+  ?~  rex.via
     [~ ego]
-  ::
-  --
+  =/  =ara
+    ?:  open.arx.urbs.ego  ?>(?=(^ arae.via) i.arae.via)
+    ?>  ?=(^ k.rex.via)
+    (snag ager.i.k.rex.via arae.via)
+  =/  deu=deus  (exuo (voro k.rex.via) deus.ara)
+  =/  fav=favi
+    ?+  -.ars.cor.deu  !!
+      %editor  (~(got by alvi.ego) avis.cor.deu)
+      :: %input                     TODO: %input   
+    ==
+  =.  fav
+    |^  ^-  favi
+    ?~  operator.mos.ego
+      ?+  lex  fav
+        %mot-l  m-c-l
+        %mot-r  m-c-r
+        %mot-u  m-l-u
+        %mot-d  m-l-d
+      ==
+    ?+  u.operator.mos.ego  fav
+        %delete
+      ?+  lex  fav
+        %mot-l  fav
+        %mot-r  fav
+        %mot-u  fav
+        %mot-d  fav
+      ==
+    ==
+    ::
+    ++  m-c-l                         :: move the cursor characterwise left
+      ^-  favi
+      =/  mov          hio
+      =?  x.apis.fav   (gth x.apis.fav mov)  (sub x.apis.fav mov)
+      =.  px.apis.fav  x.apis.fav
+      fav
+    ::
+    ++  m-c-r                         :: move the cursor characterwise right
+      ^-  favi
+      fav
+      :: go through the tree, navigating according to the target, and accmulate the actual row/col location where it stops
+      :: do the previous maxumum logic
+      :: handle flos according to the new cursor position
+      :: do a render if needed, elses just cursor resolution update
+    ::
+    ++  m-l-u                         :: move the cursor linewise up
+      ^-  favi
+      fav
+    ::
+    ++  m-l-d                         :: move the cursor linewise down
+      ^-  favi
+      fav
+    ::
+    ++  hio                          :: parse the count for a motion
+      ^-  @
+      =/  c-1=(unit @)
+        ?~  count-1.mos.ego  ~
+        (slaw %ud (crip count-1.mos.ego))
+      =/  c-2=(unit @)
+        ?~  count-2.mos.ego  ~
+        (slaw %ud (crip count-2.mos.ego))
+      ?:  &(?=(~ c-1) ?=(~ c-2))  1
+      ?:  &(?=(^ c-1) ?=(~ c-2))  u.c-1
+      ?:  &(?=(~ c-1) ?=(^ c-2))  u.c-2
+      ?:  &(?=(^ c-1) ?=(^ c-2))  (mul u.c-1 u.c-2)
+      1
+    ::
+    --
+  =.  ego
+    ?+  -.ars.cor.deu  !!
+        %editor
+      ego(alvi (~(put by alvi.ego) avis.cor.deu fav))
+        :: %input                     TODO: %input   
+    ==
+  :_  ego
+  :~  (fio ~)  :: TODO: figure out a dedicated rendering system for editor updates
+  ==
 ::
 ++  domo                           :: classify a character into a word group
   |=  char=@
@@ -1922,7 +2010,7 @@
             depth  1
             lines  ?:(=(10 u.pre) 1 0)
             words  1
-            chars  (lent (trip u.pre))
+            chars  ?:(=(10 u.pre) 0 (lent (trip u.pre)))
             child  u.pre
           ==
         %_  mel
@@ -1937,7 +2025,7 @@
         depth  1
         lines  ?:(=(10 i) 1 0)
         words  1
-        chars  (lent (trip i))
+        chars  ?:(=(10 i) 0 (lent (trip i)))
         child  i
       ==
     %_  mel
@@ -1953,12 +2041,17 @@
     ''
   $
 ::
+++  puto                           :: determine gutter size by means of line total
+  |=  tot=@
+  ^-  @
+  +((lent ((d-co:co 1) tot)))
+::
 ++  poto                           :: resolve editor state as vox
   |=  [src=path =res]
   ^-  vox
   =/  edi  (~(get by alvi.ego) src)
   ?~  edi  ~
-  =/  gutter-size=@      +(?@(cera.u.edi 1 (lent ((d-co:co 1) (add lines.l.cera.u.edi lines.r.cera.u.edi)))))
+  =/  gutter-size=@      (puto ?@(cera.u.edi 1 (add lines.l.cera.u.edi lines.r.cera.u.edi)))
   =/  viewport-width=@   ?:((gth w.size.res gutter-size) (sub w.size.res gutter-size) 0)
   =/  viewport-height=@  h.size.res
   |^  ^-  vox
@@ -1974,7 +2067,7 @@
       $:  row-count=@
           row-chars=@
           lines-sum=@
-          p=(lest (list tape))
+          p=(lest (lest tape))
       ==
     :*  1  0  1
         ~[~[(make-gutter-segment [~ flos.u.edi])]]
@@ -1996,6 +2089,26 @@
       =/  fir  (scag viewport-width lyf)
       =/  sec  (slag viewport-width lyf)
       =/  lem  (lent sec)
+      ?:  =(0 row-chars.acc)
+        ?:  (lte lem viewport-width)
+          %_  acc
+            row-count  +(row-count.acc)
+            row-chars  lem
+            p
+              :*  ~[sec (make-gutter-segment ~)]
+                  p.acc(i [fir i.p.acc])
+              ==
+          ==
+        %=  $
+          lyf            sec
+          len            lem
+          row-count.acc  +(row-count.acc)
+          row-chars.acc  0
+          p.acc
+            :*  ~[(make-gutter-segment ~)]
+                p.acc(i [fir i.p.acc])
+            ==
+        ==
       ?:  (lte lem viewport-width)
         %_  acc
           row-count  (add 2 row-count.acc)
@@ -2010,9 +2123,13 @@
       %=  $
         lyf            sec
         len            lem
-        row-count.acc  +(row-count.acc)
+        row-count.acc  (add 2 row-count.acc)
         row-chars.acc  0
-        p.acc          [~[fir (make-gutter-segment ~)] p.acc]
+        p.acc
+          :*  ~[(make-gutter-segment ~)]
+              ~[fir (make-gutter-segment ~)]
+              p.acc
+          ==
       ==
     =/  new-row-chars  (add len row-chars.acc)
     ?:  (gth new-row-chars viewport-width)  :: word wrap
@@ -2052,8 +2169,124 @@
     (reap (sub gutter-size len) ' ')
   --
 ::
+++  mico                           :: resolve the cursor's location within an editor element
+  ^-  loci
+  =/  =rex
+    ?:  open.arx.urbs.ego
+      rex.via.arx.urbs.ego
+    rex:(snag cura.ego viae.ego)
+  ?~  rex  1^1
+  =/  [ayr=aer deu=deus]  (creo k.rex)
+  =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
+    (laxo iter.ayr apex.cor.deu res.cor.deu)
+  =/  fav=favi
+    ?+  -.ars.cor.deu  !!
+      %editor  (~(got by alvi.ego) avis.cor.deu)
+      :: %input                     TODO: %input   
+    ==
+  =/  gutter-size=@  (puto ?@(cera.fav 1 (add lines.l.cera.fav lines.r.cera.fav)))
+  =/  viewport-width=@
+    ?:  (gth w.size.res.cor.deu gutter-size) 
+      (sub w.size.res.cor.deu gutter-size)
+    0
+  =+  ^=  acc
+      :*  line-count=1
+          line-chars=0
+          row-count=1
+          row-chars=0
+          cur-node-chars=?@(cera.fav (lent (trip cera.fav)) 0)
+          `pos=(unit loci)`~
+      ==
+  =;  acc
+    ?~  pos.acc  [x1 y1]
+    :_  (add ?:(=(0 y1) 0 (dec y1)) y.u.pos.acc)
+    ;:(add ?:(=(0 x1) 0 (dec x1)) gutter-size ?:(=(0 x.u.pos.acc) 1 x.u.pos.acc))
+  |-  ^+  acc
+  ?@  cera.fav
+    ?:  =(10 cera.fav)  :: newline
+      =:  line-count.acc  +(line-count.acc)
+          line-chars.acc  0
+          row-count.acc   +(row-count.acc)
+          row-chars.acc   0
+        ==
+      ?:  =([line-chars.acc line-count.acc] [x.apis.fav y.apis.fav])
+        acc(pos [~ row-chars.acc row-count.acc])
+      acc
+    =/  new-line-chars  (add cur-node-chars.acc line-chars.acc)
+    =/  cursor-found=?
+      ?&  =(line-count.acc y.apis.fav)
+          (gte new-line-chars x.apis.fav)
+      ==
+    ?:  (gth cur-node-chars.acc viewport-width)  :: word break
+      ?:  cursor-found
+        =/  cur-word-excess  (sub new-line-chars x.apis.fav)
+        =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
+        =/  [reps=@ remd=@]  (dvr chars-to-target viewport-width)
+        =/  nrem  ?:(=(0 remd) viewport-width remd)
+        =?  reps  !=(0 reps)
+          ?:  &(=(0 row-chars.acc) =(0 remd))  (dec reps)
+          ?:  =(0 remd)  reps
+          +(reps)
+        =:  line-chars.acc   new-line-chars
+            row-count.acc    (add reps row-count.acc)
+            row-chars.acc    nrem
+          ==
+        %_  acc
+          pos  [~ row-chars.acc row-count.acc]
+        ==
+      =/  [reps=@ remd=@]  (dvr cur-node-chars.acc viewport-width)
+      =?  reps  =(0 row-chars.acc)  (dec reps)
+      =?  reps  !=(0 remd)          +(reps)
+      =?  remd  =(0 remd)           viewport-width
+      %_  acc
+        line-chars  new-line-chars
+        row-count   (add reps row-count.acc)
+        row-chars   remd
+      ==
+    =/  new-row-chars  (add cur-node-chars.acc row-chars.acc)
+    ?:  (gth new-row-chars viewport-width)  :: word wrap
+      =:  line-chars.acc  new-line-chars
+          row-count.acc   +(row-count.acc)
+          row-chars.acc   cur-node-chars.acc
+        ==
+      ?:  cursor-found
+        =/  cur-word-excess  (sub new-line-chars x.apis.fav)
+        =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
+        acc(pos [~ chars-to-target row-count.acc])
+      acc
+    ?:  cursor-found
+      =/  cur-word-excess  (sub new-line-chars x.apis.fav)
+      =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
+      =:  line-chars.acc   (add chars-to-target line-chars.acc)
+          row-chars.acc    (add chars-to-target row-chars.acc)
+        ==
+      acc(pos [~ row-chars.acc row-count.acc])
+    %_  acc
+      line-chars  new-line-chars
+      row-chars   new-row-chars
+    ==
+  =/  new-line-count  (add lines.l.cera.fav line-count.acc)
+  ?:  (gth flos.fav new-line-count)
+    %=  $
+      cera.fav            child.r.cera.fav
+      line-count.acc      new-line-count
+      cur-node-chars.acc  chars.r.cera.fav
+    ==
+  =.  acc
+    %=  $
+      cera.fav            child.l.cera.fav
+      cur-node-chars.acc  chars.l.cera.fav
+    ==
+  ?:  ?=(^ pos.acc)
+    acc
+  %=  $
+    cera.fav            child.r.cera.fav
+    cur-node-chars.acc  chars.r.cera.fav
+  ==
+::
 ++  mano                           :: initialize any new editor sessions
   |=  [=alae bol=bowl:gall]
+  =|  =favi
   =/  new  ~(tap in alae)
   |-  ^-  alvi
   ?~  new
@@ -2068,7 +2301,7 @@
   %=  $
     alvi.ego
       %+  %~  put  by  alvi.ego  i.new
-      [*flos *apis (cero txt)]
+      favi(cera (cero txt))
   ==
 ::
 ++  dolo                           :: get default styles for a semantic element
