@@ -146,6 +146,7 @@
   $:  count-1=tape                                                     ::
       count-2=tape                                                     ::
       operator=(unit editor:lex)                                       ::
+      cosmetic=[pos=$@(~ loci)]                                        ::
   ==                                                                   ::
 +$  mos                                                                :: mode state
   $%  [%editor usus]                                                   ::
@@ -852,7 +853,23 @@
             ::
               %editor
             ;=  ;row(h "1", px "1", fg "#EBF2FA", bg "#064789"):"%editor"
-                ;row(w "grow", h "1", bg "#427AA1");
+                ;row(w "grow", h "1", pr "1", bg "#427AA1", fx "end")
+                  ;*  ?:  &(?=(^ count-1.mos.ego) ?=(^ count-2.mos.ego))
+                        ;=  ;+  ;/  count-1.mos.ego
+                            ;+  ;/  "x"
+                            ;+  ;/  count-2.mos.ego
+                        ==
+                      ?:  ?=(^ count-1.mos.ego)
+                        ;+  ;/  count-1.mos.ego
+                      ?:  ?=(^ count-2.mos.ego)
+                        ;+  ;/  count-2.mos.ego
+                      ~
+                ==
+                ;row(h "1", px "1", bg "#6d9fc3")
+                  ;+  ;/
+                    ?~  pos.cosmetic.mos.ego  "[]"
+                    "[{(scow %ud y.pos.cosmetic.mos.ego)} {(scow %ud x.pos.cosmetic.mos.ego)}]"
+                ==
             ==
             ::
           ==
@@ -1909,20 +1926,59 @@
     ++  m-c-l                         :: move the cursor characterwise left
       ^-  favi
       =/  mov          hio
-      =?  x.apis.fav   (gth x.apis.fav mov)  (sub x.apis.fav mov)
+      =.  x.apis.fav   ?:((gth x.apis.fav mov) (sub x.apis.fav mov) 1)
       =.  px.apis.fav  x.apis.fav
       fav
     ::
     ++  m-c-r                         :: move the cursor characterwise right
       ^-  favi
+      =/  target-line-chars  (add x.apis.fav hio)
+      =+  ^=  acc
+          :*  line-count=1
+              line-chars=0
+              `cur-node-chars=@`?@(cera.fav (lent (trip cera.fav)) 0)
+              `done=?`|
+          ==
+      =.  x.apis.fav
+        %+  min  target-line-chars
+        =<  line-chars
+        |-  ^+  acc
+        ?@  cera.fav
+          ?:  =(10 cera.fav)
+            =.  line-count.acc  +(line-count.acc)
+            ?:  (gth line-count.acc y.apis.fav)
+              acc(done &)
+            acc(line-chars 0)
+          =.  line-chars.acc  (add line-chars.acc cur-node-chars.acc)
+          ?:  (gte line-chars.acc target-line-chars)
+            acc(done &)
+          acc
+        =/  new-line-count  (add lines.l.cera.fav line-count.acc)
+        ?:  (gth flos.fav new-line-count)
+          %=  $
+            cera.fav            child.r.cera.fav
+            line-count.acc      new-line-count
+            cur-node-chars.acc  chars.r.cera.fav
+          ==
+        =.  acc
+          %=  $
+            cera.fav            child.l.cera.fav
+            cur-node-chars.acc  chars.l.cera.fav
+          ==
+        ?:  done.acc
+          acc
+        %=  $
+          cera.fav            child.r.cera.fav
+          cur-node-chars.acc  chars.r.cera.fav
+        ==
+      =.  px.apis.fav  x.apis.fav
       fav
-      :: go through the tree, navigating according to the target, and accmulate the actual row/col location where it stops
-      :: do the previous maxumum logic
-      :: handle flos according to the new cursor position
-      :: do a render if needed, elses just cursor resolution update
     ::
     ++  m-l-u                         :: move the cursor linewise up
       ^-  favi
+      :: do the previous maxumum logic
+      :: handle flos according to the new cursor position
+
       fav
     ::
     ++  m-l-d                         :: move the cursor linewise down
@@ -1933,10 +1989,10 @@
       ^-  @
       =/  c-1=(unit @)
         ?~  count-1.mos.ego  ~
-        (slaw %ud (crip count-1.mos.ego))
+        [~ (scan count-1.mos.ego dim:ag)]
       =/  c-2=(unit @)
         ?~  count-2.mos.ego  ~
-        (slaw %ud (crip count-2.mos.ego))
+        [~ (scan count-2.mos.ego dim:ag)]
       ?:  &(?=(~ c-1) ?=(~ c-2))  1
       ?:  &(?=(^ c-1) ?=(~ c-2))  u.c-1
       ?:  &(?=(~ c-1) ?=(^ c-2))  u.c-2
@@ -1950,8 +2006,10 @@
       ego(alvi (~(put by alvi.ego) avis.cor.deu fav))
         :: %input                     TODO: %input   
     ==
+  =.  +.mos.ego      =+(*usus -(pos.cosmetic [x.apis.fav y.apis.fav]))
+  =.  deus.urbs.ego  status:sys:velo
   :_  ego
-  :~  (fio ~)  :: TODO: figure out a dedicated rendering system for editor updates
+  :~  (fio ~[(viso status-line:eruo)])  :: TODO: figure out a dedicated rendering system for editor updates
   ==
 ::
 ++  domo                           :: classify a character into a word group
