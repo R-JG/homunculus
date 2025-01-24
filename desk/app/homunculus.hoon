@@ -2069,7 +2069,7 @@
       ?:  =(0 thresh)
         y.apis.fav
       =/  naive-line-start=@
-        ?:  (gth thresh y.apis.fav)  1
+        ?:  (gte thresh y.apis.fav)  1
         (sub y.apis.fav thresh)
       =/  end-line=@
         ?:  (lte y.apis.fav 1)  1
@@ -2121,34 +2121,37 @@
       ^-  (list [line=@ rows=@])
       =+  ^=  acc
           :*  line-count=1
-              row-count=1
               row-chars=0
               cur-node-chars=?@(cera.fav (lent (trip cera.fav)) 0)
-              `p=(list [line=@ rows=@])`~
+              ^-  p=(list [line=@ rows=@])
+              ?.  =(1 start)  ~
+              ~[[start 1]]
           ==
-      =<  p
+      =;  acc
+        p.acc
       |-  ^+  acc
       ?@  cera.fav
         ?:  =(10 cera.fav)  :: newline
+          =:  line-count.acc  +(line-count.acc)
+              row-chars.acc   0
+            ==
           %_  acc
-            p           [[line-count.acc row-count.acc] p.acc]
-            line-count  +(line-count.acc)
-            row-count   +(row-count.acc)
-            row-chars   0
+            p  ?.((gth line-count.acc end) [[line-count.acc 1] p.acc] p.acc)
           ==
+        ?>  ?=(^ p.acc)
         ?:  (gth cur-node-chars.acc viewport-width)  :: word break
           =/  [reps=@ remd=@]  (dvr cur-node-chars.acc viewport-width)
           =?  reps  =(0 row-chars.acc)  (dec reps)
           =?  reps  !=(0 remd)          +(reps)
           =?  remd  =(0 remd)           viewport-width
           %_  acc
-            row-count   (add reps row-count.acc)
-            row-chars   remd
+            rows.i.p   (add reps rows.i.p.acc)
+            row-chars  remd
           ==
         =/  new-row-chars  (add cur-node-chars.acc row-chars.acc)
         ?:  (gth new-row-chars viewport-width)  :: word wrap
           %_  acc
-            row-count  +(row-count.acc)
+            rows.i.p   +(rows.i.p.acc)
             row-chars  cur-node-chars.acc
           ==
         %_  acc
@@ -2329,14 +2332,17 @@
     tuba
   =+  ^-
       $=  acc
-      $:  row-count=@
+      $:  lines-sum=@
           row-chars=@
-          lines-sum=@
-          p=(lest (lest tape))
+          row-count=@
+          p=(list (list tape))
       ==
-    :*  1  0  1
-        ~[~[(make-gutter-segment [~ flos.u.edi])]]
-    ==
+      :*  1  0
+          ?.  =(1 flos.u.edi)
+            [0 ~]
+          :-  1
+          ~[~[(make-gutter-segment [~ flos.u.edi])]]
+      ==
   |-  ^+  acc
   ?@  cera.u.edi
     ?:  =(10 cera.u.edi)  :: newline
@@ -2347,6 +2353,7 @@
       %_  acc
         p  [~[(make-gutter-segment [~ lines-sum.acc])] p.acc]
       ==
+    ?>  ?=(^ p.acc)
     =/  lyf  (trip cera.u.edi)
     =/  len  (lent lyf)
     ?:  (gth len viewport-width)  :: word break
@@ -2444,24 +2451,25 @@
   =+  ^=  acc
       :*  line-count=1
           line-chars=0
-          row-count=1
+          row-count=?:(=(1 flos.fav) 1 0)
           row-chars=0
           cur-node-chars=?@(cera.fav (lent (trip cera.fav)) 0)
-          `pos=(unit loci)`~
+          `done=?`|
       ==
   =;  acc
-    ?>  ?=(^ pos.acc)
-    u.pos.acc
+    [row-chars.acc row-count.acc]
   |-  ^+  acc
   ?@  cera.fav
     ?:  =(10 cera.fav)  :: newline
+      ?:  =(line-count.acc y.apis.fav)
+        acc(done &)
       =:  line-count.acc  +(line-count.acc)
           line-chars.acc  0
           row-count.acc   +(row-count.acc)
           row-chars.acc   0
         ==
       ?:  =([line-chars.acc line-count.acc] [x.apis.fav y.apis.fav])
-        acc(pos [~ row-chars.acc row-count.acc])
+        acc(done &)
       acc
     =/  new-line-chars  (add cur-node-chars.acc line-chars.acc)
     =/  cursor-found=?
@@ -2483,7 +2491,7 @@
             row-chars.acc    nrem
           ==
         %_  acc
-          pos  [~ row-chars.acc row-count.acc]
+          done  &
         ==
       =/  [reps=@ remd=@]  (dvr cur-node-chars.acc viewport-width)
       =?  reps  =(0 row-chars.acc)  (dec reps)
@@ -2503,7 +2511,8 @@
       ?:  cursor-found
         =/  cur-word-excess  (sub new-line-chars x.apis.fav)
         =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
-        acc(pos [~ chars-to-target row-count.acc])
+        =.  row-chars.acc    chars-to-target
+        acc(done &)
       acc
     ?:  cursor-found
       =/  cur-word-excess  (sub new-line-chars x.apis.fav)
@@ -2511,7 +2520,7 @@
       =:  line-chars.acc   (add chars-to-target line-chars.acc)
           row-chars.acc    (add chars-to-target row-chars.acc)
         ==
-      acc(pos [~ row-chars.acc row-count.acc])
+      acc(done &)
     %_  acc
       line-chars  new-line-chars
       row-chars   new-row-chars
@@ -2528,7 +2537,7 @@
       cera.fav            child.l.cera.fav
       cur-node-chars.acc  chars.l.cera.fav
     ==
-  ?:  ?=(^ pos.acc)
+  ?:  done.acc
     acc
   %=  $
     cera.fav            child.r.cera.fav
