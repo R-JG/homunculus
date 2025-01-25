@@ -133,9 +133,10 @@
     $?  %to-editor                                                     ::
     ==                                                                 ::
   +$  editor                                                           ::
-    $?  %mot-l  %mot-r  %mot-u  %mot-d                                 ::
+    $?  %mot-c-l  %mot-c-r  %mot-l-u  %mot-l-d                         ::
+        %mot-w-f-b  %mot-w-f-e                                         ::
         %jump  %count                                                  ::
-        %delete
+        %delete                                                        ::
         %to-element  %to-command                                       ::
     ==                                                                 ::
   --                                                                   ::
@@ -765,8 +766,9 @@
     editor
       %-  malt
       ^-  (list [nota editor:lex])
-      :~  [[%aro %l] %mot-l]   [[%aro %r] %mot-r]   [[%aro %u] %mot-u]   [[%aro %d] %mot-d]
-          [[%chr ~-h] %mot-l]  [[%chr ~-l] %mot-r]  [[%chr ~-k] %mot-u]  [[%chr ~-j] %mot-d]
+      :~  [[%aro %l] %mot-c-l]   [[%aro %r] %mot-c-r]   [[%aro %u] %mot-l-u]   [[%aro %d] %mot-l-d]
+          [[%chr ~-h] %mot-c-l]  [[%chr ~-l] %mot-c-r]  [[%chr ~-k] %mot-l-u]  [[%chr ~-j] %mot-l-d]
+          [[%chr ~-w] %mot-w-f-b]  [[%chr ~-e] %mot-w-f-e]
           [[%chr ~-~47.] %jump]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
           [[%chr ~-4] %count]  [[%chr ~-5] %count]  [[%chr ~-6] %count]  [[%chr ~-7] %count]
@@ -1945,19 +1947,21 @@
   =^  fax  fav
     |^  ^-  [fax favi]
     ?~  operator.mos.ego
-      ?+  lex   [~ fav]
-        %mot-l  m-c-l
-        %mot-r  m-c-r
-        %mot-u  m-l-u
-        %mot-d  m-l-d
+      ?+  lex     [~ fav]
+        %mot-c-l  m-c-l
+        %mot-c-r  m-c-r
+        %mot-l-u  m-l-u
+        %mot-l-d  m-l-d
+        %mot-w-f-b  m-w-f-b
+        %mot-w-f-e  m-w-f-e
       ==
     ?+  u.operator.mos.ego  [~ fav]
         %delete
-      ?+  lex   [~ fav]
-        %mot-l  [~ fav]
-        %mot-r  [~ fav]
-        %mot-u  [~ fav]
-        %mot-d  [~ fav]
+      ?+  lex     [~ fav]
+        %mot-c-l  [~ fav]
+        %mot-c-r  [~ fav]
+        %mot-l-u  [~ fav]
+        %mot-l-d  [~ fav]
       ==
     ==
     ::
@@ -1988,14 +1992,7 @@
           x.apis.fav   new-x
           px.apis.fav  (max new-x px.apis.fav)
         ==
-      =/  thresh       tuto
-      ?.  (lte new-y (add thresh (dec flos.fav)))
-        :-  [%curs ~]
-        fav
-      :-  [%full ~]
-      %_  fav
-        flos  abdo
-      ==
+      luo
     ::
     ++  m-l-d                      :: move the cursor linewise down
       ^-  [fax favi]
@@ -2006,9 +2003,42 @@
           x.apis.fav   new-x
           px.apis.fav  (max new-x px.apis.fav)
         ==
+      lavo
+    ::
+    ++  m-w-f-b                    :: move the cursor wordwise forward to the beginning
+      ^-  [fax favi]
+      =/  new  tero
+      =:  y.apis.fav  l.new
+          x.apis.fav  +(c.new)
+        ==
+      =.  px.apis.fav  x.apis.fav
+      lavo
+    ::
+    ++  m-w-f-e                    :: move the cursor wordwise forward to the end
+      ^-  [fax favi]
+      =/  new  tero
+      =:  y.apis.fav  l.new
+          x.apis.fav  (add c.new w.new)
+        ==
+      =.  px.apis.fav  x.apis.fav
+      lavo
+    ::
+    ++  luo                        :: reassess the viewport after an up oriented motion
+      ^-  [fax favi]
+      =/  thresh  tuto
+      ?.  (lte y.apis.fav (add thresh (dec flos.fav)))
+        :-  [%curs ~]
+        fav
+      :-  [%full ~]
+      %_  fav
+        flos  abdo
+      ==
+    ::
+    ++  lavo                       :: reassess the viewport after a down oriented motion
+      ^-  [fax favi]
       =/  port-sub-thresh  (sub viewport-height tuto)
       ?.  ?|  %+  gth
-                new-y
+                y.apis.fav
               (add port-sub-thresh (dec flos.fav))
               %+  gth
                 y:(mico res.cor.deu fav(x.apis 0, px.apis 0))
@@ -2176,6 +2206,59 @@
         cur-node-chars.acc  chars.r.cera.fav
       ==
     ::
+    ++  tero                       :: get the line, preceding character position, and size of the word forward from the cursor by count
+      ^-  [l=@ c=@ w=@]
+      =/  mov  hio
+      =+  ^=  acc
+          :*  line-count=1
+              line-chars=0
+              words-passed=0
+              cur-node-words=0
+              cur-node-chars=?@(cera.fav (lent (trip cera.fav)) 0)
+          ==
+      =;  acc
+        :+  line-count.acc
+          line-chars.acc
+        cur-node-chars.acc
+      |-  ^+  acc
+      ?@  cera.fav
+        ?:  =(10 cera.fav)  :: newline
+          %_  acc
+            line-count  +(line-count.acc)
+            line-chars  0
+          ==
+        ?:  ?&  !=(0 cur-node-words.acc)
+                ?|  (gth +(line-chars.acc) x.apis.fav)
+                    (gth line-count.acc y.apis.fav)
+            ==  ==
+          %_  acc
+            words-passed  +(words-passed.acc)
+          ==
+        %_  acc
+          line-chars  (add cur-node-chars.acc line-chars.acc)
+        ==
+      =/  new-line-count  (add lines.l.cera.fav line-count.acc)
+      ?:  (gth y.apis.fav new-line-count)
+        %=  $
+          cera.fav            child.r.cera.fav
+          line-count.acc      new-line-count
+          cur-node-words.acc  words.r.cera.fav
+          cur-node-chars.acc  chars.r.cera.fav
+        ==
+      =.  acc
+        %=  $
+          cera.fav            child.l.cera.fav
+          cur-node-words.acc  words.l.cera.fav
+          cur-node-chars.acc  chars.l.cera.fav
+        ==
+      ?:  =(words-passed.acc mov)
+        acc
+      %=  $
+        cera.fav            child.r.cera.fav
+        cur-node-words.acc  words.r.cera.fav
+        cur-node-chars.acc  chars.r.cera.fav
+      ==
+    ::
     ++  tuto                       :: get the threshold size by viewport height
       ^-  @
       =/  per  20
@@ -2263,11 +2346,20 @@
     :-  ~
     :_  acc
     :-  ?@  u.pre
+          ?:  =(10 u.pre)
+            %_  mel
+              depth  1
+              lines  1
+              words  0
+              chars  0
+              child  u.pre
+            ==
+          =/  v  (trip u.pre)
           %_  mel
             depth  1
-            lines  ?:(=(10 u.pre) 1 0)
-            words  1
-            chars  ?:(=(10 u.pre) 0 (lent (trip u.pre)))
+            lines  0
+            words  ?:(?=([%32 *] v) 0 1)
+            chars  (lent v)
             child  u.pre
           ==
         %_  mel
@@ -2278,11 +2370,20 @@
           child  u.pre
         ==
     ?@  i
+      ?:  =(10 i)
+        %_  mel
+          depth  1
+          lines  1
+          words  0
+          chars  0
+          child  i
+        ==
+      =/  v  (trip i)
       %_  mel
         depth  1
-        lines  ?:(=(10 i) 1 0)
-        words  1
-        chars  ?:(=(10 i) 0 (lent (trip i)))
+        lines  0
+        words  ?:(?=([%32 *] v) 0 1)
+        chars  (lent v)
         child  i
       ==
     %_  mel
