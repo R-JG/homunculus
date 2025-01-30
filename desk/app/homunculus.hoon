@@ -127,6 +127,7 @@
     ==                                                                 ::
   +$  insert                                                           ::
     $?  %insert  %delete                                               ::
+        %cur-l  %cur-r  %cur-u  %cur-d                                 ::
         %to-editor                                                     ::
     ==                                                                 ::
   +$  visual                                                           ::
@@ -138,6 +139,7 @@
         %jump  %count                                                  ::
         %delete                                                        ::
         %to-element  %to-command                                       ::
+        %to-insert  %to-insert-append                                  ::
     ==                                                                 ::
   --                                                                   ::
 +$  omen                                                               :: keybindings per mode
@@ -698,7 +700,11 @@
     [~ ego]
     ::
       %insert
-    [~ ego]
+    =/  lex  (~(get by insert.omen.ego) (noto zon))
+    ?~  lex  [~ ego]
+    %+  cibo
+      zon
+    u.lex
     ::
   ==
 ::
@@ -775,6 +781,14 @@
           [[%chr ~-8] %count]  [[%chr ~-9] %count]
           [[%esc ~] %to-element]
           [[%chr ~-~3a.] %to-command]
+          [[%chr ~-i] %to-insert]  [[%chr ~-a] %to-insert-append]
+      ==
+    insert
+      %-  malt
+      ^-  (list [nota insert:lex])
+      :~  [[%txt ~] %insert]  [[%ret ~] %insert]  [[%bac ~] %delete]
+          [[%aro %l] %cur-l]  [[%aro %r] %cur-r]  [[%aro %u] %cur-u]  [[%aro %d] %cur-d]
+          [[%esc ~] %to-editor]
       ==
   ==
 ::
@@ -877,6 +891,11 @@
                     ?~  pos.cosmetic.mos.ego  "[]"
                     "[{(scow %ud y.pos.cosmetic.mos.ego)} {(scow %ud x.pos.cosmetic.mos.ego)}]"
                 ==
+            ==
+            ::
+              %insert
+            ;=  ;row(h "1", px "1", fg "#EBF2FA", bg "#89B0AE"):"%insert"
+                ;row(w "grow", h "1", bg "#BEE3DB");
             ==
             ::
           ==
@@ -1900,9 +1919,25 @@
     :~  (fio ~[(viso sys-lines:eruo)])
     ==
   ::
-  ?>  ?=(%editor -.mos.ego)
+  ?:  |(?=(%to-insert lex) ?=(%to-insert-append lex))
+    =/  [=via =ara deu=deus fav=favi]  asto
+    =:  mos.ego  [%insert ~]
+        apis.fav
+          ?.  ?=(%to-insert-append lex)  apis.fav
+          %_  apis.fav
+            x   +(x.apis.fav)
+            px  ?:(=(x.apis.fav px.apis.fav) +(px.apis.fav) px.apis.fav)
+          ==
+      ==
+    =.  ego            (humo via ara deu fav)
+    =.  deus.urbs.ego  status:sys:velo
+    :_  ego
+    :~  (fio ~[(viso status-line:eruo)])
+    ==
+  ::
   ?:  ?=(%count lex)
     =.  mos.ego
+      ?>  ?=(%editor -.mos.ego)
       ?~  operator.mos.ego
         %_  mos.ego
           count-1
@@ -1923,21 +1958,8 @@
     :~  (fio ~[(viso status-line:eruo)])
     ==
   ::
-  =/  =via
-    ?:  open.arx.urbs.ego  via.arx.urbs.ego
-    (snag cura.ego viae.ego)
-  ?~  rex.via
-    [~ ego]
-  =/  =ara
-    ?:  open.arx.urbs.ego  ?>(?=(^ arae.via) i.arae.via)
-    ?>  ?=(^ k.rex.via)
-    (snag ager.i.k.rex.via arae.via)
-  =/  deu=deus  (exuo (voro k.rex.via) deus.ara)
-  =/  fav=favi
-    ?+  -.ars.cor.deu  !!
-      %editor  (~(got by alvi.ego) avis.cor.deu)
-      :: %input                     TODO: %input
-    ==
+  =/  [=via =ara deu=deus fav=favi]  asto
+  ?>  ?=(^ rex.via)
   =/  line-total=@
     ?@  cera.fav  1
     (add lines.l.cera.fav lines.r.cera.fav)
@@ -1946,6 +1968,7 @@
     line-total
   =^  fax  fav
     |^  ^-  [fax favi]
+    ?>  ?=(%editor -.mos.ego)
     ?~  operator.mos.ego
       ?+  lex     [~ fav]
         %mot-c-l  m-c-l
@@ -2266,6 +2289,7 @@
     ::
     ++  hio                        :: parse the count for a motion
       ^-  @
+      ?>  ?=(%editor -.mos.ego)
       =/  c-1=(unit @)
         ?~  count-1.mos.ego  ~
         (rust count-1.mos.ego dim:ag)
@@ -2279,19 +2303,45 @@
       1
     ::
     --
-  =.  ego
-    ?+  -.ars.cor.deu  !!
-        %editor
-      ego(alvi (~(put by alvi.ego) avis.cor.deu fav))
-        :: %input                     TODO: %input
-    ==
-  =.  +.mos.ego      =+(*usus -(pos.cosmetic [x.apis.fav y.apis.fav]))
+  =.  ego            (humo via ara deu fav)
+  =.  mos.ego        [%editor =+(*usus -(pos.cosmetic [x.apis.fav y.apis.fav]))]
   =.  deus.urbs.ego  status:sys:velo
   :_  ego
   ?~  fax  ~
   ?-  -.fax
     %curs  ~[(fio ~[(viso status-line:eruo)])]
     %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
+  ==
+::
+++  asto                           :: get editor state
+  ^-  [via ara deus favi]
+  =/  =via
+    ?:  open.arx.urbs.ego  via.arx.urbs.ego
+    (snag cura.ego viae.ego)
+  ?>  ?=(^ rex.via)
+  =/  =ara
+    ?:  open.arx.urbs.ego  ?>(?=(^ arae.via) i.arae.via)
+    ?>  ?=(^ k.rex.via)
+    (snag ager.i.k.rex.via arae.via)
+  =/  deu=deus  (exuo (voro k.rex.via) deus.ara)
+  =/  fav=favi
+    ?+  -.ars.cor.deu  !!
+      %editor  (~(got by alvi.ego) avis.cor.deu)
+      :: %input                     TODO: %input
+    ==
+  [via ara deu fav]
+::
+++  humo                           :: save editor state
+  |=  [=via =ara deu=deus fav=favi]
+  ^-  ^ego
+  ?+  -.ars.cor.deu  !!
+    ::
+      %editor
+    ego(alvi (~(put by alvi.ego) avis.cor.deu fav))
+    ::
+      %input                    :: TODO: %input
+    ego
+    ::
   ==
 ::
 ++  domo                           :: classify a character into a word group
@@ -2345,59 +2395,37 @@
       [[~ i] acc]
     :-  ~
     :_  acc
-    :-  ?@  u.pre
-          ?:  =(10 u.pre)
-            %_  mel
-              depth  1
-              lines  1
-              words  0
-              chars  0
-              child  u.pre
-            ==
-          =/  v  (trip u.pre)
-          %_  mel
-            depth  1
-            lines  0
-            words  ?:(?=([%32 *] v) 0 1)
-            chars  (lent v)
-            child  u.pre
-          ==
-        %_  mel
-          depth  +((max depth.l.u.pre depth.r.u.pre))
-          lines  (add lines.l.u.pre lines.r.u.pre)
-          words  (add words.l.u.pre words.r.u.pre)
-          chars  (add chars.l.u.pre chars.r.u.pre)
-          child  u.pre
-        ==
-    ?@  i
-      ?:  =(10 i)
-        %_  mel
-          depth  1
-          lines  1
-          words  0
-          chars  0
-          child  i
-        ==
-      =/  v  (trip i)
-      %_  mel
-        depth  1
-        lines  0
-        words  ?:(?=([%32 *] v) 0 1)
-        chars  (lent v)
-        child  i
-      ==
-    %_  mel
-      depth  +((max depth.l.i depth.r.i))
-      lines  (add lines.l.i lines.r.i)
-      words  (add words.l.i words.r.i)
-      chars  (add chars.l.i chars.r.i)
-      child  i
-    ==
+    [(emo u.pre) (emo i)]
   ?:  ?=([* ~] rop)
     i.rop
   ?:  =(~ rop)
     ''
   $
+::
+++  emo                            :: produce a text tree internal node hemisphere from a node
+  |=  nod=cera
+  ^-  mel
+  ?@  nod
+    ?:  =(10 nod)
+      :*  depth=1
+          lines=1
+          words=0
+          chars=0
+          child=nod
+      ==
+    =/  tap  (trip nod)
+    :*  depth=1
+        lines=0
+        words=?:(?=([%32 *] tap) 0 1)
+        chars=(lent tap)
+        child=nod
+    ==
+  :*  +((max depth.l.nod depth.r.nod))
+      (add lines.l.nod lines.r.nod)
+      (add words.l.nod words.r.nod)
+      (add chars.l.nod chars.r.nod)
+      nod
+  ==
 ::
 ++  colo                           :: get editor viewport dimensions from res and line total
   |=  [=res tot=@]
@@ -2563,6 +2591,8 @@
   ?@  cera.fav
     ?:  =(10 cera.fav)  :: newline
       ?:  =(line-count.acc y.apis.fav)
+        =?  row-chars.acc  (lth row-chars.acc viewport-width)
+          +(row-chars.acc)
         acc(done &)
       =:  line-count.acc  +(line-count.acc)
           line-chars.acc  0
@@ -2664,6 +2694,152 @@
       %+  %~  put  by  alvi.ego  i.new
       favi(cera (cero txt))
   ==
+::
+++  cibo                           :: handle %insert mode events
+  |=  [zon=zona lex=insert:lex]
+  ^-  (quip card ^ego)
+  =/  [=via =ara deu=deus fav=favi]  asto
+  ?>  ?=(^ rex.via)
+  ::
+  ?:  ?=(%to-editor lex)
+    =:  x.apis.fav     ?.(=(0 x.apis.fav) (dec x.apis.fav) 0)
+        px.apis.fav
+          ?.  =(x.apis.fav px.apis.fav)  px.apis.fav
+          ?.(=(0 px.apis.fav) (dec px.apis.fav) 0)
+      ==
+    =.  ego            (humo via ara deu fav)
+    =.  mos.ego        [%editor =+(*usus -(pos.cosmetic [x.apis.fav y.apis.fav]))]
+    =.  deus.urbs.ego  status:sys:velo
+    :_  ego
+    :~  (fio ~[(viso status-line:eruo)])
+    ==
+  ::
+  =^  fax  fav
+    ^-  [fax favi]
+    ?-  lex
+      ::
+        %insert
+      =/  txt=lina
+        ?+  -.zon  !!
+          %txt  p.zon
+          %chr  ~[p.zon]
+          %ret  ~[`@c`10]
+        ==
+      :-  [%full ~]
+      (dono txt fav)
+      ::
+        %delete
+      [~ fav]
+      ::
+      %cur-l  [~ fav]
+      %cur-r  [~ fav]
+      %cur-u  [~ fav]
+      %cur-d  [~ fav]
+      ::
+    ==
+  =.  ego  (humo via ara deu fav)
+  :_  ego
+  ?~  fax  ~
+  ?-  -.fax
+    %curs  ~[(fio ~[(viso status-line:eruo)])]
+    %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
+  ==
+::
+++  dono                           :: insert text into a text tree
+  |=  [txt=lina fav=favi]
+  ^-  favi
+  ?~  txt  fav
+  =/  tip  (domo (tuft i.txt))
+  =/  new  (cero (crip (tufa txt)))
+  =/  nod  (emo new)
+  =+  line-count=1
+  =+  line-chars=0
+  =.  cera.fav
+    =<  child
+    |-  ^-  [[? @] mel]
+    ?@  cera.fav
+      ?:  ?&  =(10 cera.fav)  :: temporary solution for end of line append
+              =(line-count y.apis.fav)
+          ==
+        :-  &^line-chars
+        %-  emo
+        :-  nod
+        (emo cera.fav)
+      ?:  (gth x.apis.fav line-chars)
+        [|^line-chars (emo cera.fav)]
+      =/  wod=tape
+        (trip cera.fav)
+      =/  typ=(unit term)
+        ?~  wod  ~
+        [~ (domo i.wod)]
+      =/  lon=@
+        ?:  =(10 cera.fav)  0
+        (lent wod)
+      =/  far=@
+        =/  pre  +((sub line-chars lon))
+        ?:  (gte pre x.apis.fav)  0
+        (sub x.apis.fav pre)
+      :-  &^line-chars
+      ?:  ?&  ?=(@ new)
+              !=(10 i.txt)
+              ?|  ?=(~ typ)
+                  =(tip u.typ)
+          ==  ==
+        %-  emo
+        %-  crip
+        %+  weld  (scag far wod)
+        %+  weld  (tufa txt)
+        (slag far wod)
+      =;  cer=cera
+        (emo cer)
+      ?:  ?|  (gth x.apis.fav line-chars)  :: at the end
+              =(0^0 x.apis.fav^line-chars)
+          ==
+        :_  nod
+        (emo cera.fav)
+      ?:  =(0 far)  :: at the beginning
+        :-  nod
+        (emo cera.fav)
+      :-  (emo (crip (scag far wod)))
+      =/  nex=cera
+        :-  nod
+        (emo (crip (slag far wod)))
+      (emo nex)
+    =/  new-line-count  (add lines.l.cera.fav line-count)
+    ?:  (gth y.apis.fav new-line-count)
+      =^  [found=? new-line-chars=@]  r.cera.fav
+        %=  $
+          cera.fav    child.r.cera.fav
+          line-count  new-line-count
+        ==
+      [found^new-line-chars (emo cera.fav)]
+    =^  [found=? new-line-chars=@]  l.cera.fav
+      %=  $
+        cera.fav    child.l.cera.fav
+        line-chars
+          ?^  child.l.cera.fav  line-chars
+          (add chars.l.cera.fav line-chars)
+      ==
+    ?:  found
+      [&^new-line-chars (emo cera.fav)]
+    =^  [found=? new-line-chars=@]  r.cera.fav
+      %=  $
+        cera.fav    child.r.cera.fav
+        line-count  new-line-count
+        line-chars
+          ?^  child.r.cera.fav  new-line-chars
+          (add chars.r.cera.fav new-line-chars)
+      ==
+    [found^new-line-chars (emo cera.fav)]
+  =/  lins  (fand ~[10] txt)
+  =/  lens  (lent lins)
+  ?:  =(0 lens)
+    =/  x  (add x.apis.fav =+((lent txt) ?:(=(0 x.apis.fav) +(-) -)))
+    fav(x.apis x, px.apis x)
+  =/  last  =>((slag (rear lins) `lina`txt) ?~(. ~ t))
+  =/  x=@   =+((lent last) ?:(=(0 x.apis.fav) +(-) -))
+  =/  y=@   (add y.apis.fav lens)
+  fav(x.apis x, px.apis (max px.apis.fav x), y.apis y)
 ::
 ++  dolo                           :: get default styles for a semantic element
   |=  el=@tas
