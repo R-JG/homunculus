@@ -137,7 +137,7 @@
     $?  %mot-c-l  %mot-c-r  %mot-l-u  %mot-l-d                         ::
         %mot-w-f-b  %mot-w-f-e                                         ::
         %jump  %count                                                  ::
-        %delete                                                        ::
+        %delete  %paste                                                ::
         %to-element  %to-command                                       ::
         %to-insert  %to-insert-append                                  ::
     ==                                                                 ::
@@ -779,6 +779,7 @@
           [[%chr ~-w] %mot-w-f-b]  [[%chr ~-e] %mot-w-f-e]
           [[%chr ~-~47.] %jump]
           [[%chr ~-d] %delete]
+          [[%chr ~-p] %paste]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
           [[%chr ~-4] %count]  [[%chr ~-5] %count]  [[%chr ~-6] %count]  [[%chr ~-7] %count]
           [[%chr ~-8] %count]  [[%chr ~-9] %count]
@@ -1980,11 +1981,16 @@
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
     %+  colo  res.cor.deu
     line-total
-  =^  fax  fav
-    |^  ^-  [fax favi]
+  =|  fex=[reg=@t =fax]
+  =^  fex  fav
+    |^  ^-  [_fex favi]
+    ?:  ?=(%paste lex)
+      :-  fex(fax [%full ~])
+      (dono (tuba (trip calx.ego)) fav)
+    ::
     ?>  ?=(%editor -.mos.ego)
     ?~  operator.mos.ego
-      ?+  lex     [~ fav]
+      ?+  lex     [fex fav]
         %mot-c-l  m-c-l
         %mot-c-r  m-c-r
         %mot-l-u  m-l-u
@@ -1992,36 +1998,36 @@
         %mot-w-f-b  m-w-f-b
         %mot-w-f-e  m-w-f-e
       ==
-    ?+  u.operator.mos.ego  [~ fav]
+    ?+  u.operator.mos.ego  [fex fav]
         %delete
-      ?+  lex     [~ fav]
-        %mot-c-l  [~ fav]
-        %mot-c-r  [~ fav]
+      ?+  lex     [fex fav]
+        %mot-c-l  [fex fav]
+        %mot-c-r  [fex fav]
         %mot-l-u  d-l-u
         %mot-l-d  d-l-d
       ==
     ==
     ::
     ++  m-c-l                      :: move the cursor characterwise left
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  mov          hio
       =.  x.apis.fav   ?:((gth x.apis.fav mov) (sub x.apis.fav mov) 1)
-      :-  [%curs ~]
+      :-  fex(fax [%curs ~])
       %_  fav
         px.apis  x.apis.fav
       ==
     ::
     ++  m-c-r                      :: move the cursor characterwise right
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  target-line-chars  (add x.apis.fav hio)
       =.  x.apis.fav         (obdo y.apis.fav target-line-chars)
-      :-  [%curs ~]
+      :-  fex(fax [%curs ~])
       %_  fav
         px.apis  x.apis.fav
       ==
     ::
     ++  m-l-u                      :: move the cursor linewise up
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  mov          hio
       =/  new-y=@      ?:((gth y.apis.fav mov) (sub y.apis.fav mov) 1)
       =/  new-x=@      (obdo new-y px.apis.fav)
@@ -2032,7 +2038,7 @@
       (luo |)
     ::
     ++  m-l-d                      :: move the cursor linewise down
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  move         hio
       =/  new-y        (min line-total (add y.apis.fav move))
       =/  new-x        (obdo new-y px.apis.fav)
@@ -2043,7 +2049,7 @@
       (lavo |)
     ::
     ++  m-w-f-b                    :: move the cursor wordwise forward to the beginning
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  new  tero
       =:  y.apis.fav  l.new
           x.apis.fav  +(c.new)
@@ -2052,7 +2058,7 @@
       (lavo |)
     ::
     ++  m-w-f-e                    :: move the cursor wordwise forward to the end
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  new  tero
       =:  y.apis.fav  l.new
           x.apis.fav  (add c.new w.new)
@@ -2061,7 +2067,7 @@
       (lavo |)
     ::
     ++  d-l-u                      :: delete linewise up
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  mov  hio
       =/  beg  ?:((gte mov y.apis.fav) 1 (sub y.apis.fav mov))
       =/  end  y.apis.fav
@@ -2071,12 +2077,12 @@
       =:  y.apis.fav   new-y
           x.apis.fav   new-x
           px.apis.fav  (max new-x px.apis.fav)
-          calx.ego     del
+          reg.fex      del
         ==
       (luo &)
     ::
     ++  d-l-d                      :: delete linewise down
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  mov  hio
       =/  end  (add y.apis.fav mov)
       =/  tot  ?^(cera.fav +((add lines.l.cera.fav lines.r.cera.fav)) 1)
@@ -2091,29 +2097,29 @@
       =:  y.apis.fav   new-y
           x.apis.fav   new-x
           px.apis.fav  (max new-x px.apis.fav)
-          calx.ego     del
+          reg.fex      del
         ==
       (luo &)
     ::
     ++  luo                        :: reassess the viewport after an up oriented motion
       |=  dif=?
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  thresh  tuto
       =/  oob     (lte y.apis.fav (add thresh (dec flos.fav)))
       ?.  |(dif oob)
-        :-  [%curs ~]
+        :-  fex(fax [%curs ~])
         fav
       ?:  &(dif !oob)
-        :-  [%full ~]
+        :-  fex(fax [%full ~])
         fav
-      :-  [%full ~]
+      :-  fex(fax [%full ~])
       %_  fav
         flos  abdo
       ==
     ::
     ++  lavo                       :: reassess the viewport after a down oriented motion
       |=  dif=?
-      ^-  [fax favi]
+      ^-  [_fex favi]
       =/  port-sub-thresh  (sub viewport-height tuto)
       =/  oob
         ?|  %+  gth
@@ -2124,12 +2130,12 @@
             port-sub-thresh
         ==
       ?.  |(dif oob)
-        :-  [%curs ~]
+        :-  fex(fax [%curs ~])
         fav
       ?:  &(dif !oob)
-        :-  [%full ~]
+        :-  fex(fax [%full ~])
         fav
-      :-  [%full ~]
+      :-  fex(fax [%full ~])
       %_  fav
         flos  abeo
       ==
@@ -2419,11 +2425,13 @@
     ::
     --
   =.  ego            (humo via ara deu fav)
-  =.  mos.ego        [%editor =+(*usus -(pos.cosmetic [x.apis.fav y.apis.fav]))]
+  =:  mos.ego        [%editor =+(*usus -(pos.cosmetic [x.apis.fav y.apis.fav]))]
+      calx.ego       ?~(reg.fex calx.ego reg.fex)
+    ==
   =.  deus.urbs.ego  status:sys:velo
   :_  ego
-  ?~  fax  ~
-  ?-  -.fax
+  ?~  fax.fex  ~
+  ?-  -.fax.fex
     %curs  ~[(fio ~[(viso status-line:eruo)])]
     %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
   ==
