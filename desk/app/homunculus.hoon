@@ -229,6 +229,7 @@
       chars=@                                                          ::
       child=cera                                                       ::
   ==                                                                   ::
++$  calx  @t                                                           :: copied text register
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
@@ -236,6 +237,7 @@
 +$  ego                                                                :: %homunculus state
   $:  =acro                                                            ::
       =acus                                                            ::
+      =calx                                                            ::
       =mos                                                             ::
       =omen                                                            ::
       =alvi                                                            ::
@@ -776,6 +778,7 @@
           [[%chr ~-h] %mot-c-l]  [[%chr ~-l] %mot-c-r]  [[%chr ~-k] %mot-l-u]  [[%chr ~-j] %mot-l-d]
           [[%chr ~-w] %mot-w-f-b]  [[%chr ~-e] %mot-w-f-e]
           [[%chr ~-~47.] %jump]
+          [[%chr ~-d] %delete]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
           [[%chr ~-4] %count]  [[%chr ~-5] %count]  [[%chr ~-6] %count]  [[%chr ~-7] %count]
           [[%chr ~-8] %count]  [[%chr ~-9] %count]
@@ -875,6 +878,9 @@
               %editor
             ;=  ;row(h "1", px "1", fg "#EBF2FA", bg "#064789"):"%editor"
                 ;row(w "grow", h "1", pr "1", bg "#427AA1", fx "end")
+                  ;*  ?~  operator.mos.ego  ~
+                      :_  ~
+                      ;row(px "1", mx "1", bg "#D64933"):"{<u.operator.mos.ego>}"
                   ;*  ?:  &(?=(^ count-1.mos.ego) ?=(^ count-2.mos.ego))
                         ;=  ;+  ;/  count-1.mos.ego
                             ;+  ;/  "x"
@@ -1935,6 +1941,14 @@
     :~  (fio ~[(viso status-line:eruo)])
     ==
   ::
+  ?:  ?=(%delete lex)
+    ?>  ?=(%editor -.mos.ego)
+    =.  operator.mos.ego  [~ %delete]
+    =.  deus.urbs.ego     status:sys:velo
+    :_  ego
+    :~  (fio ~[(viso status-line:eruo)])
+    ==
+  ::
   ?:  ?=(%count lex)
     =.  mos.ego
       ?>  ?=(%editor -.mos.ego)
@@ -1983,8 +1997,8 @@
       ?+  lex     [~ fav]
         %mot-c-l  [~ fav]
         %mot-c-r  [~ fav]
-        %mot-l-u  [~ fav]
-        %mot-l-d  [~ fav]
+        %mot-l-u  d-l-u
+        %mot-l-d  d-l-d
       ==
     ==
     ::
@@ -2015,7 +2029,7 @@
           x.apis.fav   new-x
           px.apis.fav  (max new-x px.apis.fav)
         ==
-      luo
+      (luo |)
     ::
     ++  m-l-d                      :: move the cursor linewise down
       ^-  [fax favi]
@@ -2026,7 +2040,7 @@
           x.apis.fav   new-x
           px.apis.fav  (max new-x px.apis.fav)
         ==
-      lavo
+      (lavo |)
     ::
     ++  m-w-f-b                    :: move the cursor wordwise forward to the beginning
       ^-  [fax favi]
@@ -2035,7 +2049,7 @@
           x.apis.fav  +(c.new)
         ==
       =.  px.apis.fav  x.apis.fav
-      lavo
+      (lavo |)
     ::
     ++  m-w-f-e                    :: move the cursor wordwise forward to the end
       ^-  [fax favi]
@@ -2044,13 +2058,53 @@
           x.apis.fav  (add c.new w.new)
         ==
       =.  px.apis.fav  x.apis.fav
-      lavo
+      (lavo |)
+    ::
+    ++  d-l-u                      :: delete linewise up
+      ^-  [fax favi]
+      =/  mov  hio
+      =/  beg  ?:((gte mov y.apis.fav) 1 (sub y.apis.fav mov))
+      =/  end  y.apis.fav
+      =^  del  cera.fav  (neco beg end)
+      =/  new-y  beg
+      =/  new-x  (obdo new-y px.apis.fav)
+      =:  y.apis.fav   new-y
+          x.apis.fav   new-x
+          px.apis.fav  (max new-x px.apis.fav)
+          calx.ego     del
+        ==
+      (luo &)
+    ::
+    ++  d-l-d                      :: delete linewise down
+      ^-  [fax favi]
+      =/  mov  hio
+      =/  end  (add y.apis.fav mov)
+      =/  tot  ?^(cera.fav +((add lines.l.cera.fav lines.r.cera.fav)) 1)
+      =^  del  cera.fav  (neco y.apis.fav end)
+      =/  new-y
+        ?:  ?|  =(1 y.apis.fav)
+                (lth (add y.apis.fav mov) tot)
+            ==
+          y.apis.fav
+        (dec y.apis.fav)
+      =/  new-x        (obdo new-y px.apis.fav)
+      =:  y.apis.fav   new-y
+          x.apis.fav   new-x
+          px.apis.fav  (max new-x px.apis.fav)
+          calx.ego     del
+        ==
+      (luo &)
     ::
     ++  luo                        :: reassess the viewport after an up oriented motion
+      |=  dif=?
       ^-  [fax favi]
       =/  thresh  tuto
-      ?.  (lte y.apis.fav (add thresh (dec flos.fav)))
+      =/  oob     (lte y.apis.fav (add thresh (dec flos.fav)))
+      ?.  |(dif oob)
         :-  [%curs ~]
+        fav
+      ?:  &(dif !oob)
+        :-  [%full ~]
         fav
       :-  [%full ~]
       %_  fav
@@ -2058,16 +2112,22 @@
       ==
     ::
     ++  lavo                       :: reassess the viewport after a down oriented motion
+      |=  dif=?
       ^-  [fax favi]
       =/  port-sub-thresh  (sub viewport-height tuto)
-      ?.  ?|  %+  gth
-                y.apis.fav
-              (add port-sub-thresh (dec flos.fav))
-              %+  gth
-                y:(mico res.cor.deu fav(x.apis 0, px.apis 0))
-              port-sub-thresh
-          ==
+      =/  oob
+        ?|  %+  gth
+              y.apis.fav
+            (add port-sub-thresh (dec flos.fav))
+            %+  gth
+              y:(mico res.cor.deu fav(x.apis 0, px.apis 0))
+            port-sub-thresh
+        ==
+      ?.  |(dif oob)
         :-  [%curs ~]
+        fav
+      ?:  &(dif !oob)
+        :-  [%full ~]
         fav
       :-  [%full ~]
       %_  fav
@@ -2281,6 +2341,61 @@
         cur-node-words.acc  words.r.cera.fav
         cur-node-chars.acc  chars.r.cera.fav
       ==
+    ::
+    ++  neco                       :: delete lines from the text tree by inclusive beginning and end
+      |=  [beg=@ end=@]
+      ^-  [@t cera]
+      =+  ^=  acc
+          :*  line-count=1
+              `to-delete=?`|
+              `deleted=(list @t)`~
+          ==
+      =;  [acc=_acc nod=mel]
+        :-  (crip (flop deleted.acc))
+        ?:  to-delete.acc
+          ''
+        child.nod
+      |-  ^-  [_acc mel]
+      ?@  cera.fav
+        :_  (emo cera.fav)
+        =.  line-count.acc  ?:(=(10 cera.fav) +(line-count.acc) line-count.acc)
+        ?:  ?&  !=(1 beg)
+                (gth line-count.acc end)
+            ==
+          acc(to-delete |)
+        %_  acc
+          deleted    [cera.fav deleted.acc]
+          to-delete  &
+        ==
+      =^  [del-lef=? del-rig=? ac=_acc]  cera.fav
+        =/  new-line-count  (add lines.l.cera.fav line-count.acc)
+        ?:  (gth beg new-line-count)
+          =^  a=_acc  r.cera.fav
+            %=  $
+              cera.fav        child.r.cera.fav
+              line-count.acc  new-line-count
+            ==
+          [[| to-delete.a a] cera.fav]
+        =^  a=_acc  l.cera.fav
+          %=  $
+            cera.fav    child.l.cera.fav
+          ==
+        ?:  (gth new-line-count end)
+          [[to-delete.a | a] cera.fav]
+        =.  acc  a
+        =^  a=_acc  r.cera.fav
+          %=  $
+            cera.fav        child.r.cera.fav
+            line-count.acc  new-line-count
+          ==
+        [[to-delete.acc to-delete.a a] cera.fav]
+      ?:  =(|^| [del-lef del-rig])
+        [ac(to-delete |) (emo cera.fav)]
+      ?:  =(&^| [del-lef del-rig])
+        [ac(to-delete |) r.cera.fav]
+      ?:  =(|^& [del-lef del-rig])
+        [ac(to-delete |) l.cera.fav]
+      [ac(to-delete &) (emo cera.fav)]
     ::
     ++  tuto                       :: get the threshold size by viewport height
       ^-  @
