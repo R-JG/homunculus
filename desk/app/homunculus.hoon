@@ -163,67 +163,117 @@
 ::                                                                     ::
 +$  card  card:agent:gall                                              ::
 --
-::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
+::
+  ::
+::
 =|  =ego
-^-  agent:gall
 =<
+^-  agent:gall
 |_  bol=bowl:gall
-+*  hoc  .
++*  hic  .
+    hoc  ~(. +> [bol ~])
+::
 ++  on-init
-  ^-  (quip card _hoc)
-  =:  viae.ego               ~[*via]
-      look.res.cor.urbs.ego  [~ %k %w]
-    ==
-  :_  hoc
-  :~  (iuvo [our.bol %homunculus-menu] [%open ~])
-  ==
-++  on-save
-  ^-  vase
-  !>(~)
+  ^-  (quip card _hic)
+  =^  cards  ego  abet:init:hoc
+  :-  cards  hic
+::
+++  on-save  save:hoc
+::
 ++  on-load
-  |=  old=vase
-  ^-  (quip card _hoc)
+  |=  =vase
+  ^-  (quip card _hic)
+  =^  cards  ego  abet:(load:hoc vase)
+  :-  cards  hic
+::
+++  on-poke
+  |=  [=mark =vase]
+  ^-  (quip card _hic)
+  =^  cards  ego  abet:(poke:hoc mark vase)
+  :-  cards  hic
+::
+++  on-watch
+  |=  =path
+  ^-  (quip card _hic)
+  =^  cards  ego  abet:(watch:hoc path)
+  :-  cards  hic
+::
+++  on-leave
+  |=  =path
+  ^-  (quip card _hic)
+  =^  cards  ego  abet:(leave:hoc path)
+  :-  cards  hic
+::
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ~
+  :: ?+  path  ~
+  ::   [%x %auth ~]  [~ [~ [%noun !>(~)]]]
+  :: ==
+::
+++  on-agent  |=([wire sign:agent:gall] ^-((quip card _hic) !!))
+++  on-arvo   |=([wire sign-arvo] ^-((quip card _hic) !!))
+++  on-fail   |=([term tang] ^-((quip card _hic) !!))
+--
+::
+  ::
+::
+|_  [bol=bowl:gall cards=(list card)]
+++  hoc   .
+++  abet  :-  (flop cards)  ego
+++  emit  |=  =card  hoc(cards [card cards])
+++  emil  |=  caz=(list card)  hoc(cards (welp (flop caz) cards))
+::
+++  init
+  ^+  hoc
   =:  viae.ego               ~[*via]
       look.res.cor.urbs.ego  [~ %k %w]
     ==
-  :_  hoc
+  %-  emit  (iuvo [our.bol %homunculus-menu] [%open ~])
+::
+++  save
+  ^-  vase
+  !>  ~
+::
+++  load
+  |=  vaz=vase
+  ^+  hoc
+  =:  viae.ego               ~[*via]
+      look.res.cor.urbs.ego  [~ %k %w]
+    ==
+  %-  emil
   :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       (iuvo [our.bol %homunculus-menu] [%open ~])
   ==
-::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-++  on-poke
-  |=  [=mark =vase]
-  ^-  (quip card _hoc)
+::
+++  poke
+  |=  [maz=mark vaz=vase]
+  ^+  hoc
   ?>  =(our.bol src.bol)
-  ?+  mark  !!
+  ?+  maz  !!
     ::
       %homunculus-register
     =/  fon=fons  (bibo bol)
-    :_  hoc
-    :~  (ago our.bol [%put-register fon])
-    ==
+    %-  emit  (ago our.bol [%put-register fon])
     ::
       %homunculus-update
-    =+  !<(upd=update:homunculus vase)
-    =/  fon=fons   (bibo bol)
+    =+  !<(upd=update:homunculus vaz)
+    =/  fon        (bibo bol)
     =/  ind        (rigo fon)
-    ?~  ind
-      [~ hoc]
+    ?~  ind  hoc
     =/  =via       (snag -.ind viae.ego)
     =/  =ara       (snag +.ind arae.via)
     =^  keys  ara  (novo ind upd ara)
     =.  arae.via   (snap arae.via +.ind ara)
     =.  viae.ego   (snap viae.ego -.ind via)
-    ?.  =(cura.ego -.ind)
-      [~ hoc]
+    ?.  =(cura.ego -.ind)  hoc
     =^  opus  via  (levo keys via)
     =?  viae.ego   !open.arx.urbs.ego  (snap viae.ego -.ind via)
-    :_  hoc
-    :~  (fio opus)
-    ==
+    %-  emit  (fio opus)
     ::
       %homunculus-menu-update
-    =+  !<(upd=menu-update:homunculus vase)
+    =+  !<(upd=menu-update:homunculus vaz)
     ?-  -.upd
       ::
         %update
@@ -233,26 +283,21 @@
         ==
       ?>  ?=(^ arae.via.arx.urbs.ego)
       =^  keys  i.arae.via.arx.urbs.ego  (novo %menu p.upd i.arae.via.arx.urbs.ego)
-      ?.  open.arx.urbs.ego
-        [~ hoc]
+      ?.  open.arx.urbs.ego  hoc
       =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
-      :_  hoc
-      :~  (fio opus)
-      ==
+      %-  emit  (fio opus)
       ::
         %load-state
-      :_  hoc
-      :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
-      ==
+      %-  emit  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       ::
         %change-frame
       ?:  ?|  =(p.upd cura.ego)
               (gth +(p.upd) (lent viae.ego))
           ==
-        [~ hoc]
+        hoc
       =.  cura.ego  p.upd
       =^  cards  ego  (apto cura.ego)
-      :_  hoc
+      %-  emil
       %+  weld  cards
       :~  (ago our.bol [%active-frame cura.ego])
       ==
@@ -315,7 +360,7 @@
           ::
         ==
       =^  cards  ego  (apto cura.ego)
-      :_  hoc
+      %-  emil
       %+  weld  cards
       :~  (iuvo p.upd [%open ~])
           (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
@@ -323,8 +368,7 @@
       ::
         %close-session
       =/  ind  (rigo p.upd)
-      ?~  ind
-        [~ hoc]
+      ?~  ind  hoc
       =/  =via      (snag -.ind viae.ego)
       =.  arae.via  (oust [+.ind 1] arae.via)
       =.  ego
@@ -351,7 +395,7 @@
           viae  (snap viae.ego -.ind via)
         ==
       =^  cards  ego  (apto cura.ego)
-      :_  hoc
+      %-  emil
       %+  weld  cards
       :~  (iuvo p.upd [%close ~])
           (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=^via aula.i))])
@@ -360,24 +404,24 @@
     ==
     ::
       %open
-    :_  hoc
+    %-  emil
     :~  [%pass /dill-start %arvo %d %open %homunculus ~]
         [%pass /dill-start %arvo %d %flee ~]
     ==
     ::
       %dill-poke
-    =+  !<([ses=@ta belt=dill-belt:dill] vase)
+    =+  !<([ses=@ta belt=dill-belt:dill] vaz)
     =;  zon=(unit zona)
-      ?~  zon  [~ hoc]
+      ?~  zon  hoc
       :: temporary: press the del key to exit
       ?:  ?=(%del -.u.zon)
-        :_  hoc
+        %-  emil
         :~  [%give %fact ~[?>(?=(%dill -.acro.ego) p.acro.ego)] %dill-blit !>(`dill-blit:dill`[%clr ~])]
             [%pass /dill-end %arvo %d %flee ~]
             [%pass /dill-end %arvo %d %open %hood ~]
         ==
       =^  cards  ego  (ineo u.zon)
-      [cards hoc]
+      %-  emil  cards
     ?@  belt  [~ [%txt belt ~]]
     ?+  -.belt  ~
       %aro  [~ belt]
@@ -413,49 +457,39 @@
     ==
     ::
       %json
-    =^  cards  ego  (ineo (need (edo !<(json vase))))
-    [cards hoc]
+    =^  cards  ego  (ineo (need (edo !<(json vaz))))
+    %-  emil  cards
     ::
   ==
-::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-++  on-watch
-  |=  =path
-  ^-  (quip card _hoc)
+::
+++  watch
+  |=  poe=(pole @ta)
+  ^+  hoc
   ?>  =(our.bol src.bol)
-  ?+  path  !!
+  ?+  poe  !!
     ::
       [%dill @ ~]
-    =.  acro.ego  [%dill path]
+    =.  acro.ego  [%dill poe]
     =^  cards  ego  (apto cura.ego)
-    [cards hoc]
+    %-  emil  cards
     ::
       [%homunculus-http ~]
     =.  acro.ego  [%http ~]
-    [~ hoc]
+    hoc
     ::
   ==
-++  on-leave
-  |=  =path
-  ^-  (quip card _hoc)
-  ?+  path  !!
+::
+++  leave
+  |=  poe=(pole @ta)
+  ^+  hoc
+  ?+  poe  !!
     ::
       [%dill @ ~]
-    [~ hoc]
+    hoc
     ::
   ==
-++  on-peek
-  |=  =path
-  ^-  (unit (unit cage))
-  ?+  path  ~
-    [%x %auth ~]  [~ [~ [%noun !>(~)]]]
-  ==
-::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-++  on-agent  |=([wire sign:agent:gall] ^-((quip card _hoc) !!))
-++  on-arvo   |=([wire sign-arvo] ^-((quip card _hoc) !!))
-++  on-fail   |=([term tang] ^-((quip card _hoc) !!))
---
-::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
-|%
+::
+  ::
 ::
 ++  ineo                           :: handle terminal input
   |=  zon=zona
