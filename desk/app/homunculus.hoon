@@ -243,7 +243,7 @@
       look.res.cor.urbs.ego  [~ %k %w]
     ==
   %-  emil
-  :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
+  :~  (ago [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       (iuvo [our.bol %homunculus-menu] [%open ~])
   ==
 ::
@@ -254,12 +254,11 @@
   ?+  maz  !!
     ::
       %homunculus-register
-    =/  fon=fons  (bibo bol)
-    %-  emit  (ago our.bol [%put-register fon])
+    %-  emit  (ago [%put-register bibo])
     ::
       %homunculus-update
     =+  !<(upd=update:homunculus vaz)
-    =/  fon        (bibo bol)
+    =/  fon        bibo
     =/  ind        (rigo fon)
     ?~  ind  hoc
     =/  =via       (snag -.ind viae.ego)
@@ -279,7 +278,7 @@
         %update
       =?  arae.via.arx.urbs.ego  ?=(~ arae.via.arx.urbs.ego)
         =|  =ara
-        :~  ara(fons (bibo bol))
+        :~  ara(fons bibo)
         ==
       ?>  ?=(^ arae.via.arx.urbs.ego)
       =^  keys  i.arae.via.arx.urbs.ego  (novo %menu p.upd i.arae.via.arx.urbs.ego)
@@ -288,7 +287,7 @@
       %-  emit  (fio opus)
       ::
         %load-state
-      %-  emit  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
+      %-  emit  (ago [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       ::
         %change-frame
       ?:  ?|  =(p.upd cura.ego)
@@ -299,7 +298,7 @@
       =^  cards  ego  (apto cura.ego)
       %-  emil
       %+  weld  cards
-      :~  (ago our.bol [%active-frame cura.ego])
+      :~  (ago [%active-frame cura.ego])
       ==
       ::
         %open-session
@@ -363,7 +362,7 @@
       %-  emil
       %+  weld  cards
       :~  (iuvo p.upd [%open ~])
-          (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
+          (ago [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       ==
       ::
         %close-session
@@ -398,7 +397,7 @@
       %-  emil
       %+  weld  cards
       :~  (iuvo p.upd [%close ~])
-          (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=^via aula.i))])
+          (ago [%all-frames cura.ego (turn viae.ego |=(i=^via aula.i))])
       ==
       ::
     ==
@@ -632,7 +631,6 @@
   ~
 ::
 ++  bibo                           :: get the source from a bowl
-  |=  bol=bowl:gall
   ^-  fons
   [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]
 ::
@@ -668,9 +666,9 @@
   [%pass ~ %agent fon %poke %homunculus-event !>(eve)]
 ::
 ++  ago                            :: make a menu diff card
-  |=  [our=@p dif=menu-diff:homunculus]
+  |=  dif=menu-diff:homunculus
   ^-  card
-  [%pass ~ %agent [our %homunculus-menu] %poke %homunculus-menu-diff !>(dif)]
+  [%pass ~ %agent [our.bol %homunculus-menu] %poke %homunculus-menu-diff !>(dif)]
 ::
 ++  scio                           :: derive system hotkey context from a selection
   |_  =rex
@@ -4197,3 +4195,4 @@
   r.a(q.i.p.i (weld q.i.p.i.r.a lin))
 ::
 --
+
