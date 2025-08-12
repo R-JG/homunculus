@@ -133,9 +133,13 @@
   ==                                                                   ::
 +$  data  form-data:homunculus                                         :: form data
 +$  vela  manx                                                         :: sail
-+$  fons  session-source:homunculus                                    :: session source
++$  pons  route:homunculus                                             :: route
++$  fons  (each (pair @p @tas) @p)                                     :: session source, full or pending
++$  hora  session-id:homunculus                                        :: session id
 +$  ara                                                                :: session state
-  $:  =fons                                                            ::
+  $:  =hora                                                            ::
+      =fons                                                            ::
+      =pons                                                            ::
       =vela                                                            ::
       =aves                                                            ::
       =grex                                                            ::
@@ -150,15 +154,15 @@
       =arae                                                            ::
   ==                                                                   ::
 +$  viae  (list via)                                                   :: frames
-+$  aula  layout:homunculus                                            :: layout 
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=cor =arx]                                                  :: system state
 +$  cura  @                                                            :: active frame index
++$  aula  layout:homunculus                                            :: layout
++$  acta  bindings:homunculus                                          :: bindings
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
   ==                                                                   ::
-+$  acta  (set fons)                                                   :: registered agents
 +$  ego                                                                :: %homunculus state
   $:  =acta                                                            ::
       =acro                                                            ::
@@ -243,8 +247,18 @@
   ^+  hoc
   =:  viae.ego               ~[*via]
       look.res.cor.urbs.ego  [~ %k %w]
+      arae.via.arx.urbs.ego
+        =|  =ara
+        =:  hora.ara  now.bol
+            fons.ara  [%& our.bol dap.bol]
+            vela.ara  ;layer(w "100%", h "100%", mast "");
+          ==
+        :~  ara
+        ==
     ==
-  hoc
+  =^  c  ego  (apto cura.ego)
+  ?>  ?=(^ arae.via.arx.urbs.ego)
+  %-  emit  (cavo our.bol [fons hora pons]:i.arae.via.arx.urbs.ego)
 ::
 ++  save
   ^-  vase
@@ -253,10 +267,7 @@
 ++  load
   |=  vaz=vase
   ^+  hoc
-  =:  viae.ego               ~[*via]
-      look.res.cor.urbs.ego  [~ %k %w]
-    ==
-  hoc
+  init
 ::
 ++  poke
   |=  [maz=mark vaz=vase]
@@ -267,17 +278,43 @@
     =+  !<(act=action:homunculus vaz)
     ?-  -.act
       ::
-        %register
-      =.  acta.ego  (~(put in acta.ego) bibo)
-      %-  emit  (ago /x/register)
+        %bind
+      ?>  =(our.bol src.bol)
+      ?:  (~(has by acta.ego) p.act)
+        ~&  >>>  [%already-bound p.act]
+        !!
+      =.  acta.ego  (~(put by acta.ego) p.act q.act)
+      %-  emit  (ago /x/bindings)
+      ::
+        %route-open
+      =/  for  (~(get by acta.ego) p.q.act)
+      ?~  for
+        %-  emit  (navo src.bol [%route-fail p.act q.act])
+      %-  emit  (cavo src.bol [%& our.bol u.for] p.act q.act)
+      ::
+        %route-fail
+      :: TODO:
+      ~&  >>>  act
+      hoc
       ::
         %update
-      =/  fon        bibo
-      =/  ind        (rigo fon)
-      ?~  ind  hoc
-      =/  =via       (snag -.ind viae.ego)
-      =/  =ara       (snag +.ind arae.via)
-      =^  keys  ara  (novo ind p.act ara)
+      ?:  ?&  =(our.bol src.bol)
+              =(/gall/homunculus sap.bol)
+          ==
+        :: update for a system component
+        ?>  ?=(^ arae.via.arx.urbs.ego)
+        =^  keys  i.arae.via.arx.urbs.ego  (novo q.act i.arae.via.arx.urbs.ego)
+        ?.  open.arx.urbs.ego  hoc
+        =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
+        %-  emit  (fio opus)
+      :: update for a session window
+      =/  ind   (rigo p.act)
+      ?~  ind   hoc
+      =/  =via  (snag -.ind viae.ego)
+      =/  =ara  (snag +.ind arae.via)
+      =?  fons.ara  ?=(%| -.fons.ara)  [%& p.fons.ara bibo]
+      ?>  =(fons.ara [%& src.bol bibo])
+      =^  keys  ara  (novo q.act ara)
       =.  arae.via   (snap arae.via +.ind ara)
       =.  viae.ego   (snap viae.ego -.ind via)
       ?.  =(cura.ego -.ind)  hoc
@@ -294,17 +331,6 @@
     =+  !<(act=system-action:homunculus vaz)
     ?-  -.act
       ::
-        %update
-      =?  arae.via.arx.urbs.ego  ?=(~ arae.via.arx.urbs.ego)
-        =|  =ara
-        :~  ara(fons bibo)
-        ==
-      ?>  ?=(^ arae.via.arx.urbs.ego)
-      =^  keys  i.arae.via.arx.urbs.ego  (novo %menu p.act i.arae.via.arx.urbs.ego)
-      ?.  open.arx.urbs.ego  hoc
-      =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
-      %-  emit  (fio opus)
-      ::
         %change-frame
       ?:  ?|  =(p.act cura.ego)
               (gth +(p.act) (lent viae.ego))
@@ -318,17 +344,19 @@
       ==
       ::
         %open-session
-      =/  found  (rigo p.act)
-      ?>  ?=(~ found)
+      =|  =ara
+      =:  hora.ara  now.bol
+          fons.ara  [%| p.act]
+          pons.ara  q.act
+          vela.ara  (velo p.act q.act)
+        ==
       =.  ego
-        ?-  -.q.act
+        ?-  -.r.act
          ::
            %new-frame
           =|  =via
-          =|  =ara
-          =:  fons.ara  p.act
-              aula.via  [%$ p.act]
-              cura.ego  ?-(p.q.act %l cura.ego, %r +(cura.ego))
+          =:  aula.via  [%$ hora.ara]
+              cura.ego  ?-(p.r.act %l cura.ego, %r +(cura.ego))
             ==
           %_    ego
               viae
@@ -340,29 +368,27 @@
           ::
             %current-frame
           =/  =via  (snag cura.ego viae.ego)
-          =|  =ara
-          =.  fons.ara  p.act
           =.  aula.via
             |-  ^-  aula
-            ?~  q.q.act
+            ?~  q.r.act
               ?>  ?=(%$ -.aula.via)
-              ?-  p.q.act
-                %l  [%v 50 [%$ p.act] aula.via]
-                %r  [%v 50 aula.via [%$ p.act]]
-                %t  [%h 50 [%$ p.act] aula.via]
-                %b  [%h 50 aula.via [%$ p.act]]
-                %c  [%$ p.act]
+              ?-  p.r.act
+                %l  [%v 50 [%$ hora.ara] aula.via]
+                %r  [%v 50 aula.via [%$ hora.ara]]
+                %t  [%h 50 [%$ hora.ara] aula.via]
+                %b  [%h 50 aula.via [%$ hora.ara]]
+                %c  [%$ hora.ara]
               ==
             ?+  -.aula.via  !!
                 %v
-              ?-  i.q.q.act
-                %0  aula.via(l $(aula.via l.aula.via, q.q.act t.q.q.act))
-                %1  aula.via(r $(aula.via r.aula.via, q.q.act t.q.q.act))
+              ?-  i.q.r.act
+                %0  aula.via(l $(aula.via l.aula.via, q.r.act t.q.r.act))
+                %1  aula.via(r $(aula.via r.aula.via, q.r.act t.q.r.act))
               ==
                 %h
-              ?-  i.q.q.act
-                %0  aula.via(t $(aula.via t.aula.via, q.q.act t.q.q.act))
-                %1  aula.via(b $(aula.via b.aula.via, q.q.act t.q.q.act))
+              ?-  i.q.r.act
+                %0  aula.via(t $(aula.via t.aula.via, q.r.act t.q.r.act))
+                %1  aula.via(b $(aula.via b.aula.via, q.r.act t.q.r.act))
               ==
             ==
           %_    ego
@@ -379,6 +405,7 @@
       %+  weld  cards
       :~  (ago /x/active-frame-index)
           (ago /x/frames)
+          (navo p.act [%route-open hora.ara q.act])
       ==
       ::
         %close-session
@@ -413,7 +440,7 @@
       %-  emil
       %+  weld  cards
       :~  (ago /x/active-frame-index)
-          (ago /x/frames)
+          (ago /x/frames)                       :: TODO: send close session homunculus-action
       ==
       ::
     ==
@@ -485,9 +512,9 @@
       ==
   ?+  poe  ~
     ::
-      [%x %register ~]
+      [%x %bindings ~]
     :+  ~  ~
-    :-  %homunculus-register
+    :-  %homunculus-bindings
     !>  acta.ego
     ::
       [%x %frames ~]
@@ -676,9 +703,9 @@
     ~
   ~
 ::
-++  bibo                           :: make session source
-  ^-  fons
-  [src.bol ?:(&(?=(^ sap.bol) ?=(^ t.sap.bol)) i.t.sap.bol %$)]         :: TODO:
+++  bibo                                                  :: TODO:
+  ^-  term
+  ?:  &(?=(^ sap.bol) ?=(^ t.sap.bol))  i.t.sap.bol  %$
 ::
 ++  fio                            :: make a display update card
   |=  =opus
@@ -709,8 +736,10 @@
 ++  iuvo                           :: make an event card
   |=  [fon=fons sor=sors eve=event:homunculus]
   ^-  card
+  ?>  ?=(%& -.fon)
   =;  dat=component-event:homunculus
-    [%pass ~ %agent fon %poke %homunculus-event !>(dat)]
+    =/  wir  /homunculus/event/[(scot %p p.p.fon)]/[q.p.fon]/[com-key.dat]
+    [%pass wir %agent p.fon %poke %homunculus-event !>(dat)]
   ?-  -.eve
     %select               [(need sor) [-.eve p.eve] ~]
     %act                  [(need sor) [-.eve p.eve] ~]
@@ -722,6 +751,23 @@
       %-  ~(rep by q.eve)
       |=  [[k=path v=cord] a=(map cord cord)]
       %+  ~(put by a)  (spat k)  v
+  ==
+::
+++  navo                           :: make a homunculus action card
+  |=  [for=@p act=action:homunculus]
+  ^-  card
+  =/  wir  /homunculus/action/[(scot %p for)]/[-.act]
+  :*  %pass  wir  %agent  [for %homunculus]  %poke
+      %homunculus-action  !>(act)
+  ==
+::
+++  cavo                           :: make a mast-tui-open card
+  |=  [src=@p fon=fons hor=hora pon=pons]
+  ^-  card
+  ?>  ?=(%& -.fon)
+  =/  wir  /mast/open/[(scot %p p.p.fon)]/[q.p.fon]
+  :*  %pass  wir  %agent  p.fon  %poke
+      %mast-tui-open  !>([src hor pon])
   ==
 ::
 ++  ago                            :: update a mast scry path subscription
@@ -760,15 +806,23 @@
     ==
   --
 ::
+++  velo                           :: produce markup for a pending session window
+  |=  [who=@p pon=pons]
+  ^-  vela
+  ;col(w "100%", h "100%", fx "center", fy "center", mast "")
+    ;row:"Connecting..."
+    ;row:"{(print-url:homunculus who pon)}"
+  ==
+::
 ++  paro                           :: produce containers for a frame layout
   |=  =aula
   =|  pex=apex
-  =|  acc=(map fons cor)
+  =|  acc=(map hora cor)
   =/  siz  size.res.cor.urbs.ego
   |-  ^+  acc
   ?-  -.aula
       %$
-    %+  %~  put  by  acc  
+    %+  %~  put  by  acc
       p.aula
     =|  =cor
     %_  cor
@@ -817,7 +871,7 @@
         %+  spun  arae.via
         |=  [=ara i=@]
         :_  +(i)
-        (curo ~[[%n i]] (~(got by containers) fons.ara) ara)
+        (curo ~[[%n i]] (~(got by containers) hora.ara) ara)
     ==
   =.  viae.ego  (snap viae.ego cura via)
   ?.  =(cura cura.ego)
@@ -851,10 +905,7 @@
   ses(aves ave, grex gex, ossa osa)
 ::
 ++  novo                           :: apply homunculus update cards to a session
-  |=  $:  ses-location=$@(%menu [@ @])
-          upd=update:homunculus
-          ses=ara
-      ==
+  |=  [upd=update:homunculus ses=ara]
   =|  keys=(list rami)
   |-  ^-  (quip rami ara)
   =^  key  ses
@@ -930,8 +981,8 @@
     rens      [ren rens]
   ==
 ::
-++  rigo                           :: find an existing session in a frame by source, or null
-  |=  =fons
+++  rigo                           :: find an existing session in a frame, or null
+  |=  hor=hora
   =|  i=@
   |-  ^-  $@(~ [@ @])
   ?~  viae.ego  ~
@@ -942,7 +993,7 @@
       i  +(i)
       viae.ego  t.viae.ego
     ==
-  ?:  =(fons fons.i.arae.i.viae.ego)
+  ?:  =(hor hora.i.arae.i.viae.ego)
     [i j]
   %=  $
     j  +(j)
