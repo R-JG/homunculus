@@ -249,7 +249,7 @@
       look.res.cor.urbs.ego  [~ %k %w]
       arae.via.arx.urbs.ego
         =|  =ara
-        =:  hora.ara  now.bol
+        =:  hora.ara  (scot %da now.bol)
             fons.ara  [%& our.bol dap.bol]
             vela.ara  ;layer(w "100%", h "100%", mast "");
           ==
@@ -258,7 +258,7 @@
     ==
   =^  c  ego  (apto cura.ego)
   ?>  ?=(^ arae.via.arx.urbs.ego)
-  %-  emit  (cavo our.bol [fons hora pons]:i.arae.via.arx.urbs.ego)
+  %-  emit  (cavo %watch [hora ?>(?=(%& -.fons) p.fons) pons]:i.arae.via.arx.urbs.ego)
 ::
 ++  save
   ^-  vase
@@ -286,35 +286,30 @@
       =.  acta.ego  (~(put by acta.ego) p.act q.act)
       %-  emit  (ago /x/bindings)
       ::
-        %route-open
+        %route-request
       =/  for  (~(get by acta.ego) p.q.act)
       ?~  for
-        %-  emit  (navo src.bol [%route-fail p.act q.act])
-      %-  emit  (cavo src.bol [%& our.bol u.for] p.act q.act)
+        %-  emit  (navo src.bol [%route-missing p.act q.act])
+      %-  emit  (navo src.bol [%route-respond p.act u.for])
       ::
-        %route-fail
-      :: TODO:
-      ~&  >>>  act
-      hoc
-      ::
-        %update
-      ?:  ?&  =(our.bol src.bol)
-              =(/gall/homunculus sap.bol)
-          ==
-        :: update for a system component
-        ?>  ?=(^ arae.via.arx.urbs.ego)
-        =^  keys  i.arae.via.arx.urbs.ego  (novo q.act i.arae.via.arx.urbs.ego)
-        ?.  open.arx.urbs.ego  hoc
-        =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
-        %-  emit  (fio opus)
-      :: update for a session window
+        %route-respond
       =/  ind   (rigo p.act)
-      ?~  ind   hoc
+      ?~  ind   !!
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
-      =?  fons.ara  ?=(%| -.fons.ara)  [%& p.fons.ara bibo]
-      ?>  =(fons.ara [%& src.bol bibo])
-      =^  keys  ara  (novo q.act ara)
+      ?>  ?-(-.fons.ara %| =(src.bol p.fons.ara), %& |)
+      =.  fons.ara  [%& src.bol p.act]
+      =.  arae.via  (snap arae.via +.ind ara)
+      =.  viae.ego  (snap viae.ego -.ind via)
+      %-  emit  (cavo %watch hora.ara [src.bol p.act] pons.ara)
+      ::
+        %route-missing
+      =/  ind   (rigo p.act)
+      ?~  ind   !!
+      =/  =via  (snag -.ind viae.ego)
+      =/  =ara  (snag +.ind arae.via)
+      ?>  ?-(-.fons.ara %| =(src.bol p.fons.ara), %& |)
+      =^  keys  ara  (novo [[%element (velo %lost src.bol pons.ara)] ~] ara)
       =.  arae.via   (snap arae.via +.ind ara)
       =.  viae.ego   (snap viae.ego -.ind via)
       ?.  =(cura.ego -.ind)  hoc
@@ -345,10 +340,10 @@
       ::
         %open-session
       =|  =ara
-      =:  hora.ara  now.bol
+      =:  hora.ara  (scot %da now.bol)
           fons.ara  [%| p.act]
           pons.ara  q.act
-          vela.ara  (velo p.act q.act)
+          vela.ara  (velo %open p.act q.act)
         ==
       =.  ego
         ?-  -.r.act
@@ -405,13 +400,14 @@
       %+  weld  cards
       :~  (ago /x/active-frame-index)
           (ago /x/frames)
-          (navo p.act [%route-open hora.ara q.act])
+          (navo p.act [%route-request hora.ara q.act])
       ==
       ::
         %close-session
       =/  ind  (rigo p.act)
       ?~  ind  hoc
       =/  =via      (snag -.ind viae.ego)
+      =/  =ara      (snag +.ind arae.via)
       =.  arae.via  (oust [+.ind 1] arae.via)
       =.  ego
         ?:  =(~ arae.via)
@@ -439,8 +435,11 @@
       =^  cards  ego  (apto cura.ego)
       %-  emil
       %+  weld  cards
+      =;  caz
+        ?:  ?=(%| -.fons.ara)  caz
+        :_  caz  (cavo %leave p.act p.fons.ara pons.ara)
       :~  (ago /x/active-frame-index)
-          (ago /x/frames)                       :: TODO: send close session homunculus-action
+          (ago /x/frames)
       ==
       ::
     ==
@@ -504,6 +503,39 @@
     ::
   ==
 ::
+++  agent
+  |=  [wir=(pole @ta) sin=sign:agent:gall]
+  ^+  hoc
+  ?+  wir  !!
+    ::
+      [%homunculus-update hor=@t *]
+    ?.  ?=(%fact -.sin)  hoc
+    =/  dat  !<(update:homunculus q.cage.sin)
+    ?:  ?&  =(our.bol src.bol)
+            =(/gall/homunculus sap.bol)
+        ==
+      :: update for a system component
+      ?>  ?=(^ arae.via.arx.urbs.ego)
+      =^  keys  i.arae.via.arx.urbs.ego  (novo dat i.arae.via.arx.urbs.ego)
+      ?.  open.arx.urbs.ego  hoc
+      =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
+      %-  emit  (fio opus)
+    :: update for a session window
+    =/  ind   (rigo hor.wir)
+    ?~  ind   !!
+    =/  =via  (snag -.ind viae.ego)
+    =/  =ara  (snag +.ind arae.via)
+    ?>  ?-(-.fons.ara %& =(src.bol p.p.fons.ara), %| |)
+    =^  keys  ara  (novo dat ara)
+    =.  arae.via   (snap arae.via +.ind ara)
+    =.  viae.ego   (snap viae.ego -.ind via)
+    ?.  =(cura.ego -.ind)  hoc
+    =^  opus  via  (levo keys via)
+    =?  viae.ego   !open.arx.urbs.ego  (snap viae.ego -.ind via)
+    %-  emit  (fio opus)
+    ::
+  ==
+::
 ++  peek
   |=  poe=(pole @ta)
   ^-  (unit (unit cage))
@@ -553,11 +585,6 @@
 ::
 ++  arvo
   |=  [wir=wire sin=sign-arvo]
-  ^+  hoc
-  hoc
-::
-++  agent
-  |=  [wir=wire sin=sign:agent:gall]
   ^+  hoc
   hoc
 ::
@@ -703,10 +730,6 @@
     ~
   ~
 ::
-++  bibo                                                  :: TODO:
-  ^-  term
-  ?:  &(?=(^ sap.bol) ?=(^ t.sap.bol))  i.t.sap.bol  %$
-::
 ++  fio                            :: make a display update card
   |=  =opus
   ^-  card
@@ -734,20 +757,25 @@
   ==
 ::
 ++  iuvo                           :: make an event card
-  |=  [fon=fons sor=sors eve=event:homunculus]
+  |=  [hor=hora fon=fons pon=pons kez=(list @t) eve=event:homunculus]
   ^-  card
   ?>  ?=(%& -.fon)
-  =;  dat=component-event:homunculus
-    =/  wir  /homunculus/event/[(scot %p p.p.fon)]/[q.p.fon]/[com-key.dat]
-    [%pass wir %agent p.fon %poke %homunculus-event !>(dat)]
+  =;  dat
+    =/  wir  /homunculus/event/[(scot %p p.p.fon)]/[q.p.fon]/[(rear com-key.dat)]
+    :*  %pass  wir  %agent  p.fon  %poke  %mast-tui  !>(dat)
+    ==
+  ^-  component-event:homunculus
+  :^  hor
+      pon
+      kez
   ?-  -.eve
-    %select               [(need sor) [-.eve p.eve] ~]
-    %act                  [(need sor) [-.eve p.eve] ~]
-    %keybinding           [(need sor) [-.eve p.eve] ~]
-    %scroll-trigger-up    [(need sor) [-.eve p.eve] ~]
-    %scroll-trigger-down  [(need sor) [-.eve p.eve] ~]
+    %select               [[-.eve p.eve] ~]
+    %act                  [[-.eve p.eve] ~]
+    %keybinding           [[-.eve p.eve] ~]
+    %scroll-trigger-up    [[-.eve p.eve] ~]
+    %scroll-trigger-down  [[-.eve p.eve] ~]
     %form
-      :+  (need sor)  [-.eve p.eve]
+      :-  [-.eve p.eve]
       %-  ~(rep by q.eve)
       |=  [[k=path v=cord] a=(map cord cord)]
       %+  ~(put by a)  (spat k)  v
@@ -761,13 +789,16 @@
       %homunculus-action  !>(act)
   ==
 ::
-++  cavo                           :: make a mast-tui-open card
-  |=  [src=@p fon=fons hor=hora pon=pons]
+++  cavo                           :: make a mast-tui subscription card
+  |=  [wat=?(%watch %leave) hor=hora for=[@p @tas] pon=pons]
   ^-  card
-  ?>  ?=(%& -.fon)
-  =/  wir  /mast/open/[(scot %p p.p.fon)]/[q.p.fon]
-  :*  %pass  wir  %agent  p.fon  %poke
-      %mast-tui-open  !>([src hor pon])
+  =/  wer  /[hor]/[(scot %uw (jam pon))]
+  =/  wir  [%homunculus-update wer]
+  =/  paf  [%mast-tui wer]
+  :: /mast-tui/session-id/uw-jam-of-rope
+  ?-  wat
+    %watch  [%pass wir %agent for %watch paf]
+    %leave  [%pass wir %agent for %leave ~]
   ==
 ::
 ++  ago                            :: update a mast scry path subscription
@@ -807,11 +838,22 @@
   --
 ::
 ++  velo                           :: produce markup for a pending session window
-  |=  [who=@p pon=pons]
+  |=  [how=?(%open %lost) who=@p pon=pons]
   ^-  vela
-  ;col(w "100%", h "100%", fx "center", fy "center", mast "")
-    ;row:"Connecting..."
-    ;row:"{(print-url:homunculus who pon)}"
+  ?-  how
+    ::
+      %open
+    ;col(w "100%", h "100%", fx "center", fy "center", mast "")
+      ;row:"Connecting..."
+      ;row:"{(print-url:homunculus who pon)}"
+    ==
+    ::
+      %lost
+    ;col(w "100%", h "100%", fx "center", fy "center", mast "")
+      ;row(fg "red"):"Not Found"
+      ;row(fg "red"):"{(print-url:homunculus who pon)}"
+    ==
+    ::
   ==
 ::
 ++  paro                           :: produce containers for a frame layout
@@ -1090,13 +1132,13 @@
       ego(via.arx.urbs via)
     ego(viae (snap viae.ego cura.ego via))
   ::
-  ++  inno                         :: find the nearest component in which an element nests
+  ++  inno                         :: build a list of component keys under which an element nests
     |=  [key=rami deu=deus]
-    =|  sor=sors
     =.  key  (voro key)
-    |-  ^-  sors
-    =?  sor  ?=(^ sors.cor.deu)  sors.cor.deu
-    ?~  key  sor
+    =|  kez=(list @t)
+    |-  ^+  kez
+    =?  kez  ?=(^ sors.cor.deu)  [u.sors.cor.deu kez]
+    ?~  key  (flop kez)
     %=  $
       key  t.key
       deu
@@ -1160,7 +1202,7 @@
       :-  (fio ~[ren])
       ?.  &(?=(^ navs-in-scroll) ?=(^ rex.via) ?=(^ avis.rex.via))
         ~
-      :~  (iuvo fons.ses (inno k.rex.via deus.ses) [%select avis.rex.via])
+      :~  (iuvo hora.ses fons.ses pons.ses (inno k.rex.via deus.ses) [%select avis.rex.via])
       ==
     =/  next=rex
       ?^  navs-in-scroll  i.navs-in-scroll
@@ -1193,7 +1235,7 @@
     ?~  avis.cor.new
       cards
     :_  cards
-    (iuvo fons.new-ara (inno k.next deus.new-ara) [%select avis.cor.new])
+    (iuvo hora.new-ara fons.new-ara pons.new-ara (inno k.next deus.new-ara) [%select avis.cor.new])
   ::
   ++  fluo                         :: find the nearest scroll parent not maxed out in the nav direction + collect trigger events
     ^-  (quip card (unit [iter rami deus]))
@@ -1222,7 +1264,7 @@
                   100
               ==
             ?.  (lte y.iter.ars.cor.deus.ara trig)  car
-            [(iuvo fons.ara (inno key deus:sto) [%scroll-trigger-up avis.cor.deus.ara]) car]
+            [(iuvo hora.ara fons.ara pons.ara (inno key deus:sto) [%scroll-trigger-up avis.cor.deus.ara]) car]
           ?:  ?&  ?=(%nav-d lex)
                   ?=(^ d.equi.ars.cor.deus.ara)
               ==
@@ -1238,7 +1280,7 @@
             ?.  %+  gte  (add trig y.iter.ars.cor.deus.ara)
                 y.sola.ars.cor.deus.ara
               car
-            [(iuvo fons.ara (inno key deus:sto) [%scroll-trigger-down avis.cor.deus.ara]) car]
+            [(iuvo hora.ara fons.ara pons.ara (inno key deus:sto) [%scroll-trigger-down avis.cor.deus.ara]) car]
           car
         acc
           ?.  ?&  ?=(%scroll -.ars.cor.deus.ara)
@@ -1619,7 +1661,7 @@
     ?.  &(?=(%select -.ars.cor.el) ?=(^ avis.cor.el))
       [~ ego]
     :_  ego
-    :~  (iuvo fons.ses (inno k.rex.via deus.ses) [%act avis.cor.el])
+    :~  (iuvo hora.ses fons.ses pons.ses (inno k.rex.via deus.ses) [%act avis.cor.el])
     ==
   ::
   ++  lego                         :: handle a form submit
@@ -1657,7 +1699,7 @@
     =.  ego  (indo (sido ses))
     :_  ego
     :~  (fio ~[(viso key.form)])
-        (iuvo fons.ses (inno key.form deus.ses) [%form avis.cor.el.form data])
+        (iuvo hora.ses fons.ses pons.ses (inno key.form deus.ses) [%form avis.cor.el.form data])
     ==
   ::
   ++  opto                         :: handle a checkbox, potentially in a radio group
@@ -1805,7 +1847,7 @@
     ?~  avis.cor.deus.target
       cards
     :_  cards
-    (iuvo fons.new (inno k.new-rex deus.new) [%select avis.cor.deus.target])
+    (iuvo hora.new fons.new pons.new (inno k.new-rex deus.new) [%select avis.cor.deus.target])
   ::
   ++  sino                         :: change an input's cursor index by coordinate
     |=  [loc=loci =cor]

@@ -1,6 +1,8 @@
 |%
 +$  component-event
-  $:  com-key=@t
+  $:  =session-id
+      =route
+      com-key=(list @t)
       =path
       data=(map @t @t)
   ==
@@ -29,10 +31,10 @@
       [%set-scroll-position p=?(%c %p) q=@ r=path]
   ==
 +$  action
-  $%  [%update p=session-id q=update]
-      [%bind p=base-segment q=agent-name]
-      [%route-open p=session-id q=route]
-      [%route-fail p=session-id q=route]
+  $%  [%bind p=base-segment q=agent-name]
+      [%route-request p=session-id q=route]
+      [%route-respond p=session-id q=agent-name]
+      [%route-missing p=session-id q=route]
   ==
 +$  system-action
   $%  [%open-session p=ship q=route r=session-open]
@@ -48,7 +50,7 @@
 +$  base-segment  @t
 +$  route  (trel base-segment path query)
 +$  query  (map @t @t)
-+$  session-id  @da
++$  session-id  @t  ::  @da
 +$  frame-index  @
 +$  frames  $~(~[*frame] (list frame))
 +$  frame
