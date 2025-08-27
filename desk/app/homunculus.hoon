@@ -154,7 +154,8 @@
       =arae                                                            ::
   ==                                                                   ::
 +$  viae  (list via)                                                   :: frames
-+$  arx   [open=? =via]                                                :: menu state
++$  toga  menu-mode:homunculus                                         :: menu-mode
++$  arx   [open=? =toga =via]                                          :: menu state
 +$  urbs  [=cor =arx]                                                  :: system state
 +$  cura  @                                                            :: active frame index
 +$  aula  layout:homunculus                                            :: layout
@@ -251,9 +252,23 @@
         =|  =ara
         =:  hora.ara  (scot %da now.bol)
             fons.ara  [%& our.bol dap.bol]
+            pons.ara  [%homunculus-menu / ~]
             vela.ara  ;layer(w "100%", h "100%", mast "");
           ==
         :~  ara
+        ==
+      acta.ego
+        %+  ~(put by *acta)
+            %homunculus-menu
+        :-  %homunculus
+        :+  %homunculus-menu
+            ~
+        %-  malt
+        ^-  (list [@tas path])
+        :~  menu-mode+/menu-mode
+            active-frame-index+/active-frame-index
+            frames+/frames
+            bindings+/bindings
         ==
     ==
   =^  c  ego  (apto cura.ego)
@@ -274,6 +289,11 @@
   ^+  hoc
   ?+  maz  !!
     ::
+      %test
+    ~&  >  acta.ego
+    ~&  >>  arx.urbs.ego
+    hoc
+    ::
       %homunculus-action
     =+  !<(act=action:homunculus vaz)
     ?-  -.act
@@ -283,14 +303,14 @@
       ?:  (~(has by acta.ego) p.act)
         ~&  >>>  [%already-bound p.act]
         !!
-      =.  acta.ego  (~(put by acta.ego) p.act q.act)
+      =.  acta.ego  (~(put by acta.ego) p.act q.act r.act)
       %-  emit  (ago /x/bindings)
       ::
         %route-request
       =/  for  (~(get by acta.ego) p.q.act)
       ?~  for
         %-  emit  (navo src.bol [%route-missing p.act q.act])
-      %-  emit  (navo src.bol [%route-respond p.act u.for])
+      %-  emit  (navo src.bol [%route-respond p.act p.u.for])
       ::
         %route-respond
       =/  ind   (rigo p.act)
@@ -326,6 +346,10 @@
     =+  !<(act=system-action:homunculus vaz)
     ?-  -.act
       ::
+        %set-menu-mode
+      =.  toga.arx.urbs.ego  p.act
+      %-  emit  (ago /x/menu-mode)
+      ::
         %change-frame
       ?:  ?|  =(p.act cura.ego)
               (gth +(p.act) (lent viae.ego))
@@ -345,12 +369,13 @@
           pons.ara  q.act
           vela.ara  (velo %open p.act q.act)
         ==
+      ?>  ?=(%| -.fons.ara)
       =.  ego
         ?-  -.r.act
          ::
            %new-frame
           =|  =via
-          =:  aula.via  [%$ hora.ara]
+          =:  aula.via  [%$ [hora p.fons pons]:ara]
               cura.ego  ?-(p.r.act %l cura.ego, %r +(cura.ego))
             ==
           %_    ego
@@ -368,11 +393,11 @@
             ?~  q.r.act
               ?>  ?=(%$ -.aula.via)
               ?-  p.r.act
-                %l  [%v 50 [%$ hora.ara] aula.via]
-                %r  [%v 50 aula.via [%$ hora.ara]]
-                %t  [%h 50 [%$ hora.ara] aula.via]
-                %b  [%h 50 aula.via [%$ hora.ara]]
-                %c  [%$ hora.ara]
+                %l  [%v 50 [%$ [hora p.fons pons]:ara] aula.via]
+                %r  [%v 50 aula.via [%$ [hora p.fons pons]:ara]]
+                %t  [%h 50 [%$ [hora p.fons pons]:ara] aula.via]
+                %b  [%h 50 aula.via [%$ [hora p.fons pons]:ara]]
+                %c  [%$ [hora p.fons pons]:ara]
               ==
             ?+  -.aula.via  !!
                 %v
@@ -539,10 +564,13 @@
 ++  peek
   |=  poe=(pole @ta)
   ^-  (unit (unit cage))
-  ?>  ?&  =(our.bol src.bol)
-          =(/gall/homunculus sap.bol)
-      ==
+  ?>  =(our.bol src.bol)
   ?+  poe  ~
+    ::
+      [%x %binding bin=@ta ~]
+    :+  ~  ~
+    :-  %noun
+    !>  (~(got by acta.ego) bin.poe)
     ::
       [%x %bindings ~]
     :+  ~  ~
@@ -558,6 +586,11 @@
     :+  ~  ~
     :-  %atom
     !>  `@`cura.ego
+    ::
+      [%x %menu-mode ~]
+    :+  ~  ~
+    :-  %homunculus-menu-mode
+    !>  toga.arx.urbs.ego
     ::
   ==
 ::

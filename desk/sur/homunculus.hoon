@@ -31,7 +31,7 @@
       [%set-scroll-position p=?(%c %p) q=@ r=path]
   ==
 +$  action
-  $%  [%bind p=base-segment q=agent-name]
+  $%  [%bind p=base-segment q=agent-name r=component-inputs]
       [%route-request p=session-id q=route]
       [%route-respond p=session-id q=agent-name]
       [%route-missing p=session-id q=route]
@@ -40,14 +40,20 @@
   $%  [%open-session p=ship q=route r=session-open]
       [%close-session p=session-id]
       [%change-frame p=frame-index]
+      [%set-menu-mode p=menu-mode]
   ==
 +$  session-open
   $%  [%new-frame p=?(%l %r)]
       [%current-frame p=layout-dir q=layout-key]
   ==
-+$  bindings  (map base-segment agent-name)
++$  bindings  (map base-segment (pair agent-name component-inputs))
 +$  agent-name  @tas
 +$  base-segment  @t
++$  component-inputs
+  $:  nam=@tas
+      par=(map @tas @t)
+      res=(map @tas path)
+  ==
 +$  route  (trel base-segment path query)
 +$  query  (map @t @t)
 +$  session-id  @t  ::  @da
@@ -59,17 +65,21 @@
 +$  layout-dir  ?(%l %r %t %b %c)
 +$  layout-key  (list ?(%0 %1))
 +$  layout 
-  $~  [%$ *session-id]
-  $%  [%$ p=session-id]
+  $~  [%$ *session-id *ship *route]
+  $%  [%$ p=session-id q=ship r=route]
       [%v p=@ l=layout r=layout]
       [%h p=@ t=layout b=layout]
+  ==
++$  menu-mode
+  $%  [%open-session p=@t]
+      [%$ ~]
   ==
 ::
   ::
 ::
 ++  parse-url
   |=  cod=cord
-  |^  ^-  $@(~ [ship route])
+  |^  ^-  $@(~ (pair ship route))
   =/  tap  (trip cod)
   =/  sip  (find ['/' ~] tap)
   ?~  sip  ~
