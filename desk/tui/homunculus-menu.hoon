@@ -93,8 +93,8 @@
         ;row:"{(trip p.menu-mode)}"
       ==
     ;form/"browser-bar"(w "100%", h "1", mt "2", fl "row")
-      ;input/"browser-input"(w "grow", h "1", bg white, fg green-4);
-      ;submit(fg green-1, select-fg green-4, select-bg green-1):"⠒⠗"
+      ;input/"browser-input"(w "grow", h "1", bg black, fg green-2);
+      ;submit(px "1", fg green-1, select-fg green-4, select-bg green-1):"⠒⠗"
     ==
   ::
   ++  frame-container

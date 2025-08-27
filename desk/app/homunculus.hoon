@@ -246,7 +246,8 @@
 ::
 ++  init
   ^+  hoc
-  =:  viae.ego               ~[*via]
+  =:  size.res.cor.urbs.ego  [100 25]
+      viae.ego               ~[*via]
       look.res.cor.urbs.ego  [~ %k %w]
       arae.via.arx.urbs.ego
         =|  =ara
@@ -289,11 +290,6 @@
   ^+  hoc
   ?+  maz  !!
     ::
-      %test
-    ~&  >  acta.ego
-    ~&  >>  arx.urbs.ego
-    hoc
-    ::
       %homunculus-action
     =+  !<(act=action:homunculus vaz)
     ?-  -.act
@@ -304,6 +300,7 @@
         ~&  >>>  [%already-bound p.act]
         !!
       =.  acta.ego  (~(put by acta.ego) p.act q.act r.act)
+      ~&  >  [%bound +.act]
       %-  emit  (ago /x/bindings)
       ::
         %route-request
@@ -321,7 +318,7 @@
       =.  fons.ara  [%& src.bol p.act]
       =.  arae.via  (snap arae.via +.ind ara)
       =.  viae.ego  (snap viae.ego -.ind via)
-      %-  emit  (cavo %watch hora.ara [src.bol p.act] pons.ara)
+      %-  emit  (cavo %watch hora.ara [src.bol q.act] pons.ara)
       ::
         %route-missing
       =/  ind   (rigo p.act)

@@ -129,6 +129,7 @@
   ++  parse-query
     |=  tap=tape
     ^-  (unit query)
+    ?~  tap  [~ ~]
     =;  quo  ?~(quo ~ [~ (malt u.quo)])
     ^-  (unit (list (pair @t @t)))
     %+  rust  tap
@@ -143,7 +144,7 @@
   |=  [who=@p rut=route]
   ^-  tape
   %+  weld  (scow %p who)
-  %+  weld  (trip p.rut)
+  %+  weld  ['/' (trip p.rut)]
   %+  weld  (spud q.rut)
   =/  qus  ~(tap by r.rut)
   ?~  qus  ~
