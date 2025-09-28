@@ -58,6 +58,27 @@
     :~  [%homunculus-system-action !>(`system-action:homunculus`[%close-session id.poe])]
     ==
     ::
+      [%act %listed-binding bin=@ta ~]
+    =/  pat  (rap 3 (scot %p our.hull) '/' bin.poe ~)
+    ?:  ?&  ?=(%open-session -.menu-mode)
+            =(pat p.menu-mode)
+        ==
+      :: if it is open-session mode and the selected binding is the one to be opened, exit out of opening
+      :~  [%homunculus-system-action !>(`system-action:homunculus`[%set-menu-mode *menu-mode:homunculus])]
+      ==
+    =/  parsed  (parse-url:homunculus pat)
+    ?~  parsed  !!  :: TODO: set to fail mode
+    =/  =layout:homunculus  (snag active-frame-index frames)
+    ?:  ?&  ?=(%$ -.layout)
+            ?=(%$ p.r.layout)
+        ==
+      :: else if there is no other window open in this frame, open as the center window
+      :~  [%homunculus-system-action !>(`system-action:homunculus`[%open-session p.parsed q.parsed [%current-frame %c ~]])]
+      ==
+    :: else set menu mode to open-session for this binding
+    :~  [%homunculus-system-action !>(`system-action:homunculus`[%set-menu-mode %open-session pat])]
+    ==
+    ::
   ==
 ::
 ++  sail
@@ -80,6 +101,7 @@
             ;select/"open-session/new/r"(w "1", h "3", pt "1", mt "5", bg green-1, fg green-3, select-bg cyan-2, select-fg white)
               ;+  ;/  "⡷"
             ==
+        ;+  bindings-container
       ==
       ;+  frames-list
     ==
@@ -95,6 +117,33 @@
     ;form/"browser-bar"(w "100%", h "1", mt "2", fl "row")
       ;input/"browser-input"(w "grow", h "1", bg black, fg green-2);
       ;submit(px "1", fg green-1, select-fg green-4, select-bg green-1):"⠒⠗"
+    ==
+  ::
+  ++  bindings-container
+    ^-  manx
+    :: =/  open-windows  get-open-windows
+    ;col/"bindings-container"(w "grow", h "10", px "2", mt "1", ml "2")
+      ;+  ?.  ?=(%open-session -.menu-mode)
+            ;row(w "100%", h "1", mb "1", fx "center", bg green-2, fg green-1):"Your Apps:"
+          ;row(w "100%", h "1", mb "1", fx "center", bg cyan-2, fg white):"Open:"
+      ;scroll/"bindings-scroll"(w "100%", h "grow")
+        ;*  %+  murn
+              %+  sort  ~(tap in ~(key by bindings))
+              |=  $:  a=base-segment:homunculus
+                      b=base-segment:homunculus
+                  ==
+              (aor a b)
+            |=  i=base-segment:homunculus
+            ^-  (unit manx)
+            ?:  =('homunculus-menu' i)  ~
+            :-  ~
+            =/  bas  (trip i)
+            ?:  ?&  ?=(%open-session -.menu-mode)
+                    =((cat 3 '/' i) p.menu-mode)
+                ==
+              ;select/"listed-binding/{bas}"(w "100%", h "1", bg cyan-2, fg white):"{bas}"
+            ;select/"listed-binding/{bas}"(w "100%", h "1", select-bg white, select-fg green-3):"{bas}"
+      ==
     ==
   ::
   ++  frame-container
@@ -232,6 +281,22 @@
   ++  blue-2    "#335C81"
   ++  blue-3    "#27394a"
   ++  white     "#F5EDF0"
+  ::
+  :: ++  get-open-windows
+  ::   %+  roll  frames
+  ::   |=  $:  i=layout:homunculus
+  ::           a=(map session-id:homunculus (pair ship route:homunculus))
+  ::       ==
+  ::   (~(uni by a) (get-windows-in-layout i))
+  :: ::
+  :: ++  get-windows-in-layout
+  ::   |=  lay=layout:homunculus
+  ::   ^-  (map session-id:homunculus (pair ship route:homunculus))
+  ::   ?-  -.lay
+  ::     %$  [+.lay ~ ~]
+  ::     %v  (~(uni by $(lay l.lay)) $(lay r.lay))
+  ::     %h  (~(uni by $(lay t.lay)) $(lay b.lay))
+  ::   ==
   ::
   --
 ::

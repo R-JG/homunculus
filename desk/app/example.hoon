@@ -1,8 +1,10 @@
 /-  *example
 /+  mast
 |%
++$  mode  ?(%test-1 %test-2)
 +$  state-0
-  $:  =posts
+  $:  =mode
+      =posts
       =user-sessions
   ==
 +$  state-n
@@ -55,6 +57,11 @@
   =/  poe  `(pole @ta)`pax
   ?+  poe  ~
     ::
+    [%x %mode ~]
+      :+  ~  ~
+      :-  %atom
+      !>  mode
+    ::
     [%x %posts ~]
       :+  ~  ~
       :-  %posts
@@ -76,7 +83,13 @@
   ==
 ::
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
-++  on-arvo   |=([wire sign-arvo] ^-((quip card _this) !!))
+::
+++  on-arvo
+  |=  [=wire sign=sign-arvo]
+  ^-  (quip card _this)
+  =^  cards  state  abet:(arvo:cor wire sign)
+  :-  cards  this
+::
 ++  on-fail   |=([term tang] ^-((quip card _this) !!))
 --
 ::
@@ -99,10 +112,34 @@
   ^+  cor
   init
 ::
+++  arvo
+  |=  [wir=(pole @ta) sin=sign-arvo]
+  ^+  cor
+  ~&  >  [wir -.sin]
+  ?+  wir  !!
+    [%clay-test ~]
+      ?>  ?=([%clay %writ *] sin)
+      ?~  p.sin
+        ~&  >  'not found'
+        cor
+      ~&  >  p.r.u.p.sin
+      ~&  >  q.r.u.p.sin
+      cor
+  ==
+::
 ++  poke
   |=  [=mark =vase]
   ^+  cor
   ?+  mark  ~|(bad-poke/mark !!) 
+    ::
+      %clay-test
+    =/  des=desk  %homunculus
+    =/  pat=path  /desk/docket-0
+    %-  emit  [%pass /clay-test %arvo %c %warp our.bowl des ~ %sing %x da+now.bowl pat]
+    ::
+      %test
+    =.  mode  ?-(mode %test-2 %test-1, %test-1 %test-2)
+    %-  emit  (make-fact-card /x/mode)
     ::
       %example-action
     =/  act  !<  action  vase
@@ -176,7 +213,7 @@
   ^-  card
   :*  %pass  /tui-bind  %agent  [our.bowl %homunculus]  %poke
       %homunculus-action
-      !>([%bind 'example' 'example' [%example-main ~ ~]])
+      !>([%bind 'example' 'example' [%example-main ~ (malt [mode+/mode ~])]])
   ==
 ::
 --

@@ -1,5 +1,9 @@
 |%
-+$  component-event
++$  mast-open
+  $:  =session-id
+      =route
+  ==
++$  mast-event
   $:  =session-id
       =route
       com-key=(list @t)
@@ -145,7 +149,7 @@
   ^-  tape
   %+  weld  (scow %p who)
   %+  weld  ['/' (trip p.rut)]
-  %+  weld  (spud q.rut)
+  %+  weld  ?:(=(~ q.rut) "" (spud q.rut))
   =/  qus  ~(tap by r.rut)
   ?~  qus  ~
   :-  '?'

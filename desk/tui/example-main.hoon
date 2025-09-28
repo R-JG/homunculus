@@ -1,30 +1,28 @@
 /-  mast, *example
 ^-  mast:mast
-:-  ~
-    :: :~  menu-mode+%homunculus-menu-mode
-    ::     active-frame-index+%atom
-    ::     frames+%homunculus-frames
-    ::     bindings+%homunculus-bindings
-    :: ==
+:-  :~  mode+%atom
+    ==
 |_  =hull:mast
 ::
 +*  get-state
-  ~
-  :: :*
-  :: !<  =menu-mode:homunculus            fil:(~(got by res.hull) %menu-mode)
-  :: !<  active-frame-index=@             fil:(~(got by res.hull) %active-frame-index)
-  :: !<  frames=(list layout:homunculus)  fil:(~(got by res.hull) %frames)
-  :: !<  =bindings:homunculus             fil:(~(got by res.hull) %bindings)
-  :: ==
+  :*
+  !<  mode=cord  fil:(~(got by res.hull) %mode)
+  ==
 ::
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
   =+  get-state
   =/  poe  `(pole @ta)`path.crow
-  ?+  poe  !!
+  ?+  poe  ~
     ::
-    ~  ~
+    [%act %clay-test ~]
+      :~  [%clay-test !>(~)]
+      ==
+    ::
+    [%act %toggle-mode ~]
+      :~  [%test !>(~)]
+      ==
     ::
   ==
 ::
@@ -32,8 +30,17 @@
   =+  get-state
   |^
   ^-  manx
-  ;row(w "100%", h "100%", bg "red", fx "center", fy "center")
+  ;col(w "100%", h "100%", bg "red", fx "center", fy "center")
+    ;select/"toggle-mode"(select-d "underline"):"toggle mode"
+    ;+  ?+  mode
+            ;row(fg "yellow"):"nope"
+          %test-1
+            ;row(bg "black", fg "white"):"test 1"
+          %test-2
+            ;row(bg "white", fg "black"):"test 2"
+        ==
     ;+  test
+    ;select/"clay-test"(select-d "underline", bg "black", fg "cyan", m "2"):"CLAY"
   ==
   ::
   ++  test

@@ -274,16 +274,25 @@
     ==
   =^  c  ego  (apto cura.ego)
   ?>  ?=(^ arae.via.arx.urbs.ego)
-  %-  emit  (cavo %watch [hora ?>(?=(%& -.fons) p.fons) pons]:i.arae.via.arx.urbs.ego)
+  =*  ara  i.arae.via.arx.urbs.ego
+  ?>  ?=(%& -.fons.ara)
+  %-  emil
+  :~  (cavo %watch [hora.ara p.fons.ara])
+      (cieo hora.ara p.fons.ara pons.ara)
+  ==
 ::
 ++  save
   ^-  vase
-  !>  ~
+  :: TODO:
+  !>  acta.ego
 ::
 ++  load
   |=  vaz=vase
   ^+  hoc
-  init
+  =.  hoc  init
+  :: TODO:
+  =.  acta.ego  (~(uni by !<(acta vaz)) acta.ego)
+  hoc
 ::
 ++  poke
   |=  [maz=mark vaz=vase]
@@ -311,14 +320,19 @@
       ::
         %route-respond
       =/  ind   (rigo p.act)
+      ~&  >>  act
+      ~&  >>  ind
       ?~  ind   !!
       =/  =via  (snag -.ind viae.ego)
       =/  =ara  (snag +.ind arae.via)
       ?>  ?-(-.fons.ara %| =(src.bol p.fons.ara), %& |)
-      =.  fons.ara  [%& src.bol p.act]
+      =.  fons.ara  [%& src.bol q.act]
       =.  arae.via  (snap arae.via +.ind ara)
       =.  viae.ego  (snap viae.ego -.ind via)
-      %-  emit  (cavo %watch hora.ara [src.bol q.act] pons.ara)
+      %-  emil
+      :~  (cavo %watch hora.ara [src.bol q.act])
+          (cieo hora.ara [src.bol q.act] pons.ara)
+      ==
       ::
         %route-missing
       =/  ind   (rigo p.act)
@@ -459,7 +473,7 @@
       %+  weld  cards
       =;  caz
         ?:  ?=(%| -.fons.ara)  caz
-        :_  caz  (cavo %leave p.act p.fons.ara pons.ara)
+        :_  caz  (cavo %leave p.act p.fons.ara)
       :~  (ago /x/active-frame-index)
           (ago /x/frames)
       ==
@@ -530,7 +544,7 @@
   ^+  hoc
   ?+  wir  !!
     ::
-      [%homunculus-update hor=@t *]
+      [%homunculus %update src=@t hor=@t ~]
     ?.  ?=(%fact -.sin)  hoc
     =/  dat  !<(update:homunculus q.cage.sin)
     ?:  ?&  =(our.bol src.bol)
@@ -564,15 +578,15 @@
   ?>  =(our.bol src.bol)
   ?+  poe  ~
     ::
-      [%x %binding bin=@ta ~]
-    :+  ~  ~
-    :-  %noun
-    !>  (~(got by acta.ego) bin.poe)
-    ::
       [%x %bindings ~]
     :+  ~  ~
     :-  %homunculus-bindings
     !>  acta.ego
+    ::
+      [%x %binding bin=@ta ~]
+    :+  ~  ~
+    :-  %noun
+    !>  `noun`(~(got by acta.ego) bin.poe)
     ::
       [%x %frames ~]
     :+  ~  ~
@@ -595,7 +609,9 @@
   |=  poe=(pole @ta)
   ^+  hoc
   ?>  =(our.bol src.bol)
-  ?+  poe  !!
+  ?+  poe  ~&(>>> [%homunculus-watch-fail poe] !!)
+    ::
+      [%x *]  hoc
     ::
       [%dill @ ~]
     =.  acro.ego  [%dill poe]
@@ -786,15 +802,15 @@
     ::
   ==
 ::
-++  iuvo                           :: make an event card
+++  iuvo                           :: make a mast event card
   |=  [hor=hora fon=fons pon=pons kez=(list @t) eve=event:homunculus]
   ^-  card
   ?>  ?=(%& -.fon)
   =;  dat
-    =/  wir  /homunculus/event/[(scot %p p.p.fon)]/[q.p.fon]/[(rear com-key.dat)]
-    :*  %pass  wir  %agent  p.fon  %poke  %mast-tui  !>(dat)
+    =/  wir  /homunculus/event/[(scot %p p.p.fon)]/[q.p.fon]/[(rear kez)]
+    :*  %pass  wir  %agent  p.fon  %poke  %mast-event  !>(dat)
     ==
-  ^-  component-event:homunculus
+  ^-  mast-event:homunculus
   :^  hor
       pon
       kez
@@ -819,16 +835,24 @@
       %homunculus-action  !>(act)
   ==
 ::
-++  cavo                           :: make a mast-tui subscription card
-  |=  [wat=?(%watch %leave) hor=hora for=[@p @tas] pon=pons]
+++  cavo                           :: make a mast subscription card
+  |=  [wat=?(%watch %leave) hor=hora for=[@p @tas]]
   ^-  card
-  =/  wer  /[hor]/[(scot %uw (jam pon))]
-  =/  wir  [%homunculus-update wer]
-  =/  paf  [%mast-tui wer]
-  :: /mast-tui/session-id/uw-jam-of-rope
+  =/  wer  /[(scot %p -.for)]/[hor]
+  =/  wir  [%homunculus %update wer]
+  :: /mast/ship/session-id
+  =/  paf  [%mast wer]
   ?-  wat
     %watch  [%pass wir %agent for %watch paf]
     %leave  [%pass wir %agent for %leave ~]
+  ==
+::
+++  cieo                           :: make a mast session open card
+  |=  [hor=hora for=[@p @tas] pon=pons]
+  ^-  card
+  =/  wir  /homunculus/mast-open/[hor]
+  :*  %pass  wir  %agent  for  %poke
+      %mast-open  !>(`mast-open:homunculus`[hor pon])
   ==
 ::
 ++  ago                            :: update a mast scry path subscription
