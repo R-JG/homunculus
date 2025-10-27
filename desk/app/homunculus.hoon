@@ -233,6 +233,7 @@
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
+      [%lick ~]                                                        ::
   ==                                                                   ::
 +$  ego                                                                :: %homunculus state
   $:  =acro                                                            ::
@@ -262,6 +263,7 @@
     ==
   :_  hoc
   :~  (iuvo [our.bol %homunculus-menu] [%open ~])
+      open-sock
   ==
 ++  on-save
   ^-  vase
@@ -276,6 +278,7 @@
   :_  hoc
   :~  (ago our.bol [%all-frames cura.ego (turn viae.ego |=(i=via aula.i))])
       (iuvo [our.bol %homunculus-menu] [%open ~])
+      open-sock
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-poke
@@ -507,7 +510,15 @@
     ==
     ::
       %json
-    =^  cards  ego  (ineo (need (edo !<(json vase))))
+    =^  cards  ego
+      %-  ineo
+      =/  jon  !<(json vase)
+      ?:  ?=(%a -.jon)
+        ?>  &(?=(^ p.jon) ?=(%n -.i.p.jon) ?=(^ t.p.jon) ?=(%n -.i.t.p.jon))
+        :-  %rez
+        [(slav %ud p.i.p.jon) (slav %ud p.i.t.p.jon)]
+      ?>  ?=(%s -.jon)
+      (need (edo (trip p.jon)))
     [cards hoc]
     ::
   ==
@@ -545,25 +556,59 @@
   ==
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _hoc) !!))
-++  on-arvo   |=([wire sign-arvo] ^-((quip card _hoc) !!))
+::
+++  on-arvo
+  |=  [wir=wire sin=sign-arvo]
+  ^-  (quip card _hoc)
+  ?.  ?=([%lick %soak *] sin)  [~ hoc]
+  ?+  mark.sin  [~ hoc]
+    %error       ~&('socket error' ~^hoc)
+    %disconnect  ~&('socket disconnected' ~^hoc)
+    %connect
+      =.  acro.ego  [%lick ~]
+      =^  cards  ego  (apto cura.ego)
+      [cards hoc]
+    %size
+      ?>  ?=(@ noun.sin)
+      =/  dum  (stab noun.sin)
+      ?>  ?=([@ @ ~] dum)
+      =^  cards  ego
+        %-  ineo
+        :-  %rez
+        [(slav %ud i.dum) (slav %ud i.t.dum)]
+      [cards hoc]
+    %text
+      ?>  ?=(@ noun.sin)
+      =^  cards  ego  (ineo (need (edo (trip noun.sin))))
+      [cards hoc]
+  ==
+::
 ++  on-fail   |=([term tang] ^-((quip card _hoc) !!))
 --
 ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  ::  
 |%
 ::
+++  sock-name  /'homunculus.sock'
+::
+++  open-sock
+  ^-  card
+  :*  %pass  /open-sock  %arvo  %l  %spin  sock-name
+  ==
+::
+++  close-sock
+  ^-  card
+  :*  %pass  /close-sock  %arvo  %l  %shut  sock-name
+  ==
+::
+++  spit-sock
+  |=  pit=page
+  ^-  card
+  :*  %pass  /spit-sock  %arvo  %l  %spit  sock-name  pit
+  ==
+::
 ++  edo                            :: parse input text
-  |=  jon=json
+  |=  inp=tape
   ^-  (unit zona)
-  ::
-  ?:  ?=(%a -.jon)
-    ?.  &(?=(^ p.jon) ?=(%n -.i.p.jon) ?=(^ t.p.jon) ?=(%n -.i.t.p.jon))
-      ~
-    :+  ~  %rez
-    [(slav %ud p.i.p.jon) (slav %ud p.i.t.p.jon)]
-  ::
-  ?.  ?=(%s -.jon)
-    ~
-  =/  inp=tape  (trip p.jon)
   ?:  =("\\" inp)
     ~
   ?~  inp  ~
@@ -720,14 +765,14 @@
   ^-  card
   ?-  -.acro.ego
     ::
-      %dill
-    :+  %give  %fact
-    :+  ~[p.acro.ego]  %dill-blit
-    !>
-    ^-  dill-blit:dill
-    :-  %mor
+      %lick
+    %-  spit-sock
+    :-  %noun
+    %-  crip
+    %-  zing
+    ^-  wall
     %+  turn  (snoc opus [loco ~])
-    dido
+    dico
     ::
       %http
     =;  txt=@t  [%give %fact ~[/homunculus-http] %json !>(`json`[%s txt])]
@@ -736,6 +781,15 @@
     ^-  wall
     %+  turn  (snoc opus [loco ~])
     dico
+    ::
+      %dill
+    :+  %give  %fact
+    :+  ~[p.acro.ego]  %dill-blit
+    !>
+    ^-  dill-blit:dill
+    :-  %mor
+    %+  turn  (snoc opus [loco ~])
+    dido
     ::
   ==
 ::
