@@ -134,7 +134,9 @@
     $?  %to-editor                                                     ::
     ==                                                                 ::
   +$  editor                                                           ::
-    $?  %mot-c-l  %mot-c-r  %mot-l-u  %mot-l-d                         ::
+    $?  %mot-c-l  %mot-c-r                                             ::
+        %mot-r-u  %mot-r-d                                             ::
+        %mot-l-u  %mot-l-d                                             ::
         %mot-w-f-b  %mot-w-f-e                                         ::
         %jump  %count                                                  ::
         %paste                                                         ::
@@ -213,7 +215,7 @@
       =cera                                                            ::
   ==                                                                   ::
 +$  flos  $~([1 0] [lin=@ row=@])                                      :: editor viewport start line and row offset
-+$  apis  $~([0 0 1] [x=@ px=@ y=@])                                   :: editor cursor state (px = previous maximum)
++$  apis  $~([1 1] [x=@ y=@])                                          :: editor cursor
 +$  cera                                                               :: text tree node (leaf or internal)
   $@  @t                                                               ::
   $:  l=mel                                                            ::
@@ -835,8 +837,8 @@
     editor
       %-  malt
       ^-  (list [nota editor:lex])
-      :~  [[%aro %l] %mot-c-l]   [[%aro %r] %mot-c-r]   [[%aro %u] %mot-l-u]   [[%aro %d] %mot-l-d]
-          [[%chr ~-h] %mot-c-l]  [[%chr ~-l] %mot-c-r]  [[%chr ~-k] %mot-l-u]  [[%chr ~-j] %mot-l-d]
+      :~  [[%aro %l] %mot-c-l]   [[%aro %r] %mot-c-r]   [[%aro %u] %mot-r-u]   [[%aro %d] %mot-r-d]
+          [[%chr ~-h] %mot-c-l]  [[%chr ~-l] %mot-c-r]  [[%chr ~-k] %mot-r-u]  [[%chr ~-j] %mot-r-d]
           [[%chr ~-~47.] %jump]
           [[%chr ~-p] %paste]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
@@ -1978,7 +1980,6 @@
           ?.  ?=(%to-insert-append lex)  apis.fav
           %_  apis.fav
             x   +(x.apis.fav)
-            px  ?:(=(x.apis.fav px.apis.fav) +(px.apis.fav) px.apis.fav)
           ==
       ==
     =.  ego            (humo via ara deu fav)
@@ -2017,6 +2018,7 @@
   =|  fex=[reg=@t =fax]
   =^  fex  fav
     ?>  ?=(%editor -.mos.ego)
+    =/  count  (fall count.mos.ego 1)
     |^  ^-  [_fex favi]
     ?:  ?=(%paste lex)
       :-  fex(fax [%full ~])
@@ -2026,59 +2028,124 @@
       ?+  lex     fav
         %mot-c-l  m-c-l
         %mot-c-r  m-c-r
+        %mot-r-u  m-r-u
+        %mot-r-d  m-r-d
         %mot-l-u  m-l-u
         %mot-l-d  m-l-d
       ==
     lavo
     ::
     ++  m-c-l                      :: move the cursor characterwise left
-      ^-  favi
-      =/  mov         (fall count.mos.ego 1) :: TODO: move to the last character in the line above if at the beginning
-      =.  x.apis.fav  ?:((gth x.apis.fav mov) (sub x.apis.fav mov) 1)
+      ^-  favi               :: TODO: move to the last character in the line above if at the beginning
       %_  fav
-        px.apis  x.apis.fav
+        x.apis  ?:((gth x.apis.fav count) (sub x.apis.fav count) 1)
       ==
     ::
     ++  m-c-r                      :: move the cursor characterwise right
-      ^-  favi
-      =/  mov                (fall count.mos.ego 1) :: TODO: move to the first character in the line below if at the end
-      =/  target-line-chars  (add x.apis.fav mov)
-      =.  x.apis.fav         (min target-line-chars (roll `(list @ud)`q:(demo y.apis.fav) add))
+      ^-  favi               :: TODO: move to the first character in the line below if at the end
+      =/  target-line-chars  (add x.apis.fav count)
       %_  fav
-        px.apis  x.apis.fav
+        x.apis  (min target-line-chars (roll `(list @ud)`q:(demo y.apis.fav) add))
       ==
     ::
     ++  m-l-u                      :: move the cursor linewise up
-      ^-  favi
-      =/  mov    (fall count.mos.ego 1)
-      =/  new-y  ?:((gth y.apis.fav mov) (sub y.apis.fav mov) 1)
-      =/  new-x  (min px.apis.fav (roll `(list @ud)`q:(demo new-y) add))
-      %_  fav
-        y.apis   new-y
-        x.apis   new-x
-        px.apis  (max new-x px.apis.fav)
-      ==
+      ^-  favi     :: TODO: determine new x by current row char offset applied to the first row in the line
+      fav
+    ::   =/  new-y  ?:((gth y.apis.fav count) (sub y.apis.fav count) 1)
+    ::   =/  new-x  (min px.apis.fav (roll `(list @ud)`q:(demo new-y) add))
+    ::   %_  fav
+    ::     y.apis   new-y
+    ::     x.apis   new-x
+    ::   ==
     ::
     ++  m-l-d                      :: move the cursor linewise down
+      ^-  favi     :: TODO: determine new x by current row char offset applied to the first row in the line
+      fav
+    ::   =/  new-y  (min line-total (add y.apis.fav count))
+    ::   =/  new-x  (min px.apis.fav (roll `(list @ud)`q:(demo new-y) add))
+    ::   %_  fav
+    ::     y.apis   new-y
+    ::     x.apis   new-x
+    ::   ==
+    ::
+    ++  m-r-u                      :: move the cursor rowwise up
       ^-  favi
-      =/  mov    (fall count.mos.ego 1)
-      =/  new-y  (min line-total (add y.apis.fav mov))
-      =/  new-x  (min px.apis.fav (roll `(list @ud)`q:(demo new-y) add))
-      %_  fav
-        y.apis   new-y
-        x.apis   new-x
-        px.apis  (max new-x px.apis.fav)
+      =/  [cur-char-offset-in-row=@ud rows-reversed=(lest @ud)]
+        =/  old-char-total  0
+        =/  rows            q:(demo y.apis.fav)
+        =/  acc             *(list @ud)
+        |-  ^-  [@ud (lest @ud)]
+        =/  new-char-total  (add old-char-total i.rows)
+        ?:  (gte new-char-total x.apis.fav)
+          :_  [i.rows acc]
+          ?:((gth x.apis.fav old-char-total) (sub x.apis.fav old-char-total) 1)
+        ?>  ?=(^ t.rows)
+        %=  $
+          old-char-total  new-char-total
+          acc             [i.rows acc]
+          rows            t.rows
+        ==
+      =/  rows-count  0
+      =/  line-count  y.apis.fav
+      |-  ^-  favi
+      ?:  ?|  =(rows-count count)
+              &(=(1 line-count) =(~ t.rows-reversed))
+          ==
+        %_  fav
+          y.apis  line-count
+          x.apis
+            %+  add
+                (roll t.rows-reversed add)
+                (min i.rows-reversed cur-char-offset-in-row)
+        ==
+      =.  rows-count  +(rows-count)
+      ?^  t.rows-reversed
+        %=  $
+          rows-reversed  t.rows-reversed
+        ==
+      =.  line-count  (dec line-count)
+      %=  $
+        rows-reversed  =>((flop q:(demo line-count)) ?>(?=(^ .) .))
       ==
     ::
-    ++  m-r-u
+    ++  m-r-d                      :: move the cursor rowwise down
       ^-  favi
-      fav
-      :: TODO: rowwise up
-    ::
-    ++  m-r-d
-      ^-  favi
-      fav
-      :: TODO: rowwise down
+      =/  [cur-char-offset-in-row=@ud line-chars=@ud rows=(lest @ud)]
+        =/  old-char-total  0
+        =/  rows            q:(demo y.apis.fav)
+        |-  ^-  [@ud @ud (lest @ud)]
+        =/  new-char-total  (add old-char-total i.rows)
+        ?:  (gte new-char-total x.apis.fav)
+          :+  ?:((gth x.apis.fav old-char-total) (sub x.apis.fav old-char-total) 1)
+              old-char-total
+              rows
+        ?>  ?=(^ t.rows)
+        %=  $
+          old-char-total  new-char-total
+          rows            t.rows
+        ==
+      =/  rows-count  0
+      =/  line-count  y.apis.fav
+      |-  ^-  favi
+      ?:  ?|  =(rows-count count)
+              &(=(line-total line-count) =(~ t.rows))
+          ==
+        %_  fav
+          y.apis  line-count
+          x.apis  (add line-chars (min i.rows cur-char-offset-in-row))
+        ==
+      =.  rows-count  +(rows-count)
+      ?^  t.rows
+        %=  $
+          line-chars  (add line-chars i.rows)
+          rows        t.rows
+        ==
+      =:  line-count  +(line-count)
+          line-chars  0
+        ==
+      %=  $
+        rows  q:(demo line-count)
+      ==
     ::
     ++  lavo                       :: reassess the viewport
       ^-  [_fex favi]
@@ -2626,7 +2693,19 @@
   ?>  ?=(^ i.new)
   =/  des  i.i.new
   =/  pax  t.i.new
-  =/  txt  !<(@t .^(vase %cr (weld /(scot %p our.bol)/[des]/(scot %da now.bol) pax)))
+  =/  bek  /(scot %p our.bol)/[des]/(scot %da now.bol)
+  =/  vax  .^(vase %cr (weld bek pax))
+  =/  txt
+    ^-  @t
+    =/  mak  (rear pax)
+    ?:  =(%hoon mak)  !<(@t vax)
+    =/  tub  .^(tube:clay %cc (weld bek /[mak]/txt))
+    =/  wan  !<(wain (tub vax))
+    %+  reel  wan
+    |=  [i=@t a=@t]
+    %+  rap  3
+    :~  i  '\0a'  a
+    ==
   %=  $
     alvi.ego
       %+  %~  put  by  alvi.ego  i.new
@@ -2640,11 +2719,7 @@
   ?>  ?=(^ rex.via)
   ::
   ?:  ?=(%to-editor lex)
-    =:  x.apis.fav     ?.(=(0 x.apis.fav) (dec x.apis.fav) 0)
-        px.apis.fav
-          ?.  =(x.apis.fav px.apis.fav)  px.apis.fav
-          ?.(=(0 px.apis.fav) (dec px.apis.fav) 0)
-      ==
+    =.  x.apis.fav     ?.(=(0 x.apis.fav) (dec x.apis.fav) 0)
     =.  ego            (humo via ara deu fav)
     =.  mos.ego        [%editor *usus]
     =.  deus.urbs.ego  status:sys:velo
@@ -2772,12 +2847,14 @@
   =/  lins  (fand ~[10] txt)
   =/  lens  (lent lins)
   ?:  =(0 lens)
-    =/  x  (add x.apis.fav =+((lent txt) ?:(=(0 x.apis.fav) +(-) -)))
-    fav(x.apis x, px.apis x)
-  =/  last  =>((slag (rear lins) `lina`txt) ?~(. ~ t))
-  =/  x=@   =+((lent last) ?:(=(0 x.apis.fav) +(-) -))
-  =/  y=@   (add y.apis.fav lens)
-  fav(x.apis x, px.apis (max px.apis.fav x), y.apis y)
+    %_  fav
+      x.apis  (add x.apis.fav =+((lent txt) ?:(=(0 x.apis.fav) +(-) -)))
+    ==
+  =/  last  (lent =>((slag (rear lins) `lina`txt) ?~(. ~ t)))
+  %_  fav
+    x.apis  ?:(=(0 x.apis.fav) +(last) last)
+    y.apis  (add y.apis.fav lens)
+  ==
 ::
 ++  dolo                           :: get default styles for a semantic element
   |=  el=@tas
