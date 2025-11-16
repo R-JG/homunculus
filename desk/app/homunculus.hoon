@@ -28,7 +28,7 @@
       [%line =ab =ora]                                                 ::
       [%select pro=?(%submit %~)]                                      ::
       [%editor ~]                                                      ::
-      [%input de=@ud i=loci =vox]                                      ::
+      [%input =favi]                                                   ::
       [%checkbox v=? t=vox f=vox]                                      ::
       [%radio ~]                                                       ::
       [%form ~]                                                        ::
@@ -208,15 +208,20 @@
 +$  arx   [open=? =via]                                                :: menu state
 +$  urbs  [=deus =arx]                                                 :: system element state
 +$  acus  (trel @ @ tape)                                              :: command line state
++$  toga                                                               :: editor preferences
+  $:  gutter=?(%hide %show)                                            ::
+  ==                                                                   ::
 +$  alvi  (map path favi)                                              :: editor session state by source
 +$  favi                                                               :: editor state
-  $:  =flos                                                            ::
+  $:  =toga                                                            ::
+      =flos                                                            ::
       =apis                                                            ::
       =cera                                                            ::
   ==                                                                   ::
 +$  flos  $~([1 0] [lin=@ row=@])                                      :: editor viewport start line and row offset
 +$  apis  $~([1 1] [x=@ y=@])                                          :: editor cursor
 +$  cera                                                               :: text tree node (leaf or internal)
+  $~  '\0a'                                                            ::
   $@  @t                                                               ::
   $:  l=mel                                                            ::
       r=mel                                                            ::
@@ -1612,12 +1617,11 @@
       =^  dat  n.gens.el.form  [q p]:(spin n.gens.el.form dat f)
       ?:  ?=(%input -.ars.cor.el.form)
         ?~  avis.cor.el.form  ~&(>>> %missing-input-id [dat el.form])
-        =/  val=@t  (crip (tufa `lina`(zing vox.ars.cor.el.form)))
-        :-  (~(put by dat) avis.cor.el.form val)
+        :-  (~(put by dat) avis.cor.el.form (tero cera.favi.ars.cor.el.form))
         %_  el.form
-          vox.ars.cor  ~
-          de.ars.cor  0
-          i.ars.cor  [0 0]
+          flos.favi.ars.cor  *flos
+          apis.favi.ars.cor  *apis
+          cera.favi.ars.cor  *cera
         ==
       ?:  ?=(%checkbox -.ars.cor.el.form)
         ?~  avis.cor.el.form  ~&(>>> %missing-checkbox-id [dat el.form])
@@ -1876,9 +1880,10 @@
   =/  fav=favi
     ?+  -.ars.cor.deu  !!
       %editor  (~(got by alvi.ego) avis.cor.deu)
-      :: %input                     TODO: %input
+      %input   favi.ars.cor.deu
     ==
   =/  gutter-size=@
+    ?:  ?=(%hide gutter.toga.fav)  0
     %-  puto
     ?@  cera.fav  1
     (add lines.l.cera.fav lines.r.cera.fav)
@@ -2313,7 +2318,7 @@
   =/  fav=favi
     ?+  -.ars.cor.deu  !!
       %editor  (~(got by alvi.ego) avis.cor.deu)
-      :: %input                     TODO: %input
+      %input   favi.ars.cor.deu
     ==
   [via ara deu fav]
 ::
@@ -2325,8 +2330,21 @@
       %editor
     ego(alvi (~(put by alvi.ego) avis.cor.deu fav))
     ::
-      %input                    :: TODO: %input
-    ego
+      %input
+    =.  arae.via
+      ?>  ?=(^ rex.via)
+      ?>  ?=(^ k.rex.via)
+      %^  snap  arae.via  ager.i.k.rex.via
+      %_  ara
+        deus  (paco k.rex.via deu(favi.ars.cor fav) deus.ara)
+      ==
+    ?:  open.arx.urbs.ego
+      %_  ego
+        via.arx.urbs  via
+      ==
+    %_  ego
+      viae  (snap viae.ego cura.ego via)
+    ==
     ::
   ==
 ::
@@ -2338,7 +2356,17 @@
     %'\0a'  2
   ==
 ::
-++  fero                           :: build text tree leaf nodes from raw text
+++  tero                           :: convert a text tree to a cord
+  |=  cer=cera
+  =/  acc  ''
+  |-  ^-  cord
+  ?@  cer  (cat 3 acc cer)
+  =.  acc  $(cer child.l.cer)
+  %=  $
+    cer  child.r.cer
+  ==
+::
+++  fero                           :: build text tree leaf nodes from a cord
   |=  cod=cord
   ^-  (list @t)
   =-  (flop [(crip (flop wod)) acc])
@@ -2348,7 +2376,7 @@
     a(wod [i wod.a])
   a(wod [i ~], acc [(crip (flop wod.a)) acc.a])
 ::
-++  cero                           :: build a text tree from raw text
+++  cero                           :: build a text tree from a cord
   |=  cod=cord
   =|  =mel
   =/  rop=(list cera)  (fero cod)
@@ -2417,18 +2445,16 @@
   ^-  @
   +((lent ((d-co:co 1) tot)))
 ::
-++  poto                           :: resolve editor state as vox
-  |=  [src=path =res]
+++  poto                           :: render editor state as vox
+  |=  [=res fav=favi]
   ^-  vox
-  =/  edi  (~(get by alvi.ego) src)
-  ?~  edi  ~
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
     %+  colo  res
-    ?@  cera.u.edi  1
-    (add lines.l.cera.u.edi lines.r.cera.u.edi)
+    ?@  cera.fav  1
+    (add lines.l.cera.fav lines.r.cera.fav)
   |^  ^-  vox
   =;  fin
-    %+  turn  (slag row.flos.u.edi (flop p.fin))
+    %+  turn  (slag row.flos.fav (flop p.fin))
     |=  i=(list tape)
     %-  zing
     ^-  (list lina)
@@ -2444,15 +2470,15 @@
       ==
       :*  1
           0
-          ?@(cera.u.edi (lent (trip cera.u.edi)) 0)
-          ?.  =(1 lin.flos.u.edi)  [0 ~]
+          ?@(cera.fav (lent (trip cera.fav)) 0)
+          ?.  =(1 lin.flos.fav)  [0 ~]
           :-  1
-          :~  [(make-gutter-segment [~ lin.flos.u.edi]) ~]
+          :~  [(make-gutter-segment [~ lin.flos.fav]) ~]
           ==
       ==
   |-  ^+  acc
-  ?@  cera.u.edi
-    ?:  =('\0a' cera.u.edi)  :: newline
+  ?@  cera.fav
+    ?:  =('\0a' cera.fav)  :: newline
       =:  lines-sum.acc  +(lines-sum.acc)
           row-count.acc  +(row-count.acc)
           row-chars.acc  0
@@ -2461,7 +2487,7 @@
         p  [~[(make-gutter-segment [~ lines-sum.acc])] p.acc]
       ==
     ?>  ?=(^ p.acc)
-    =/  lyf  (trip cera.u.edi)
+    =/  lyf  (trip cera.fav)
     =/  len  cur-node-chars.acc
     =/  new-row-chars  (add len row-chars.acc)
     ?:  ?=([%' ' *] lyf)  :: whitespace, possibly trailing
@@ -2536,28 +2562,29 @@
       row-chars  new-row-chars
       i.p        [lyf i.p.acc]
     ==
-  =/  new-lines-sum  (add lines.l.cera.u.edi lines-sum.acc)
-  ?:  (gth lin.flos.u.edi new-lines-sum)
+  =/  new-lines-sum  (add lines.l.cera.fav lines-sum.acc)
+  ?:  (gth lin.flos.fav new-lines-sum)
     %=  $
       lines-sum.acc       new-lines-sum
-      cur-node-chars.acc  chars.r.cera.u.edi
-      cera.u.edi          child.r.cera.u.edi
+      cur-node-chars.acc  chars.r.cera.fav
+      cera.fav          child.r.cera.fav
     ==
   =.  acc
     %=  $
-      cur-node-chars.acc  chars.l.cera.u.edi
-      cera.u.edi          child.l.cera.u.edi
+      cur-node-chars.acc  chars.l.cera.fav
+      cera.fav          child.l.cera.fav
     ==
-  ?:  (gth row-count.acc (add viewport-height row.flos.u.edi))
+  ?:  (gth row-count.acc (add viewport-height row.flos.fav))
     acc
   %=  $
-    cur-node-chars.acc  chars.r.cera.u.edi
-    cera.u.edi          child.r.cera.u.edi
+    cur-node-chars.acc  chars.r.cera.fav
+    cera.fav          child.r.cera.fav
   ==
   ::
   ++  make-gutter-segment
     |=  n=(unit @)
     ^-  tape
+    ?:  ?=(%hide gutter.toga.fav)  ~
     ?~  n
       (reap gutter-size ' ')
     =/  num  ((d-co:co 1) u.n)
@@ -2944,7 +2971,7 @@
         %scroll         [(dolo %scroll) [%scroll *equi *iter *sola]]
         %editor         [(dolo %editor) [%editor ~]]
         %form           [(dolo %form) [%form ~]]
-        %input          [(dolo %input) [%input 0 [0 0] ~]]
+        %input          [(dolo %input) [%input =>(*favi .(gutter.toga %hide))]]
         %checkbox       [(dolo %checkbox) [%checkbox | ~ ~]]
         %radio          [(dolo %$) [%radio ~]]
         %submit         [(dolo %$) [%select %submit]]
@@ -3157,9 +3184,6 @@
       %underline  $(d.acia [~ ?~(d.acia (silt ~[%un]) (~(put in u.d.acia) %un))], a t.a)
       %none       $(d.acia [~ (silt ~[%~])], a t.a)
     ==
-      %default
-    ?.  ?=(%input -.ars)  $(a t.a)
-    $(lina (tuba v.i.a), a t.a)
       %trigger
     ?.  ?=(%scroll -.ars)  $(a t.a)
     =/  v=as  (pars v.i.a)
@@ -3446,17 +3470,6 @@
       (div (mul 114 ^-(@ b.tin)) 1.000)
     ==
   [gex gex gex]
-::
-++  figo                           :: resolve an input's text view
-  |=  [=res =ars]
-  ^-  vox
-  ?>  ?=(%input -.ars)
-  ?.  =(1 h.size.res)
-    (slag de.ars vox.ars)
-  ?~  vox.ars  ~
-  %_  vox.ars
-    i  (slag de.ars i.vox.ars)
-  ==
 ::
 ++  duro                           :: resolve the characters in a checkbox
   |=  =cor
@@ -4680,21 +4693,9 @@
     ?+  -.ars  ars
         %input
       ?.  &(?=(^ old-el) ?=(%input -.ars.cor.u.old-el))
-        ?~  lina  ars
-        %_  ars
-          vox  (oro [~ w.size.ares] [~ h.size.ares] lina)
-        ==
-      ?:  =(size.res.cor.u.old-el size.ares)
-        ars.cor.u.old-el
-      %_  ars
-        de   0
-        i    [0 0]
-        vox
-          %^    oro
-              [~ w.size.ares]
-            [~ h.size.ares]
-          `^lina`(zing vox.ars.cor.u.old-el)
-      ==
+        ars
+      :: ?:  =(size.res.cor.u.old-el size.ares)        :: TODO: compute viewport if size changed
+      ars.cor.u.old-el
         %checkbox
       ?.  &(?=(^ old-el) ?=(%checkbox -.ars.cor.u.old-el))
         ars
@@ -4979,8 +4980,8 @@
     ?+  -.ars.cor.deu  ~
       %text      vox.ars.cor.deu
       %pattern   vox.ars.cor.deu
-      %editor    (poto avis.cor.deu res.cor.deu)
-      %input     (figo res.cor.deu ars.cor.deu)
+      %editor    (poto res.cor.deu (~(gut by alvi.ego) avis.cor.deu *favi))
+      %input     (poto res.cor.deu favi.ars.cor.deu)
       %checkbox  (duro cor.deu)
       %border    (coeo cor.deu key ossa.ayr)
       %line      (coeo cor.deu key ossa.ayr)
