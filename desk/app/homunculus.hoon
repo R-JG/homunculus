@@ -229,7 +229,6 @@
 +$  mel                                                                :: text tree internal node hemisphere
   $:  depth=@                                                          ::
       lines=@                                                          ::
-      words=@                                                          ::
       chars=@                                                          ::
       child=cera                                                       ::
   ==                                                                   ::
@@ -2050,7 +2049,7 @@
       ^-  favi               :: TODO: move to the first character in the line below if at the end
       =/  target-line-chars  (add x.apis.fav count)
       %_  fav
-        x.apis  (min target-line-chars (roll `(list @ud)`q:(demo y.apis.fav) add))
+        x.apis  (min target-line-chars (dego y.apis.fav cera.fav))
       ==
     ::
     ++  m-l-u                      :: move the cursor linewise up
@@ -2075,12 +2074,18 @@
     ::
     ++  m-r-u                      :: move the cursor rowwise up
       ^-  favi
-      =/  [cur-char-offset-in-row=@ud rows-reversed=(lest @ud)]
+      =/  [cur-char-offset-in-row=@ud rows-reversed=(lest (pair @ud (list tape)))]
         =/  old-char-total  0
-        =/  rows            q:(demo y.apis.fav)
-        =/  acc             *(list @ud)
-        |-  ^-  [@ud (lest @ud)]
-        =/  new-char-total  (add old-char-total i.rows)
+        =/  acc  *(list (pair @ud (list tape)))
+        =/  rows
+          =<  ?>(?=(^ q) q)
+          %:  domo
+              viewport-width
+              viewport-height
+              (figo y.apis.fav cera.fav)
+          ==
+        |-  ^-  [@ud (lest (pair @ud (list tape)))]
+        =/  new-char-total  (add old-char-total p.i.rows)
         ?:  (gte new-char-total x.apis.fav)
           :_  [i.rows acc]
           ?:((gth x.apis.fav old-char-total) (sub x.apis.fav old-char-total) 1)
@@ -2100,8 +2105,8 @@
           y.apis  line-count
           x.apis
             %+  add
-                (roll t.rows-reversed add)
-                (min i.rows-reversed cur-char-offset-in-row)
+                (roll t.rows-reversed |=([v=(pair @ud (list tape)) a=@ud] (add p.v a)))
+                (min p.i.rows-reversed cur-char-offset-in-row)
         ==
       =.  rows-count  +(rows-count)
       ?^  t.rows-reversed
@@ -2110,16 +2115,29 @@
         ==
       =.  line-count  (dec line-count)
       %=  $
-        rows-reversed  =>((flop q:(demo line-count)) ?>(?=(^ .) .))
+        rows-reversed
+          =<  ?>(?=(^ .) .)
+          =;  dom  (flop q.dom)
+          %:  domo
+              viewport-width
+              viewport-height
+              (figo line-count cera.fav)
+          ==
       ==
     ::
     ++  m-r-d                      :: move the cursor rowwise down
       ^-  favi
-      =/  [cur-char-offset-in-row=@ud line-chars=@ud rows=(lest @ud)]
+      =/  [cur-char-offset-in-row=@ud line-chars=@ud rows=(lest (pair @ud (list tape)))]
         =/  old-char-total  0
-        =/  rows            q:(demo y.apis.fav)
-        |-  ^-  [@ud @ud (lest @ud)]
-        =/  new-char-total  (add old-char-total i.rows)
+        =/  rows
+          =<  ?>(?=(^ q) q)
+          %:  domo
+              viewport-width
+              viewport-height
+              (figo y.apis.fav cera.fav)
+          ==
+        |-  ^-  [@ud @ud (lest (pair @ud (list tape)))]
+        =/  new-char-total  (add old-char-total p.i.rows)
         ?:  (gte new-char-total x.apis.fav)
           :+  ?:((gth x.apis.fav old-char-total) (sub x.apis.fav old-char-total) 1)
               old-char-total
@@ -2137,19 +2155,25 @@
           ==
         %_  fav
           y.apis  line-count
-          x.apis  (add line-chars (min i.rows cur-char-offset-in-row))
+          x.apis  (add line-chars (min p.i.rows cur-char-offset-in-row))
         ==
       =.  rows-count  +(rows-count)
       ?^  t.rows
         %=  $
-          line-chars  (add line-chars i.rows)
+          line-chars  (add line-chars p.i.rows)
           rows        t.rows
         ==
       =:  line-count  +(line-count)
           line-chars  0
         ==
       %=  $
-        rows  q:(demo line-count)
+        rows
+          =<  ?>(?=(^ q) q)
+          %:  domo
+              viewport-width
+              viewport-height
+              (figo line-count cera.fav)
+          ==
       ==
     ::
     ++  lavo                       :: reassess the viewport
@@ -2166,9 +2190,15 @@
       =/  rows-in-line
         =/  rows-total  0
         =/  char-total  0
-        =/  rows        q:(demo y.apis.fav)
+        =/  rows
+          =<  ?>(?=(^ q) q)
+          %:  domo
+              viewport-width
+              viewport-height
+              (figo y.apis.fav cera.fav)
+          ==
         |-  ^-  @ud
-        =:  char-total  (add char-total i.rows)
+        =:  char-total  (add char-total p.i.rows)
             rows-total  +(rows-total)
           ==
         ?:  (gte char-total x.apis.fav)  rows-total
@@ -2189,7 +2219,13 @@
           flos  [1 0]
         ==
       =.  line-count    (dec line-count)
-      =.  rows-in-line  p:(demo line-count)
+      =.  rows-in-line
+        =<  p
+        %:  domo
+            viewport-width
+            viewport-height
+            (figo line-count cera.fav)
+        ==
       %=  $
         rows-total  (add rows-total rows-in-line)
       ==
@@ -2203,9 +2239,15 @@
       =/  line-count  lin.flos.fav
       =/  char-total  0
       =/  rows-total  0
-      =/  rows        q:(demo lin.flos.fav)
+      =/  rows
+        =<  ?>(?=(^ q) q)
+        %:  domo
+            viewport-width
+            viewport-height
+            (figo lin.flos.fav cera.fav)
+        ==
       |-  ^-  ?(%up %down %$)
-      =:  char-total  (add char-total i.rows)
+      =:  char-total  (add char-total p.i.rows)
           rows-total  +(rows-total)
         ==
       ?:  (gth rows-total port-sub-thresh)  %down
@@ -2222,68 +2264,13 @@
       =.  line-count  +(line-count)
       %=  $
         char-total  0
-        rows        q:(demo line-count)
-      ==
-    ::
-    ++  demo                       :: get the row count and char counts of all wrapped rows in a line
-      |=  lin=@ud
-      ^-  (pair @ud (lest @ud))
-      =+  ^=  acc
-          :*  cur-node-chars=?@(cera.fav (lent (trip cera.fav)) 0)
-              line-count=1
-              rows-count=1
-              rows=`(lest @ud)`[0 ~]
+        rows
+          =<  ?>(?=(^ q) q)
+          %:  domo
+              viewport-width
+              viewport-height
+              (figo line-count cera.fav)
           ==
-      =-  [rows-count =>((flop rows) ?>(?=(^ .) .))]
-      |-  ^+  acc
-      ?@  cera.fav
-        ?:  =('\0a' cera.fav)  :: newline
-          %_  acc
-            line-count  +(line-count.acc)
-          ==
-        =/  new-row-chars  (add cur-node-chars.acc i.rows.acc)
-        ?:  =(' ' (end 3 cera.fav))  :: whitespace, possibly trailing
-          %_  acc
-            i.rows  new-row-chars
-          ==
-        ?:  (gth cur-node-chars.acc viewport-width)  :: word break
-          =/  [reps=@ remd=@]  (dvr cur-node-chars.acc viewport-width)
-          =?  reps        =(0 i.rows.acc)  (dec reps)
-          =?  i.rows.acc  =(0 i.rows.acc)  viewport-width
-          =.  rows.acc    (welp (reap reps viewport-width) rows.acc)
-          ?:  =(0 remd)
-            %_  acc
-              rows-count  (add rows-count.acc reps)
-            ==
-          %_  acc
-            rows-count  (add rows-count.acc +(reps))
-            rows        [remd rows.acc]
-          ==
-        ?:  (gth new-row-chars viewport-width)  :: word wrap
-          %_  acc
-            rows-count  +(rows-count.acc)
-            rows        [cur-node-chars.acc rows.acc]
-          ==
-        %_  acc  :: row continuation
-          i.rows  new-row-chars
-        ==
-      =/  new-line-count  (add lines.l.cera.fav line-count.acc)
-      ?:  (gth lin new-line-count)
-        %=  $
-          cera.fav            child.r.cera.fav
-          line-count.acc      new-line-count
-          cur-node-chars.acc  chars.r.cera.fav
-        ==
-      =.  acc
-        %=  $
-          cera.fav            child.l.cera.fav
-          cur-node-chars.acc  chars.l.cera.fav
-        ==
-      ?:  (gth line-count.acc lin)
-        acc
-      %=  $
-        cera.fav            child.r.cera.fav
-        cur-node-chars.acc  chars.r.cera.fav
       ==
     ::
     ++  tuto                       :: get the threshold size by viewport height
@@ -2348,19 +2335,13 @@
     ::
   ==
 ::
-++  domo                           :: classify a character into a word group
-  |=  char=@
-  ^-  @
-  ?+  char  0
-    %' '    1
-    %'\0a'  2
-  ==
-::
 ++  tero                           :: convert a text tree to a cord
   |=  cer=cera
+  ^-  cord
+  ?.  .?(cer)  ?>(?=(@ cer) cer)
   =/  acc  ''
   |-  ^-  cord
-  ?@  cer  (cat 3 acc cer)
+  ?@  cer  (rap 3 acc cer '\0a' ~)
   =.  acc  $(cer child.l.cer)
   %=  $
     cer  child.r.cer
@@ -2368,13 +2349,15 @@
 ::
 ++  fero                           :: build text tree leaf nodes from a cord
   |=  cod=cord
-  ^-  (list @t)
-  =-  (flop [(crip (flop wod)) acc])
-  %+  roll  (trip cod)
-  |=  [i=@t a=[wod=tape acc=(list @t)]]
-  ?:  |(?=(~ wod.a) =((domo i) (domo i.wod.a)))
-    a(wod [i wod.a])
-  a(wod [i ~], acc [(crip (flop wod.a)) acc.a])
+  =/  tap  (trip cod)
+  |-  ^-  (list @t)
+  ?.  .?(tap)  ~
+  =/  sep  (find ['\0a' ~] tap)
+  ?~  sep  [(crip tap) ~]
+  :-  (crip (scag u.sep tap))
+  %=  $
+    tap  =>((slag u.sep tap) ?^(. + .))  :: drop the newline char
+  ==
 ::
 ++  cero                           :: build a text tree from a cord
   |=  cod=cord
@@ -2409,26 +2392,175 @@
   |=  nod=cera
   ^-  mel
   ?@  nod
-    ?:  =(10 nod)
-      :*  depth=1
-          lines=1
-          words=0
-          chars=0
-          child=nod
-      ==
-    =/  tap  (trip nod)
     :*  depth=1
-        lines=0
-        words=?:(?=([%' ' *] tap) 0 1)
-        chars=(lent tap)
+        lines=1
+        chars=(lent (trip nod))
         child=nod
     ==
   :*  +((max depth.l.nod depth.r.nod))
       (add lines.l.nod lines.r.nod)
-      (add words.l.nod words.r.nod)
       (add chars.l.nod chars.r.nod)
       nod
   ==
+::
+++  figo                           :: get a line from a text tree
+  |=  [lin=@ud cer=cera]
+  =/  lis  0
+  |-  ^-  @t
+  ~+
+  ?@  cer  cer
+  =/  nes  (add lines.l.cer lis)
+  ?:  (gth lin nes)
+    %=  $
+      cer  child.r.cer
+      lis  nes
+    ==
+  %=  $
+    cer  child.l.cer
+  ==
+::
+++  dego                           :: get the char total for a line
+  |=  [lin=@ud cer=cera]
+  ^-  @ud
+  ?.  .?(cer)  ?>(?=(@ cer) (lent (trip cer)))
+  =/  lis  0
+  =/  tot  0
+  |-  ^-  @ud
+  ?@  cer  tot
+  =/  nes  (add lines.l.cer lis)
+  ?:  (gth lin nes)
+    %=  $
+      tot  chars.r.cer
+      cer  child.r.cer
+      lis  nes
+    ==
+  %=  $
+    tot  chars.l.cer
+    cer  child.l.cer
+  ==
+::
+++  domo                           :: wrap a line into rows of words, with row count and chars per row
+  |_  $:  viewport-width=@
+          viewport-height=@
+          lin=@t
+      ==
+  ++  $
+  ~+
+  ^-  (pair @ud (list (pair @ud (list tape))))
+  =-  :-  row-count
+      %-  flop
+      %+  turn  rows
+      |=  [con=@ud taz=(list tape)]
+      :-  con
+      %-  flop
+      %+  turn
+          taz
+          flop
+  %-  accumulate-line-char  :: to break the last word
+  =<  [?:(&(?=(^ was-whitespace) u.was-whitespace) '' ' ') .]
+  %+  roll
+      (trip lin)
+      accumulate-line-char
+  ::
+  ++  accumulate-line-char
+    |=  $:  val=@t
+            was-whitespace=(unit ?)
+            word-chars=@ud
+            row-count=_1
+            word=tape
+            rows=(lest (pair @ud (list tape)))
+        ==
+    =*  acc  +<+
+    =/  is-whitespace  =(' ' val)
+    ?:  ?|  ?=(~ was-whitespace)
+            .=(is-whitespace u.was-whitespace)  :: same word
+        ==
+      %_  acc
+        was-whitespace  [~ is-whitespace]
+        word-chars      +(word-chars)
+        word            [val word]
+      ==
+    =/  new-row-chars  (add word-chars p.i.rows)
+    ?:  u.was-whitespace  :: whitespace, possibly trailing
+      %_  acc
+        was-whitespace  [~ is-whitespace]
+        word-chars      1
+        word            [val ~]
+        p.i.rows        new-row-chars
+        q.i.rows        [word q.i.rows]
+      ==
+    ?:  (gth word-chars viewport-width)  :: word break
+      |-
+      =/  fir  (scag viewport-width word)
+      =/  sec  (slag viewport-width word)
+      =/  les  (lent sec)
+      ?:  =(0 p.i.rows)
+        ?:  =(0 les)
+          %_  acc
+            was-whitespace  [~ is-whitespace]
+            word-chars      1
+            word            [val ~]
+            p.i.rows        word-chars
+            q.i.rows        [fir ~]
+          ==
+        ?:  (lte les viewport-width)
+          %_  acc
+            was-whitespace  [~ is-whitespace]
+            word-chars      1
+            word            [val ~]
+            row-count       +(row-count)
+            rows
+              :*  [les [sec ~]]
+                  rows(p.i viewport-width, q.i [fir ~])
+              ==
+          ==
+        %=  $
+          word        sec
+          word-chars  les
+          row-count   +(row-count)
+          rows
+            :*  [0 ~]
+                rows(p.i viewport-width, q.i [fir ~])
+            ==
+        ==
+      ?:  (lte les viewport-width)
+        %_  acc
+          was-whitespace  [~ is-whitespace]
+          word-chars      1
+          word            [val ~]
+          row-count       (add 2 row-count)
+          rows
+            :*  [les [sec ~]]
+                [viewport-width [fir ~]]
+                rows
+            ==
+        ==
+      %=  $
+        word        sec
+        word-chars  les
+        row-count   (add 2 row-count)
+        rows
+          :*  [0 ~]
+              [viewport-width [fir ~]]
+              rows
+          ==
+      ==
+    ?:  (gth new-row-chars viewport-width)  :: word wrap
+      %_  acc
+        was-whitespace  [~ is-whitespace]
+        word-chars      1
+        word            [val ~]
+        row-count       +(row-count)
+        rows            [[word-chars [word ~]] rows]
+      ==
+    %_  acc
+      was-whitespace  [~ is-whitespace]
+      word-chars      1
+      word            [val ~]
+      p.i.rows        new-row-chars
+      q.i.rows        [word q.i.rows]
+    ==
+  --
 ::
 ++  colo                           :: get editor viewport dimensions from res and line total
   |=  [=res tot=@]
@@ -2451,147 +2583,55 @@
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
     %+  colo  res
     ?@  cera.fav  1
-    (add lines.l.cera.fav lines.r.cera.fav)
-  |^  ^-  vox
+    %+  add
+        lines.l.cera.fav
+        lines.r.cera.fav
   =;  fin
-    %+  turn  (slag row.flos.fav (flop p.fin))
-    |=  i=(list tape)
+    %+  turn  (slag row.flos.fav fin)
+    |=  val=(pair $@(@ud [chars=@ud line=@ud]) (list tape))
+    ^-  lina
+    =;  tub
+      =/  wid  (add gutter-size viewport-width)
+      ?:  (lte ?@(p.val p.val chars.p.val) wid)  tub
+      %+  scag
+          wid
+          tub
+    %-  tuba
     %-  zing
-    ^-  (list lina)
-    %+  turn  (flop i)
-    tuba
-  =+  ^-
-      $=  acc
-      $:  lines-sum=@
-          row-chars=@
-          cur-node-chars=@
-          row-count=@
-          p=(list (list tape))
-      ==
-      :*  1
-          0
-          ?@(cera.fav (lent (trip cera.fav)) 0)
-          ?.  =(1 lin.flos.fav)  [0 ~]
-          :-  1
-          :~  [(make-gutter-segment [~ lin.flos.fav]) ~]
-          ==
-      ==
-  |-  ^+  acc
-  ?@  cera.fav
-    ?:  =('\0a' cera.fav)  :: newline
-      =:  lines-sum.acc  +(lines-sum.acc)
-          row-count.acc  +(row-count.acc)
-          row-chars.acc  0
-        ==
-      %_  acc
-        p  [~[(make-gutter-segment [~ lines-sum.acc])] p.acc]
-      ==
-    ?>  ?=(^ p.acc)
-    =/  lyf  (trip cera.fav)
-    =/  len  cur-node-chars.acc
-    =/  new-row-chars  (add len row-chars.acc)
-    ?:  ?=([%' ' *] lyf)  :: whitespace, possibly trailing
-      %_  acc
-        row-chars  new-row-chars
-        i.p
-          ?:  (lte new-row-chars viewport-width)  [lyf i.p.acc]
-          =/  dif  (sub new-row-chars viewport-width)
-          =/  sag  ?:((lth dif len) (sub len dif) 0)
-          ?:  =(0 sag)  i.p.acc
-          :_  i.p.acc
-          %+  scag  sag  `tape`lyf
-      ==
-    ?:  (gth len viewport-width)  :: word break
-      |-  ^+  acc
-      =/  fir  (scag viewport-width lyf)
-      =/  sec  (slag viewport-width lyf)
-      =/  lem  (lent sec)
-      ?:  =(0 row-chars.acc)
-        ?:  =(0 lem)
-          %_  acc
-            row-chars  len
-            i.p        [fir i.p.acc]
-          ==
-        ?:  (lte lem viewport-width)
-          %_  acc
-            row-count  +(row-count.acc)
-            row-chars  lem
-            p
-              :*  ~[sec (make-gutter-segment ~)]
-                  p.acc(i [fir i.p.acc])
-              ==
-          ==
-        %=  $
-          lyf            sec
-          len            lem
-          row-count.acc  +(row-count.acc)
-          row-chars.acc  0
-          p.acc
-            :*  ~[(make-gutter-segment ~)]
-                p.acc(i [fir i.p.acc])
-            ==
-        ==
-      ?:  (lte lem viewport-width)
-        %_  acc
-          row-count  (add 2 row-count.acc)
-          row-chars  lem
-          p
-            :*  ~[sec (make-gutter-segment ~)]
-                ~[fir (make-gutter-segment ~)]
-                p.acc
-            ==
-        ==
-      %=  $
-        lyf            sec
-        len            lem
-        row-count.acc  (add 2 row-count.acc)
-        row-chars.acc  0
-        p.acc
-          :*  ~[(make-gutter-segment ~)]
-              ~[fir (make-gutter-segment ~)]
-              p.acc
-          ==
-      ==
-    ?:  (gth new-row-chars viewport-width)  :: word wrap
-      %_  acc
-        row-count  +(row-count.acc)
-        row-chars  len
-        p          [~[lyf (make-gutter-segment ~)] p.acc]
-      ==
-    %_  acc
-      row-chars  new-row-chars
-      i.p        [lyf i.p.acc]
-    ==
-  =/  new-lines-sum  (add lines.l.cera.fav lines-sum.acc)
-  ?:  (gth lin.flos.fav new-lines-sum)
-    %=  $
-      lines-sum.acc       new-lines-sum
-      cur-node-chars.acc  chars.r.cera.fav
-      cera.fav          child.r.cera.fav
-    ==
-  =.  acc
-    %=  $
-      cur-node-chars.acc  chars.l.cera.fav
-      cera.fav          child.l.cera.fav
-    ==
-  ?:  (gth row-count.acc (add viewport-height row.flos.fav))
-    acc
-  %=  $
-    cur-node-chars.acc  chars.r.cera.fav
-    cera.fav          child.r.cera.fav
-  ==
-  ::
-  ++  make-gutter-segment
-    |=  n=(unit @)
+    :_  q.val
+    :: make gutter segment
     ^-  tape
+    =/  num
+      ^-  (unit @ud)
+      ?@  p.val  ~
+      :-  ~
+          line.p.val
     ?:  ?=(%hide gutter.toga.fav)  ~
-    ?~  n
-      (reap gutter-size ' ')
-    =/  num  ((d-co:co 1) u.n)
-    =/  len  (lent num)
-    %+  weld  num
-    (reap (sub gutter-size len) ' ')
-  --
+    ?~  num  (reap gutter-size ' ')
+    =/  nut  ((d-co:co 1) u.num)
+    =/  len  (lent nut)
+    %+  weld  nut
+    %+  reap
+        (sub gutter-size len)
+        ' '
+  =/  acc  *(list (pair $@(@ud [chars=@ud line=@ud]) (list tape)))
+  =/  line-count  lin.flos.fav
+  =/  row-count  0
+  |-  ^-  (list (pair $@(@ud [chars=@ud line=@ud]) (list tape)))
+  ?:  (gth row-count (add viewport-height row.flos.fav))
+    acc
+  =/  [rows-in-line=@ rows=(list (pair $@(@ud [chars=@ud line=@ud]) (list tape)))]
+    =;  doo  ?>(?=(^ q.doo) doo(p.i.q [p.i.q.doo line-count]))
+    %:  domo
+        viewport-width
+        viewport-height
+        (figo line-count cera.fav)
+    ==
+  %=  $
+    line-count  +(line-count)
+    row-count   (add row-count rows-in-line)
+    acc         (weld acc rows)
+  ==
 ::
 ++  mico                           :: locate the cursor relative to an editor viewport
   |=  [=res fav=favi]
@@ -2600,112 +2640,33 @@
     %+  colo  res
     ?@  cera.fav  1
     (add lines.l.cera.fav lines.r.cera.fav)
-  =+  ^=  acc
-      :*  line-count=1
-          line-chars=0
-          row-count=?:(=(1 lin.flos.fav) 1 0)
-          row-chars=0
-          cur-node-chars=?@(cera.fav (lent (trip cera.fav)) 0)
-          `done=?`|
-      ==
-  =;  acc
-    [row-chars.acc (sub row-count.acc row.flos.fav)]
-  |-  ^+  acc
-  ?@  cera.fav
-    ?:  =('\0a' cera.fav)  :: newline
-      ?:  =(line-count.acc y.apis.fav)
-        =?  row-chars.acc  (lth row-chars.acc viewport-width)
-          +(row-chars.acc)
-        acc(done &)
-      =:  line-count.acc  +(line-count.acc)
-          line-chars.acc  0
-          row-count.acc   +(row-count.acc)
-          row-chars.acc   0
-        ==
-      ?:  =([line-chars.acc line-count.acc] [x.apis.fav y.apis.fav])
-        acc(done &)
-      acc
-    =/  new-line-chars  (add cur-node-chars.acc line-chars.acc)
-    =/  new-row-chars   (add cur-node-chars.acc row-chars.acc)
-    =/  cursor-found=?
-      ?&  =(line-count.acc y.apis.fav)
-          (gte new-line-chars x.apis.fav)
-      ==
-    ?:  =(' ' (end 3 cera.fav))  :: whitespace, possibly trailing
-      ?:  cursor-found
-        =/  cur-word-excess  (sub new-line-chars x.apis.fav)
-        =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
-        %_  acc
-          done  &
-          line-chars   (add chars-to-target line-chars.acc)
-          row-chars    (min viewport-width (add chars-to-target row-chars.acc))
-        ==
-      %_  acc
-        line-chars  new-line-chars
-        row-chars   new-row-chars
-      ==
-    ?:  (gth cur-node-chars.acc viewport-width)  :: word break
-      ?:  cursor-found
-        =/  cur-word-excess  (sub new-line-chars x.apis.fav)
-        =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
-        =/  [reps=@ remd=@]  (dvr chars-to-target viewport-width)
-        =?  reps  =(0 row-chars.acc)  (dec reps)
-        =?  reps  !=(0 remd)          +(reps)
-        %_  acc
-          done  &
-          line-chars  new-line-chars
-          row-count   (add reps row-count.acc)
-          row-chars   ?:(=(0 remd) viewport-width remd)
-        ==
-      =/  [reps=@ remd=@]  (dvr cur-node-chars.acc viewport-width)
-      =?  reps  =(0 row-chars.acc)  (dec reps)
-      =?  reps  !=(0 remd)          +(reps)
-      =?  remd  =(0 remd)           viewport-width
-      %_  acc
-        line-chars  new-line-chars
-        row-count   (add reps row-count.acc)
-        row-chars   remd
-      ==
-    ?:  (gth new-row-chars viewport-width)  :: word wrap
-      =:  line-chars.acc  new-line-chars
-          row-count.acc   +(row-count.acc)
-          row-chars.acc   cur-node-chars.acc
-        ==
-      ?:  cursor-found
-        =/  cur-word-excess  (sub new-line-chars x.apis.fav)
-        =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
-        =.  row-chars.acc    chars-to-target
-        acc(done &)
-      acc
-    ?:  cursor-found
-      =/  cur-word-excess  (sub new-line-chars x.apis.fav)
-      =/  chars-to-target  (sub cur-node-chars.acc cur-word-excess)
-      =:  line-chars.acc   (add chars-to-target line-chars.acc)
-          row-chars.acc    (add chars-to-target row-chars.acc)
-        ==
-      acc(done &)
-    %_  acc
-      line-chars  new-line-chars
-      row-chars   new-row-chars
+  =/  lin  lin.flos.fav
+  =/  row-count  0
+  |-  ^-  loci
+  =/  [rows-in-line=@ rows=(list (pair @ud (list tape)))]
+    %:  domo
+        viewport-width
+        viewport-height
+        (figo lin cera.fav)
     ==
-  =/  new-line-count  (add lines.l.cera.fav line-count.acc)
-  ?:  (gth lin.flos.fav new-line-count)
+  ?.  =(lin y.apis.fav)
     %=  $
-      cera.fav            child.r.cera.fav
-      line-count.acc      new-line-count
-      cur-node-chars.acc  chars.r.cera.fav
+      lin  +(lin)
+      row-count  (add rows-in-line row-count)
     ==
-  =.  acc
-    %=  $
-      cera.fav            child.l.cera.fav
-      cur-node-chars.acc  chars.l.cera.fav
+  =-  (fall loc [1 1])
+  %+  roll  rows
+  |=  [val=[con=@ud tes=(list tape)] acc=[row=@ud tot=@ud loc=(unit loci)]]
+  ?^  loc.acc  acc
+  =:  tot.acc  (add con.val tot.acc)
+      row.acc  +(row.acc)
     ==
-  ?:  done.acc
-    acc
-  %=  $
-    cera.fav            child.r.cera.fav
-    cur-node-chars.acc  chars.r.cera.fav
-  ==
+  ?:  (lth tot.acc x.apis.fav)  acc
+  :+  row.acc
+      tot.acc
+  :+  ~
+      (sub con.val (sub tot.acc x.apis.fav))
+      (sub (add row.acc row-count) row.flos.fav)
 ::
 ++  mano                           :: initialize any new editor sessions
   |=  [=alae bol=bowl:gall]
@@ -2789,7 +2750,7 @@
   |=  [txt=lina fav=favi]
   ^-  favi
   ?~  txt  fav
-  =/  tip  (domo (tuft i.txt))
+  =/  tip  =(' ' i.txt)
   =/  new  (cero (crip (tufa txt)))
   =/  nod  (emo new)
   =+  line-count=1
@@ -2811,7 +2772,7 @@
         (trip cera.fav)
       =/  typ=(unit @)
         ?~  wod  ~
-        [~ (domo i.wod)]
+        [~ =(' ' i.wod)]
       =/  lon=@
         ?:  =(10 cera.fav)  0
         (lent wod)
@@ -4771,6 +4732,7 @@
   =|  ki=rami
   ?~  key  [ayr deu]
   |-  ^-  [aer deus]
+  ~+
   =<  ?~  t.key
         [ayr deu]
       $(key t.key, ki [i.key ki])
@@ -4891,6 +4853,7 @@
     [u.l +(n)]
   :-  [x.apex.cor.deu a-y1]
   |-  ^-  sol
+  ~+
   =/  [[x1=@ y1=@] [x2=@ y2=@] room=muri]
     (laxo iter.ayr apex.cor.deu res.cor.deu)
   ?:  ?|  =(0 w.size.res.cor.deu)
@@ -5115,6 +5078,7 @@
   =/  nb=(unit tint)  ?.(=(b.fil b.fil.p.lux) [~ b.fil.p.lux] ~)
   =/  nf=(unit tint)  ?.(=(f.fil f.fil.p.lux) [~ f.fil.p.lux] ~)
   |-  ^-  tape
+  ~+
   ?.  =(oldx x1.lux)
     :-  '\\x1b['
     :+  (scot %ud y.acc)   ';'
