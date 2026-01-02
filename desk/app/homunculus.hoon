@@ -134,7 +134,7 @@
     $?  %to-editor                                                     ::
     ==                                                                 ::
   +$  editor                                                           ::
-    $?  %mot-c-l  %mot-c-r                                             ::
+    $?  %mot-c-b  %mot-c-f                                             ::
         %mot-r-u  %mot-r-d                                             ::
         %mot-l-u  %mot-l-d                                             ::
         %mot-w-f-b  %mot-w-f-e                                         ::
@@ -839,8 +839,8 @@
     editor
       %-  malt
       ^-  (list [nota editor:lex])
-      :~  [[%aro %l] %mot-c-l]   [[%aro %r] %mot-c-r]   [[%aro %u] %mot-r-u]   [[%aro %d] %mot-r-d]
-          [[%chr ~-h] %mot-c-l]  [[%chr ~-l] %mot-c-r]  [[%chr ~-k] %mot-r-u]  [[%chr ~-j] %mot-r-d]
+      :~  [[%aro %l] %mot-c-b]   [[%aro %r] %mot-c-f]   [[%aro %u] %mot-r-u]   [[%aro %d] %mot-r-d]
+          [[%chr ~-h] %mot-c-b]  [[%chr ~-l] %mot-c-f]  [[%chr ~-k] %mot-r-u]  [[%chr ~-j] %mot-r-d]
           [[%chr ~-~47.] %jump]
           [[%chr ~-p] %paste]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
@@ -2101,14 +2101,42 @@
       rows  t.rows
     ==
   ::
-  ++  m-c-l                        :: move the cursor characterwise left :: TODO: move to the last character in the line above if at the beginning
+  ++  m-c-b                        :: move the cursor characterwise back
     ^+  moto-core
-    =.  c.apis.fav  ?:((gth c.apis.fav count) (sub c.apis.fav count) 0)
+    =.  apis.fav
+      |-  ^-  apis
+      ?:  (gte c.apis.fav count)  apis.fav(c (sub c.apis.fav count))
+      ?:  =(1 l.apis.fav)  apis.fav(c 0)
+      =:  l.apis.fav  (dec l.apis.fav)
+          count  (dec count)
+        ==
+      %=  $
+        c.apis.fav  p:(figo l.apis.fav cera.fav)
+        count  ?:((lth c.apis.fav count) (sub count c.apis.fav) 0)
+      ==
     obdo
   ::
-  ++  m-c-r                        :: move the cursor characterwise right :: TODO: move to the first character in the line below if at the end
+  ++  m-c-f                        :: move the cursor characterwise forward
     ^+  moto-core
-    =.  c.apis.fav  (min (add c.apis.fav count) p:(figo l.apis.fav cera.fav))
+    =/  line-total
+      ?@  cera.fav  1
+      %+  add
+          lines.l.cera.fav
+          lines.r.cera.fav
+    =.  apis.fav
+      |-  ^-  apis
+      =/  line-chars  p:(figo l.apis.fav cera.fav)
+      =/  new-c  (add c.apis.fav count)
+      ?:  (lte new-c line-chars)  apis.fav(c new-c)
+      ?:  =(l.apis.fav line-total)  apis.fav(c line-chars)
+      =:  l.apis.fav  +(l.apis.fav)
+          count  (dec count)
+        ==
+      =/  xes  (sub line-chars c.apis.fav)
+      %=  $
+        c.apis.fav  0
+        count  ?:((lth xes count) (sub count xes) 0)
+      ==
     obdo
   ::
   ++  m-l-u                        :: move the cursor linewise up
@@ -2136,10 +2164,10 @@
   ::
   ++  m-r-u                        :: move the cursor rowwise up
     ^+  moto-core
+    =/  fig  (figo l.apis.fav cera.fav)
     =/  rows-reversed=(lest (pair @ud (list tape)))
       =/  old-char-total  0
       =/  acc  *(list (pair @ud (list tape)))
-      =/  fig  (figo l.apis.fav cera.fav)
       =/  rows
         =<  ?>(?=(^ q) q)
         %:  domo
@@ -2167,11 +2195,14 @@
       %_  moto-core
         l.apis.fav  line-count
         c.apis.fav
-          %+  add
-              (roll t.rows-reversed |=([v=(pair @ud (list tape)) a=@ud] (add p.v a)))
-          %+  min
-              ?:(=(0 p.i.rows-reversed) 0 (dec p.i.rows-reversed))
-              mrc.apis.fav
+          =/  line-chars
+            %+  roll  t.rows-reversed
+            |=  [v=(pair @ud (list tape)) a=@ud]
+            %+  add  p.v  a
+          %+  add  line-chars
+          %+  min  mrc.apis.fav
+          ?:  =(p.fig (add line-chars p.i.rows-reversed))  p.i.rows-reversed
+          ?:  =(0 p.i.rows-reversed)  0  (dec p.i.rows-reversed)
       ==
     =.  rows-count  +(rows-count)
     ?^  t.rows-reversed
@@ -2179,6 +2210,7 @@
         rows-reversed  t.rows-reversed
       ==
     =.  line-count  (dec line-count)
+    =.  fig  (figo line-count cera.fav)
     %=  $
       rows-reversed
         =<  ?>(?=(^ .) .)
@@ -2186,7 +2218,7 @@
         %:  domo
             viewport-width
             viewport-height
-            q:(figo line-count cera.fav)
+            q.fig
         ==
     ==
   ::
@@ -2197,9 +2229,9 @@
       %+  add
           lines.l.cera.fav
           lines.r.cera.fav
+    =/  fig  (figo l.apis.fav cera.fav)
     =/  [line-chars=@ud rows=(lest (pair @ud (list tape)))]
       =/  old-char-total  0
-      =/  fig  (figo l.apis.fav cera.fav)
       =/  rows
         =<  ?>(?=(^ q) q)
         %:  domo
@@ -2227,7 +2259,9 @@
         l.apis.fav  line-count
         c.apis.fav
           %+  add  line-chars
-          %+  min  ?:(=(0 p.i.rows) 0 (dec p.i.rows))  mrc.apis.fav
+          %+  min  mrc.apis.fav
+          ?:  =(p.fig (add line-chars p.i.rows))  p.i.rows
+          ?:  =(0 p.i.rows)  0  (dec p.i.rows)
       ==
     =.  rows-count  +(rows-count)
     ?^  t.rows
@@ -2238,13 +2272,14 @@
     =:  line-count  +(line-count)
         line-chars  0
       ==
+    =.  fig  (figo line-count cera.fav)
     %=  $
       rows
         =<  ?>(?=(^ q) q)
         %:  domo
             viewport-width
             viewport-height
-            q:(figo line-count cera.fav)
+            q.fig
         ==
     ==
   ::
@@ -2321,8 +2356,8 @@
           fav
       ==
     ?+  lex  !!
-      %mot-c-l  lavo:m-c-l:mo
-      %mot-c-r  lavo:m-c-r:mo
+      %mot-c-b  lavo:m-c-b:mo
+      %mot-c-f  lavo:m-c-f:mo
       %mot-r-u  lavo:m-r-u:mo
       %mot-r-d  lavo:m-r-d:mo
       %mot-l-u  lavo:m-l-u:mo
