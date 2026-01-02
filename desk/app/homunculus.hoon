@@ -231,7 +231,7 @@
       chars=@                                                          ::
       child=cera                                                       ::
   ==                                                                   ::
-+$  calx  @t                                                           :: copied text register
+:: +$  calx  @t                                                           :: copied text register
 +$  acro                                                               :: client source
   $%  [%dill p=path]                                                   ::
       [%http ~]                                                        ::
@@ -240,7 +240,6 @@
 +$  ego                                                                :: %homunculus state
   $:  =acro                                                            ::
       =acus                                                            ::
-      =calx                                                            ::
       =mos                                                             ::
       =omen                                                            ::
       =alvi                                                            ::
@@ -750,7 +749,7 @@
     =?  zon  ?=([%txt @ ~] zon)  [%chr i.p.zon]
     =/  lex  (~(get by editor.omen.ego) (noto zon))
     ?~  lex  [~ ego]
-    %+  moto
+    %+  armo
       zon
     u.lex
     ::
@@ -1959,7 +1958,299 @@
   ?:  ?=(%del -.z)  z
   !!
 ::
-++  moto                           :: handle %editor mode events
+++  moto                           :: motion core
+  |_  $:  viewport-width=@ud
+          viewport-height=@ud
+          count=@ud
+          fav=favi
+      ==
+  ::
+  ++  moto-core  .
+  ::
+  ++  lavo                         :: recompute the editor viewport start position; finalize
+    ^-  [fax favi]
+    =/  oob  luo
+    ?:  ?=(%$ oob)  [[%curs ~] fav]
+    :-  [%full ~]
+    =/  target
+      ^-  @ud
+      ?-  oob
+        %up    +(tuto)
+        %down  (sub viewport-height tuto)
+      ==
+    =/  rows-in-line
+      =/  rows-total  0
+      =/  char-total  0
+      =/  fig  (figo l.apis.fav cera.fav)
+      =/  rows
+        =<  ?>(?=(^ q) q)
+        %:  domo
+            viewport-width
+            viewport-height
+            q.fig
+        ==
+      |-  ^-  @ud
+      =:  char-total  (add char-total p.i.rows)
+          rows-total  +(rows-total)
+        ==
+      ?:  |((gth char-total c.apis.fav) =(char-total p.fig))
+        rows-total
+      ?>  ?=(^ t.rows)
+      %=  $
+        rows  t.rows
+      ==
+    =/  rows-total  rows-in-line
+    =/  line-count  l.apis.fav
+    |-  ^-  favi
+    ?:  (gte rows-total target)
+      %_  fav
+        lin.flos  line-count
+        row.flos  (sub rows-total target)
+      ==
+    ?:  =(0 line-count)
+      %_  fav
+        flos  [1 0]
+      ==
+    =.  line-count    (dec line-count)
+    =.  rows-in-line
+      =<  p
+      %:  domo
+          viewport-width
+          viewport-height
+          q:(figo line-count cera.fav)
+      ==
+    %=  $
+      rows-total  (add rows-total rows-in-line)
+    ==
+  ::
+  ++  luo                          :: determine if the cursor is out of bounds
+    ^-  ?(%up %down %$)
+    =/  thresh           tuto
+    =/  port-sub-thresh  (add row.flos.fav (sub viewport-height thresh))
+    =.  thresh           (add row.flos.fav thresh)
+    ?:  (lth l.apis.fav lin.flos.fav)  %up
+    =/  line-count  lin.flos.fav
+    =/  char-total  0
+    =/  rows-total  0
+    =/  fig  (figo lin.flos.fav cera.fav)
+    =/  rows
+      =<  ?>(?=(^ q) q)
+      %:  domo
+          viewport-width
+          viewport-height
+          q.fig
+      ==
+    |-  ^-  ?(%up %down %$)
+    =:  char-total  (add char-total p.i.rows)
+        rows-total  +(rows-total)
+      ==
+    ?:  (gth rows-total port-sub-thresh)  %down
+    ?:  ?&  =(line-count l.apis.fav)
+            |((gth char-total c.apis.fav) =(char-total p.fig))
+        ==
+      ?:  =([1 0] flos.fav)  %$
+      ?:  (lte rows-total thresh)  %up
+      %$
+    ?^  t.rows
+      %=  $
+        rows  t.rows
+      ==
+    =.  line-count  +(line-count)
+    =.  fig  (figo line-count cera.fav)
+    %=  $
+      char-total  0
+      rows
+        =<  ?>(?=(^ q) q)
+        %:  domo
+            viewport-width
+            viewport-height
+            q.fig
+        ==
+    ==
+  ::
+  ++  tuto                         :: get the threshold size by viewport height
+    ^-  @
+    =/  percent  20
+    (div (mul percent viewport-height) 100)
+  ::
+  ++  obdo                         :: set a new maximum relative row char offset for the cursor
+    ^+  moto-core
+    =/  fig  (figo l.apis.fav cera.fav)
+    =/  rows
+      =<  q
+      %:  domo
+          viewport-width
+          viewport-height
+          q.fig
+      ==
+    =/  char-total  0
+    =;  row-chars
+      %_  moto-core
+        mrc.apis.fav  row-chars
+      ==
+    |-  ^-  @ud
+    ?~  rows  mrc.apis.fav
+    =.  char-total  (add p.i.rows char-total)
+    ?:  |((gth char-total c.apis.fav) =(char-total p.fig))
+      %+  sub
+          p.i.rows
+      %+  sub
+          char-total
+          c.apis.fav
+    %=  $
+      rows  t.rows
+    ==
+  ::
+  ++  m-c-l                        :: move the cursor characterwise left :: TODO: move to the last character in the line above if at the beginning
+    ^+  moto-core
+    =.  c.apis.fav  ?:((gth c.apis.fav count) (sub c.apis.fav count) 0)
+    obdo
+  ::
+  ++  m-c-r                        :: move the cursor characterwise right :: TODO: move to the first character in the line below if at the end
+    ^+  moto-core
+    =.  c.apis.fav  (min (add c.apis.fav count) p:(figo l.apis.fav cera.fav))
+    obdo
+  ::
+  ++  m-l-u                        :: move the cursor linewise up
+    ^+  moto-core
+    moto-core :: TODO: determine new x by current row char offset applied to the first row in the line
+  ::   =/  new-y  ?:((gth l.apis.fav count) (sub l.apis.fav count) 1)
+  ::   =/  new-x  (min mrc.apis.fav (roll `(list @ud)`q:(demo new-y) add))
+  ::   %_  fav
+  ::     l.apis   new-y
+  ::     c.apis   new-x
+  ::   ==
+  ::
+  ++  m-l-d                        :: move the cursor linewise down
+    ^+  moto-core
+    moto-core :: TODO: determine new x by current row char offset applied to the first row in the line
+  ::   =/  line-total=@
+  ::     ?@  cera.fav  1
+  ::     (add lines.l.cera.fav lines.r.cera.fav)
+  ::   =/  new-y  (min line-total (add l.apis.fav count))
+  ::   =/  new-x  (min mrc.apis.fav (roll `(list @ud)`q:(demo new-y) add))
+  ::   %_  fav
+  ::     l.apis   new-y
+  ::     c.apis   new-x
+  ::   ==
+  ::
+  ++  m-r-u                        :: move the cursor rowwise up
+    ^+  moto-core
+    =/  rows-reversed=(lest (pair @ud (list tape)))
+      =/  old-char-total  0
+      =/  acc  *(list (pair @ud (list tape)))
+      =/  fig  (figo l.apis.fav cera.fav)
+      =/  rows
+        =<  ?>(?=(^ q) q)
+        %:  domo
+            viewport-width
+            viewport-height
+            q.fig
+        ==
+      |-  ^-  (lest (pair @ud (list tape)))
+      =/  new-char-total  (add old-char-total p.i.rows)
+      ?:  |((gth new-char-total c.apis.fav) =(new-char-total p.fig))
+        :-  i.rows
+            acc
+      ?>  ?=(^ t.rows)
+      %=  $
+        old-char-total  new-char-total
+        acc             [i.rows acc]
+        rows            t.rows
+      ==
+    =/  rows-count  0
+    =/  line-count  l.apis.fav
+    |-  ^+  moto-core
+    ?:  ?|  =(rows-count count)
+            &(=(1 line-count) =(~ t.rows-reversed))
+        ==
+      %_  moto-core
+        l.apis.fav  line-count
+        c.apis.fav
+          %+  add
+              (roll t.rows-reversed |=([v=(pair @ud (list tape)) a=@ud] (add p.v a)))
+          %+  min
+              ?:(=(0 p.i.rows-reversed) 0 (dec p.i.rows-reversed))
+              mrc.apis.fav
+      ==
+    =.  rows-count  +(rows-count)
+    ?^  t.rows-reversed
+      %=  $
+        rows-reversed  t.rows-reversed
+      ==
+    =.  line-count  (dec line-count)
+    %=  $
+      rows-reversed
+        =<  ?>(?=(^ .) .)
+        =;  dom  (flop q.dom)
+        %:  domo
+            viewport-width
+            viewport-height
+            q:(figo line-count cera.fav)
+        ==
+    ==
+  ::
+  ++  m-r-d                        :: move the cursor rowwise down
+    ^+  moto-core
+    =/  line-total=@
+      ?@  cera.fav  1
+      %+  add
+          lines.l.cera.fav
+          lines.r.cera.fav
+    =/  [line-chars=@ud rows=(lest (pair @ud (list tape)))]
+      =/  old-char-total  0
+      =/  fig  (figo l.apis.fav cera.fav)
+      =/  rows
+        =<  ?>(?=(^ q) q)
+        %:  domo
+            viewport-width
+            viewport-height
+            q.fig
+        ==
+      |-  ^-  [@ud (lest (pair @ud (list tape)))]
+      =/  new-char-total  (add old-char-total p.i.rows)
+      ?:  |((gth new-char-total c.apis.fav) =(new-char-total p.fig))
+        :-  old-char-total
+            rows
+      ?>  ?=(^ t.rows)
+      %=  $
+        old-char-total  new-char-total
+        rows            t.rows
+      ==
+    =/  rows-count  0
+    =/  line-count  l.apis.fav
+    |-  ^+  moto-core
+    ?:  ?|  =(rows-count count)
+            &(=(line-total line-count) =(~ t.rows))
+        ==
+      %_  moto-core
+        l.apis.fav  line-count
+        c.apis.fav
+          %+  add  line-chars
+          %+  min  ?:(=(0 p.i.rows) 0 (dec p.i.rows))  mrc.apis.fav
+      ==
+    =.  rows-count  +(rows-count)
+    ?^  t.rows
+      %=  $
+        line-chars  (add line-chars p.i.rows)
+        rows        t.rows
+      ==
+    =:  line-count  +(line-count)
+        line-chars  0
+      ==
+    %=  $
+      rows
+        =<  ?>(?=(^ q) q)
+        %:  domo
+            viewport-width
+            viewport-height
+            q:(figo line-count cera.fav)
+        ==
+    ==
+  ::
+  --
+::
+++  armo                           :: handle %editor mode events
   |=  [zon=zona lex=editor:lex]
   ^-  (quip card ^ego)
   ::
@@ -2012,312 +2303,38 @@
     ==
   ::
   =/  [=via =ara deu=deus fav=favi]  asto
-  ?>  ?=(^ rex.via)
   =/  line-total=@
     ?@  cera.fav  1
     (add lines.l.cera.fav lines.r.cera.fav)
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
     %+  colo  res.cor.deu
     line-total
-  =|  fex=[reg=@t =fax]
-  =^  fex  fav
+  =/  count
     ?>  ?=(%editor -.mos.ego)
-    =/  count  (fall count.mos.ego 1)
-    |^  ^-  [_fex favi]
-    ?:  ?=(%paste lex)
-      :-  fex(fax [%full ~])
-      (dono (tuba (trip calx.ego)) fav)
-    ::
-    =.  fav
-      ?+  lex     fav
-        %mot-c-l  m-c-l
-        %mot-c-r  m-c-r
-        %mot-r-u  m-r-u
-        %mot-r-d  m-r-d
-        %mot-l-u  m-l-u
-        %mot-l-d  m-l-d
+    (fall count.mos.ego 1)
+  =^  fex=fax  fav
+    =/  mo
+      %~  .  moto
+      :*  viewport-width
+          viewport-height
+          count
+          fav
       ==
-    lavo
-    ::
-    ++  m-c-l                      :: move the cursor characterwise left
-      ^-  favi               :: TODO: move to the last character in the line above if at the beginning
-      =.  c.apis.fav  ?:((gth c.apis.fav count) (sub c.apis.fav count) 0)
-      obdo
-    ::
-    ++  m-c-r                      :: move the cursor characterwise right
-      ^-  favi               :: TODO: move to the first character in the line below if at the end
-      =.  c.apis.fav  (min (add c.apis.fav count) p:(figo l.apis.fav cera.fav))
-      obdo
-    ::
-    ++  m-l-u                      :: move the cursor linewise up
-      ^-  favi     :: TODO: determine new x by current row char offset applied to the first row in the line
-      fav
-    ::   =/  new-y  ?:((gth l.apis.fav count) (sub l.apis.fav count) 1)
-    ::   =/  new-x  (min mrc.apis.fav (roll `(list @ud)`q:(demo new-y) add))
-    ::   %_  fav
-    ::     l.apis   new-y
-    ::     c.apis   new-x
-    ::   ==
-    ::
-    ++  m-l-d                      :: move the cursor linewise down
-      ^-  favi     :: TODO: determine new x by current row char offset applied to the first row in the line
-      fav
-    ::   =/  new-y  (min line-total (add l.apis.fav count))
-    ::   =/  new-x  (min mrc.apis.fav (roll `(list @ud)`q:(demo new-y) add))
-    ::   %_  fav
-    ::     l.apis   new-y
-    ::     c.apis   new-x
-    ::   ==
-    ::
-    ++  m-r-u                      :: move the cursor rowwise up
-      ^-  favi
-      =/  rows-reversed=(lest (pair @ud (list tape)))
-        =/  old-char-total  0
-        =/  acc  *(list (pair @ud (list tape)))
-        =/  fig  (figo l.apis.fav cera.fav)
-        =/  rows
-          =<  ?>(?=(^ q) q)
-          %:  domo
-              viewport-width
-              viewport-height
-              q.fig
-          ==
-        |-  ^-  (lest (pair @ud (list tape)))
-        =/  new-char-total  (add old-char-total p.i.rows)
-        ?:  |((gth new-char-total c.apis.fav) =(new-char-total p.fig))
-          :-  i.rows
-              acc
-        ?>  ?=(^ t.rows)
-        %=  $
-          old-char-total  new-char-total
-          acc             [i.rows acc]
-          rows            t.rows
-        ==
-      =/  rows-count  0
-      =/  line-count  l.apis.fav
-      |-  ^-  favi
-      ?:  ?|  =(rows-count count)
-              &(=(1 line-count) =(~ t.rows-reversed))
-          ==
-        %_  fav
-          l.apis  line-count
-          c.apis
-            %+  add
-                (roll t.rows-reversed |=([v=(pair @ud (list tape)) a=@ud] (add p.v a)))
-            %+  min
-                ?:(=(0 p.i.rows-reversed) 0 (dec p.i.rows-reversed))
-                mrc.apis.fav
-        ==
-      =.  rows-count  +(rows-count)
-      ?^  t.rows-reversed
-        %=  $
-          rows-reversed  t.rows-reversed
-        ==
-      =.  line-count  (dec line-count)
-      %=  $
-        rows-reversed
-          =<  ?>(?=(^ .) .)
-          =;  dom  (flop q.dom)
-          %:  domo
-              viewport-width
-              viewport-height
-              q:(figo line-count cera.fav)
-          ==
-      ==
-    ::
-    ++  m-r-d                      :: move the cursor rowwise down
-      ^-  favi
-      =/  [line-chars=@ud rows=(lest (pair @ud (list tape)))]
-        =/  old-char-total  0
-        =/  fig  (figo l.apis.fav cera.fav)
-        =/  rows
-          =<  ?>(?=(^ q) q)
-          %:  domo
-              viewport-width
-              viewport-height
-              q.fig
-          ==
-        |-  ^-  [@ud (lest (pair @ud (list tape)))]
-        =/  new-char-total  (add old-char-total p.i.rows)
-        ?:  |((gth new-char-total c.apis.fav) =(new-char-total p.fig))
-          :-  old-char-total
-              rows
-        ?>  ?=(^ t.rows)
-        %=  $
-          old-char-total  new-char-total
-          rows            t.rows
-        ==
-      =/  rows-count  0
-      =/  line-count  l.apis.fav
-      |-  ^-  favi
-      ?:  ?|  =(rows-count count)
-              &(=(line-total line-count) =(~ t.rows))
-          ==
-        %_  fav
-          l.apis  line-count
-          c.apis
-            %+  add  line-chars
-            %+  min  ?:(=(0 p.i.rows) 0 (dec p.i.rows))  mrc.apis.fav
-        ==
-      =.  rows-count  +(rows-count)
-      ?^  t.rows
-        %=  $
-          line-chars  (add line-chars p.i.rows)
-          rows        t.rows
-        ==
-      =:  line-count  +(line-count)
-          line-chars  0
-        ==
-      %=  $
-        rows
-          =<  ?>(?=(^ q) q)
-          %:  domo
-              viewport-width
-              viewport-height
-              q:(figo line-count cera.fav)
-          ==
-      ==
-    ::
-    ++  obdo                       :: set a new maximum relative row char offset for the cursor
-      ^-  favi
-      =/  fig  (figo l.apis.fav cera.fav)
-      =/  rows
-        =<  q
-        %:  domo
-            viewport-width
-            viewport-height
-            q.fig
-        ==
-      =/  char-total  0
-      =;  row-chars  fav(mrc.apis row-chars)
-      |-  ^-  @ud
-      ?~  rows  mrc.apis.fav
-      =.  char-total  (add p.i.rows char-total)
-      ?:  |((gth char-total c.apis.fav) =(char-total p.fig))
-        %+  sub
-            p.i.rows
-        %+  sub
-            char-total
-            c.apis.fav
-      %=  $
-        rows  t.rows
-      ==
-    ::
-    ++  lavo                       :: reassess the viewport
-      ^-  [_fex favi]
-      =/  oob  luo
-      ?:  ?=(%$ oob)  [fex(fax [%curs ~]) fav]
-      :-  fex(fax [%full ~])
-      =/  target
-        ^-  @ud
-        ?-  oob
-          %up    +(tuto)
-          %down  (sub viewport-height tuto)
-        ==
-      =/  rows-in-line
-        =/  rows-total  0
-        =/  char-total  0
-        =/  fig  (figo l.apis.fav cera.fav)
-        =/  rows
-          =<  ?>(?=(^ q) q)
-          %:  domo
-              viewport-width
-              viewport-height
-              q.fig
-          ==
-        |-  ^-  @ud
-        =:  char-total  (add char-total p.i.rows)
-            rows-total  +(rows-total)
-          ==
-        ?:  |((gth char-total c.apis.fav) =(char-total p.fig))
-          rows-total
-        ?>  ?=(^ t.rows)
-        %=  $
-          rows  t.rows
-        ==
-      =/  rows-total  rows-in-line
-      =/  line-count  l.apis.fav
-      |-  ^-  favi
-      ?:  (gte rows-total target)
-        %_  fav
-          lin.flos  line-count
-          row.flos  (sub rows-total target)
-        ==
-      ?:  =(0 line-count)
-        %_  fav
-          flos  [1 0]
-        ==
-      =.  line-count    (dec line-count)
-      =.  rows-in-line
-        =<  p
-        %:  domo
-            viewport-width
-            viewport-height
-            q:(figo line-count cera.fav)
-        ==
-      %=  $
-        rows-total  (add rows-total rows-in-line)
-      ==
-    ::
-    ++  luo                        :: determine if the cursor is out of bounds
-      ^-  ?(%up %down %$)
-      =/  thresh           tuto
-      =/  port-sub-thresh  (add row.flos.fav (sub viewport-height thresh))
-      =.  thresh           (add row.flos.fav thresh)
-      ?:  (lth l.apis.fav lin.flos.fav)  %up
-      =/  line-count  lin.flos.fav
-      =/  char-total  0
-      =/  rows-total  0
-      =/  fig  (figo lin.flos.fav cera.fav)
-      =/  rows
-        =<  ?>(?=(^ q) q)
-        %:  domo
-            viewport-width
-            viewport-height
-            q.fig
-        ==
-      |-  ^-  ?(%up %down %$)
-      =:  char-total  (add char-total p.i.rows)
-          rows-total  +(rows-total)
-        ==
-      ?:  (gth rows-total port-sub-thresh)  %down
-      ?:  ?&  =(line-count l.apis.fav)
-              |((gth char-total c.apis.fav) =(char-total p.fig))
-          ==
-        ?:  =([1 0] flos.fav)  %$
-        ?:  (lte rows-total thresh)  %up
-        %$
-      ?^  t.rows
-        %=  $
-          rows  t.rows
-        ==
-      =.  line-count  +(line-count)
-      =.  fig  (figo line-count cera.fav)
-      %=  $
-        char-total  0
-        rows
-          =<  ?>(?=(^ q) q)
-          %:  domo
-              viewport-width
-              viewport-height
-              q.fig
-          ==
-      ==
-    ::
-    ++  tuto                       :: get the threshold size by viewport height
-      ^-  @
-      =/  percent  20
-      (div (mul percent viewport-height) 100)
-    ::
-    --
-  =.  ego            (humo via ara deu fav)
-  =:  mos.ego        [%editor *usus]
-      calx.ego       ?~(reg.fex calx.ego reg.fex)
+    ?+  lex  !!
+      %mot-c-l  lavo:m-c-l:mo
+      %mot-c-r  lavo:m-c-r:mo
+      %mot-r-u  lavo:m-r-u:mo
+      %mot-r-d  lavo:m-r-d:mo
+      %mot-l-u  lavo:m-l-u:mo
+      %mot-l-d  lavo:m-l-d:mo
     ==
+  =.  ego      (humo via ara deu fav)
+  =.  mos.ego  [%editor *usus]
   =.  deus.urbs.ego  status:sys:velo
+  ?>  ?=(^ rex.via)
   :_  ego
-  ?~  fax.fex  ~
-  ?-  -.fax.fex
+  ?~  fex  ~
+  ?-  -.fex
     %curs  ~[(fio ~[(viso status-line:eruo)])]
     %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
   ==
