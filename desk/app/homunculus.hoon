@@ -136,10 +136,9 @@
   +$  editor                                                           ::
     $?  %mot-c-b  %mot-c-f                                             ::
         %mot-r-u  %mot-r-d                                             ::
-        %mot-l-u  %mot-l-d                                             ::
-        %mot-w-f-b  %mot-w-f-e                                         ::
         %jump  %count                                                  ::
         %paste                                                         ::
+        %open-menu                                                     ::
         %to-element  %to-command                                       ::
         %to-insert  %to-insert-append                                  ::
     ==                                                                 ::
@@ -846,6 +845,7 @@
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
           [[%chr ~-4] %count]  [[%chr ~-5] %count]  [[%chr ~-6] %count]  [[%chr ~-7] %count]
           [[%chr ~-8] %count]  [[%chr ~-9] %count]
+          [[%chr ~-m] %open-menu]
           [[%esc ~] %to-element]
           [[%chr ~-~3a.] %to-command]
           [[%chr ~-i] %to-insert]  [[%chr ~-a] %to-insert-append]
@@ -1271,6 +1271,25 @@
     arae.i.viae.ego  t.arae.i.viae.ego
   ==
 ::
+++  abeo                           :: open or close the menu
+  |=  open=?
+  ^-  [[apex sol] ^ego]
+  =.  open.arx.urbs.ego  open
+  =/  ren  (viso ~)
+  ?:  open.arx.urbs.ego
+    =.  ordo.via.arx.urbs.ego  (duco ren)
+    =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
+      (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
+    :-  ren
+        ego
+  =/  =via  (snag cura.ego viae.ego)
+  =.  ordo.via  (duco ren)
+  =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
+  :-  ren
+  %_  ego
+    viae  (snap viae.ego cura.ego via)
+  ==
+::
 ++  voro                           :: relativize a key to a session branch
   |=  key=rami
   ^-  rami
@@ -1347,18 +1366,7 @@
       ==
       ::
         %toggle-menu
-      =.  open.arx.urbs.ego  !open.arx.urbs.ego
-      =/  ren  (viso ~)
-      =.  ego
-        ?:  open.arx.urbs.ego
-          =.  ordo.via.arx.urbs.ego  (duco ren)
-          =?  rex.via.arx.urbs.ego   ?=(^ rex.via.arx.urbs.ego)
-            (rogo k.rex.via.arx.urbs.ego ordo.via.arx.urbs.ego)
-          ego
-        =/  =^via  (snag cura.ego viae.ego)
-        =.  ordo.via  (duco ren)
-        =?  rex.via   ?=(^ rex.via)  (rogo k.rex.via ordo.via)
-        ego(viae (snap viae.ego cura.ego via))
+      =^  ren  ego  (abeo !open.arx.urbs.ego)
       :_  ego
       :~  (fio ~[ren])
       ==
@@ -2139,29 +2147,6 @@
       ==
     obdo
   ::
-  ++  m-l-u                        :: move the cursor linewise up
-    ^+  moto-core
-    moto-core :: TODO: determine new x by current row char offset applied to the first row in the line
-  ::   =/  new-y  ?:((gth l.apis.fav count) (sub l.apis.fav count) 1)
-  ::   =/  new-x  (min mrc.apis.fav (roll `(list @ud)`q:(demo new-y) add))
-  ::   %_  fav
-  ::     l.apis   new-y
-  ::     c.apis   new-x
-  ::   ==
-  ::
-  ++  m-l-d                        :: move the cursor linewise down
-    ^+  moto-core
-    moto-core :: TODO: determine new x by current row char offset applied to the first row in the line
-  ::   =/  line-total=@
-  ::     ?@  cera.fav  1
-  ::     (add lines.l.cera.fav lines.r.cera.fav)
-  ::   =/  new-y  (min line-total (add l.apis.fav count))
-  ::   =/  new-x  (min mrc.apis.fav (roll `(list @ud)`q:(demo new-y) add))
-  ::   %_  fav
-  ::     l.apis   new-y
-  ::     c.apis   new-x
-  ::   ==
-  ::
   ++  m-r-u                        :: move the cursor rowwise up
     ^+  moto-core
     =/  fig  (figo l.apis.fav cera.fav)
@@ -2318,6 +2303,14 @@
     :~  (fio ~[(viso status-line:eruo)])
     ==
   ::
+  ?:  ?=(%open-menu lex)
+    =.  mos.ego        [%element ~]
+    =.  deus.urbs.ego  full:sys:velo
+    =^  ren  ego  (abeo &)
+    :_  ego
+    :~  (fio ~[ren])
+    ==
+  ::
   ?:  ?=(%count lex)
     =.  mos.ego
       ?>  ?=(%editor -.mos.ego)
@@ -2360,8 +2353,6 @@
       %mot-c-f  lavo:m-c-f:mo
       %mot-r-u  lavo:m-r-u:mo
       %mot-r-d  lavo:m-r-d:mo
-      %mot-l-u  lavo:m-l-u:mo
-      %mot-l-d  lavo:m-l-d:mo
     ==
   =.  ego      (humo via ara deu fav)
   =.  mos.ego  [%editor *usus]
