@@ -1889,9 +1889,13 @@
       %input   favi.ars.cor.deu
     ==
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
-    %+  colo  res.cor.deu
+    %^  colo
+        toga.fav
+        res.cor.deu
     ?@  cera.fav  1
-    (add lines.l.cera.fav lines.r.cera.fav)
+    %+  add
+        lines.l.cera.fav
+        lines.r.cera.fav
   =/  pos  (mico res.cor.deu fav)
   =?  x.pos  (gte x.pos viewport-width)
     (dec viewport-width)
@@ -2355,8 +2359,10 @@
     ?@  cera.fav  1
     (add lines.l.cera.fav lines.r.cera.fav)
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
-    %+  colo  res.cor.deu
-    line-total
+    %^  colo
+        toga.fav
+        res.cor.deu
+        line-total
   =/  count
     ?>  ?=(%editor -.mos.ego)
     (fall count.mos.ego 1)
@@ -2404,8 +2410,10 @@
     ?@  cera.fav  1
     (add lines.l.cera.fav lines.r.cera.fav)
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
-    %+  colo  res.cor.deu
-    line-total
+    %^  colo
+        toga.fav
+        res.cor.deu
+        line-total
   =^  fax  fav
     ^-  [fax favi]
     =/  mo
@@ -2667,9 +2675,13 @@
   --
 ::
 ++  colo                           :: get editor viewport dimensions from res and line total
-  |=  [=res tot=@]
-  ^-  [g=@ x=@ y=@]
-  =/  gut  (puto tot)
+  |=  [tog=toga =res tot=@ud]
+  ^-  [g=@ud x=@ud y=@ud]
+  =/  gut
+    ?-  gutter.tog
+      %hide  0
+      %show  (puto tot)
+    ==
   :-  gut
   :_  h.size.res
   ?:  (gth w.size.res gut)
@@ -2677,15 +2689,17 @@
   0
 ::
 ++  puto                           :: determine gutter size by means of line total
-  |=  tot=@
-  ^-  @
+  |=  tot=@ud
+  ^-  @ud
   +((lent ((d-co:co 1) tot)))
 ::
 ++  poto                           :: render editor state as vox
   |=  [=res fav=favi]
   ^-  vox
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
-    %+  colo  res
+    %^  colo
+        toga.fav
+        res
     ?@  cera.fav  1
     %+  add
         lines.l.cera.fav
@@ -2705,12 +2719,12 @@
     :_  q.val
     :: make gutter segment
     ^-  tape
+    ?:  ?=(%hide gutter.toga.fav)  ~
     =/  num
       ^-  (unit @ud)
       ?@  p.val  ~
       :-  ~
           line.p.val
-    ?:  ?=(%hide gutter.toga.fav)  ~
     ?~  num  (reap gutter-size ' ')
     =/  nut  ((d-co:co 1) u.num)
     =/  len  (lent nut)
@@ -2741,9 +2755,13 @@
   |=  [=res fav=favi]
   ^-  loci
   =/  [gutter-size=@ viewport-width=@ viewport-height=@]
-    %+  colo  res
+    %^  colo
+        toga.fav
+        res
     ?@  cera.fav  1
-    (add lines.l.cera.fav lines.r.cera.fav)
+    %+  add
+        lines.l.cera.fav
+        lines.r.cera.fav
   =/  lin  lin.flos.fav
   =/  row-count  0
   |-  ^-  loci
