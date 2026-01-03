@@ -136,8 +136,8 @@
   +$  editor                                                           ::
     $?  %mot-c-b  %mot-c-f                                             ::
         %mot-r-u  %mot-r-d                                             ::
-        %jump  %count                                                  ::
-        %paste                                                         ::
+        %jump                                                          ::
+        %count                                                         ::
         %open-menu                                                     ::
         %to-element  %to-command                                       ::
         %to-insert  %to-insert-append                                  ::
@@ -840,8 +840,7 @@
       ^-  (list [nota editor:lex])
       :~  [[%aro %l] %mot-c-b]   [[%aro %r] %mot-c-f]   [[%aro %u] %mot-r-u]   [[%aro %d] %mot-r-d]
           [[%chr ~-h] %mot-c-b]  [[%chr ~-l] %mot-c-f]  [[%chr ~-k] %mot-r-u]  [[%chr ~-j] %mot-r-d]
-          [[%chr ~-~47.] %jump]
-          [[%chr ~-p] %paste]
+          [[%chr ~-g] %jump]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
           [[%chr ~-4] %count]  [[%chr ~-5] %count]  [[%chr ~-6] %count]  [[%chr ~-7] %count]
           [[%chr ~-8] %count]  [[%chr ~-9] %count]
@@ -2268,6 +2267,31 @@
         ==
     ==
   ::
+  ++  m-j
+    ^+  moto-core
+    ?:  =(0 count)  moto-core
+    =/  line-total
+      ?@  cera.fav  1
+      %+  add
+          lines.l.cera.fav
+          lines.r.cera.fav
+    =.  count  (min count line-total)
+    =/  fig  (figo count cera.fav)
+    =/  rows
+      =<  ?>(?=(^ q) q)
+      %:  domo
+          viewport-width
+          viewport-height
+          q.fig
+      ==
+    %_  moto-core
+      l.apis.fav  count
+      c.apis.fav
+        %+  min  mrc.apis.fav
+        ?:  =(p.fig p.i.rows)  p.i.rows
+        ?:  =(0 p.i.rows)  0  (dec p.i.rows)
+    ==
+  ::
   --
 ::
 ++  armo                           :: handle %editor mode events
@@ -2348,11 +2372,12 @@
           count
           fav
       ==
-    ?+  lex  !!
+    ?-  lex
       %mot-c-b  lavo:m-c-b:mo
       %mot-c-f  lavo:m-c-f:mo
       %mot-r-u  lavo:m-r-u:mo
       %mot-r-d  lavo:m-r-d:mo
+      %jump     lavo:m-j:mo
     ==
   =.  ego      (humo via ara deu fav)
   =.  mos.ego  [%editor *usus]
