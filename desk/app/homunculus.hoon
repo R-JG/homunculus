@@ -2423,7 +2423,7 @@
           %chr  ~[p.zon]
           %ret  ~[`@c`'\0a']
         ==
-      =.  cera.fav  (dono txt apis.fav cera.fav)
+      =.  cera.fav  (dono (tufa txt) apis.fav cera.fav)
       =.  cera.fav  (puto cera.fav)
       =.  apis.fav
         %+  roll  txt
@@ -2442,8 +2442,19 @@
       ==
     ::
     ?:  ?=(%delete lex)
-      :: TODO: del text
-      [~ fav]
+      =^  ais  cera.fav  (neco apis.fav cera.fav)
+      =:  apis.fav  ais
+          cera.fav  (puto cera.fav)
+        ==
+      :-  [%full ~]
+      =<  +
+      =<  lavo
+      %~  obdo  moto
+      :*  viewport-width
+          viewport-height
+          1
+          fav
+      ==
     ::
     =/  mo
       %~  .  moto
@@ -2480,13 +2491,12 @@
       cer
 ::
 ++  dono                           :: insert text into a text tree
-  |=  [txt=lina ais=apis cer=cera]
+  |=  [inp=tape ais=apis cer=cera]
   =/  lis  0
   |-  ^-  cera
   ~+
   ?@  cer
     =/  tap  (trip cer)
-    =/  inp  (tufa txt)
     =.  tap
       ?:  ?=([@ ~] inp)
         (into tap c.ais i.inp)
@@ -2511,6 +2521,65 @@
   %_  cer
     l
       %-  emo
+      %=  $
+        cer  child.l.cer
+      ==
+  ==
+::
+++  neco                           :: delete a character or line from a text tree
+  |=  [ais=apis cer=cera]
+  ^-  [apis cera]
+  =/  lis  0
+  ?:  =(0 c.ais)
+    ?:  =(1 l.ais)  [ais cer]
+    =/  dat  q:(figo l.ais cer)
+    =.  cer
+      |-  ^-  cera
+      ?>  ?=(^ cer)
+      =/  nes  (add lines.l.cer lis)
+      ?:  (gth l.ais nes)
+        ?.  .?(child.r.cer)  child.l.cer
+        %_  cer
+          r
+            %-  emo
+            %=  $
+              cer  child.r.cer
+              lis  nes
+            ==
+        ==
+      ?.  .?(child.l.cer)  child.r.cer
+      %_  cer
+        l
+          %-  emo
+          %=  $
+            cer  child.l.cer
+          ==
+      ==
+    =.  l.ais  (dec l.ais)
+    =.  c.ais  p:(figo l.ais cer)
+    :-  ais
+    %^  dono
+        (trip dat)
+        ais
+        cer
+  =.  c.ais  (dec c.ais)
+  :-  ais
+  |-  ^-  cera
+  ~+
+  ?@  cer  (crip (oust [c.ais 1] (trip cer)))
+  =/  nes  (add lines.l.cer lis)
+  ?:  (gth l.ais nes)
+    %_  cer
+      chars.r  (dec chars.r.cer)
+      child.r
+        %=  $
+          cer  child.r.cer
+          lis  nes
+        ==
+    ==
+  %_  cer
+    chars.l  (dec chars.l.cer)
+    child.l
       %=  $
         cer  child.l.cer
       ==
