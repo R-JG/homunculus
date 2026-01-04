@@ -1623,7 +1623,7 @@
       =^  dat  n.gens.el.form  [q p]:(spin n.gens.el.form dat f)
       ?:  ?=(%input -.ars.cor.el.form)
         ?~  avis.cor.el.form  ~&(>>> %missing-input-id [dat el.form])
-        :-  (~(put by dat) avis.cor.el.form (tero cera.favi.ars.cor.el.form))
+        :-  (~(put by dat) avis.cor.el.form (duro cera.favi.ars.cor.el.form))
         %_  el.form
           flos.favi.ars.cor  *flos
           apis.favi.ars.cor  *apis
@@ -2424,6 +2424,7 @@
           %ret  ~[`@c`'\0a']
         ==
       =.  cera.fav  (dono txt apis.fav cera.fav)
+      =.  cera.fav  (puto cera.fav)
       =.  apis.fav
         %+  roll  txt
         |=  [c=@c a=_apis.fav]
@@ -2465,6 +2466,19 @@
     %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
   ==
 ::
+++  puto                           :: balance a text tree
+  |=  cer=cera
+  ^-  cera
+  ?@  cer  cer
+  =/  dep
+    %+  sub
+        (max depth.l.cer depth.r.cer)
+        (min depth.l.cer depth.r.cer)
+  ?:  (lth dep depth-disparity-limit=7)  cer  :: TODO: better balancing
+  %-  cero
+  %-  tero
+      cer
+::
 ++  dono                           :: insert text into a text tree
   |=  [txt=lina ais=apis cer=cera]
   =/  lis  0
@@ -2502,13 +2516,25 @@
       ==
   ==
 ::
-++  tero                           :: convert a text tree to a cord
+++  duro                           :: convert a text tree to a cord
   |=  cer=cera
   ^-  cord
   ?.  .?(cer)  ?>(?=(@ cer) cer)
   =/  acc  ''
   |-  ^-  cord
   ?@  cer  (rap 3 acc cer '\0a' ~)
+  =.  acc  $(cer child.l.cer)
+  %=  $
+    cer  child.r.cer
+  ==
+::
+++  tero                           :: flatten a text tree into a list of leaves
+  |=  cer=cera
+  =/  acc  *(list cera)
+  %-  flop
+  |-  ^-  (list cera)
+  ~+
+  ?@  cer  [cer acc]
   =.  acc  $(cer child.l.cer)
   %=  $
     cer  child.r.cer
@@ -2724,7 +2750,7 @@
   =/  gut
     ?-  gutter.tog
       %hide  0
-      %show  (puto tot)
+      %show  (addo tot)
     ==
   :-  gut
   :_  h.size.res
@@ -2732,7 +2758,7 @@
     (sub w.size.res gut)
   0
 ::
-++  puto                           :: determine gutter size by means of line total
+++  addo                           :: determine gutter size by means of line total
   |=  tot=@ud
   ^-  @ud
   +((lent ((d-co:co 1) tot)))
@@ -3504,7 +3530,7 @@
     ==
   [gex gex gex]
 ::
-++  duro                           :: resolve the characters in a checkbox
+++  tego                           :: resolve the characters in a checkbox
   |=  =cor
   ^-  vox
   ?>  ?=(%checkbox -.ars.cor)
@@ -5017,7 +5043,7 @@
       %pattern   vox.ars.cor.deu
       %editor    (poto res.cor.deu (~(gut by alvi.ego) avis.cor.deu *favi))
       %input     (poto res.cor.deu favi.ars.cor.deu)
-      %checkbox  (duro cor.deu)
+      %checkbox  (tego cor.deu)
       %border    (coeo cor.deu key ossa.ayr)
       %line      (coeo cor.deu key ossa.ayr)
     ==
