@@ -2416,6 +2416,34 @@
         line-total
   =^  fax  fav
     ^-  [fax favi]
+    ?:  ?=(%insert lex)
+      =/  txt=lina
+        ?+  -.zon  !!
+          %txt  p.zon
+          %chr  ~[p.zon]
+          %ret  ~[`@c`'\0a']
+        ==
+      =.  cera.fav  (dono txt apis.fav cera.fav)
+      =.  apis.fav
+        %+  roll  txt
+        |=  [c=@c a=_apis.fav]
+        ?:  =('\0a' c)
+          a(l +(l.a), c 0)
+        a(c +(c.a))
+      :-  [%full ~]
+      =<  +
+      =<  lavo
+      %~  obdo  moto
+      :*  viewport-width
+          viewport-height
+          1
+          fav
+      ==
+    ::
+    ?:  ?=(%delete lex)
+      :: TODO: del text
+      [~ fav]
+    ::
     =/  mo
       %~  .  moto
       :*  viewport-width
@@ -2424,23 +2452,6 @@
           fav
       ==
     ?-  lex
-    ::
-        %insert
-      =/  txt=lina
-        ?+  -.zon  !!
-          %txt  p.zon
-          %chr  ~[p.zon]
-          %ret  ~[`@c`10]
-        ==
-      :: TODO: ins text
-      :: :-  [%full ~]
-      :: (dono txt fav)
-      [~ fav]
-    ::
-        %delete
-      :: TODO: del text
-      [~ fav]
-    ::
       %mot-c-b  lavo:m-c-b:mo
       %mot-c-f  lavo:m-c-f:mo
       %mot-r-u  lavo:m-r-u:mo
@@ -2455,9 +2466,41 @@
   ==
 ::
 ++  dono                           :: insert text into a text tree
-  |=  [txt=lina fav=favi]
-  ^-  favi
-  fav
+  |=  [txt=lina ais=apis cer=cera]
+  =/  lis  0
+  |-  ^-  cera
+  ~+
+  ?@  cer
+    =/  tap  (trip cer)
+    =/  inp  (tufa txt)
+    =.  tap
+      ?:  ?=([@ ~] inp)
+        (into tap c.ais i.inp)
+      %+  weld
+          (scag c.ais tap)
+      %+  weld
+          inp
+          (slag c.ais tap)
+    %-  cero
+    %-  fero
+        tap
+  =/  nes  (add lines.l.cer lis)
+  ?:  (gth l.ais nes)
+    %_  cer
+      r
+        %-  emo
+        %=  $
+          cer  child.r.cer
+          lis  nes
+        ==
+    ==
+  %_  cer
+    l
+      %-  emo
+      %=  $
+        cer  child.l.cer
+      ==
+  ==
 ::
 ++  tero                           :: convert a text tree to a cord
   |=  cer=cera
@@ -2471,23 +2514,24 @@
     cer  child.r.cer
   ==
 ::
-++  fero                           :: build text tree leaf nodes from a cord
-  |=  cod=cord
-  =/  tap  (trip cod)
-  |-  ^-  (list @t)
+++  fero                           :: build text tree leaf nodes from a tape
+  |=  tap=tape
+  ~+
+  ^-  (list cera)
   ?.  .?(tap)  ~
   =/  sep  (find ['\0a' ~] tap)
   ?~  sep  [(crip tap) ~]
   :-  (crip (scag u.sep tap))
   %=  $
-    tap  =>((slag u.sep tap) ?^(. + .))  :: drop the newline char
+    tap
+      =>  sag=(slag u.sep tap)
+      ?~  sag  ~
+      ?.  =(['\0a' ~] sag)  t.sag  ['' ~]
   ==
 ::
-++  cero                           :: build a text tree from a cord
-  |=  cod=cord
-  =|  =mel
-  =/  rop=(list cera)  (fero cod)
-  |-  ^-  cera
+++  cero                           :: build a text tree from a list of leaf nodes
+  |=  rop=(list cera)
+  ^-  cera
   =/  mid  (div (lent rop) 2)
   =.  rop
     =;  [n=@ pre=(unit cera) acc=(list cera)]
@@ -2869,7 +2913,7 @@
   %=  $
     alvi.ego
       %+  %~  put  by  alvi.ego  i.new
-      favi(cera (cero txt))
+      favi(cera (cero (fero (trip txt))))
   ==
 ::
 ++  dolo                           :: get default styles for a semantic element
