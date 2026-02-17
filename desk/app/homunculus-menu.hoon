@@ -214,8 +214,12 @@
     =/  open-agents  get-all-open-agents
     ;col/"register-container"(w "grow", h "10", px "2", mt "1", ml "2")
       ;+  ?~  open-session-mode.state
-            ;row(w "100%", h "1", mb "1", fx "center", bg green-2, fg green-1):"Agents:"
-          ;row(w "100%", h "1", mb "1", fx "center", bg cyan-2, fg white):"Open:"
+            ;row(w "100%", h "1", mb "1", fx "center", bg green-2, fg green-1)
+              ;row:"Agents:"
+            ==
+          ;row(w "100%", h "1", mb "1", fx "center", bg cyan-2, fg white)
+            ;row:"Open:"
+          ==
       ;scroll/"register-scroll"(w "100%", h "grow")
         ;*  %+  turn
               %+  sort  ~(tap in register.state)
@@ -250,7 +254,7 @@
     ?:  &(?=(%$ -.layout) ?=(%$ q.p.layout))
       ;row(w "100%", h "100%")
         ;layer(fx "center", fy "center")
-          ;+  ;/  "No active windows"
+          ;row:"No active windows"
         ==
         ;pattern(w "100%", h "100%"): ╱
       ==
@@ -320,7 +324,9 @@
           :_  +(a)
           =/  n=tape   (scow %ud a)
           =/  bg=tape  ?:(=(a active-frame.state) green-2 green-3)
-          ;select/"frame/{n}"(w "7", h "1", mx "1", bg bg, fx "center", select-d "underline"):"{n}"
+          ;select/"frame/{n}"(w "7", h "1", mx "1", bg bg, fx "center", select-d "underline")
+            ;row:"{n}"
+          ==
     ==
   ::
   ++  header

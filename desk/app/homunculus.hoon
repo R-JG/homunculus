@@ -20,8 +20,8 @@
       sele=acia                                                        ::   select style
   ==                                                                   ::
 +$  ars                                                                :: element types
-  $%  [%text =vox]                                                     ::
-      [%pattern =vox]                                                  ::
+  $%  [%text =favi]                                                    ::
+      [%pattern =favi]                                                 ::
       [%layer ~]                                                       ::
       [%scroll =equi =iter =sola]                                      ::
       [%border =ad =ora]                                               ::
@@ -29,7 +29,7 @@
       [%select pro=?(%submit %~)]                                      ::
       [%editor ~]                                                      ::
       [%input =favi]                                                   ::
-      [%checkbox v=? t=vox f=vox]                                      ::
+      [%checkbox v=? t=favi f=favi]                                    ::
       [%radio ~]                                                       ::
       [%form ~]                                                        ::
       [%$ ~]                                                           ::
@@ -42,8 +42,6 @@
 +$  rami  (list [=axis =ager])                                         :: element key (null is root)
 +$  axis  ?(%n %l %b)                                                  :: element positioning category
 +$  ager  @ud                                                          :: element list index
-+$  vox   (list lina)                                                  :: rows of text
-+$  lina  (list @c)                                                    :: a row of text
 +$  fila  [d=(set deco) b=tint f=tint]                                 :: element style
 +$  acia  [d=(unit (set deco)) b=(unit tint) f=(unit tint)]            :: alternate element style
 +$  fuga  [d=?(%col %row) b=?(%wrap %clip)]                            :: positioning flow
@@ -62,7 +60,7 @@
       $@  ~                                                            ::   in rendering, null p is a gap
       $:  fil=fila                                                     ::   segment style
           nav=rex                                                      ::   possible navigation point
-          txt=lina                                                     ::   possible character content (else space)
+          txt=tour                                                     ::   possible character content (else space)
   ==  ==                                                               ::
 +$  aer                                                                :: branch render context
   $:  =iter                                                            ::   cumulative scroll
@@ -71,6 +69,13 @@
       =rex                                                             ::   global active selection
       =ossa                                                            ::   global line intersections
       =luna                                                            ::   layer blocking
+  ==                                                                   ::
++$  vox                                                                :: text tree render product
+  %-  list                                                             ::
+  %-  list                                                             ::
+  $:  how=acia                                                         ::
+      len=@ud                                                          ::
+      txt=tour                                                         ::
   ==                                                                   ::
 +$  fax                                                                :: text render cases
   $@  ~                                                                ::
@@ -88,7 +93,7 @@
       [%whe p=?(%d %u) x=@ud y=@ud]                                    ::
       [%mod mod=?(%ctl %alt %shf) key=$~([%txt ~] zona)]               ::
       [%aro p=?(%d %l %r %u)]                                          ::
-      [%txt p=lina]                                                    ::
+      [%txt p=tour]                                                    ::
       [%chr p=@c]                                                      ::
       [%bac ~]                                                         ::
       [%del ~]                                                         ::
@@ -210,7 +215,8 @@
 +$  urbs  [=deus =arx]                                                 :: system element state
 +$  acus  (trel @ @ tape)                                              :: command line state
 +$  toga                                                               :: editor preferences
-  $:  gutter=?(%hide %show)                                            ::
+  $:  gutter=?(%show %hide)                                            ::   gutter display
+      select=acia                                                      ::   selection style
   ==                                                                   ::
 +$  alvi  (map path favi)                                              :: editor session state by source
 +$  favi                                                               :: editor state
@@ -1940,22 +1946,6 @@
     $(x1 (max x1 +(x2.i.u.ux)), u.ux t.u.ux)
   ^$(x1 ox, y1 +(y1))
 ::
-++  sumo                           :: get the length of the first word in a vox row
-  |=  ro=lina
-  =|  n=@ud
-  |-  ^-  @ud
-  ?~  ro  n
-  ?:  =(~-. i.ro)  n
-  $(n +(n), ro t.ro)
-::
-++  pono                           :: get the length of a row in vox without the trailing whitespace
-  |=  lop=lina
-  =.  lop  (flop lop)
-  |-  ^-  @ud
-  ?~  lop  0
-  ?.  =(~-. i.lop)  (lent lop)
-  $(lop t.lop)
-::
 ++  noto                           :: parse zona to nota
   |=  z=zona
   ^-  nota
@@ -1999,7 +1989,6 @@
         =<  ?>(?=(^ q) q)
         %:  domo
             viewport-width
-            viewport-height
             q.fig
         ==
       |-  ^-  @ud
@@ -2029,7 +2018,6 @@
       =<  p
       %:  domo
           viewport-width
-          viewport-height
           q:(figo line-count cera.fav)
       ==
     %=  $
@@ -2050,7 +2038,6 @@
       =<  ?>(?=(^ q) q)
       %:  domo
           viewport-width
-          viewport-height
           q.fig
       ==
     |-  ^-  ?(%up %down %$)
@@ -2076,7 +2063,6 @@
         =<  ?>(?=(^ q) q)
         %:  domo
             viewport-width
-            viewport-height
             q.fig
         ==
     ==
@@ -2093,7 +2079,6 @@
       =<  q
       %:  domo
           viewport-width
-          viewport-height
           q.fig
       ==
     =/  char-total  0
@@ -2155,17 +2140,16 @@
   ++  m-r-u                        :: move the cursor rowwise up
     ^+  moto-core
     =/  fig  (figo l.apis.fav cera.fav)
-    =/  rows-reversed=(lest (pair @ud (list tape)))
+    =/  rows-reversed=(lest (pair @ud (list tour)))
       =/  old-char-total  0
-      =/  acc  *(list (pair @ud (list tape)))
+      =/  acc  *(list (pair @ud (list tour)))
       =/  rows
         =<  ?>(?=(^ q) q)
         %:  domo
             viewport-width
-            viewport-height
             q.fig
         ==
-      |-  ^-  (lest (pair @ud (list tape)))
+      |-  ^-  (lest (pair @ud (list tour)))
       =/  new-char-total  (add old-char-total p.i.rows)
       ?:  |((gth new-char-total c.apis.fav) =(new-char-total p.fig))
         :-  i.rows
@@ -2187,7 +2171,7 @@
         c.apis.fav
           =/  line-chars
             %+  roll  t.rows-reversed
-            |=  [v=(pair @ud (list tape)) a=@ud]
+            |=  [v=(pair @ud (list tour)) a=@ud]
             %+  add  p.v  a
           %+  add  line-chars
           %+  min  mrc.apis.fav
@@ -2207,7 +2191,6 @@
         =;  dom  (flop q.dom)
         %:  domo
             viewport-width
-            viewport-height
             q.fig
         ==
     ==
@@ -2220,16 +2203,15 @@
           lines.l.cera.fav
           lines.r.cera.fav
     =/  fig  (figo l.apis.fav cera.fav)
-    =/  [line-chars=@ud rows=(lest (pair @ud (list tape)))]
+    =/  [line-chars=@ud rows=(lest (pair @ud (list tour)))]
       =/  old-char-total  0
       =/  rows
         =<  ?>(?=(^ q) q)
         %:  domo
             viewport-width
-            viewport-height
             q.fig
         ==
-      |-  ^-  [@ud (lest (pair @ud (list tape)))]
+      |-  ^-  [@ud (lest (pair @ud (list tour)))]
       =/  new-char-total  (add old-char-total p.i.rows)
       ?:  |((gth new-char-total c.apis.fav) =(new-char-total p.fig))
         :-  old-char-total
@@ -2268,7 +2250,6 @@
         =<  ?>(?=(^ q) q)
         %:  domo
             viewport-width
-            viewport-height
             q.fig
         ==
     ==
@@ -2287,7 +2268,6 @@
       =<  ?>(?=(^ q) q)
       %:  domo
           viewport-width
-          viewport-height
           q.fig
       ==
     %_  moto-core
@@ -2417,13 +2397,13 @@
   =^  fax  fav
     ^-  [fax favi]
     ?:  ?=(%insert lex)
-      =/  txt=lina
+      =/  txt=tour
         ?+  -.zon  !!
           %txt  p.zon
           %chr  ~[p.zon]
           %ret  ~[`@c`'\0a']
         ==
-      =.  cera.fav  (dono (tufa txt) apis.fav cera.fav)
+      =.  cera.fav  (dono txt apis.fav cera.fav)
       =.  cera.fav  (puto cera.fav)
       =.  apis.fav
         %+  roll  txt
@@ -2491,23 +2471,23 @@
       cer
 ::
 ++  dono                           :: insert text into a text tree
-  |=  [inp=tape ais=apis cer=cera]
+  |=  [inp=tour ais=apis cer=cera]
   =/  lis  0
   |-  ^-  cera
-  ~+
   ?@  cer
-    =/  tap  (trip cer)
-    =.  tap
+    =/  tub  (tuba (trip cer))
+    =.  tub
       ?:  ?=([@ ~] inp)
-        (into tap c.ais i.inp)
+        (into tub c.ais i.inp)
       %+  weld
-          (scag c.ais tap)
+          (scag c.ais tub)
       %+  weld
           inp
-          (slag c.ais tap)
+          (slag c.ais tub)
     %-  cero
     %-  fero
-        tap
+    %-  tufa
+        tub
   =/  nes  (add lines.l.cer lis)
   ?:  (gth l.ais nes)
     %_  cer
@@ -2559,14 +2539,13 @@
     =.  c.ais  p:(figo l.ais cer)
     :-  ais
     %^  dono
-        (trip dat)
+        (tuba (trip dat))
         ais
         cer
   =.  c.ais  (dec c.ais)
   :-  ais
   |-  ^-  cera
-  ~+
-  ?@  cer  (crip (oust [c.ais 1] (trip cer)))
+  ?@  cer  (crip (tufa (oust [c.ais 1] (tuba (trip cer)))))
   =/  nes  (add lines.l.cer lis)
   ?:  (gth l.ais nes)
     %_  cer
@@ -2657,7 +2636,7 @@
   ?@  nod
     :*  depth=1
         lines=1
-        chars=(lent (trip nod))
+        chars=(lent (tuba (trip nod)))
         child=nod
     ==
   :*  +((max depth.l.nod depth.r.nod))
@@ -2692,34 +2671,33 @@
 ::
 ++  domo                           :: wrap a line into rows of words, with row count and chars per row
   |_  $:  viewport-width=@
-          viewport-height=@
           lin=@t
       ==
   ++  $
   ~+
-  ^-  (pair @ud (list (pair @ud (list tape))))
+  ^-  (pair @ud (list (pair @ud (list tour))))
   =-  :-  row-count
       %-  flop
       %+  turn  rows
-      |=  [con=@ud taz=(list tape)]
+      |=  [con=@ud tur=(list tour)]
       :-  con
       %-  flop
       %+  turn
-          taz
+          tur
           flop
   %-  accumulate-line-char  :: to break the last word
-  =<  [?:(&(?=(^ was-whitespace) u.was-whitespace) '' ' ') .]
+  =<  [`@c`?:(&(?=(^ was-whitespace) u.was-whitespace) '' ' ') .]
   %+  roll
-      (trip lin)
+      (tuba (trip lin))
       accumulate-line-char
   ::
   ++  accumulate-line-char
-    |=  $:  val=@t
+    |=  $:  val=@c
             was-whitespace=(unit ?)
             word-chars=@ud
             row-count=_1
-            word=tape
-            rows=(lest (pair @ud (list tape)))
+            word=tour
+            rows=(lest (pair @ud (list tour)))
         ==
     =*  acc  +<+
     =/  is-whitespace  =(' ' val)
@@ -2832,56 +2810,71 @@
   ^-  @ud
   +((lent ((d-co:co 1) tot)))
 ::
-++  poto                           :: render editor state as vox
+++  pono                           :: get the length of the longest line in a text tree
+  |=  cer=cera
+  =/  lon  0
+  =/  lin  1
+  =/  line-total
+    ?@  cer  1
+    %+  add
+        lines.l.cer
+        lines.r.cer
+  |-  ^-  @ud
+  =.  lon  (max lon p:(figo lin cer))
+  ?:  =(lin line-total)  lon
+  %=  $
+    lin  +(lin)
+  ==
+::
+++  poto                           :: render a text tree
   |=  [=res fav=favi]
   ^-  vox
-  =/  [gutter-size=@ viewport-width=@ viewport-height=@]
-    %^  colo
-        toga.fav
-        res
+  =/  line-total
     ?@  cera.fav  1
     %+  add
         lines.l.cera.fav
         lines.r.cera.fav
-  =;  fin
-    %+  turn  (slag row.flos.fav fin)
-    |=  val=(pair $@(@ud [chars=@ud line=@ud]) (list tape))
-    ^-  lina
-    =;  tub
-      =/  wid  (add gutter-size viewport-width)
-      ?:  (lte ?@(p.val p.val chars.p.val) wid)  tub
-      %+  scag
-          wid
-          tub
-    %-  tuba
+  =/  [gutter-size=@ viewport-width=@ viewport-height=@]
+    %^  colo
+        toga.fav
+        res
+        line-total
+  =;  ros
+    %+  turn  (slag row.flos.fav ros)
+    |=  val=(pair $@(@ud [chars=@ud line=@ud]) (list tour))
+    ^-  (list [acia @ud tour])
+    :_  ~
+    :+  [~ ~ ~]
+        (add gutter-size ?^(p.val chars.p.val p.val))
     %-  zing
     :_  q.val
     :: make gutter segment
-    ^-  tape
+    ^-  tour
     ?:  ?=(%hide gutter.toga.fav)  ~
     =/  num
       ^-  (unit @ud)
       ?@  p.val  ~
       :-  ~
           line.p.val
-    ?~  num  (reap gutter-size ' ')
-    =/  nut  ((d-co:co 1) u.num)
+    ?~  num  (reap gutter-size `@c`' ')
+    =/  nut  (tuba ((d-co:co 1) u.num))
     =/  len  (lent nut)
     %+  weld  nut
     %+  reap
         (sub gutter-size len)
-        ' '
-  =/  acc  *(list (pair $@(@ud [chars=@ud line=@ud]) (list tape)))
+        `@c`' '
+  =/  acc  *(list (pair $@(@ud [chars=@ud line=@ud]) (list tour)))
   =/  line-count  lin.flos.fav
   =/  row-count  0
-  |-  ^-  (list (pair $@(@ud [chars=@ud line=@ud]) (list tape)))
-  ?:  (gth row-count (add viewport-height row.flos.fav))
+  |-  ^-  (list (pair $@(@ud [chars=@ud line=@ud]) (list tour)))
+  ?:  ?|  (gth row-count (add viewport-height row.flos.fav))
+          (gth line-count line-total)
+      ==
     acc
-  =/  [rows-in-line=@ rows=(list (pair $@(@ud [chars=@ud line=@ud]) (list tape)))]
+  =/  [rows-in-line=@ rows=(list (pair $@(@ud [chars=@ud line=@ud]) (list tour)))]
     =;  doo  ?>(?=(^ q.doo) doo(p.i.q [p.i.q.doo line-count]))
     %:  domo
         viewport-width
-        viewport-height
         q:(figo line-count cera.fav)
     ==
   %=  $
@@ -2906,10 +2899,9 @@
   |-  ^-  loci
   ~+
   =/  fig  (figo lin cera.fav)
-  =/  [rows-in-line=@ rows=(list (pair @ud (list tape)))]
+  =/  [rows-in-line=@ rows=(list (pair @ud (list tour)))]
     %:  domo
         viewport-width
-        viewport-height
         q.fig
     ==
   ?.  =(lin l.apis.fav)
@@ -2919,7 +2911,7 @@
     ==
   =-  (need loc)
   %+  roll  rows
-  |=  [val=[con=@ud tes=(list tape)] acc=[row=@ud tot=@ud loc=(unit loci)]]
+  |=  [val=[con=@ud tur=(list tour)] acc=[row=@ud tot=@ud loc=(unit loci)]]
   ?^  loc.acc  acc
   =:  tot.acc  (add con.val tot.acc)
       row.acc  +(row.acc)
@@ -2982,6 +2974,7 @@
 ++  mano                           :: initialize any new editor sessions
   |=  [=alae bol=bowl:gall]
   =|  =favi
+  =.  b.select.toga.favi  [~ 0xff 0x5f 0x15]  :: TODO: text select style attributes
   =/  new  ~(tap in alae)
   |-  ^-  alvi
   ?~  new
@@ -2994,21 +2987,17 @@
   =/  pax  t.i.new
   =/  bek  /(scot %p our.bol)/[des]/(scot %da now.bol)
   =/  vax  .^(vase %cr (weld bek pax))
-  =/  txt
-    ^-  @t
-    =/  mak  (rear pax)
-    ?:  =(%hoon mak)  !<(@t vax)
-    =/  tub  .^(tube:clay %cc (weld bek /[mak]/txt))
-    =/  wan  !<(wain (tub vax))
-    %+  reel  wan
-    |=  [i=@t a=@t]
-    %+  rap  3
-    :~  i  '\0a'  a
-    ==
+  =/  mak  (rear pax)
   %=  $
     alvi.ego
-      %+  %~  put  by  alvi.ego  i.new
-      favi(cera (cero (fero (trip txt))))
+      %+  ~(put by alvi.ego)  i.new
+      %_  favi
+        cera
+          %-  cero
+          ?:  =(%hoon mak)  (fero (trip !<(@t vax)))
+          =/  tub  .^(tube:clay %cc (weld bek /[mak]/txt))
+          !<  wain  (tub vax)
+      ==
   ==
 ::
 ++  dolo                           :: get default styles for a semantic element
@@ -3023,6 +3012,12 @@
         look=[~ ~ ~]
     ==
   ?+  el  def
+      %col
+    def
+      %row
+    %_  def
+      flow  [%row %clip]
+    ==
       %text
     %_  def
       size  [[%c 0] [%c 0]]
@@ -3074,9 +3069,9 @@
       size  [[%c 2] [%c 1]]
       look  [~ [~ %w] [~ %k]]
     ==
-      %row
+      %pattern
     %_  def
-      flow  [%row %clip]
+      size  [[%c 1] [%c 1]]
     ==
   ==
 ::
@@ -3085,9 +3080,9 @@
   =|  [=avis =acia marv=mart]
   =/  [=vena =ars]
       ?+  n             [(dolo %$) [%$ ~]]
-        %$              [(dolo %text) [%text ~]]
+        %$              [(dolo %text) [%text =>(*favi .(gutter.toga %hide))]]
         %row            [(dolo %row) [%$ ~]]
-        %pattern        [(dolo %$) [%pattern ~]]
+        %pattern        [(dolo %$) [%pattern *favi]]
         %layer          [(dolo %layer) [%layer ~]]
         %select         [(dolo %$) [%select %~]]
         %border-l       [(dolo %border-l) [%border %l %~]]
@@ -3100,13 +3095,12 @@
         %editor         [(dolo %editor) [%editor ~]]
         %form           [(dolo %form) [%form ~]]
         %input          [(dolo %input) [%input =>(*favi .(gutter.toga %hide))]]
-        %checkbox       [(dolo %checkbox) [%checkbox | ~ ~]]
+        %checkbox       [(dolo %checkbox) [%checkbox | *favi *favi]]
         %radio          [(dolo %$) [%radio ~]]
         %submit         [(dolo %$) [%select %submit]]
       ==
-  =/  =lina  ?.(?=(%text -.ars) ~ ?~(a ~ (tuba v.i.a))) 
-  |-  ^-  [^vena ^avis ^acia ^ars ^lina mart]
-  ?~  a  [vena avis acia ars lina marv]
+  |-  ^-  [^vena ^avis ^acia ^ars mart]
+  ?~  a  [vena avis acia ars marv]
   ?+  n.i.a  $(a t.a)
       %w
     ?:  &(?=(%border -.ars) |(?=(%t ad.ars) ?=(%b ad.ars)))
@@ -3492,55 +3486,20 @@
     ==
   $(nor [i.norm nor], norm t.norm, i +(i))
 ::
-++  oro                            :: turn lina into vox
-  |=  [wid=(unit @ud) hei=(unit @ud) lin=lina]
-  ?:  &(?=(^ hei) =(1 u.hei))  ^-(vox ~[lin])
-  =|  [v=vox col=@ud wod=@ud]
-  |-  ^-  vox
-  ?~  lin
-    (flop ?:(&(?=(^ v) ?=(^ i.v)) v(i (flop i.v)) v))
-  ?:  =(~-~a. i.lin)
-    ?~  v  $(lin t.lin)
-    $(lin t.lin, col 0, wod 0, v [~ ^-(lina (flop i.v)) t.v])
-  ?~  v
-    ?:  &(?=(^ wid) (gte +(col) u.wid))
-      $(lin t.lin, col 0, wod 0, v [~ [i.lin ~] ~])
-    $(lin t.lin, col +(col), wod +(wod), v [[i.lin ~] ~])
-  ?:  =(~-. i.lin)
-    $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
-  ?:  &(?=(^ i.v) =(~-. i.i.v))
-    ?:  &(?=(^ wid) |((gth col u.wid) &(=(col u.wid) !&(?=(^ t.lin) =(~-. i.t.lin)))))
-      $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
-    $(lin t.lin, col +(col), wod 1, v [[i.lin i.v] t.v])
-  ?:  &(?=(^ wid) (gte col u.wid))
-    ?:  (lth +(wod) u.wid)
-      %=  $
-        lin  t.lin
-        col  +(wod)
-        wod  +(wod)
-        v     
-          :+  [i.lin ^-(lina (scag wod ^-(lina i.v)))]
-            ^-(lina (flop (oust [0 wod] ^-(lina i.v))))
-          t.v
-      ==
-    ?:  (gte col u.wid)
-      $(lin t.lin, col 1, wod 1, v [[i.lin ~] ^-(lina (flop i.v)) t.v])
-    $(lin t.lin, col 0, wod 0, v ?~(t.lin [[i.lin i.v] t.v] [~ ^-(lina (flop [i.lin i.v])) t.v]))
-  $(lin t.lin, col +(col), wod +(wod), v [[i.lin i.v] t.v])
-::
 ++  fuco                           :: cover a given area with a pattern
-  |=  [wid=@ud hei=@ud bas=vox]
-  ^-  vox
+  |=  [wid=@ud hei=@ud bas=(list tour)]
+  ^-  wain
+  =;  tus  (turn tus |=(i=tour (crip (tufa i))))
   ?:  |(=(0 wid) =(0 hei))  ~
-  =/  cop=vox  bas
+  =/  cop  bas
   =/  [x=@ud y=@ud cx=@ud iy=@ud]  [1 1 1 0]
-  =/  len=@ud  (roll bas |=([i=lina a=@ud] (max a (lent i))))
-  |-  ^-  vox
+  =/  len=@ud  (roll bas |=([i=tour a=@ud] (max a (lent i))))
+  |-  ^-  (list tour)
   ?~  bas  ~
-  :-  |-  ^-  lina
+  :-  |-  ^-  tour
       ?:  =(x +(wid))  ~
       ?~  i.bas
-        :-  ~-.
+        :-  `@c`' '
         ?:  =(cx len)
           $(x +(x), cx 1, i.bas (snag iy cop))
         $(x +(x), cx +(cx))
@@ -3599,39 +3558,27 @@
     ==
   [gex gex gex]
 ::
-++  tego                           :: resolve the characters in a checkbox
-  |=  =cor
-  ^-  vox
-  ?>  ?=(%checkbox -.ars.cor)
-  ?.  v.ars.cor
-    ?~  f.ars.cor  ~
-    f.ars.cor
-  ?^  t.ars.cor
-    t.ars.cor
-  =/  v=vox  [[~-~2588. ~] ~]
-  (fuco w.size.res.cor h.size.res.cor v)
-::
-++  orno                           :: resolve a line as vox
+++  orno                           :: resolve a line as characters
   |=  [siz=[w=@ud h=@ud] dir=term =ora]
-  ^-  vox
+  ^-  wain
   ?:  ?=(%~ ora)  ~
   ?:  |(?=(%t dir) ?=(%b dir) ?=(%h dir))
     :_  ~
+    %-  crip
     %+  reap  w.siz
     ?-  ora
-      %light   ~-~2500.  :: ─
-      %heavy   ~-~2501.  :: ━
-      %double  ~-~2550.  :: ═
-      %arc     ~-~2500.  :: ─
+      %light   '─'
+      %heavy   '━'
+      %double  '═'
+      %arc     '─'
     ==
   ?:  |(?=(%l dir) ?=(%r dir) ?=(%v dir))
     %+  reap  h.siz
-    :_  ~
     ?-  ora
-      %light   ~-~2502.  :: │
-      %heavy   ~-~2503.  :: ┃
-      %double  ~-~2551.  :: ║
-      %arc     ~-~2502.  :: │
+      %light   '│'
+      %heavy   '┃'
+      %double  '║'
+      %arc     '│'
     ==
   ~
 ::
@@ -3763,31 +3710,31 @@
 ::
 ++  iugo                           :: make a line intersection character
   |=  crux
-  ^-  @c
+  ^-  @t
   ?:  ?&  ?=(%~ l)  ?=(%~ t)
           ?|  &(?=(%arc r) ?=(%arc b))
               &(?=(%arc r) ?=(%light b))
               &(?=(%light r) ?=(%arc b))
       ==  ==
-    ~-~256d.  ::  ╭
+    '╭'
   ?:  ?&  ?=(%~ r)  ?=(%~ t)
           ?|  &(?=(%arc l) ?=(%arc b))
               &(?=(%arc l) ?=(%light b))
               &(?=(%light l) ?=(%arc b))
       ==  ==
-    ~-~256e.  ::  ╮
+    '╮'
   ?:  ?&  ?=(%~ l)  ?=(%~ b)
           ?|  &(?=(%arc r) ?=(%arc t))
               &(?=(%arc r) ?=(%light t))
               &(?=(%light r) ?=(%arc t))
       ==  ==
-    ~-~2570.  ::  ╰
+    '╰'
   ?:  ?&  ?=(%~ r)  ?=(%~ b)
           ?|  &(?=(%arc l) ?=(%arc t))
               &(?=(%arc l) ?=(%light t))
               &(?=(%light l) ?=(%arc t))
       ==  ==
-    ~-~256f.  ::  ╯
+    '╯'
   =?  +<  |(?=(%arc c) ?=(%arc l) ?=(%arc r) ?=(%arc t) ?=(%arc b))
     %_  +<
       c    ?:(?=(%arc c) %light c)
@@ -3796,262 +3743,262 @@
       t    ?:(?=(%arc t) %light t)
       b    ?:(?=(%arc b) %light b)
     ==
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%light b))  ~-~250c.  ::  ┌
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%light b))  ~-~250d.  ::  ┍
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%heavy b))  ~-~250e.  ::  ┎
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%heavy b))  ~-~250f.  ::  ┏
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%double r) ?=(%light b))  ~-~2552.  ::  ╒
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%double b))  ~-~2553.  ::  ╓
-  ?:  &(?=(%~ l) ?=(%~ t) ?=(%double r) ?=(%double b))  ~-~2554.  ::  ╔
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%light b))  ~-~2510.  ::  ┐
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%heavy l) ?=(%light b))  ~-~2511.  ::  ┑
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%heavy b))  ~-~2512.  ::  ┒
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%heavy l) ?=(%heavy b))  ~-~2513.  ::  ┓
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%double l) ?=(%light b))  ~-~2555.  ::  ╕
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%double b))  ~-~2556.  ::  ╖
-  ?:  &(?=(%~ r) ?=(%~ t) ?=(%double l) ?=(%double b))  ~-~2557.  ::  ╗
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%light t))  ~-~2514.  ::  └
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%heavy r) ?=(%light t))  ~-~2515.  ::  ┕
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%heavy t))  ~-~2516.  ::  ┖
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%heavy r) ?=(%heavy t))  ~-~2517.  ::  ┗
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%double r) ?=(%light t))  ~-~2558.  ::  ╘
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%double t))  ~-~2559.  ::  ╙
-  ?:  &(?=(%~ l) ?=(%~ b) ?=(%double r) ?=(%double t))  ~-~255a.  ::  ╚
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%light t))  ~-~2518.  ::  ┘
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%heavy l) ?=(%light t))  ~-~2519.  ::  ┙
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%heavy t))  ~-~251a.  ::  ┚
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%heavy l) ?=(%heavy t))  ~-~251b.  ::  ┛
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%double l) ?=(%light t))  ~-~255b.  ::  ╛
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%double t))  ~-~255c.  ::  ╜
-  ?:  &(?=(%~ r) ?=(%~ b) ?=(%double l) ?=(%double t))  ~-~255d.  ::  ╝
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%light b))  '┌'
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%light b))  '┍'
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%heavy b))  '┎'
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%heavy r) ?=(%heavy b))  '┏'
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%double r) ?=(%light b))  '╒'
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%light r) ?=(%double b))  '╓'
+  ?:  &(?=(%~ l) ?=(%~ t) ?=(%double r) ?=(%double b))  '╔'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%light b))  '┐'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%heavy l) ?=(%light b))  '┑'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%heavy b))  '┒'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%heavy l) ?=(%heavy b))  '┓'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%double l) ?=(%light b))  '╕'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%light l) ?=(%double b))  '╖'
+  ?:  &(?=(%~ r) ?=(%~ t) ?=(%double l) ?=(%double b))  '╗'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%light t))  '└'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%heavy r) ?=(%light t))  '┕'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%heavy t))  '┖'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%heavy r) ?=(%heavy t))  '┗'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%double r) ?=(%light t))  '╘'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%light r) ?=(%double t))  '╙'
+  ?:  &(?=(%~ l) ?=(%~ b) ?=(%double r) ?=(%double t))  '╚'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%light t))  '┘'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%heavy l) ?=(%light t))  '┙'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%heavy t))  '┚'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%heavy l) ?=(%heavy t))  '┛'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%double l) ?=(%light t))  '╛'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%light l) ?=(%double t))  '╜'
+  ?:  &(?=(%~ r) ?=(%~ b) ?=(%double l) ?=(%double t))  '╝'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%light t) ?=(%light b) ?=(%light r))
               &(?=(%~ t) ?=(%~ b) ?=(%light r) ?=([%v %light] [v c]))
       ==  ==
-    ~-~251c.  ::  ├
+    '├'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%light t) ?=(%light b) ?=(%heavy r))
               &(?=(%~ t) ?=(%~ b) ?=(%heavy r) ?=([%v %light] [v c]))
       ==  ==
-    ~-~251d.  ::  ┝
+    '┝'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%light t) ?=(%light b) ?=(%double r))
               &(?=(%~ t) ?=(%~ b) ?=(%double r) ?=([%v %light] [v c]))
       ==  ==
-    ~-~255e.  ::  ╞
+    '╞'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%heavy r))
               &(?=(%~ t) ?=(%~ b) ?=(%heavy r) ?=([%v %heavy] [v c]))
       ==  ==
-    ~-~2523.  ::  ┣
+    '┣'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%light r))
               &(?=(%~ t) ?=(%~ b) ?=(%light r) ?=([%v %heavy] [v c]))
       ==  ==
-    ~-~2520.  ::  ┠
+    '┠'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%double t) ?=(%double b) ?=(%double r))
               &(?=(%~ t) ?=(%~ b) ?=(%double r) ?=([%v %double] [v c]))
       ==  ==
-    ~-~2560.  ::  ╠
+    '╠'
   ?:  ?&  ?=(%~ l)
           ?|  &(?=(%double t) ?=(%double b) ?=(%light r))
               &(?=(%~ t) ?=(%~ b) ?=(%light r) ?=([%v %double] [v c]))
       ==  ==
-    ~-~255f.  ::  ╟
-  ?:  &(?=(%~ l) ?=(%heavy t) ?=(%light b) ?=(%light r))  ~-~251e.  ::  ┞
-  ?:  &(?=(%~ l) ?=(%light t) ?=(%heavy b) ?=(%light r))  ~-~251f.  ::  ┟
-  ?:  &(?=(%~ l) ?=(%heavy t) ?=(%light b) ?=(%heavy r))  ~-~2521.  ::  ┡
-  ?:  &(?=(%~ l) ?=(%light t) ?=(%heavy b) ?=(%heavy r))  ~-~2522.  ::  ┢
+    '╟'
+  ?:  &(?=(%~ l) ?=(%heavy t) ?=(%light b) ?=(%light r))  '┞'
+  ?:  &(?=(%~ l) ?=(%light t) ?=(%heavy b) ?=(%light r))  '┟'
+  ?:  &(?=(%~ l) ?=(%heavy t) ?=(%light b) ?=(%heavy r))  '┡'
+  ?:  &(?=(%~ l) ?=(%light t) ?=(%heavy b) ?=(%heavy r))  '┢'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%light t) ?=(%light b) ?=(%light l))
               &(?=(%~ t) ?=(%~ b) ?=(%light l) ?=([%v %light] [v c]))
       ==  ==
-    ~-~2524.  ::  ┤
+    '┤'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%light t) ?=(%light b) ?=(%heavy l))
               &(?=(%~ t) ?=(%~ b) ?=(%heavy l) ?=([%v %light] [v c]))
       ==  ==
-    ~-~2525.  ::  ┥
+    '┥'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%light t) ?=(%light b) ?=(%double l))
               &(?=(%~ t) ?=(%~ b) ?=(%double l) ?=([%v %light] [v c]))
       ==  ==
-    ~-~2561.  ::  ╡
+    '╡'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%heavy l))
               &(?=(%~ t) ?=(%~ b) ?=(%heavy l) ?=([%v %heavy] [v c]))
       ==  ==
-    ~-~252b.  ::  ┫
+    '┫'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%heavy t) ?=(%heavy b) ?=(%light l))
               &(?=(%~ t) ?=(%~ b) ?=(%light l) ?=([%v %heavy] [v c]))
       ==  ==
-    ~-~2528.  ::  ┨
+    '┨'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%double t) ?=(%double b) ?=(%double l))
               &(?=(%~ t) ?=(%~ b) ?=(%double l) ?=([%v %double] [v c]))
       ==  ==
-    ~-~2563.  ::  ╣
+    '╣'
   ?:  ?&  ?=(%~ r)
           ?|  &(?=(%double t) ?=(%double b) ?=(%light l))
               &(?=(%~ t) ?=(%~ b) ?=(%light l) ?=([%v %double] [v c]))
       ==  ==
-      ~-~2562.  ::  ╢
-  ?:  &(?=(%~ r) ?=(%heavy t) ?=(%light b) ?=(%light l))  ~-~2526.  ::  ┦
-  ?:  &(?=(%~ r) ?=(%light t) ?=(%heavy b) ?=(%light l))  ~-~2527.  ::  ┧
-  ?:  &(?=(%~ r) ?=(%heavy t) ?=(%light b) ?=(%heavy l))  ~-~2529.  ::  ┩
-  ?:  &(?=(%~ r) ?=(%light t) ?=(%heavy b) ?=(%heavy l))  ~-~252a.  ::  ┪
+      '╢'
+  ?:  &(?=(%~ r) ?=(%heavy t) ?=(%light b) ?=(%light l))  '┦'
+  ?:  &(?=(%~ r) ?=(%light t) ?=(%heavy b) ?=(%light l))  '┧'
+  ?:  &(?=(%~ r) ?=(%heavy t) ?=(%light b) ?=(%heavy l))  '┩'
+  ?:  &(?=(%~ r) ?=(%light t) ?=(%heavy b) ?=(%heavy l))  '┪'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%light l) ?=(%light r) ?=(%light b))
               &(?=(%~ l) ?=(%~ r) ?=(%light b) ?=([%h %light] [v c]))
       ==  ==
-    ~-~252c.  ::  ┬
+    '┬'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%light l) ?=(%light r) ?=(%heavy b))
               &(?=(%~ l) ?=(%~ r) ?=(%heavy b) ?=([%h %light] [v c]))
       ==  ==
-    ~-~2530.  ::  ┰
+    '┰'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%light l) ?=(%light r) ?=(%double b))
               &(?=(%~ l) ?=(%~ r) ?=(%double b) ?=([%h %light] [v c]))
       ==  ==
-    ~-~2565.  ::  ╥
+    '╥'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%heavy b))
               &(?=(%~ l) ?=(%~ r) ?=(%heavy b) ?=([%h %heavy] [v c]))
       ==  ==
-    ~-~2533.  ::  ┳
+    '┳'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%light b))
               &(?=(%~ l) ?=(%~ r) ?=(%light b) ?=([%h %heavy] [v c]))
       ==  ==
-    ~-~252f.  ::  ┯
+    '┯'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%double l) ?=(%double r) ?=(%double b))
               &(?=(%~ l) ?=(%~ r) ?=(%double b) ?=([%h %double] [v c]))
       ==  ==
-    ~-~2566.  ::  ╦
+    '╦'
   ?:  ?&  ?=(%~ t)
           ?|  &(?=(%double l) ?=(%double r) ?=(%light b))
               &(?=(%~ l) ?=(%~ r) ?=(%light b) ?=([%h %double] [v c]))
       ==  ==
-    ~-~2564.  ::  ╤
-  ?:  &(?=(%~ t) ?=(%heavy l) ?=(%light r) ?=(%light b))  ~-~252d.  ::  ┭
-  ?:  &(?=(%~ t) ?=(%light l) ?=(%heavy r) ?=(%light b))  ~-~252e.  ::  ┮
-  ?:  &(?=(%~ t) ?=(%heavy l) ?=(%light r) ?=(%heavy b))  ~-~2531.  ::  ┱
-  ?:  &(?=(%~ t) ?=(%light l) ?=(%heavy r) ?=(%heavy b))  ~-~2532.  ::  ┲
+    '╤'
+  ?:  &(?=(%~ t) ?=(%heavy l) ?=(%light r) ?=(%light b))  '┭'
+  ?:  &(?=(%~ t) ?=(%light l) ?=(%heavy r) ?=(%light b))  '┮'
+  ?:  &(?=(%~ t) ?=(%heavy l) ?=(%light r) ?=(%heavy b))  '┱'
+  ?:  &(?=(%~ t) ?=(%light l) ?=(%heavy r) ?=(%heavy b))  '┲'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%light l) ?=(%light r) ?=(%light t))
               &(?=(%~ l) ?=(%~ r) ?=(%light t) ?=([%h %light] [v c]))
       ==  ==
-    ~-~2534.  ::  ┴
+    '┴'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%light l) ?=(%light r) ?=(%heavy t))
               &(?=(%~ l) ?=(%~ r) ?=(%heavy t) ?=([%h %light] [v c]))
       ==  ==
-    ~-~2538.  ::  ┸
+    '┸'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%light l) ?=(%light r) ?=(%double t))
               &(?=(%~ l) ?=(%~ r) ?=(%double t) ?=([%h %light] [v c]))
       ==  ==
-    ~-~2568.  ::  ╨
+    '╨'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%heavy t))
               &(?=(%~ l) ?=(%~ r) ?=(%heavy t) ?=([%h %heavy] [v c]))
       ==  ==
-    ~-~253b.  ::  ┻
+    '┻'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%light t))
               &(?=(%~ l) ?=(%~ r) ?=(%light t) ?=([%h %heavy] [v c]))
       ==  ==
-    ~-~2537.  ::  ┷
+    '┷'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%double l) ?=(%double r) ?=(%double t))
               &(?=(%~ l) ?=(%~ r) ?=(%double t) ?=([%h %double] [v c]))
       ==  ==
-    ~-~2569.  ::  ╩
+    '╩'
   ?:  ?&  ?=(%~ b)
           ?|  &(?=(%double l) ?=(%double r) ?=(%light t))
               &(?=(%~ l) ?=(%~ r) ?=(%light t) ?=([%h %double] [v c]))
       ==  ==
-    ~-~2567.  ::  ╧
-  ?:  &(?=(%~ b) ?=(%heavy l) ?=(%light r) ?=(%light t))  ~-~2535.  ::  ┵
-  ?:  &(?=(%~ b) ?=(%light l) ?=(%heavy r) ?=(%light t))  ~-~2536.  ::  ┶
-  ?:  &(?=(%~ b) ?=(%heavy l) ?=(%light r) ?=(%heavy t))  ~-~2539.  ::  ┹
-  ?:  &(?=(%~ b) ?=(%light l) ?=(%heavy r) ?=(%heavy t))  ~-~253a.  ::  ┺
+    '╧'
+  ?:  &(?=(%~ b) ?=(%heavy l) ?=(%light r) ?=(%light t))  '┵'
+  ?:  &(?=(%~ b) ?=(%light l) ?=(%heavy r) ?=(%light t))  '┶'
+  ?:  &(?=(%~ b) ?=(%heavy l) ?=(%light r) ?=(%heavy t))  '┹'
+  ?:  &(?=(%~ b) ?=(%light l) ?=(%heavy r) ?=(%heavy t))  '┺'
   ?:  ?|  &(?=(%light l) ?=(%light r) ?=(%light t) ?=(%light b))
           &(?=(%light l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
           &(?=(%light t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
       ==
-    ~-~253c.  ::  ┼
+    '┼'
   ?:  ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%heavy t) ?=(%heavy b))
           &(?=(%heavy l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
           &(?=(%heavy t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
       ==
-    ~-~254b.  ::  ╋
+    '╋'
   ?:  ?|  &(?=(%double l) ?=(%double r) ?=(%double t) ?=(%double b))
           &(?=(%double l) ?=(%double r) ?=(%~ t) ?=(%~ b) ?=([%v %double] [v c]))
           &(?=(%double t) ?=(%double b) ?=(%~ l) ?=(%~ r) ?=([%h %double] [v c]))
       ==
-    ~-~256c.  ::  ╬
+    '╬'
   ?:  ?|  &(?=(%light l) ?=(%light r) ?=(%heavy t) ?=(%heavy b))
           &(?=(%light l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
           &(?=(%heavy t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
       ==
-    ~-~2542.  ::  ╂
+    '╂'
   ?:  ?|  &(?=(%heavy l) ?=(%heavy r) ?=(%light t) ?=(%light b))
           &(?=(%heavy l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
           &(?=(%light t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
       ==
-    ~-~253f.  ::  ┿
+    '┿'
   ?:  ?|  &(?=(%light l) ?=(%light r) ?=(%double t) ?=(%double b))
           &(?=(%light l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %double] [v c]))
           &(?=(%double t) ?=(%double b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
       ==
-    ~-~256b.  ::  ╫
+    '╫'
   ?:  ?|  &(?=(%double l) ?=(%double r) ?=(%light t) ?=(%light b))
           &(?=(%double l) ?=(%double r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
           &(?=(%light t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %double] [v c]))
       ==
-    ~-~256a.  ::  ╪
+    '╪'
   ?:  ?|  &(?=(%light l) ?=(%heavy r) ?=(%light t) ?=(%light b))
           &(?=(%light l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
       ==
-    ~-~253e.  ::  ┾
+    '┾'
   ?:  ?|  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%light b))
           &(?=(%heavy l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %light] [v c]))
       ==
-    ~-~253d.  ::  ┽
+    '┽'
   ?:  ?|  &(?=(%heavy l) ?=(%light r) ?=(%heavy t) ?=(%heavy b))
           &(?=(%heavy l) ?=(%light r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
       ==
-    ~-~2549.  ::  ╉
+    '╉'
   ?:  ?|  &(?=(%light l) ?=(%heavy r) ?=(%heavy t) ?=(%heavy b))
           &(?=(%light l) ?=(%heavy r) ?=(%~ t) ?=(%~ b) ?=([%v %heavy] [v c]))
       ==
-    ~-~254a.  ::  ╊
+    '╊'
   ?:  ?|  &(?=(%light t) ?=(%heavy b) ?=(%light l) ?=(%light r))
           &(?=(%light t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
       ==
-    ~-~2541.  ::  ╁
+    '╁'
   ?:  ?|  &(?=(%heavy t) ?=(%light b) ?=(%light l) ?=(%light r))
           &(?=(%heavy t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %light] [v c]))
       ==
-    ~-~2540.  ::  ╀
+    '╀'
   ?:  ?|  &(?=(%heavy t) ?=(%light b) ?=(%heavy l) ?=(%heavy r))
           &(?=(%heavy t) ?=(%light b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
       ==
-    ~-~2547.  ::  ╇
+    '╇'
   ?:  ?|  &(?=(%light t) ?=(%heavy b) ?=(%heavy l) ?=(%heavy r))
           &(?=(%light t) ?=(%heavy b) ?=(%~ l) ?=(%~ r) ?=([%h %heavy] [v c]))
       ==
-    ~-~2548.  ::  ╈
-  ?:  &(?=(%light l) ?=(%heavy r) ?=(%light t) ?=(%heavy b))  ~-~2546.  ::  ╆
-  ?:  &(?=(%light l) ?=(%heavy r) ?=(%heavy t) ?=(%light b))  ~-~2544.  ::  ╄
-  ?:  &(?=(%heavy l) ?=(%light r) ?=(%heavy t) ?=(%light b))  ~-~2543.  ::  ╃
-  ?:  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%heavy b))  ~-~2545.  ::  ╅
-  ~-.
+    '╈'
+  ?:  &(?=(%light l) ?=(%heavy r) ?=(%light t) ?=(%heavy b))  '╆'
+  ?:  &(?=(%light l) ?=(%heavy r) ?=(%heavy t) ?=(%light b))  '╄'
+  ?:  &(?=(%heavy l) ?=(%light r) ?=(%heavy t) ?=(%light b))  '╃'
+  ?:  &(?=(%heavy l) ?=(%light r) ?=(%light t) ?=(%heavy b))  '╅'
+  ' '
 ::
 ++  feto                           :: find the key of the line intersection group to which a line belongs
   |=  [key=rami osa=ossa]
@@ -4066,16 +4013,17 @@
     i.kez
   $(kez t.kez)
 ::
-++  coeo                           :: produce a line in vox with any intersections applied
+++  coeo                           :: produce text state for a line with any intersections applied
   |=  [=cor key=rami osa=ossa]
-  ^-  vox
+  ^-  favi
+  =/  fav  *favi
   ?:  ?|  &(?=(%border -.ars.cor) ?=(%~ ora.ars.cor))
           &(?=(%line -.ars.cor) ?=(%~ ora.ars.cor))
       ==
-    ~
+    fav
   =/  k  (feto key osa)
   =/  o  (~(get by osa) k)
-  ?~  o  ~
+  ?~  o  fav
   =/  l  ~(val by u.o)
   =/  c
     ^-  (list crux)
@@ -4134,20 +4082,24 @@
         [ora %~ ora.i ora ora]
       ~
     ==
+  =;  wan
+    %_  fav
+      cera  (cero wan)
+    ==
   =<  q
   %^  spin  c
     ?+  -.ars.cor  ~
       %border  (orno size.res.cor [ad ora]:ars.cor)
       %line    (orno size.res.cor [ab ora]:ars.cor)
     ==
-  |=  [i=crux v=vox]
+  |=  [i=crux a=wain]
   ^+  +<
   :-  i
   =/  char  (iugo i)
-  ?:  =(~-. char)  v
+  ?:  =(' ' char)  a
   ?-  -.i
-    %h  ?~(v ~ v(i (snap i.v i.i char)))
-    %v  (snap v i.i `lina`[char ~])
+    %h  ?~(a ~ a(i (crip (tufa (snap (tuba (trip i.a)) i.i (taft char))))))
+    %v  (snap a i.i char)
   ==
 ::
 ++  vivo                           :: perform session post geno processing
@@ -4248,8 +4200,7 @@
       i
   |-  ^-  dei
   ?~  m  ~
-  =/  [=vena =avis =acia =ars =lina marv=mart]
-    (suo g.i.m)
+  =/  [=vena =avis =acia =ars marv=mart]  (suo g.i.m)
   =/  wcen=bean  =(%p p.w.size.vena)
   =/  hcen=bean  =(%p p.h.size.vena)
   =?  w.size.vena  wcen
@@ -4295,28 +4246,38 @@
   =?  x.flex.vena  =(%i p.w.size.vena)  0
   =?  y.flex.vena  =(%i p.h.size.vena)  0
   =?  ars
-      ?|  ?=(%pattern -.ars)
+      ?|  ?=(%text -.ars)
+          ?=(%pattern -.ars)
           ?=(%checkbox -.ars)
       ==
-    ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
-    ?+  -.ars  ars
+    ?+  -.ars  !!
+    ::
+        %text
+      ?~  a.g.i.m  ars
+      %_  ars
+        cera.favi  (cero (fero v.i.a.g.i.m))
+      ==
+    ::
         %pattern
-      =/  bas=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
+      ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
+      =/  bas  `(list tour)`(turn (fero v.i.a.g.i.c.i.m) |=(n=cera ?@(n (tuba (trip n)) ~)))
       ?:  &(?=(%i p.w.size.vena) ?=(%i p.h.size.vena))
-        =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
-        ars(vox (fuco len (lent bas) bas))
+        =/  wid  (roll bas |=([i=tour a=@ud] (max a (lent i))))
+        ars(cera.favi (cero (fuco wid (lent bas) bas)))
       ?:  ?=(%i p.w.size.vena)
-        =/  len=@ud  (roll bas |=([i=^lina a=@ud] (max a (lent i))))
-        ars(vox (fuco len q.h.size.vena bas))
+        =/  wid  (roll bas |=([i=tour a=@ud] (max a (lent i))))
+        ars(cera.favi (cero (fuco wid q.h.size.vena bas)))
       ?:  ?=(%i p.h.size.vena)
-        ars(vox (fuco q.w.size.vena (lent bas) bas))
-      ars(vox (fuco q.w.size.vena q.h.size.vena bas))
+        ars(cera.favi (cero (fuco q.w.size.vena (lent bas) bas)))
+      ars(cera.favi (cero (fuco q.w.size.vena q.h.size.vena bas)))
+    ::
         %checkbox
-      =/  on=vox  (oro ~ ~ (tuba v.i.a.g.i.c.i.m))
-      =/  off=vox
-        ?.  &(?=(^ t.c.i.m) ?=(^ a.g.i.t.c.i.m))  ~
-        (oro ~ ~ (tuba v.i.a.g.i.t.c.i.m))
-      ars(t on, f off)
+      ?.  &(?=(^ c.i.m) ?=(^ a.g.i.c.i.m))  ars
+      =.  cera.t.ars  (cero (fero v.i.a.g.i.c.i.m))
+      =?  cera.f.ars  &(?=(^ t.c.i.m) ?=(^ a.g.i.t.c.i.m))
+        (cero (fero v.i.a.g.i.t.c.i.m))
+      ars
+    ::
     ==
   =/  [bor=marl lay=marl nor=marl]
     ?:  ?|  ?=(%text -.ars)
@@ -4751,21 +4712,9 @@
     ?:  &(!wris ?=(%col d.pow))
       n.tvir
     0
-  =?  ars  ?=(%text -.ars)
-    =/  [x=@ud y=@ud]
-      :-  ?:(?=(%row d.pow) n.vir o.vir)
-      ?:(?=(%col d.pow) n.vir o.vir)
-    %_    ars
-        vox
-      %^    oro
-          ?:(?=(%i p.px) ~ [~ ?:((lte x prx) (sub prx x) 0)])
-        ?:(?=(%i p.py) ~ [~ ?:((lte y pry) (sub pry y) 0)])
-      lina
-    ==
   =/  ares=res
     ?.  ?=(%text -.ars)
-      :*  ?.  ?=(%pattern -.ars)  [q.w.size.vena q.h.size.vena]
-          [?^(vox.ars (lent i.vox.ars) 0) (lent vox.ars)]
+      :*  [q.w.size.vena q.h.size.vena]
           [q.l.padd.vena q.r.padd.vena q.t.padd.vena q.b.padd.vena]
           [q.l.marg.vena q.r.marg.vena q.t.marg.vena q.b.marg.vena]
           [bl br bt bb]
@@ -4774,18 +4723,39 @@
           fil
           aci
       ==
-    =/  len=@ud
-      (roll ^-(vox vox.ars) |=([i=^lina a=@ud] (max a (pono i))))
-    =/  lim=(unit @ud)
-      ?:(?=(%i p.px) ~ [~ (sub prx ?:(?=(%row d.pow) n.vir o.vir))])
-    :*  [?~(lim len (min len u.lim)) (lent vox.ars)]
-        [0 0 0 0]
-        [0 0 0 0]
-        [0 0 0 0]
-        [0 0]
-        [%row %wrap]
-        pl
-        aci
+    =;  siz=[w=@ud h=@ud]
+      :*  siz
+          [0 0 0 0]
+          [0 0 0 0]
+          [0 0 0 0]
+          [0 0]
+          [%row %wrap]
+          pl
+          aci
+      ==
+    =/  wid
+      ^-  @ud
+      ?.  ?=(%i p.px)  prx
+      %-  pono  cera.favi.ars
+    :-  wid
+    ?.  ?=(%i p.py)  pry
+    =/  line-total
+      ?@  cera.favi.ars  1
+      %+  add
+          lines.l.cera.favi.ars
+          lines.r.cera.favi.ars
+    =/  rows  0
+    |-  ^-  @ud
+    ?:  =(0 line-total)  rows
+    %=  $
+      line-total  (dec line-total)
+      rows
+        %+  add  rows
+        =<  p
+        %:  domo
+            wid
+            q:(figo l.apis.favi.ars cera.favi.ars)
+        ==
     ==
   =/  bdei=dei
     ?~  bor  ~
@@ -5083,7 +5053,8 @@
   =/  a-i1=@ud   =+(y=(max y1 t.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
   =/  a-i2=@ud   =+(y=(min y2 b.muri.ayr) ?:((lte a-y1 y) (sub y a-y1) 0))
   =/  gray=?     &(open.arx.urbs.ego !?=([[%l @] *] key))
-  =/  look=fila
+  =/  lok
+    ^-  fila
     %:  filo
       -.ars.cor.deu
       &(sty.nav.ayr ?=(^ rex.nav.ayr) ?=(^ rex.ayr) =(k.rex.ayr k.rex.nav.ayr))
@@ -5108,73 +5079,161 @@
         ==
       (oust [0 n] v)
     ?+  -.ars.cor.deu  ~
-      %text      vox.ars.cor.deu
-      %pattern   vox.ars.cor.deu
+      %text      (poto res.cor.deu favi.ars.cor.deu)
+      %pattern   (poto res.cor.deu favi.ars.cor.deu)
       %editor    (poto res.cor.deu (~(gut by alvi.ego) avis.cor.deu *favi))
       %input     (poto res.cor.deu favi.ars.cor.deu)
-      %checkbox  (tego cor.deu)
-      %border    (coeo cor.deu key ossa.ayr)
-      %line      (coeo cor.deu key ossa.ayr)
+      %checkbox  (poto res.cor.deu ?.(v.ars.cor.deu f.ars.cor.deu t.ars.cor.deu))
+      %border    (poto res.cor.deu (coeo cor.deu key ossa.ayr))
+      %line      (poto res.cor.deu (coeo cor.deu key ossa.ayr))
     ==
   |=  [l=(list lux) xov=vox]
-  ^+  +<
   :_  ?^(xov t.xov ~)
   |-  ^-  (list lux)
-  =/  tok=lux
+  =/  tok
+    ^-  lux
+    =/  nav  ?.(gray rex.nav.ayr ~)
+    ?.  ?=([^ *] xov)
+      :*  x1
+          x2
+          lok
+          nav
+          ~
+      ==
+    =.  lok
+      ?.  gray
+        %_  lok
+          d  ?~(d.how.i.i.xov d.lok u.d.how.i.i.xov)
+          b  ?~(b.how.i.i.xov b.lok u.b.how.i.i.xov)
+          f  ?~(f.how.i.i.xov f.lok u.f.how.i.i.xov)
+        ==
+      %_  lok
+        d  ?~(d.how.i.i.xov d.lok u.d.how.i.i.xov)
+        b  ?~(b.how.i.i.xov b.lok (cubo u.b.how.i.i.xov))
+        f  ?~(f.how.i.i.xov f.lok (cubo u.f.how.i.i.xov))
+      ==
+    ?^  t.i.xov
+      =/  txt-end  (add x1 ?.(=(0 len.i.i.xov) (dec len.i.i.xov) 0))
+      ?:  (lte txt-end x2)
+        :*  x1
+            txt-end
+            lok
+            nav
+            txt.i.i.xov
+        ==
+      :*  x1
+          x2
+          lok
+          nav
+          (scag +((sub x2 x1)) txt.i.i.xov)
+      ==
     :*  x1
         x2
-        look
-        ?.(gray rex.nav.ayr ~)
-        ^-  lina
-        ?~  xov  ~
-        ?~  i.xov  ~
-        =/  len  (lent i.xov)
+        lok
+        nav
+        ^-  tour
         =/  wid  +((sub x2 x1))
-        ?:  =(len wid)  i.xov
-        ?:  (gth len wid)  (scag wid `lina`i.xov)
-        %+  weld  i.xov
-        %+  reap  (sub wid len)
+        ?:  =(len.i.i.xov wid)  txt.i.i.xov
+        ?:  (gth len.i.i.xov wid)  (scag wid txt.i.i.xov)
+        %+  weld  txt.i.i.xov
+        %+  reap  (sub wid len.i.i.xov)
         ~-.
     ==
   ?>  ?=(^ p.tok)
+  =?  xov  &(?=([[* ^] *] xov) =(x2.tok x2))
+    xov(t.i ~)
   ?~  l
+    ?:  ?=([[* ^] *] xov)
+      [tok $(i.xov t.i.xov, x1 +(x2.tok))]
+    [tok ~]
+  ?:  (lth x2.tok x1.i.l)
+    ?:  ?=([[* ^] *] xov)
+      [tok $(i.xov t.i.xov, x1 +(x2.tok))]
     [tok l]
-  ?:  (lth x2 x1.i.l)
-    [tok l]
-  ?:  (gth x1 x2.i.l)
+  ?:  (gth x1.tok x2.i.l)
     [i.l $(l t.l)]
-  ?:  ?&  (gte x1 x1.i.l)
-          (lte x2 x2.i.l)
+  ?:  ?&  (gte x1.tok x1.i.l)
+          (lte x2.tok x2.i.l)
       ==
-    l
-  ?:  ?&  (lth x1 x1.i.l)
-          (gth x2 x2.i.l)
+    =.  xov
+      :: clip xov
+      =/  acc  x2.tok
+      |-  ^-  vox
+      ?.  ?=([[* ^] *] xov)  xov
+      =.  acc  (add acc len.i.t.i.xov)
+      ?:  (lte acc x2.i.l)
+        %=  $
+          i.xov  t.i.xov
+        ==
+      =/  len  (sub acc x2.i.l)
+      %_  xov
+        len.i.t.i  len
+        txt.i.t.i  (slag (sub len.i.t.i.xov len) txt.i.t.i.xov)
+      ==
+    ?.  ?=([[* ^] *] xov)  l
+    :-  i.l
+    %=  $
+      l  t.l
+      x1  +(x2.i.l)
+      i.xov  t.i.xov
+    ==
+  ?:  ?&  (lth x1.tok x1.i.l)
+          (gth x2.tok x2.i.l)
       ==
     :+  %_  tok
-          x2     (dec x1.i.l)
+          x2  (dec x1.i.l)
           txt.p  ?:(.?(txt.p.tok) (scag (sub x1.i.l x1) txt.p.tok) ~)
         ==
       i.l
     %=  $
-      l    t.l
-      x1   +(x2.i.l)
+      l  t.l
+      x1  +(x2.i.l)
       xov
-        ?~  xov  ~
-        xov(i (oust [0 +((sub x2.i.l x1))] i.xov))
+        ?.  ?=([^ *] xov)  xov
+        =/  cut  +((sub x2.i.l x1.tok))
+        %_  xov
+          len.i.i  ?:((lth cut len.i.i.xov) (sub len.i.i.xov cut) 0)
+          txt.i.i  (oust [0 cut] txt.i.i.xov)
+        ==
     ==
-  ?:  (lth x1 x1.i.l)
-    :_  l
-    %_  tok
-      x2     (dec x1.i.l)
-      txt.p  ?:(.?(txt.p.tok) (scag (sub x1.i.l x1) txt.p.tok) ~)
+  ?:  (lth x1.tok x1.i.l)
+    :-  %_  tok
+          x2  (dec x1.i.l)
+          txt.p  ?:(.?(txt.p.tok) (scag (sub x1.i.l x1.tok) txt.p.tok) ~)
+        ==
+    =.  xov
+      :: clip xov
+      =/  acc  x2.tok
+      |-  ^-  vox
+      ?.  ?=([[* ^] *] xov)  xov
+      =.  acc  (add acc len.i.t.i.xov)
+      ?:  (lte acc x2.i.l)
+        %=  $
+          i.xov  t.i.xov
+        ==
+      =/  len  (sub acc x2.i.l)
+      %_  xov
+        len.i.t.i  len
+        txt.i.t.i  (slag (sub len.i.t.i.xov len) txt.i.t.i.xov)
+      ==
+    ?.  ?=([[* ^] *] xov)  l
+    :-  i.l
+    %=  $
+      l  t.l
+      x1  +(x2.i.l)
+      i.xov  t.i.xov
     ==
   :-  i.l
   %=  $
-    l    t.l
-    x1   +(x2.i.l)
+    l  t.l
+    x1  +(x2.i.l)
     xov
-      ?~  xov  ~
-      xov(i (oust [0 +((sub x2.i.l x1))] i.xov))
+      ?.  ?=([^ *] xov)  xov
+      =/  cut  +((sub x2.i.l x1.tok))
+      %_  xov
+        len.i.i  ?:((lth cut len.i.i.xov) (sub len.i.i.xov cut) 0)
+        txt.i.i  (oust [0 cut] txt.i.i.xov)
+      ==
   ==
 ::
 ++  duco                           :: produce interactivity state from a render schematic
@@ -5337,7 +5396,7 @@
     ==
   ?~  p.lux
     [~ r.a]
-  =/  lin=lina  ?^(txt.p.lux txt.p.lux (reap +((sub x2.lux x1.lux)) ~-.))
+  =/  lin=tour  ?^(txt.p.lux txt.p.lux (reap +((sub x2.lux x1.lux)) ~-.))
   ?.  ?&  ?=(^ q.a)
           ?=([[%klr ^] *] r.a)
       ==
