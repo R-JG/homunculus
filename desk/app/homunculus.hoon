@@ -77,11 +77,7 @@
       len=@ud                                                          ::
       txt=tour                                                         ::
   ==                                                                   ::
-+$  fax                                                                :: text render cases
-  $@  ~                                                                ::
-  $%  [%curs ~]                                                        ::
-      [%full ~]                                                        ::
-  ==                                                                   ::
++$  fax   ?(%full %curs %$)                                            :: text render cases
 +$  opus  (list [=apex =sol])                                          :: render batch (hop on null sol)
 +$  dux   [n=@tas k=rami =avis muri]                                   :: navigation point
 +$  rex   $@(~ dux)                                                    :: selection
@@ -142,6 +138,9 @@
   +$  editor                                                           ::
     $?  %mot-c-b  %mot-c-f                                             ::
         %mot-r-u  %mot-r-d                                             ::
+        %sel-mot-c-b  %sel-mot-c-f                                     ::
+        %sel-mot-r-u  %sel-mot-r-d                                     ::
+        %sel-clear                                                     ::
         %jump                                                          ::
         %count                                                         ::
         %open-menu                                                     ::
@@ -223,10 +222,12 @@
   $:  =toga                                                            ::
       =flos                                                            ::
       =apis                                                            ::
+      =uvae                                                            ::
       =cera                                                            ::
   ==                                                                   ::
 +$  flos  $~([1 0] [lin=@ row=@])                                      :: editor viewport start line and row offset
 +$  apis  $~([0 1 0] [c=@ l=@ mrc=@])                                  :: editor cursor (mrc = prev max row relative char offset)
++$  uvae  (set (pair [c=@ l=@] [c=@ l=@]))                             :: selections
 +$  cera                                                               :: text tree node (leaf or internal)
   $@  @t                                                               ::
   $:  l=mel                                                            ::
@@ -848,6 +849,8 @@
       ^-  (list [nota editor:lex])
       :~  [[%aro %l] %mot-c-b]   [[%aro %r] %mot-c-f]   [[%aro %u] %mot-r-u]   [[%aro %d] %mot-r-d]
           [[%chr ~-h] %mot-c-b]  [[%chr ~-l] %mot-c-f]  [[%chr ~-k] %mot-r-u]  [[%chr ~-j] %mot-r-d]
+          [[%chr ~-~48.] %sel-mot-c-b]  [[%chr ~-~4c.] %sel-mot-c-f]  [[%chr ~-~4b.] %sel-mot-r-u]  [[%chr ~-~4a.] %sel-mot-r-d]
+          [[%chr ~-c] %sel-clear]  [[%chr ~-~43.] %sel-clear]
           [[%chr ~-g] %jump]
           [[%chr ~-0] %count]  [[%chr ~-1] %count]  [[%chr ~-2] %count]  [[%chr ~-3] %count]
           [[%chr ~-4] %count]  [[%chr ~-5] %count]  [[%chr ~-6] %count]  [[%chr ~-7] %count]
@@ -1962,6 +1965,7 @@
   !!
 ::
 ++  moto                           :: motion core
+  =/  fex  *fax
   |_  $:  viewport-width=@ud
           viewport-height=@ud
           count=@ud
@@ -1973,8 +1977,9 @@
   ++  lavo                         :: recompute the editor viewport start position; finalize
     ^-  [fax favi]
     =/  oob  luo
-    ?:  ?=(%$ oob)  [[%curs ~] fav]
-    :-  [%full ~]
+    ?:  ?=(%$ oob)  [fex fav]
+    =.  fex  %full
+    :-  fex
     =/  target
       ^-  @ud
       ?-  oob
@@ -2099,8 +2104,87 @@
       rows  t.rows
     ==
   ::
+  ++  meto                         :: handle a selection expansion
+    |=  start=apis
+    ^-  uvae
+    =/  bas
+      ^-  (pair [c=@ l=@] [c=@ l=@])
+      =*  l1  l.start
+      =*  c1  c.start
+      =*  l2  l.apis.fav
+      =*  c2  c.apis.fav
+      ?:  =(l1 l2)
+        ?:  (lth c1 c2)
+          :-  [c1 l1]
+              [c2 l2]
+        :-  [c2 l2]
+            [c1 l1]
+      ?:  (lth l1 l2)
+        :-  [c1 l1]
+            [c2 l2]
+      :-  [c2 l2]
+          [c1 l1]
+    =^  new  uvae.fav
+      %-  ~(rep in uvae.fav)
+      |=  $:  nod=(pair [c=@ l=@] [c=@ l=@])
+              new=_bas
+              uva=uvae
+          ==
+      ?.  ?&  (lte l.p.new l.q.nod)  (lte c.p.new c.q.nod)
+              (gte l.q.new l.p.nod)  (gte c.q.new c.p.nod)
+          ==
+        :-  new
+        %-  ~(put in uva)  nod
+      :_  uva
+      %_  new
+        p
+          ?:  =(l.p.new l.p.nod)  p.new(c (min c.p.new c.p.nod))
+          ?:  (lth l.p.new l.p.nod)  p.new  p.nod
+        q
+          ?:  =(l.q.new l.q.nod)  q.new(c (max c.q.new c.q.nod))
+          ?:  (gth l.q.new l.q.nod)  q.new  q.nod
+      ==
+    %-  ~(put in uvae.fav)  new
+  ::
+  ++  s-m-c-b                      :: m-c-b plus draw selection
+    ^+  moto-core
+    =/  apis-start  apis.fav
+    =.  moto-core  m-c-b
+    %_  moto-core
+      fex       %full
+      uvae.fav  (meto apis-start)
+    ==
+  ::
+  ++  s-m-c-f                      :: m-c-f plus draw selection
+    ^+  moto-core
+    =/  apis-start  apis.fav
+    =.  moto-core  m-c-f
+    %_  moto-core
+      fex       %full
+      uvae.fav  (meto apis-start)
+    ==
+  ::
+  ++  s-m-r-u                      :: m-r-u plus draw selection
+    ^+  moto-core
+    =/  apis-start  apis.fav
+    =.  moto-core  m-r-u
+    %_  moto-core
+      fex       %full
+      uvae.fav  (meto apis-start)
+    ==
+  ::
+  ++  s-m-r-d                      :: m-r-d plus draw selection
+    ^+  moto-core
+    =/  apis-start  apis.fav
+    =.  moto-core  m-r-d
+    %_  moto-core
+      fex       %full
+      uvae.fav  (meto apis-start)
+    ==
+  ::
   ++  m-c-b                        :: move the cursor characterwise back
     ^+  moto-core
+    =.  fex  %curs
     =.  apis.fav
       |-  ^-  apis
       ?:  (gte c.apis.fav count)  apis.fav(c (sub c.apis.fav count))
@@ -2116,6 +2200,7 @@
   ::
   ++  m-c-f                        :: move the cursor characterwise forward
     ^+  moto-core
+    =.  fex  %curs
     =/  line-total
       ?@  cera.fav  1
       %+  add
@@ -2139,6 +2224,7 @@
   ::
   ++  m-r-u                        :: move the cursor rowwise up
     ^+  moto-core
+    =.  fex  %curs
     =/  fig  (figo l.apis.fav cera.fav)
     =/  rows-reversed=(lest (pair @ud (list tour)))
       =/  old-char-total  0
@@ -2197,6 +2283,7 @@
   ::
   ++  m-r-d                        :: move the cursor rowwise down
     ^+  moto-core
+    =.  fex  %curs
     =/  line-total=@
       ?@  cera.fav  1
       %+  add
@@ -2256,6 +2343,7 @@
   ::
   ++  m-j
     ^+  moto-core
+    =.  fex  %curs
     ?:  =(0 count)  moto-core
     =/  line-total
       ?@  cera.fav  1
@@ -2355,19 +2443,24 @@
           fav
       ==
     ?-  lex
-      %mot-c-b  lavo:m-c-b:mo
-      %mot-c-f  lavo:m-c-f:mo
-      %mot-r-u  lavo:m-r-u:mo
-      %mot-r-d  lavo:m-r-d:mo
-      %jump     lavo:m-j:mo
+      %mot-c-b      lavo:m-c-b:mo
+      %mot-c-f      lavo:m-c-f:mo
+      %mot-r-u      lavo:m-r-u:mo
+      %mot-r-d      lavo:m-r-d:mo
+      %jump         lavo:m-j:mo
+      %sel-mot-c-b  lavo:s-m-c-b:mo
+      %sel-mot-c-f  lavo:s-m-c-f:mo
+      %sel-mot-r-u  lavo:s-m-r-u:mo
+      %sel-mot-r-d  lavo:s-m-r-d:mo
+      %sel-clear    [%full fav(uvae ~)]
     ==
   =.  ego      (humo via ara deu fav)
   =.  mos.ego  [%editor *usus]
   =.  deus.urbs.ego  status:sys:velo
   ?>  ?=(^ rex.via)
   :_  ego
-  ?~  fex  ~
-  ?-  -.fex
+  ?-  fex
+    %$     ~
     %curs  ~[(fio ~[(viso status-line:eruo)])]
     %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
   ==
@@ -2411,7 +2504,7 @@
         ?:  =('\0a' c)
           a(l +(l.a), c 0)
         a(c +(c.a))
-      :-  [%full ~]
+      :-  %full
       =<  +
       =<  lavo
       %~  obdo  moto
@@ -2426,7 +2519,7 @@
       =:  apis.fav  ais
           cera.fav  (puto cera.fav)
         ==
-      :-  [%full ~]
+      :-  %full
       =<  +
       =<  lavo
       %~  obdo  moto
@@ -2451,8 +2544,8 @@
     ==
   =.  ego  (humo via ara deu fav)
   :_  ego
-  ?~  fax  ~
-  ?-  -.fax
+  ?-  fax
+    %$     ~
     %curs  ~[(fio ~[(viso status-line:eruo)])]
     %full  ~[(fio ~[(viso k.rex.via) (viso status-line:eruo)])]
   ==
@@ -2840,29 +2933,69 @@
         res
         line-total
   =;  ros
-    %+  turn  (slag row.flos.fav ros)
-    |=  val=(pair $@(@ud [chars=@ud line=@ud]) (list tour))
+    %+  spun  (slag row.flos.fav ros)
+    |=  $:  val=(pair $@(@ud [chars=@ud line=@ud]) (list tour))
+            cur-line=_?:(?=([[^ *] *] ros) line.p.i.ros 1)
+            cur-chars=@ud
+        ==
+    =?  cur-line  ?=(^ p.val)  line.p.val
+    =?  cur-chars  ?=(^ p.val)  0
+    :_  :-  cur-line
+        %+  add
+            cur-chars
+        ?^  p.val  chars.p.val  p.val
     ^-  (list [acia @ud tour])
-    :_  ~
-    :+  [~ ~ ~]
-        (add gutter-size ?^(p.val chars.p.val p.val))
-    %-  zing
-    :_  q.val
-    :: make gutter segment
-    ^-  tour
-    ?:  ?=(%hide gutter.toga.fav)  ~
-    =/  num
-      ^-  (unit @ud)
-      ?@  p.val  ~
-      :-  ~
-          line.p.val
-    ?~  num  (reap gutter-size `@c`' ')
-    =/  nut  (tuba ((d-co:co 1) u.num))
-    =/  len  (lent nut)
-    %+  weld  nut
-    %+  reap
-        (sub gutter-size len)
-        `@c`' '
+    =;  voz
+      ?:  ?=(%hide gutter.toga.fav)  voz
+      :_  voz
+      :: make gutter segment
+      :-  [~ ~ ~]
+      :-  (add gutter-size ?^(p.val chars.p.val p.val))
+      ^-  tour
+      =/  num
+        ^-  (unit @ud)
+        ?@  p.val  ~
+        :-  ~
+            line.p.val
+      ?~  num  (reap gutter-size `@c`' ')
+      =/  nut  (tuba ((d-co:co 1) u.num))
+      =/  len  (lent nut)
+      %+  weld  nut
+      %+  reap
+          (sub gutter-size len)
+          `@c`' '
+    =-  ?~  dat  ~
+        %-  flop
+        %_  dat
+          r.i  (flop r.i.dat)
+        ==
+    %+  roll  `tour`(zing q.val)
+    |=  [val=@c car=@ud dat=(list (trel acia @ud tour))]
+    :-  +(car)
+    ^-  (list (trel acia @ud tour))
+    =.  cur-chars  (add cur-chars car)
+    =/  is-sel
+      %-  ~(any in uvae.fav)
+      |=  sel=(pair [c=@ l=@] [c=@ l=@])
+      ?&  |((gth cur-line l.p.sel) &(=(cur-line l.p.sel) (gte cur-chars c.p.sel)))
+          |((lth cur-line l.q.sel) &(=(cur-line l.q.sel) (lte cur-chars c.q.sel)))
+      ==
+    =/  aci
+      ^-  acia
+      ?.  is-sel  [~ ~ ~]
+      select.toga.fav
+    ?~  dat
+      :-  [aci 1 [val ~]]
+          ~
+    ?:  =(aci p.i.dat)
+      %_  dat
+        q.i  +(q.i.dat)
+        r.i  [val r.i.dat]
+      ==
+    :-  [aci 1 [val ~]]
+    %_  dat
+      r.i  (flop r.i.dat)
+    ==
   =/  acc  *(list (pair $@(@ud [chars=@ud line=@ud]) (list tour)))
   =/  line-count  lin.flos.fav
   =/  row-count  0
@@ -2872,7 +3005,11 @@
       ==
     acc
   =/  [rows-in-line=@ rows=(list (pair $@(@ud [chars=@ud line=@ud]) (list tour)))]
-    =;  doo  ?>(?=(^ q.doo) doo(p.i.q [p.i.q.doo line-count]))
+    =;  doo
+      ?>  ?=(^ q.doo)
+      %=  doo
+        p.i.q  [p.i.q.doo line-count]
+      ==
     %:  domo
         viewport-width
         q:(figo line-count cera.fav)
@@ -5112,44 +5249,31 @@
         b  ?~(b.how.i.i.xov b.lok (cubo u.b.how.i.i.xov))
         f  ?~(f.how.i.i.xov f.lok (cubo u.f.how.i.i.xov))
       ==
-    ?^  t.i.xov
-      =/  txt-end  (add x1 ?.(=(0 len.i.i.xov) (dec len.i.i.xov) 0))
-      ?:  (lte txt-end x2)
-        :*  x1
-            txt-end
-            lok
-            nav
-            txt.i.i.xov
-        ==
+    =/  txt-end  (add x1 ?.(=(0 len.i.i.xov) (dec len.i.i.xov) 0))
+    ?:  (lte txt-end x2)
       :*  x1
-          x2
+          txt-end
           lok
           nav
-          (scag +((sub x2 x1)) txt.i.i.xov)
+          txt.i.i.xov
       ==
     :*  x1
         x2
         lok
         nav
-        ^-  tour
-        =/  wid  +((sub x2 x1))
-        ?:  =(len.i.i.xov wid)  txt.i.i.xov
-        ?:  (gth len.i.i.xov wid)  (scag wid txt.i.i.xov)
-        %+  weld  txt.i.i.xov
-        %+  reap  (sub wid len.i.i.xov)
-        ~-.
+        (scag +((sub x2 x1)) txt.i.i.xov)
     ==
   ?>  ?=(^ p.tok)
-  =?  xov  &(?=([[* ^] *] xov) =(x2.tok x2))
-    xov(t.i ~)
   ?~  l
-    ?:  ?=([[* ^] *] xov)
-      [tok $(i.xov t.i.xov, x1 +(x2.tok))]
-    [tok ~]
+    ?:  =(x2.tok x2)
+      [tok ~]
+    ?>  ?=([^ *] xov)
+    [tok $(x1 +(x2.tok), i.xov t.i.xov)]
   ?:  (lth x2.tok x1.i.l)
-    ?:  ?=([[* ^] *] xov)
-      [tok $(i.xov t.i.xov, x1 +(x2.tok))]
-    [tok l]
+    ?:  =(x2.tok x2)
+      [tok l]
+    ?>  ?=([^ *] xov)
+    [tok $(i.xov t.i.xov, x1 +(x2.tok))]
   ?:  (gth x1.tok x2.i.l)
     [i.l $(l t.l)]
   ?:  ?&  (gte x1.tok x1.i.l)
@@ -5170,7 +5294,9 @@
         len.i.t.i  len
         txt.i.t.i  (slag (sub len.i.t.i.xov len) txt.i.t.i.xov)
       ==
-    ?.  ?=([[* ^] *] xov)  l
+    ?:  =(x2.tok x2)
+      l
+    ?>  ?=([^ *] xov)
     :-  i.l
     %=  $
       l  t.l
@@ -5216,7 +5342,9 @@
         len.i.t.i  len
         txt.i.t.i  (slag (sub len.i.t.i.xov len) txt.i.t.i.xov)
       ==
-    ?.  ?=([[* ^] *] xov)  l
+    ?:  =(x2.tok x2)
+      l
+    ?>  ?=([^ *] xov)
     :-  i.l
     %=  $
       l  t.l
