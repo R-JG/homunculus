@@ -215,7 +215,7 @@
 +$  acus  (trel @ @ tape)                                              :: command line state
 +$  toga                                                               :: editor preferences
   $:  gutter=?(%show %hide)                                            ::   gutter display
-      select=acia                                                      ::   selection style
+      :: select=acia                                                      ::   selection style
   ==                                                                   ::
 +$  alvi  (map path favi)                                              :: editor session state by source
 +$  favi                                                               :: editor state
@@ -2950,7 +2950,7 @@
       :_  voz
       :: make gutter segment
       :-  [~ ~ ~]
-      :-  (add gutter-size ?^(p.val chars.p.val p.val))
+      :-  gutter-size
       ^-  tour
       =/  num
         ^-  (unit @ud)
@@ -2983,7 +2983,10 @@
     =/  aci
       ^-  acia
       ?.  is-sel  [~ ~ ~]
-      select.toga.fav
+      ?.  ?=([~ ~ ~] sele.res)  sele.res
+      :+  ~
+          [~ f.look.res]
+          [~ b.look.res]
     ?~  dat
       :-  [aci 1 [val ~]]
           ~
@@ -3111,7 +3114,7 @@
 ++  mano                           :: initialize any new editor sessions
   |=  [=alae bol=bowl:gall]
   =|  =favi
-  =.  b.select.toga.favi  [~ 0xff 0x5f 0x15]  :: TODO: text select style attributes
+  =.  gutter.toga.favi  %show
   =/  new  ~(tap in alae)
   |-  ^-  alvi
   ?~  new
