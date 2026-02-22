@@ -1,13 +1,21 @@
 /-  homunculus
 |%
 ::
-+$  xeno-sources  (map desk ship)
++$  xeno-sources  (map desk (pair ship desk))
 ::
 +$  place  $@(~ [=desk =path])
 +$  tabs   (list place)
 ::
++$  remote-search
+  $@  ~
+  $:  who=ship
+      res=(list desk)
+  ==
+::
 +$  state-0
-  $:  explorer=place
+  $:  =xeno-sources
+      =remote-search
+      explorer=place
       editor-source=place
       editor-tabs=tabs
   ==
@@ -32,6 +40,15 @@
   ^+  cor
   ?+  mak  ~|(bad-poke/mak !!) 
   ::
+      %xeno-pr
+    =+  !<([from=desk into=desk] vaz)
+    %-  emit
+    %:  merge-pr
+        src.bol
+        from
+        into
+    ==
+  ::
       %homunculus-event
     ?>  =(src our):bol
     =/  eve  !<(event:homunculus vaz)
@@ -49,10 +66,34 @@
         %act
       ?+  p.eve  !!
       ::
-          [%explorer *]
+          [%desks-item @ta ~]
+        =.  explorer  [i.t.p.eve ~]
+        %-  emil
+        :~  render-explorer-panel:tui
+        ==
+      ::
+          [%clone-desk-item @ta ~]
+        ?>  ?=(^ remote-search)
+        =*  des  i.t.p.eve
+        %-  emit
+        %:  clone-desk
+            who.remote-search
+            des
+        ==
+      ::
+          [%upstream-desk-pr ~]
+        ?>  ?=(^ explorer)
+        =/  xeo  (~(got by xeno-sources) desk.explorer)
+        =/  dat  [desk.explorer q.xeo]
+        %-  emit
+        :*  %pass  /upstream-desk-pr/[now-ta]  %agent  [p.xeo dap.bol]
+            %poke  %xeno-pr  !>(dat)
+        ==
+      ::
+          [%explorer-item *]
         ?~  t.p.eve  cor
         =/  next=place  [i.t.p.eve t.t.p.eve]
-        ?:  (file-exists next bol)
+        ?:  (file-exists next)
           =:  editor-source  next
               editor-tabs    [next editor-tabs]
               explorer       ?~(explorer ~ explorer(path (snip path.explorer)))
@@ -91,8 +132,33 @@
       ==
     ::
         %form
-      :: ~&  >  eve
-      cor
+      ?+  p.eve  !!
+      ::
+          [%remote-desks-form ~]
+        =/  sif  (~(got by q.eve) /remote-source-input)
+        =/  sip  (slav %p sif)
+        %-  emit
+        :*  %pass  /read-remote-desks/[sif]/[now-ta]  %agent  [sip dap.bol]
+            %watch  /read-desks
+        ==
+      ::
+          [%new-desk-form ~]
+        =/  ned  (~(got by q.eve) /new-desk-input)
+        %-  emil
+        :~  (create-new-desk ned)
+        ==
+      ::
+          [%new-file-form ~]
+        ?>  ?=(^ explorer)
+        =/  rel  (stab (~(got by q.eve) /new-file-input))
+        =/  abs  (weld path.explorer rel)
+        =/  dat  [%noun !>(~)]
+        %-  emil
+        :~  (write-file desk.explorer abs dat)
+            (check-file-exists desk.explorer abs)
+        ==
+      ::
+      ==
     ::
     ==
   ::
@@ -106,7 +172,16 @@
 ++  watch
   |=  poe=(pole @ta)
   ^+  cor
-  cor
+  ?+  poe  !!
+  ::
+      [%read-desks ~]
+    =/  dez  scry-desks
+    %-  emil
+    :~  [%give %fact ~ %xeno-desks !>(dez)]
+        [%give %kick ~ ~]
+    ==
+  ::
+  ==
 ::
 ++  leave
   |=  poe=(pole @ta)
@@ -121,32 +196,159 @@
 ++  arvo
   |=  [wir=(pole @ta) sin=sign-arvo]
   ^+  cor
-  cor
+  ?+  wir  cor
+  ::
+      [%create-new-desk *]
+    ?.  ?=([%clay %mere *] sin)  cor
+    =/  pez  grant-test-perms
+    %-  emil
+    :*  render-explorer-panel:tui
+        pez
+    ==
+  ::
+      [%clone-desk who=@ta des=@ta *]
+    ?.  ?=([%clay %mere *] sin)  cor
+    =.  xeno-sources
+      %+  ~(put by xeno-sources)
+          des.wir
+      :-  (slav %p who.wir)
+          des.wir
+    %-  emit
+        render-explorer-panel:tui
+  ::
+      [%merge-pr *]
+    %-  emit
+        render-full:tui
+  ::
+      [%check-file-exists *]
+    %-  emit
+        render-explorer-panel:tui
+    
+  ::
+  ==
 ::
 ++  agent
   |=  [wir=wire sin=sign:agent:gall]
   ^+  cor
-  cor
+  ?+  wir  cor
+  ::
+      [%read-remote-desks *]
+    ?.  ?=(%fact -.sin)  cor
+    ?+  p.cage.sin  !!
+    ::
+        %xeno-desks
+      =/  dez  !<((list desk) q.cage.sin)
+      =.  remote-search  [src.bol dez]
+      %-  emil
+      :~  render-explorer-panel:tui
+      ==
+    ::
+    ==
+  ::
+  ==
 ::
   ::
 ::
+++  our-ta  (scot %p our.bol)
+++  now-ta  (scot %da now.bol)
+++  bek  /[our-ta]/[q.byk.bol]/[now-ta]
+++  bak  |=  =desk  /[our-ta]/[desk]/[now-ta]
+++  bem  |=  =path  (welp bek path)
+++  bam  |=  [=desk =path]  (welp (bak desk) path)
+::
 ++  file-exists
-  |=  [at=place bol=bowl:gall]
+  |=  at=place
   ^-  ?
   ?~  at  |
-  .^(? %cu (en-beam [[our.bol desk.at [%da now.bol]] path.at]))
+  .^  ?  %cu  (bam desk.at path.at)
+  ==
 ::
-++  get-explorer-list
-  |=  bol=bowl:gall
-  ^-  (list @t)
+++  scry-desks
+  ^-  (list desk)
   %+  sort
     %~  tap  in
-    ?~  explorer
-      .^((set desk) %cd (en-beam [[our.bol %$ [%da now.bol]] ~]))
+    .^  (set desk)  %cd  (bam %$ ~)
+    ==
+  aor
+::
+++  scry-explorer-list
+  ^-  (list @t)
+  ?~  explorer  ~
+  %+  sort
+    %~  tap  in
     %~  key  by
     =<  dir
-    .^(arch %cy (en-beam [[our.bol desk.explorer [%da now.bol]] path.explorer]))
+    .^  arch  %cy  (bam desk.explorer path.explorer)
+    ==
   aor
+::
+++  scry-kiln-sources
+  .^  (map desk (pair ship desk))  %gx  (bam %hood /kiln/sources/noun)
+  ==
+::
+++  grant-test-perms                :: NOTE: temporary: auto grant permissions to test ships
+  ^-  (list card)
+  =/  one  ~walnut-nidlep-sivrec
+  =/  two  ~walrus-nidlep-sivrec
+  ?.  |(=(one our.bol) =(two our.bol))  ~
+  =/  you  ?:(=(one our.bol) two one)
+  %+  turn  scry-desks
+  |=  des=desk
+  %:  grant-read-desk-permissions
+      you
+      des
+  ==
+::
+++  grant-read-desk-permissions
+  |=  [who=ship des=desk]
+  ^-  card
+  =/  pax  *path
+  :*  %pass  /grant-read-desk-permissions  %arvo  %c
+      %perm  des  pax
+      [%r ~ %white (silt [%& who] ~)]
+  ==
+::
+++  create-new-desk
+  |=  new=desk
+  ^-  card
+  :*  %pass  /create-new-desk/[new]  %arvo  %c
+      %merg  new
+      our.bol  %base  da+now.bol
+      %init
+  ==
+::
+++  clone-desk
+  |=  [who=ship des=desk]
+  ^-  card
+  :*  %pass  /clone-desk/[(scot %p who)]/[des]  %arvo  %c
+      %merg  des
+      who  des  da+now.bol
+      %init
+  ==
+::
+++  merge-pr
+  |=  [who=ship from=desk into=desk]
+  ^-  card
+  :*  %pass  /merge-pr/[(scot %p who)]/[from]/[into]  %arvo  %c
+      %merg  into
+      who  from  da+now.bol
+      %meld
+  ==
+::
+++  write-file
+  |=  [des=desk paf=path dat=cage]
+  ^-  card
+  :*  %pass  (weld /write-file/[des] paf)  %arvo  %c
+      %info  des  %&   [[paf %ins dat] ~]
+  ==
+::
+++  check-file-exists
+  |=  [des=desk paf=path]
+  ^-  card
+  :*  %pass  (weld /check-file-exists/[des] paf)  %arvo  %c
+      %warp  our.bol  des  ~
+      %sing  %u  da+now.bol  paf
+  ==
 ::
 ++  tui
   |%
@@ -160,7 +362,8 @@
   ++  render-explorer-panel
     ^-  card
     %-  make-update-card
-    :~  [%element explorer-panel]
+    :~  [%element desks-panel]
+        [%element explorer-panel]
         [%set-scroll-position %c 0 /explorer-list]
     ==
   ::
@@ -180,13 +383,92 @@
   ++  root
     ^-  manx
     ;row(w "100%", h "100%", bg dark-gray, fg light-blue-1)
+      ;+  desks-panel
       ;+  explorer-panel
       ;+  editor-panel
     ==
   ::
+  ++  desks-panel
+    ^-  manx
+    =/  kiln-sources  scry-kiln-sources
+    ;col/"desks-panel"(w "35%", h "100%", bg dark-blue-2)
+      ;scroll/"desks-list"(w "100%", h "grow")
+        ;col/"remote-desks-list"(w "100%", b "arc")
+          ;form/"remote-desks-form"(w "100%", fl "row")
+            ;input/"remote-source-input"(w "grow", h "1");
+            ;submit(select-fg light-blue-1): search
+          ==
+          ;*  ?~  remote-search  ~
+              :+  ;row: {(scow %p who.remote-search)}
+                  ;line-h;
+              %+  turn  res.remote-search
+              |=  des=desk
+              ^-  manx
+              =/  det  (trip des)
+              ;row(w "100%")
+                ;row(w "grow"): {det}
+                ;select/"clone-desk-item/{det}"(select-fg light-blue-1): clone
+              ==
+        ==
+        ;*  %+  turn  scry-desks
+            |=  des=desk
+            ^-  manx
+            =/  det  (trip des)
+            =/  sel
+              ^-  ?
+              ?~  explorer  |
+              .=  desk.explorer
+                  des
+            ?:  (~(has by kiln-sources) des)
+              =/  kin
+                ^-  tape
+                =/  sor  (~(get by kiln-sources) des)
+                ?~  sor  "none"
+                %+  weld
+                    (scow %p p.u.sor)
+                    "/{(trip q.u.sor)}"
+              ;select/"desks-item/{det}"(w "100%", mb "1", px "1", fl "col")
+              =bg  ?.(sel "#885053" "#FABC3C")
+              =select-bg  "#FABC3C"
+              =select-fg  dark-gray
+                ;row: {det}
+                ;row(w "100%", fg dark-gray)
+                  ;row(w "grow"): kiln upstream:
+                  ;row: {kin}
+                ==
+              ==
+            =/  reo
+              ^-  tape
+              =/  sor  (~(get by xeno-sources) des)
+              ?~  sor  "none"
+              %+  weld
+                  (scow %p p.u.sor)
+                  "/{(trip q.u.sor)}"
+            ;select/"desks-item/{det}"(w "100%", mb "1", px "1", fl "col")
+            =bg  ?.(sel dark-blue-1 cyan-1)
+            =select-bg  cyan-1
+            =select-fg  dark-gray
+              ;row: {det}
+              ;row(w "100%", fg dark-gray)
+                ;row(w "grow"): xeno upstream:
+                ;row: {reo}
+              ==
+              ;select/"upstream-desk-pr"(bg orange): PR
+            ==
+      ==
+      ;+  new-desk-form
+    ==
+  ::
+  ++  new-desk-form
+    ^-  manx
+    ;form/"new-desk-form"(w "100%", fl "row", b "arc")
+      ;input/"new-desk-input"(w "grow", h "1");
+      ;submit(px "1", select-fg light-blue-1): new desk
+    ==
+  ::
   ++  explorer-panel
     ^-  manx
-    ;col/"explorer-panel"(w "22%", h "100%", fx "center", bg dark-blue-2)
+    ;col/"explorer-panel"(w "25%", h "100%", fx "center", bg dark-blue-2)
       ;row(w "100%", h "1", px "2", fg cyan-1)
         ;select/"explorer-back"(px "1", select-bg cyan-1, select-fg dark-gray):"◀"
         ;row(ml "2")
@@ -196,15 +478,23 @@
         ==
       ==
       ;scroll/"explorer-list"(w "85%", h "grow")
-        ;*  %+  turn  (get-explorer-list bol)
+        ;*  %+  turn  scry-explorer-list
             |=  i=@t
             ^-  manx
             =/  id=tape
-              %+  weld  "explorer"
+              %+  weld  "explorer-item"
               ?~  explorer  "/{(trip i)}"
               (spud `path`explorer(path (snoc path.explorer i)))
             ;select/"{id}"(w "100%", px "1", mt "1", bg dark-blue-1, select-bg cyan-1, select-fg dark-gray):"{(trip i)}"
       ==
+      ;+  new-file-form
+    ==
+  ::
+  ++  new-file-form
+    ^-  manx
+    ;form/"new-file-form"(w "100%", fl "row", b "arc")
+      ;input/"new-file-input"(w "grow", h "1");
+      ;submit(px "1", select-fg light-blue-1): new file
     ==
   ::
   ++  editor-panel
@@ -253,9 +543,11 @@
 ::
 ++  init
   ^+  cor
+  =/  pez  grant-test-perms
   %-  emil
-  :~  render-full:tui
+  :*  render-full:tui
       register:tui
+      pez
   ==
 ::
 ++  save
