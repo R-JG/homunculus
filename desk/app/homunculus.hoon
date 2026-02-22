@@ -991,11 +991,16 @@
       ::
         %run
       :: TODO: implement commands
+      =/  cmd  r.acus.ego
       =:  mos.ego        [%element ~]
           acus.ego       *acus
         ==
       =.  deus.urbs.ego  full:sys:velo
       :_  ego
+      ?:  =("w" cmd)               :: NOTE: temporary: w commits an editor text tree to clay
+        :~  (fio ~[(viso sys-lines:eruo)])
+            voco
+        ==
       :~  (fio ~[(viso sys-lines:eruo)])
       ==
       ::
@@ -3138,6 +3143,28 @@
           =/  tub  .^(tube:clay %cc (weld bek /[mak]/txt))
           !<  wain  (tub vax)
       ==
+  ==
+::
+++  voco                           :: commit an editor text tree to its clay file
+  ^-  card
+  =/  =via
+    ?:  open.arx.urbs.ego  via.arx.urbs.ego
+    (snag cura.ego viae.ego)
+  ?>  ?=(^ rex.via)
+  =/  =ara
+    ?:  open.arx.urbs.ego  ?>(?=(^ arae.via) i.arae.via)
+    ?>  ?=(^ k.rex.via)
+    (snag ager.i.k.rex.via arae.via)
+  =/  deu=deus  (exuo (voro k.rex.via) deus.ara)
+  ?>  ?=(%editor -.ars.cor.deu)
+  =*  paf  avis.cor.deu
+  =/  fav  (~(got by alvi.ego) paf)
+  ?>  ?=(^ paf)
+  =*  des  i.paf
+  =*  pax  t.paf
+  =/  dat  (duro cera.fav)
+  :*  %pass  (weld /voco paf)  %arvo  %c
+      %info  des  %&   [[pax %ins [%hoon !>(dat)]] ~]            :: TODO: commit any mark, not just %hoon
   ==
 ::
 ++  dolo                           :: get default styles for a semantic element
