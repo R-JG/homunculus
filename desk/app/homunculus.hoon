@@ -324,15 +324,15 @@
     =^  keys  ara  (novo ind upd ara)
     =/  newe       (~(dif in alae.ara) olde)
     =.  arae.via   (snap arae.via +.ind ara)
-    =:  viae.ego   (snap viae.ego -.ind via)
-        alvi.ego   ?~(newe alvi.ego (mano newe bol))
-      ==
+    =.  viae.ego   (snap viae.ego -.ind via)
+    =^  caz  alvi.ego   ?~(newe [~ alvi.ego] (mano newe bol))
     ?.  =(cura.ego -.ind)
-      [~ hoc]
+      [caz hoc]
     =^  opus  via  (levo keys via)
     =?  viae.ego   !open.arx.urbs.ego  (snap viae.ego -.ind via)
     :_  hoc
-    :~  (fio opus)
+    :*  (fio opus)
+        caz
     ==
     ::
       %homunculus-menu-update
@@ -348,12 +348,13 @@
       =/  olde  alae.i.arae.via.arx.urbs.ego
       =^  keys  i.arae.via.arx.urbs.ego  (novo %menu p.upd i.arae.via.arx.urbs.ego)
       =/  newe  (~(dif in alae.i.arae.via.arx.urbs.ego) olde)
-      =?  alvi.ego  ?=(^ newe)  (mano newe bol)
+      =^  caz  alvi.ego  ?~(newe [~ alvi.ego] (mano newe bol))
       ?.  open.arx.urbs.ego
-        [~ hoc]
+        [caz hoc]
       =^  opus  via.arx.urbs.ego  =>((levo keys via.arx.urbs.ego) ?>(?=(^ arae) .))
       :_  hoc
-      :~  (fio opus)
+      :*  (fio opus)
+          caz
       ==
       ::
         %load-state
@@ -579,27 +580,47 @@
 ++  on-arvo
   |=  [wir=wire sin=sign-arvo]
   ^-  (quip card _hoc)
-  ?.  ?=([%lick %soak *] sin)  [~ hoc]
-  ?+  mark.sin  [~ hoc]
-    %error       ~&('socket error' ~^hoc)
-    %disconnect  ~&('socket disconnected' ~^hoc)
-    %connect
-      =.  acro.ego  [%lick ~]
-      =^  cards  ego  (apto cura.ego)
-      [cards hoc]
-    %size
-      ?>  ?=(@ noun.sin)
-      =/  dum  (stab noun.sin)
-      ?>  ?=([@ @ ~] dum)
-      =^  cards  ego
-        %-  ineo
-        :-  %rez
-        [(slav %ud i.dum) (slav %ud i.t.dum)]
-      [cards hoc]
-    %text
-      ?>  ?=(@ noun.sin)
-      =^  cards  ego  (ineo (need (edo (trip noun.sin))))
-      [cards hoc]
+  ?:  ?=([%lick %soak *] sin)
+    ?+  mark.sin  [~ hoc]
+      %error       ~&('socket error' ~^hoc)
+      %disconnect  ~&('socket disconnected' ~^hoc)
+      %connect
+        =.  acro.ego  [%lick ~]
+        =^  cards  ego  (apto cura.ego)
+        [cards hoc]
+      %size
+        ?>  ?=(@ noun.sin)
+        =/  dum  (stab noun.sin)
+        ?>  ?=([@ @ ~] dum)
+        =^  cards  ego
+          %-  ineo
+          :-  %rez
+          [(slav %ud i.dum) (slav %ud i.t.dum)]
+        [cards hoc]
+      %text
+        ?>  ?=(@ noun.sin)
+        =^  cards  ego  (ineo (need (edo (trip noun.sin))))
+        [cards hoc]
+    ==
+  ?+  wir  [~ hoc]
+  ::
+      [%clay-file-update @ta *]
+    ?.  ?=([%clay %writ ~ [%x *] * *] sin)  [~ hoc]
+    =*  cag  r.u.p.sin
+    =*  paf  t.wir
+    =/  fav  (~(get by alvi.ego) paf)
+    ?~  fav  [~ hoc]
+    =.  cera.u.fav
+      %-  cero
+      ?:  =(%hoon p.cag)  (fero (trip !<(@t q.cag)))
+      ?:  =(%txt p.cag)  !<(wain q.cag)
+      !!  :: TODO: properly handle different marks
+    =.  alvi.ego  (~(put by alvi.ego) paf u.fav)
+    =^  cards  ego  (apto cura.ego)
+    :_  hoc
+    :_  cards
+        (queo bol paf)
+  ::
   ==
 ::
 ++  on-fail   |=([term tang] ^-((quip card _hoc) !!))
@@ -3120,10 +3141,11 @@
   |=  [=alae bol=bowl:gall]
   =|  =favi
   =.  gutter.toga.favi  %show
+  =/  caz  *(list card)
   =/  new  ~(tap in alae)
-  |-  ^-  alvi
+  |-  ^-  (quip card alvi)
   ?~  new
-    alvi.ego
+    [caz alvi.ego]
   ?:  (~(has by alvi.ego) i.new)
     $(new t.new)
   :: the assumption is that the path from the element is a beam, minus ship and case
@@ -3134,6 +3156,7 @@
   =/  vax  .^(vase %cr (weld bek pax))
   =/  mak  (rear pax)
   %=  $
+    caz  [(queo bol des pax) caz]
     alvi.ego
       %+  ~(put by alvi.ego)  i.new
       %_  favi
@@ -3143,6 +3166,14 @@
           =/  tub  .^(tube:clay %cc (weld bek /[mak]/txt))
           !<  wain  (tub vax)
       ==
+  ==
+::
+++  queo                           :: subscribe to a clay file
+  |=  [bol=bowl:gall des=desk paf=path]
+  ^-  card
+  :*  %pass  (weld /clay-file-update [des paf])  %arvo  %c
+      %warp  our.bol  des  ~
+      %next  %x  da+now.bol  paf
   ==
 ::
 ++  voco                           :: commit an editor text tree to its clay file

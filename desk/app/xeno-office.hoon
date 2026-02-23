@@ -41,7 +41,9 @@
   ?+  mak  ~|(bad-poke/mak !!) 
   ::
       %xeno-pr
+    ~&  >>  ['got pr from' src.bol]
     =+  !<([from=desk into=desk] vaz)
+    ~&  >>  ['merging...' from into]
     %-  emit
     %:  merge-pr
         src.bol
@@ -83,6 +85,7 @@
       ::
           [%upstream-desk-pr ~]
         ?>  ?=(^ explorer)
+        ~&  >  'sending pr'
         =/  xeo  (~(got by xeno-sources) desk.explorer)
         =/  dat  [desk.explorer q.xeo]
         %-  emit
@@ -217,6 +220,7 @@
         render-explorer-panel:tui
   ::
       [%merge-pr *]
+    ~&  >  ['did merge' wir sin]
     %-  emit
         render-full:tui
   ::
@@ -332,7 +336,7 @@
   :*  %pass  /merge-pr/[(scot %p who)]/[from]/[into]  %arvo  %c
       %merg  into
       who  from  da+now.bol
-      %meld
+      %mate
   ==
 ::
 ++  write-file
