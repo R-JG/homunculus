@@ -13,7 +13,8 @@
   ==
 ::
 +$  state-0
-  $:  =xeno-sources
+  $:  show-utilities=_|
+      =xeno-sources
       =remote-search
       explorer=place
       editor-source=place
@@ -70,9 +71,8 @@
       ::
           [%desks-item @ta ~]
         =.  explorer  [i.t.p.eve ~]
-        %-  emil
-        :~  render-explorer-panel:tui
-        ==
+        %-  emit
+            render-full:tui
       ::
           [%clone-desk-item @ta ~]
         ?>  ?=(^ remote-search)
@@ -105,9 +105,8 @@
           :~  render-full:tui
           ==
         =.  explorer  next
-        %-  emil
-        :~  render-explorer-panel:tui
-        ==
+        %-  emit
+            render-explorer-panel:tui
       ::
           [%explorer-back ~]
         ?:  =(~ explorer)  !!
@@ -119,9 +118,10 @@
           %=  explorer
             path  (snip `path`path.explorer)
           ==
-        %-  emil
-        :~  render-explorer-panel:tui
-        ==
+        %-  emit
+        ?~  explorer
+            render-full:tui
+            render-explorer-panel:tui
       ::
           [%tab *]
         ?~  t.p.eve  !!
@@ -131,6 +131,16 @@
         %-  emil
         :~  render-full:tui
         ==
+      ::
+          [%open-utilities-panel ~]
+        =.  show-utilities  &
+        %-  emit
+            render-full:tui
+      ::
+          [%close-utilities-panel ~]
+        =.  show-utilities  |
+        %-  emit
+            render-full:tui
       ::
       ==
     ::
@@ -227,7 +237,6 @@
       [%check-file-exists *]
     %-  emit
         render-explorer-panel:tui
-    
   ::
   ==
 ::
@@ -368,7 +377,7 @@
     %-  make-update-card
     :~  [%element desks-panel]
         [%element explorer-panel]
-        [%set-scroll-position %c 0 /explorer-list]
+        [%set-scroll-position %c 0 /explorer-panel]
     ==
   ::
   ++  make-update-card
@@ -387,33 +396,76 @@
   ++  root
     ^-  manx
     ;row(w "100%", h "100%", bg dark-gray, fg light-blue-1)
+      ;*  ?.  show-utilities  ~
+          :_  ~
+          ;layer(fx "center", fy "center")
+            ;+  utilities-panel
+          ==
+      ;+  explorer-back
       ;+  desks-panel
       ;+  explorer-panel
       ;+  editor-panel
+    ==
+  ::
+  ++  utilities-panel
+    ^-  manx
+    ;col(w "40%", h "50%", b "arc")
+      ;select/"close-utilities-panel"(select-fg orange): close
+      ;row(fg cyan-1)
+        ;*  ?~  explorer
+            :_  ~
+                ;row: no desk selected
+            ;=  ;row: {(trip desk.explorer)}
+                ;row: {(spud path.explorer)}
+            ==
+      ==
+      ;col/"remote-desks-panel"(w "100%", b "arc")
+        ;form/"remote-desks-form"(w "100%", fl "row")
+          ;input/"remote-source-input"(w "grow", h "1");
+          ;submit(select-fg light-blue-1): search
+        ==
+        ;*  ?~  remote-search  ~
+            :+  ;row: {(scow %p who.remote-search)}
+                ;line-h;
+            %+  turn  res.remote-search
+            |=  des=desk
+            ^-  manx
+            =/  det  (trip des)
+            ;row(w "100%")
+              ;row(w "grow"): {det}
+              ;select/"clone-desk-item/{det}"(select-fg light-blue-1): clone
+            ==
+      ==
+      ;+  new-desk-form
+      ;+  new-file-form
+      ;select/"upstream-desk-pr"(bg orange): send merge request
+    ==
+  ::
+  ++  explorer-back
+    ^-  manx
+    ;col(w "2", h "100%", fy "center")
+      ;*  ?~  explorer  ~
+          :_  ~
+          ;select/"explorer-back"(w "1", h "75%", fl "col", fy "center")
+          =select-bg  cyan-1
+          =select-fg  dark-gray
+            ;row:"╱"
+            ;row:"╲"
+          ==
     ==
   ::
   ++  desks-panel
     ^-  manx
     =/  kiln-sources  scry-kiln-sources
     ;col/"desks-panel"(w "35%", h "100%", bg dark-blue-2)
-      ;scroll/"desks-list"(w "100%", h "grow")
-        ;col/"remote-desks-list"(w "100%", b "arc")
-          ;form/"remote-desks-form"(w "100%", fl "row")
-            ;input/"remote-source-input"(w "grow", h "1");
-            ;submit(select-fg light-blue-1): search
-          ==
-          ;*  ?~  remote-search  ~
-              :+  ;row: {(scow %p who.remote-search)}
-                  ;line-h;
-              %+  turn  res.remote-search
-              |=  des=desk
-              ^-  manx
-              =/  det  (trip des)
-              ;row(w "100%")
-                ;row(w "grow"): {det}
-                ;select/"clone-desk-item/{det}"(select-fg light-blue-1): clone
-              ==
+      ;row(w "100%", fx "end")
+        ;select/"open-utilities-panel"(w "35%", px "1", fx "end", bg dark-blue-1)
+        =select-bg  cyan-1
+        =select-fg  dark-gray
+          ;row: ▮▮▮
         ==
+      ==
+      ;scroll/"desks-list"(w "100%", h "grow")
         ;*  %+  turn  scry-desks
             |=  des=desk
             ^-  manx
@@ -457,10 +509,8 @@
                 ;row(w "grow"): xeno upstream:
                 ;row: {reo}
               ==
-              ;select/"upstream-desk-pr"(bg orange): PR
             ==
       ==
-      ;+  new-desk-form
     ==
   ::
   ++  new-desk-form
@@ -472,26 +522,15 @@
   ::
   ++  explorer-panel
     ^-  manx
-    ;col/"explorer-panel"(w "25%", h "100%", fx "center", bg dark-blue-2)
-      ;row(w "100%", h "1", px "2", fg cyan-1)
-        ;select/"explorer-back"(px "1", select-bg cyan-1, select-fg dark-gray):"◀"
-        ;row(ml "2")
-          ;+  ;/
-            ?~  explorer  "~"
-            (spud explorer)
-        ==
-      ==
-      ;scroll/"explorer-list"(w "85%", h "grow")
-        ;*  %+  turn  scry-explorer-list
-            |=  i=@t
-            ^-  manx
-            =/  id=tape
-              %+  weld  "explorer-item"
-              ?~  explorer  "/{(trip i)}"
-              (spud `path`explorer(path (snoc path.explorer i)))
-            ;select/"{id}"(w "100%", px "1", mt "1", bg dark-blue-1, select-bg cyan-1, select-fg dark-gray):"{(trip i)}"
-      ==
-      ;+  new-file-form
+    ;scroll/"explorer-panel"(w "25%", h "100%", px "1", bg dark-blue-2)
+      ;*  %+  turn  scry-explorer-list
+          |=  i=@t
+          ^-  manx
+          =/  id=tape
+            %+  weld  "explorer-item"
+            ?~  explorer  "/{(trip i)}"
+            (spud `path`explorer(path (snoc path.explorer i)))
+          ;select/"{id}"(w "100%", px "1", mt "1", bg dark-blue-1, select-bg cyan-1, select-fg dark-gray):"{(trip i)}"
     ==
   ::
   ++  new-file-form
@@ -507,7 +546,7 @@
       ;*  ?~  editor-source
             ;=  ;row(w "100%", h "1", fx "center", fg cyan-1):"~"
                 ;col(w "100%", h "grow", pb "1", pr "2")
-                  ;pattern(w "100%", h "100%", bg dark-gray, fg dark-blue-1):" □"
+                  ;pattern(w "100%", h "100%", bg dark-gray, fg dark-blue-1):"╱"
                 ==
             ==
           =/  src  (spud editor-source)

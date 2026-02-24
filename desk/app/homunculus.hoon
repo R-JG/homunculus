@@ -2795,6 +2795,7 @@
   ++  $
   ~+
   ^-  (pair @ud (list (pair @ud (list tour))))
+  ?:  =(0 viewport-width)  [0 ~]
   =-  :-  row-count
       %-  flop
       %+  turn  rows
@@ -5325,6 +5326,7 @@
         (scag +((sub x2 x1)) txt.i.i.xov)
     ==
   ?>  ?=(^ p.tok)
+  ?:  (gth x1.tok x2)  l
   ?~  l
     ?:  =(x2.tok x2)
       [tok ~]
